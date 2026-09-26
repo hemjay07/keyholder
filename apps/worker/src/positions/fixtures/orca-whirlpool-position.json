@@ -1,0 +1,12 @@
+{
+  "protocol": "orca-whirlpool",
+  "programId": "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc",
+  "accountPubkey": "JEHA4MmrhWxZPQoJSZrQxkBsiuuq5WwnbyZHoRYbuyRx",
+  "nftMint": "Bm4gqMxV7HUp3C6edraVyPLMCpraG38X2jQC8zALXLY4",
+  "owner": "6t695gArJ71cCWJ4W5huVndpPm2WwVQ33AAdcgQf3wUP",
+  "method": "getProgramAccounts with memcmp(offset 0, Anchor discriminator sha256('account:Position')[..8]) found a real position; PDA ['position', nftMint] under Whirlpool program verified to equal accountPubkey exactly; the NFT is Token-2022 (immutableOwner extension); wallet found via getTokenLargestAccounts(nftMint) -> getAccountInfo(tokenAccount).owner",
+  "dataLen": 216,
+  "dataBase64": "qryP5HpA99ATS3xZgKlMwzh8Wdz3Tpk4bGjmhzSh5iuo6OmwujpnbJ/el/GMbS3459r8BiseEqJodNPVQac/wWqTHnxF72r1x/2KOxbj3gUAAAAAAAAAAM6q/v/Uqv7/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+  "fetchedVia": "Helius getAccountInfo, mainnet-beta",
+  "fetchedDate": "2026-09-26"
+}

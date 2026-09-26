@@ -1,0 +1,12 @@
+{
+  "protocol": "raydium-clmm",
+  "programId": "CAMMCzo5YL8w4VFF8KVHrK22GGUsp5VTaW7grrKgrWqK",
+  "accountPubkey": "JEKJVBcKG4vWhxXXKd8c4XyVNUHFSWd12Fc94JyenGF4",
+  "nftMint": "B2T1tZAdCQU56JWaAcbp6gS9qv9dkcwS9jbycAgJwhNq",
+  "owner": "kN1kEznaF5Xbd8LYuqtEFcxzWSBk5Fv6ygX6SqEGJVy",
+  "method": "getProgramAccounts with memcmp(offset 0, Anchor discriminator sha256('account:PersonalPositionState')[..8]) found a real position; PDA ['position', nftMint] under CAMM program verified to equal accountPubkey exactly; wallet found via getTokenLargestAccounts(nftMint) -> getAccountInfo(tokenAccount).owner",
+  "dataLen": 281,
+  "dataBase64": "Rm+WfuYPGXX/lPPdnixtd+ieFsybGb8N6MbD2b2TNFPcI+ZDa3IGTDIL2bpy2XEYNKdCPuhXL4adxHvNXa+JaiLouQekW9uaK4A7+f+AxAYAuMf+BwAAAAAAAAAAAAAAAHbcIGQXpAwAAAAAAAAAAABxrEXZ4ep4kEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+  "fetchedVia": "Helius getAccountInfo, mainnet-beta",
+  "fetchedDate": "2026-09-26"
+}
