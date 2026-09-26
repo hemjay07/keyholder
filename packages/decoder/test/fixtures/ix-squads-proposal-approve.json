@@ -1,0 +1,27 @@
+{
+ "signature": "hwF72CZMyRoLV7JKYXk6CgqWEQBdvBdnqreWbK7ugaEmcMP3hxhPRS9zju9y7NHFmoLfyJkFc2w2nMc8oxAX9B5",
+ "slot": 450669244,
+ "blockTime": 1790424264,
+ "programId": "SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf",
+ "data_hex": "9025a488bcd82af800",
+ "accounts": [
+  {
+   "pubkey": "7mwFp219cFKMosmqGBPN6gU727nsVum1LTzDWZQwTWLC",
+   "isSigner": false,
+   "isWritable": true
+  },
+  {
+   "pubkey": "HGUK6Yi2aGVPE9S2si6d6JNz6i6P2ZHnMBuTsDpqCM4h",
+   "isSigner": true,
+   "isWritable": true
+  },
+  {
+   "pubkey": "KmhzjZ5tkmfgSS4fJXHHHgRLyNXemerzBo2Esih5P24",
+   "isSigner": false,
+   "isWritable": true
+  }
+ ],
+ "fetched": "2026-09-26T13:57:41.158Z",
+ "fetch_method": "getTransaction(jsonParsed=false) via https://api.mainnet-beta.solana.com",
+ "location": "top-level ix 2"
+}

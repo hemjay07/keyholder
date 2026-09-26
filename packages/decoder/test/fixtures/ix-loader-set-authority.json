@@ -1,0 +1,27 @@
+{
+ "signature": "2UFiicyLeoaj3TV72bcvvnwJRxkDzUKVDfkwKv6a8ptEbckiuLELU9aXDEBmEaotLMno67ZxEamt2V4Q6rDvuMLy",
+ "slot": 429071096,
+ "blockTime": 1782496928,
+ "programId": "BPFLoaderUpgradeab1e11111111111111111111111",
+ "data_hex": "04000000",
+ "accounts": [
+  {
+   "pubkey": "AqUbmEBmL24ssH6mrkHWZnTBhckbz4oZpFSVd3WF6Lx4",
+   "isSigner": false,
+   "isWritable": true
+  },
+  {
+   "pubkey": "prpHJmuXnqdaz92tBVdwsqmqyhqPLuq5Km35a5QWco3",
+   "isSigner": true,
+   "isWritable": true
+  },
+  {
+   "pubkey": "8jj7zJgdr5bDndc7evM74FMGwzLPmd4u4QxNzFi1BMai",
+   "isSigner": false,
+   "isWritable": false
+  }
+ ],
+ "fetched": "2026-09-26T13:57:41.158Z",
+ "fetch_method": "getTransaction(jsonParsed=false) via https://api.mainnet-beta.solana.com",
+ "location": "top-level ix 0"
+}

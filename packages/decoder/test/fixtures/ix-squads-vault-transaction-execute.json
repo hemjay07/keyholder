@@ -1,0 +1,86 @@
+{
+ "signature": "PXNoHKQzg32unN2tgaTWbMvwXjfHXmY7MeXdkYqqHEPm5xQwozC1VRi9WUJNwmUv3dm9EDoEt7ZFzQYBQttCsiq",
+ "slot": 450317619,
+ "blockTime": 1790329921,
+ "programId": "SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf",
+ "data_hex": "c208a15799a419ab",
+ "accounts": [
+  {
+   "pubkey": "7qipzLR9j1JcvdxE1XJEFgvoyFmgBpgw5hMdHBMPcJtM",
+   "isSigner": false,
+   "isWritable": false
+  },
+  {
+   "pubkey": "6SGHjQLkxVM2Hyv6VGY12rQMYYgg41S4fMeuC1y7qqKp",
+   "isSigner": false,
+   "isWritable": true
+  },
+  {
+   "pubkey": "DNBBgBFnCixcjxLzxxK1pm6xWumRWTRvCLmdij4Rytr",
+   "isSigner": false,
+   "isWritable": false
+  },
+  {
+   "pubkey": "7CZffT9hnZtCz1paZiP6pb7GgsFLAN9rAejxuk2MBoKc",
+   "isSigner": true,
+   "isWritable": true
+  },
+  {
+   "pubkey": "8jj7zJgdr5bDndc7evM74FMGwzLPmd4u4QxNzFi1BMai",
+   "isSigner": false,
+   "isWritable": true
+  },
+  {
+   "pubkey": "4NqHvLPD6ePtxQESNitwfNhTWYrmhBRZNqWRshVULnVY",
+   "isSigner": false,
+   "isWritable": true
+  },
+  {
+   "pubkey": "rdemKHu2ueeKkhwmM2GfJFaqD3zsrj7s3oGMN3dQMJT",
+   "isSigner": false,
+   "isWritable": false
+  },
+  {
+   "pubkey": "3TvsXpJBndWoG48zoU5HrqYnc5FmDzoAU3w7wnPEXGWN",
+   "isSigner": false,
+   "isWritable": false
+  },
+  {
+   "pubkey": "11111111111111111111111111111111",
+   "isSigner": false,
+   "isWritable": false
+  }
+ ],
+ "innerInstructions": [
+  {
+   "programId": "rdemKHu2ueeKkhwmM2GfJFaqD3zsrj7s3oGMN3dQMJT",
+   "data_hex": "8232f80b403b43c90cc280bff0557af53c107ad6578b4cab719a5a1d3d968a76d2095901cb39db7b",
+   "accounts": [
+    "3TvsXpJBndWoG48zoU5HrqYnc5FmDzoAU3w7wnPEXGWN",
+    "4NqHvLPD6ePtxQESNitwfNhTWYrmhBRZNqWRshVULnVY",
+    "8jj7zJgdr5bDndc7evM74FMGwzLPmd4u4QxNzFi1BMai",
+    "11111111111111111111111111111111"
+   ]
+  },
+  {
+   "programId": "11111111111111111111111111111111",
+   "data_hex": "00000000a8d92800000000008f010000000000000cb6e6b3c58260346eca03eb4aaaa7c5468deb2e3dc898fd6f69eaf5eb500e1c",
+   "accounts": [
+    "8jj7zJgdr5bDndc7evM74FMGwzLPmd4u4QxNzFi1BMai",
+    "4NqHvLPD6ePtxQESNitwfNhTWYrmhBRZNqWRshVULnVY"
+   ]
+  },
+  {
+   "programId": "rdemKHu2ueeKkhwmM2GfJFaqD3zsrj7s3oGMN3dQMJT",
+   "data_hex": "70c9b50ddde0fe590072f3d40808f717817370532d94adce6b95bb853f868f2d03cf794e52736437a304",
+   "accounts": [
+    "3TvsXpJBndWoG48zoU5HrqYnc5FmDzoAU3w7wnPEXGWN",
+    "4NqHvLPD6ePtxQESNitwfNhTWYrmhBRZNqWRshVULnVY",
+    "8jj7zJgdr5bDndc7evM74FMGwzLPmd4u4QxNzFi1BMai"
+   ]
+  }
+ ],
+ "fetched": "2026-09-26T13:57:41.158Z",
+ "fetch_method": "getTransaction(jsonParsed=false) via https://api.mainnet-beta.solana.com",
+ "location": "top-level ix 2"
+}

@@ -1,0 +1,47 @@
+{
+ "signature": "9LBj2hJ1jFozNvCSY4J5maGELH9JyJ3NcVgnbD8XMipuhiXBJV6tqZaLq2tbatzJEU9rdaT7kC7ndLfMsGvS4oQ",
+ "slot": 450318409,
+ "blockTime": 1790330132,
+ "programId": "SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf",
+ "data_hex": "30fa4ea8d0e2dad30000220100000101040872f3d40808f717817370532d94adce6b95bb853f868f2d03cf794e52736437a3249d6324e732ea8d8cb3c73f766450ad31b7529a6c06a2389d6cb4dc694cc443322adc83e4779a09aaf5ece62c2dced6e179023b933a1827986a3a8a581dbdf3cf72963359a6a9fa57d8c6eb65c990449fc3a8ff8afba37d76c78cd3832380157ea447c27e60fe1b0793fe258e9ee0f5ea8ff2dfcc3d1a376f804c892e8b8a000cb6e6b3c58260346eca03eb4aaaa7c5468deb2e3dc898fd6f69eaf5eb500e1cce010e60afedb22717bd63192f54145a3f965a33bb82d2c7029eb2ce1e20826406ddf6e1d765a193d9cbe146ceeb79ac1cb485ed5f5b37913a8cf5857eff00a9010507010206030004071100522144832000cd5f40420f0000000000020001410000006466785f726564656d7074696f6e3a20636f6e7472696275746520313030303030302055534454206261736520756e69747320617320536565644361706974616c",
+ "accounts": [
+  {
+   "pubkey": "7qipzLR9j1JcvdxE1XJEFgvoyFmgBpgw5hMdHBMPcJtM",
+   "isSigner": false,
+   "isWritable": true
+  },
+  {
+   "pubkey": "4HBdupnqXrMJqquWSoBMbS3NuLRvWLXYrv1AdDB5ZcrF",
+   "isSigner": false,
+   "isWritable": true
+  },
+  {
+   "pubkey": "prpHJmuXnqdaz92tBVdwsqmqyhqPLuq5Km35a5QWco3",
+   "isSigner": true,
+   "isWritable": true
+  },
+  {
+   "pubkey": "prpHJmuXnqdaz92tBVdwsqmqyhqPLuq5Km35a5QWco3",
+   "isSigner": true,
+   "isWritable": true
+  },
+  {
+   "pubkey": "11111111111111111111111111111111",
+   "isSigner": false,
+   "isWritable": false
+  }
+ ],
+ "innerInstructions": [
+  {
+   "programId": "11111111111111111111111111111111",
+   "data_hex": "00000000e83a28000000000087010000000000000681c4ce47e22368b8b1555ec887af092efc7efbb66ca3f52fbf68d4ac9cb7a8",
+   "accounts": [
+    "prpHJmuXnqdaz92tBVdwsqmqyhqPLuq5Km35a5QWco3",
+    "4HBdupnqXrMJqquWSoBMbS3NuLRvWLXYrv1AdDB5ZcrF"
+   ]
+  }
+ ],
+ "fetched": "2026-09-26T13:57:41.158Z",
+ "fetch_method": "getTransaction(jsonParsed=false) via https://api.mainnet-beta.solana.com",
+ "location": "top-level ix 1"
+}

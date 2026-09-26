@@ -8,7 +8,8 @@
     "build": "tsc",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "fetch-fixtures": "tsx scripts/fetch-fixtures.ts"
+    "fetch-fixtures": "tsx scripts/fetch-fixtures.ts",
+    "fetch-instruction-fixtures": "tsx scripts/fetch-instruction-fixtures.ts"
   },
   "keywords": ["solana", "decoder", "squads", "loader"],
   "dependencies": {

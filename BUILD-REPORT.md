@@ -17,6 +17,10 @@ Builder: hackathon-build skill (orchestrator + implementation subagents)
 | DEV-005 | schema jobs.id | bigint identity | serial | time-box on untested API | DEGRADED | revisit when the queue is built |
 | DEV-006 | version pins | TS 5.3, Next 14, React 18, drizzle 0.30 | TS 7.0.2, Next 16.3.6, React 19.3.0, drizzle-orm 0.45.3 (npm view 2026-09-26) | plan pins stale | COSMETIC | web phase must check Next 16 APIs against arch/D-web.md |
 | DEV-007 | root vitest config | — | Vite warns ESM-in-CJS (no root "type":"module") | cosmetic | COSMETIC | none |
+| DEV-008 | decoder system-decoder (nonce) | real fixture | built from published layout; no real nonce account fetched (public RPC 403 on getProgramAccounts) | RPC limits | UNTESTED | replay needs real nonce txs from Task 2.4 to upgrade to TESTED |
+| DEV-008b | decoder loader tags 0,2,5,6,7 | real tx per tag | tags 1,3,4 tested on Drift's real slot-429,731,225 deploy; others from spec | no real tx found yet | UNTESTED | low: upgrades use tags 3/4 |
+| DEV-008c | idl-loader Program Metadata | all data sources | Direct+Json only (the only real shape found); others rejected honestly | one real account | DEGRADED | protocols with URL/External IDLs show "undecoded" |
+| DEV-009 | decoder Squads config actions | real tx per action | AddMember real-tested; other actions via the same verified enum decoder | only AddMember in real history of 7qipz… | UNTESTED | threshold/timelock actions need a real tx (devnet flip will produce one) |
 
 ## Failed Attempts & Resolutions
 | Step | Error | Attempts | Resolution |
@@ -28,6 +32,7 @@ Builder: hackathon-build skill (orchestrator + implementation subagents)
 | 1 | `source scripts/env.sh && solana --version && anchor --version && rustc --version` | agave 4.3.0, anchor 1.2.0 | solana-cli 4.3.0 (src:825efd18), anchor-cli 1.2.0, rustc 1.93.0 | ✅ |
 | 1 | `pnpm -r typecheck` (orchestrator) | 6 packages pass | all Done | ✅ |
 | 1 | `pnpm test` (orchestrator) | decoder + db tests | Test Files 2 passed, Tests 22 passed | ✅ |
+| 2 | decoder `vitest run` + tsc (orchestrator) | 2.1/2.2 decoders on real txs | Test Files 7 passed, Tests 78 passed; tsc clean | ✅ |
 
 ## Known Risks (for debug)
 - Local Postgres 15 must be restarted after reboot: `export PATH=/opt/homebrew/opt/postgresql@15/bin:$PATH; pg_ctl -D .pgdata -o "-p 5433 -k /tmp" -l pglog.txt start`.

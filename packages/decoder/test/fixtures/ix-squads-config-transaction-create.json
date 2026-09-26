@@ -1,0 +1,47 @@
+{
+ "signature": "hwF72CZMyRoLV7JKYXk6CgqWEQBdvBdnqreWbK7ugaEmcMP3hxhPRS9zju9y7NHFmoLfyJkFc2w2nMc8oxAX9B5",
+ "slot": 450669244,
+ "blockTime": 1790424264,
+ "programId": "SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf",
+ "data_hex": "9bec57e4894b512701000000007726cfa087d974f87a99f95daa5d515e738e02cb19003f91a32dc8559accffcb0200",
+ "accounts": [
+  {
+   "pubkey": "7mwFp219cFKMosmqGBPN6gU727nsVum1LTzDWZQwTWLC",
+   "isSigner": false,
+   "isWritable": true
+  },
+  {
+   "pubkey": "CgEYqyjZ95uXA42ZuGdhK1UfYNRbrwG7TZMhQnfPjGxn",
+   "isSigner": false,
+   "isWritable": true
+  },
+  {
+   "pubkey": "HGUK6Yi2aGVPE9S2si6d6JNz6i6P2ZHnMBuTsDpqCM4h",
+   "isSigner": true,
+   "isWritable": true
+  },
+  {
+   "pubkey": "57BNA1mAq3NRw2vWdWxHjy6f3LoESwA7CnAQaPSEPV5T",
+   "isSigner": true,
+   "isWritable": true
+  },
+  {
+   "pubkey": "11111111111111111111111111111111",
+   "isSigner": false,
+   "isWritable": false
+  }
+ ],
+ "innerInstructions": [
+  {
+   "programId": "11111111111111111111111111111111",
+   "data_hex": "00000000682513000000000077000000000000000681c4ce47e22368b8b1555ec887af092efc7efbb66ca3f52fbf68d4ac9cb7a8",
+   "accounts": [
+    "57BNA1mAq3NRw2vWdWxHjy6f3LoESwA7CnAQaPSEPV5T",
+    "CgEYqyjZ95uXA42ZuGdhK1UfYNRbrwG7TZMhQnfPjGxn"
+   ]
+  }
+ ],
+ "fetched": "2026-09-26T13:57:41.158Z",
+ "fetch_method": "getTransaction(jsonParsed=false) via https://api.mainnet-beta.solana.com",
+ "location": "top-level ix 0"
+}
