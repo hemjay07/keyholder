@@ -30,7 +30,7 @@ Keyholder ingests every control-plane event across all major Solana protocols in
 ### Thesis Framing
 <!-- [CRITIQUE E-2] Competitive positioning statement: control plane visibility gap -->
 
-**The control plane is observable on-chain but invisible to dependents.** Drift published nonce staging, threshold lowering, and timelock removal on-chain nine days before the drain; nobody told the protocols depending on Drift or their users. Keyholder makes every step visible, scores it, and lets any program refuse.
+**The control plane is observable on-chain but invisible to dependents.** Before Drift's drain, durable nonces were staged (23 March) and the council's threshold was lowered from 3-of-5 to 2-of-5 with no timelock, all on-chain; nobody told the protocols depending on Drift or their users. Keyholder shows every step with its transaction, alerts on it, and lets any program refuse.
 
 The product's winning argument (Thesis §1, WINNER-BRIEF.md): Solana money is lost through the control plane (keys, thresholds, timelocks, admin actions), every step is on-chain, and nobody shows it. Keyholder counts the keys for every protocol, rings when they drop, and lets any program refuse. Nothing in the PRD matches Thesis §6 drift tripwires: it is not a generic security dashboard, risk score, upgrade monitor, chart-heavy, or dark-crypto-template. Launch console aesthetic (instrument panel with physical key slots and signal lamp) is the visual framing.
 

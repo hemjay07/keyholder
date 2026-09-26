@@ -246,3 +246,9 @@ None at this time. All concerns from concerns.md are addressed in PLAN.md day-by
 - [ ] Add demand proof section to PRD §7.4 before day 1 commit (E-1)
 - [ ] Update PRD §1.4 with competitive positioning statement (E-2)
 
+
+
+## Coordinator corrections (2026-09-26)
+- E-2 wording corrected in PRD §1.4: the lead time to the drain is not yet measured ("nine days" removed); Drift ran with zero timelock (no "timelock removal"); "scores it" removed (Thesis field 6 tripwire).
+- References to a "Release Check winner" are wrong: Release Check was an internal candidate that was rejected, not a hackathon winner.
+- Lines 79/103 ("9 days") are unmeasured until the replay runs.
