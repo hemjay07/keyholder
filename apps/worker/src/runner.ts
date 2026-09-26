@@ -187,6 +187,11 @@ if (require.main === module) {
       logger.info(`received ${signal}, shutting down`);
       void handle.stop().then(() => process.exit(0));
     };
+    // A transient RPC failure (a free-tier 429) in any un-awaited promise must
+    // not take the whole worker down; it crashed the runner on 2026-09-26.
+    process.on('unhandledRejection', (reason) => {
+      logger.error('unhandled rejection (worker kept running)', { error: reason instanceof Error ? reason.message : String(reason) });
+    });
     process.on('SIGTERM', () => shutdown('SIGTERM'));
     process.on('SIGINT', () => shutdown('SIGINT'));
   })().catch((err) => {

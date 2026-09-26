@@ -354,11 +354,22 @@ async function decodeOneInstruction(
   };
 }
 
+/**
+ * Event kinds that can change who controls a program: upgrades and authority
+ * moves, and multisig config changes or executions (an execution can carry a
+ * config change). Proposal votes, buffer writes and undecoded account touches
+ * cannot, and re-reading live state for them spent the free RPC quota (a 429
+ * crashed the runner on 2026-09-26).
+ */
+export function isControlRelevant(kind: string): boolean {
+  return /^(upgrade|set_authority|close)$|config|execute|multisig_|threshold|time_lock|member/.test(kind);
+}
+
 export interface DecodeStageResult {
   rawTxProcessed: number;
   eventsInserted: number;
   failed: number;
-  /** Distinct protocol ids that got at least one new event this batch — the runner uses this to know which protocols to re-run state/risk for. */
+  /** Distinct protocol ids that got at least one new control-relevant event this batch (see isControlRelevant); the runner re-reads state only for these. */
   protocolIdsTouched: string[];
 }
 
@@ -418,10 +429,10 @@ export async function runDecodeStage(opts: DecodeStageOptions): Promise<DecodeSt
           .insert(events)
           .values(toInsert)
           .onConflictDoNothing({ target: events.event_uid })
-          .returning({ id: events.id, protocol_id: events.protocol_id });
+          .returning({ id: events.id, protocol_id: events.protocol_id, kind: events.kind });
         eventsInserted += inserted.length;
         for (const row of inserted) {
-          if (row.protocol_id) protocolIdsTouched.add(row.protocol_id);
+          if (row.protocol_id && isControlRelevant(row.kind)) protocolIdsTouched.add(row.protocol_id);
         }
       }
       decodedSignatures.push(row.signature);
