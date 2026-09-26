@@ -1,0 +1,167 @@
+[
+  {
+    "step": 1,
+    "signature": "3CJybpdPwLoQ4rs1cGoAKcSQ3nqNvCcMytmS7rYYZBwXP7SFMWkPT2vRZ6iRCJHXpTk9J9muUyxciTvNu6EF7Nnh",
+    "slot": 403762585,
+    "blockTime": 1772298552,
+    "blockTimeIso": "2026-03-02T17:09:12Z",
+    "program": "SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf / dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH",
+    "instruction": "VaultTransactionExecute -> UpdateSpotMarketMarginWeights",
+    "accounts": ["multisig 61ApQqLoWVfTuzua9c22SWMj78RGv77x6Z2kzcJVGNjP", "nonce-member-1 45cZ5Fj97Va5Abipr6NN8Zf1BqZqWneSek1hU5cQRvhw"],
+    "note": "Routine pre-incident governance on the ORIGINAL Security Council multisig (61ApQqLo...). Baseline for 'business as usual' before the compromise."
+  },
+  {
+    "step": 2,
+    "signature": "24UgR18TsvVR... / 9zJGhyotEes1Ni5i4Qki5zUjApWhvWcr5rxJfiLhVGtnDuVzn9eFy1XzvtrZaj8r2SZYRmMQGftGQvDS1o2pPwE",
+    "slot": 408886958,
+    "blockTime": 1774921595,
+    "blockTimeIso": "2026-03-26T01:46:35Z",
+    "program": "SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf / dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH",
+    "instruction": "VaultTransactionExecute -> UpdateAdmin (E1admb4tW2Y6bpbnpE5jYZsc4TE2NArG7siZqDsafnob -> AiLGdNitMjv8n5HMS7HAdV2kaeJZZFd4jdfn5xp1PKrW)",
+    "accounts": ["multisig 61ApQqLoWVfTuzua9c22SWMj78RGv77x6Z2kzcJVGNjP", "Drift State 5zpq7DvB6UdFFvpmBPspGPNfUGoBRRCE2HHg5u3gxcsN", "old admin E1admb4tW2Y6bpbnpE5jYZsc4TE2NArG7siZqDsafnob", "new admin AiLGdNitMjv8n5HMS7HAdV2kaeJZZFd4jdfn5xp1PKrW"],
+    "note": "THE ADMIN HIJACK. Real, on-chain UpdateAdmin routed through the ORIGINAL multisig, 2-of-5 threshold, zero time-lock, decoded log verbatim. New admin AiLGdNitMjv8n5HMS7HAdV2kaeJZZFd4jdfn5xp1PKrW is a plain System-owned wallet (not itself a PDA/multisig)."
+  },
+  {
+    "step": 3,
+    "signature": "3pBptza7q... (first failed instr, illustrative; see 3pBptza7qzRq and 4Dd35DSwyp7z in nonce-member-1/transactions)",
+    "slot": 408888841,
+    "blockTime": 1774922129,
+    "blockTimeIso": "2026-03-26T01:58:49Z",
+    "program": "dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH",
+    "instruction": "VaultTransactionExecute -> UpdatePerpMarketStatus FAILS (ConstraintHasOne: AiLGdNit.../E1admb4...)",
+    "accounts": ["multisig 61ApQqLoWVfTuzua9c22SWMj78RGv77x6Z2kzcJVGNjP"],
+    "note": "Confirms the old admin's signer set was immediately locked out of admin actions through the ORIGINAL multisig once the hijack took effect."
+  },
+  {
+    "step": 4,
+    "signature": "3aKRMvoc6JRoZCMrefvioMdZMrCJXJ1hFj3ENvGHhDbJW2AFGWBkLZpWp1A2twbLoLjWivRQACWKbJEJRF8xoQrr",
+    "slot": 408806252,
+    "blockTime": 1774889911,
+    "blockTimeIso": "2026-03-25T16:58:31Z",
+    "program": "SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf",
+    "instruction": "MultisigCreateV2 (genesis of a SECOND Squads multisig)",
+    "accounts": ["new multisig 2LW6PSEjp81xSEttWwXDB6Etb1eKdhYPbFEojYbyhx88", "create_key HZscqyenkixVP2kDEnV3ZdLzHJp93V6Kk42GcFr8JvDG"],
+    "note": "NEW FINDING (this session). A second, purpose-built Squads v4 multisig was created ~9 hours BEFORE the admin hijack (step 2). Decoded live state: threshold 2/5, time_lock 0, config_authority A1eC8n2tQBHPodn8sZHsc5XWciunZy9B1VgmcHgK1xhP (same config_authority as the ORIGINAL multisig 61ApQqLo...), 5 members including AiLGdNitMjv8n5HMS7HAdV2kaeJZZFd4jdfn5xp1PKrW (the attacker admin from step 2) alongside two accounts also seen as members of the original multisig's activity (39JyWrdbVdRqjzw9yyEjxNtTbTKcTPLdtdCgbz7C7Aq8) and a newly created account (6UJbu9ut5VAsFYQFgPEa5xPfoyF5bB5oi4EknFPvu924). Total lifetime: 30 signatures / 9 vault transactions, ALL fetched and decoded this session (complete, not partial)."
+  },
+  {
+    "step": 5,
+    "signature": "3PGYeDjeMQfiir73Ei3dK7cavabbWZNJeY1xg1x27S6maNenwEBWysK5HfUSBu9t2sYrtZmw25oBrZNGRNcaLHRw",
+    "slot": 408900854,
+    "blockTime": 1774925823,
+    "blockTimeIso": "2026-03-26T03:17:03Z",
+    "program": "dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH",
+    "instruction": "VaultTransactionExecute -> UpdatePerpMarketStatus: Initialized -> Active",
+    "accounts": ["multisig 2LW6PSEjp81xSEttWwXDB6Etb1eKdhYPbFEojYbyhx88", "perp market index 85"],
+    "note": "NEW FINDING. First of three real, on-chain config changes to perp market 85 via the new multisig, routed through the still-hijacked admin. Real log: 'perp market 85'."
+  },
+  {
+    "step": 6,
+    "signature": "5UqRQwNcHjdEi7yCFraprHy7bBfmAKdSU9yySfDwsUrmKzjsgc963Sg392r5Bdb7VA9iTN4jvs4yJ53yaehswz8W",
+    "slot": 409018978,
+    "blockTime": 1774966926,
+    "blockTimeIso": "2026-03-26T16:05:26Z",
+    "program": "dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH",
+    "instruction": "VaultTransactionExecute -> UpdatePerpMarketContractTier: B -> C",
+    "accounts": ["multisig 2LW6PSEjp81xSEttWwXDB6Etb1eKdhYPbFEojYbyhx88", "perp market index 85"],
+    "note": "NEW FINDING. Lowers the market's risk/contract tier (more permissive), real decoded log: 'perp_market.contract_tier: B -> C'."
+  },
+  {
+    "step": 7,
+    "signature": "3CGTNWMRUmh31jjQ4xbz7xMtkm6UAggArbeQkP3ADCbCfmSnPNv5xHEghSCcHnbBdUgDnTGbLmABPFgT7MLZHeQw",
+    "slot": 409019380,
+    "blockTime": 1774967289,
+    "blockTimeIso": "2026-03-26T16:08:09Z",
+    "program": "dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH",
+    "instruction": "VaultTransactionExecute -> UpdatePerpMarketMaxOpenInterest: 55302393487590142 -> 100000000000000000",
+    "accounts": ["multisig 2LW6PSEjp81xSEttWwXDB6Etb1eKdhYPbFEojYbyhx88", "perp market index 85"],
+    "note": "NEW FINDING. This is the real on-chain instance of rekt.news's 'maximal permissive parameters' claim for the malicious market: max open interest nearly doubled to 1e17. This is a CONFIG UPDATE of an existing market (index 85), not a literal InitializePerpMarket call -- the malicious-market claim is corroborated as a repurposing/loosening of market 85's risk parameters, not a brand-new market creation instruction."
+  },
+  {
+    "step": 8,
+    "signature": "2Ca74VizKGBkmvfJ2K8dk19RTtU1ikZjXYJNb3ihphEcGzq2iKKCEn1iRECtdWjrcKyCSAQ5PKrpTHMbmHBNxwKw",
+    "slot": 410042220,
+    "blockTime": 1775024179,
+    "blockTimeIso": "2026-03-31T07:16:19Z",
+    "program": "dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH / TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+    "instruction": "VaultTransactionExecute -> AdminWithdrawFromInsuranceFundVault -> SPL Token Transfer",
+    "accounts": ["multisig 2LW6PSEjp81xSEttWwXDB6Etb1eKdhYPbFEojYbyhx88"],
+    "note": "NEW FINDING, not in the original session's timeline. A real, direct admin-channel withdrawal from Drift's insurance fund vault, five days before the reported April 1 mass drain. Anchor event payload present in 'Program data' log but not decoded to an exact token amount this session (would need Drift's IF-withdraw event IDL)."
+  },
+  {
+    "step": 9,
+    "signature": "4gf5tESUrNmivHoDSW3daJA2LnaivJCaQGVuxLbhiNU8xFsjkCCB6qZ5B4qEoRCgVjT4KLFVfNdvACyZhF4Tp5rA",
+    "slot": 410042354,
+    "blockTime": 1775024231,
+    "blockTimeIso": "2026-03-31T07:17:11Z",
+    "program": "SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf",
+    "instruction": "VaultTransactionAccountsClose x5",
+    "accounts": ["multisig 2LW6PSEjp81xSEttWwXDB6Etb1eKdhYPbFEojYbyhx88"],
+    "note": "NEW FINDING. Housekeeping/cleanup on the new multisig immediately after the first insurance-fund withdrawal."
+  },
+  {
+    "step": 10,
+    "signature": "63TmENaWr32y... (executor wallet, first activity)",
+    "slot": 410114133,
+    "blockTime": 1775055960,
+    "blockTimeIso": "2026-03-31T15:06:00Z",
+    "program": "Token-2022",
+    "instruction": "InitializeAccount3 + TransferChecked",
+    "accounts": ["executor wallet 55udxhScWQxM7cC9d1NPBQoEDC7B38w81EWKPZsM7ZCW"],
+    "note": "From the original session's timeline (unchanged): executor wallet sets up token accounts ~1 day before the reported drain."
+  },
+  {
+    "step": 11,
+    "signature": "BkUZ8nss1api3b4sFUDZAU81k2R2Y6SB4J77GF14UPrCeYGfRFaay1StPpwGTL86d1kJArWhiNi8xdAfR1AeVb6",
+    "slot": 410343846,
+    "blockTime": 1775052256,
+    "blockTimeIso": "2026-04-01T16:04:16Z",
+    "program": "dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH / TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+    "instruction": "VaultTransactionExecute -> AdminWithdrawFromInsuranceFundVault -> SPL Token Transfer",
+    "accounts": ["multisig 2LW6PSEjp81xSEttWwXDB6Etb1eKdhYPbFEojYbyhx88"],
+    "note": "NEW FINDING. Second, larger insurance-fund withdrawal via the admin channel, ~2 minutes before the user-facing withdrawal burst (step 13) and 63 seconds before the admin key was rotated away from the attacker (step 12)."
+  },
+  {
+    "step": 12,
+    "signature": "4BKBmAJn6TdsENij7CsVbyMVLJU1tX27nfrMM1zgKv1bs2KJy6Am2NqdA3nJm4g9C6eC64UAf5sNs974ygB9RsN1",
+    "slot": 410344009,
+    "blockTime": 1775052319,
+    "blockTimeIso": "2026-04-01T16:05:19Z",
+    "program": "dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH / SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf",
+    "instruction": "ProposalApprove -> VaultTransactionExecute -> UpdateAdmin (AiLGdNitMjv8n5HMS7HAdV2kaeJZZFd4jdfn5xp1PKrW -> H7PiGqqUaanBovwKgEtreJbKmQe6dbq6VTrw6guy7ZgL)",
+    "accounts": ["multisig 2LW6PSEjp81xSEttWwXDB6Etb1eKdhYPbFEojYbyhx88", "durable nonce EmYEryTDXtuVCxrjNqJXbiwr4hfiJajd4g5P58vvhQnc"],
+    "note": "NEW FINDING. This is the RECOVERY transaction: admin rotated from the attacker's wallet to H7PiGqqU..., today's live Drift admin (confirmed independently in the original session). It happened via the SAME new multisig the attacker had been operating through, and used a durable nonce (EmYEryTD...) as its blockhash -- see data/fixtures-for-decoder/. Because market 85's config was not yet reverted at this instant, this recovery does not by itself explain why the user-facing drain (step 13) could still proceed."
+  },
+  {
+    "step": 13,
+    "signature": "2jCAE2Sak.../5cvVsx81C.../2vQE6pDmH.../2wVxUZDtY.../5euXKK4Ra.../zbw2s1ZwbRhW... (six pairs)",
+    "slot": 410344135,
+    "blockTime": 1775052364,
+    "blockTimeIso": "2026-04-01T16:06:09Z-16:06:19Z",
+    "program": "dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH",
+    "instruction": "Withdraw + Transfer, x6 in 10 seconds",
+    "accounts": ["executor wallet 55udxhScWQxM7cC9d1NPBQoEDC7B38w81EWKPZsM7ZCW"],
+    "note": "From the original session's timeline (unchanged): the clearest on-chain fingerprint of the 128-second/18-vault drain claim -- one wallet's slice of it. This uses ordinary user-facing Withdraw, not an admin instruction, consistent with the drain being enabled by market 85's now-loosened parameters (steps 5-7) rather than requiring ongoing admin control."
+  },
+  {
+    "step": 14,
+    "signature": "3Di5ivHisWbP.../2t1j6rtUWyWx.../5vXNpxTfMw1Q...",
+    "slot": 410355647,
+    "blockTime": 1775056897,
+    "blockTimeIso": "2026-04-01T17:21Z-17:55Z",
+    "program": "Jupiter aggregator",
+    "instruction": "SharedAccountsRouteV2 / Swap / Swap2",
+    "accounts": ["executor wallet 55udxhScWQxM7cC9d1NPBQoEDC7B38w81EWKPZsM7ZCW"],
+    "note": "From the original session's timeline (unchanged): laundering leg via Jupiter swaps within 1-2 hours of the drain."
+  },
+  {
+    "step": 15,
+    "signature": "4U4BaAu986dgSLG2pUBqmVd4ZJT8EMG3U5VN4gY76yg5DUeK2TeWujwCy85VvkexNjxysvYut4S6oxwKJvt3FCt3 (and 3 more)",
+    "slot": 410380361,
+    "blockTime": 1775065381,
+    "blockTimeIso": "2026-04-01T20:03:01Z-20:06:09Z",
+    "program": "SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf",
+    "instruction": "ConfigTransactionCreate x4, ALL FAIL: AnchorError NotSupportedForControlled (0x1784)",
+    "accounts": ["multisig 2LW6PSEjp81xSEttWwXDB6Etb1eKdhYPbFEojYbyhx88", "config_authority A1eC8n2tQBHPodn8sZHsc5XWciunZy9B1VgmcHgK1xhP"],
+    "note": "NEW FINDING, and the key negative result closing DEV-021's original open question. Both multisigs (61ApQqLo... and 2LW6PSE...) are Squads 'controlled' multisigs: since a non-null config_authority is set, ConfigTransactionCreate (the member-proposal path for changing threshold/members/time_lock) is REJECTED on-chain -- config changes on a controlled multisig can only be made by config_authority calling a direct instruction. config_authority A1eC8n2tQBHPodn8sZHsc5XWciunZy9B1VgmcHgK1xhP has ZERO signatures anywhere in the March 1 - April 3 2026 window (confirmed via full getSignaturesForAddress paging on that address). CONCLUSION: the rekt.news 3-of-5 -> 2-of-5 threshold reduction, if it happened at all, is NOT evidenced on either multisig's own transaction history in this window; both multisigs already show threshold=2/5 as their live/only-observed state throughout the entire captured period. This is reported as an open gap, not asserted as false -- the change may predate March 2026, or govern a still-different account not yet identified."
+  }
+]

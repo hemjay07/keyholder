@@ -1,0 +1,21 @@
+{
+  "address": "EmYEryTDXtuVCxrjNqJXbiwr4hfiJajd4g5P58vvhQnc",
+  "owner": "11111111111111111111111111111111",
+  "dataLen": 80,
+  "lamports": 1447680,
+  "dataHex": "0100000001000000514904cfb15f2da263ca0317e5c0c61a0bcd7eef654e71ade4452ae36c002a8d4d32bbe17247b123345d3a719715ce39c2eca080c983c0eb556cd070b984ccca8813000000000000",
+  "note": "Real live durable nonce account fetched via getAccountInfo, Helius RPC, 2026-09-26. version=1, state=1 (Initialized). authorized/nonce pubkeys and fee-calculator embedded in dataHex per system_program::nonce::state::Versions::Current(Data) layout.",
+  "createdBy": {
+    "signature": "59yWWZjnLeu3WP6Dqj4NW21NWHhdNwkToCbypdNrAHKmhk5C37ZDUygbuDVPSN2XqYzME88k6Ss3sBKGdrmrWrX3",
+    "slot": 409999217,
+    "blockTime": 1774924549,
+    "blockTimeIso": "2026-03-31T02:35:49.000Z"
+  },
+  "advancedBy": {
+    "signature": "4BKBmAJn6TdsENij7CsVbyMVLJU1tX27nfrMM1zgKv1bs2KJy6Am2NqdA3nJm4g9C6eC64UAf5sNs974ygB9RsN1",
+    "slot": 410344009,
+    "blockTime": 1775052319,
+    "blockTimeIso": "2026-04-01T16:05:19.000Z",
+    "note": "This is the same transaction that executed the incident-recovery UpdateAdmin (AiLGdNit... -> H7PiGqqU...) on Drift State via Squads multisig 2LW6PSEjp81xSEttWwXDB6Etb1eKdhYPbFEojYbyhx88 -- i.e. this durable nonce was used as the blockhash mechanism for the real recovery transaction."
+  }
+}

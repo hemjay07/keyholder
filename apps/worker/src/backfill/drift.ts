@@ -12,11 +12,43 @@
 
 import { Connection, PublicKey, type ConfirmedSignatureInfo } from '@solana/web3.js';
 import { mkdirSync, writeFileSync, existsSync, readFileSync } from 'fs';
+import os from 'os';
 import path from 'path';
 
-const RPC_URL = process.env.DRIFT_BACKFILL_RPC ?? 'https://api.mainnet-beta.solana.com';
+/**
+ * RPC selector: prefer Helius (keyed via ~/.helius_key, read from disk only,
+ * never logged/echoed) when the key file exists, else fall back to public
+ * RPC. The API key is never printed, and any error thrown from this module
+ * has the key substring redacted before it propagates.
+ */
+function resolveRpcUrl(): { url: string; usingHelius: boolean } {
+  const override = process.env.DRIFT_BACKFILL_RPC;
+  if (override) return { url: override, usingHelius: override.includes('helius') };
+  const keyPath = path.join(os.homedir(), '.helius_key');
+  if (existsSync(keyPath)) {
+    const key = readFileSync(keyPath, 'utf8').trim();
+    if (key.length > 0) {
+      return { url: `https://mainnet.helius-rpc.com/?api-key=${key}`, usingHelius: true };
+    }
+  }
+  return { url: 'https://api.mainnet-beta.solana.com', usingHelius: false };
+}
+
+/** Strip any occurrence of the Helius key from a string before it's ever printed. */
+function redact(message: string): string {
+  const keyPath = path.join(os.homedir(), '.helius_key');
+  if (!existsSync(keyPath)) return message;
+  const key = readFileSync(keyPath, 'utf8').trim();
+  if (!key) return message;
+  return message.split(key).join('<redacted>');
+}
+
+const { url: RPC_URL, usingHelius: USING_HELIUS } = resolveRpcUrl();
 const PAGE_LIMIT = 1000;
-const SLEEP_MS = 800;
+// Helius free tier is ~10 rps; public RPC is far more restrictive under
+// concurrent load (see DEV-020). Stay <=8 rps on Helius, keep the more
+// conservative 800ms spacing on public RPC.
+const SLEEP_MS = USING_HELIUS ? 130 : 800;
 const MAX_PAGE_RETRIES = 5;
 
 export interface BackfillTarget {
@@ -91,7 +123,7 @@ export async function backfillAddress(
         batch = await connection.getSignaturesForAddress(pk, { limit: PAGE_LIMIT, before });
         break;
       } catch (e) {
-        result.errors.push(`page ${page} attempt ${attempt}: ${(e as Error).message}`);
+        result.errors.push(redact(`page ${page} attempt ${attempt}: ${(e as Error).message}`));
         await sleep(SLEEP_MS * (attempt + 2));
       }
     }
@@ -152,7 +184,7 @@ export async function backfillAddress(
       } catch (e) {
         result.txFetchFailed++;
         result.failedTxSignatures.push(sigInfo.signature);
-        result.errors.push(`getTransaction ${sigInfo.signature}: ${(e as Error).message}`);
+        result.errors.push(redact(`getTransaction ${sigInfo.signature}: ${(e as Error).message}`));
       }
       await sleep(SLEEP_MS);
     }
@@ -162,6 +194,7 @@ export async function backfillAddress(
 }
 
 export async function main() {
+  console.log(`RPC mode: ${USING_HELIUS ? 'helius (keyed)' : 'public'}`);
   const connection = new Connection(RPC_URL, 'confirmed');
   const outDir = path.resolve(process.cwd(), '../../data/drift-2026');
 
@@ -201,6 +234,6 @@ export async function main() {
 }
 
 main().catch((e) => {
-  console.error(e);
+  console.error(redact(String((e as Error)?.stack ?? e)));
   process.exit(1);
 });

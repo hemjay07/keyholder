@@ -25,6 +25,8 @@ Builder: hackathon-build skill (orchestrator + implementation subagents)
 | DEV-021 | Task 2.4 | council multisig address | Squads v4 program invocation seen; the multisig account itself not yet resolved | budget | UNTESTED | replay frame 3 needs it |
 | DEV-022 | Task 2.4 | malicious market creation + withdraw-guard change | not located (CVT mint March window unread) | budget | UNTESTED | replay frames 4 labelled "not retrieved" until found |
 | DEV-023 | backfill script | — | unbounded 429 retry fixed to 5 attempts | bug | COSMETIC | none |
+| DEV-024 | Task 2.4 | insurance-fund withdraw amounts | event amounts not decoded (needs Drift event IDL) | budget | UNTESTED | replay shows the calls without amounts until decoded |
+| DEV-025/026 | Task 2.4 nonces | four nonce accounts | one real nonce account + Initialize/Advance txs found (EmYEryTD…); the other three labels are nonce authorities | session-1 mislabel | COSMETIC | real nonce fixtures now in packages/decoder/test/fixtures (DEV-008 can be closed in Phase 3) |
 
 ## Failed Attempts & Resolutions
 | Step | Error | Attempts | Resolution |
@@ -39,8 +41,10 @@ Builder: hackathon-build skill (orchestrator + implementation subagents)
 | 2 | decoder `vitest run` + tsc (orchestrator) | 2.1/2.2 decoders on real txs | Test Files 7 passed, Tests 78 passed; tsc clean | ✅ |
 | 2 | orchestrator getTransaction 9zJGhyot…pPwE (mainnet) | the reported admin hijack | slot 408,886,958, 2026-03-26T01:46:35Z, err None, logs: VaultTransactionExecute → UpdateAdmin, admin E1admb4t…fnob -> AiLGdNit…PKrW | ✅ |
 | 2 | Task 2.4 verdict | FULL/PARTIAL/KILL | PARTIAL (research/drift-2026-history.md) | ✅ |
+| 2 | orchestrator getAccountInfo 61ApQqLo…GNjP (Helius) | council multisig state | owner Squads v4, disc OK, threshold 2, members 5, time_lock 0, config_authority A1eC8n2t…1xhP | ✅ |
 
 ## Known Risks (for debug)
+- COPY/TRUTH: TEN.md sentence 5 and PRD/demo say the council went "from 3 of 5 to 2 of 5"; on-chain, the council 61ApQqLo…GNjP is 2 of 5 / 0 s and NO threshold change was found in 2026-03-01..04-03 (49 txs decoded). The 3→2 claim is from rekt.news only. Before any surface ships: either find the change on chain (earlier window) or reword to "a 2-of-5 council with no timelock (rekt reports it was lowered from 3)".
 - Local Postgres 15 must be restarted after reboot: `export PATH=/opt/homebrew/opt/postgresql@15/bin:$PATH; pg_ctl -D .pgdata -o "-p 5433 -k /tmp" -l pglog.txt start`.
 - Native build scripts ignored by pnpm (bufferutil, esbuild, utf-8-validate); JS fallbacks in use.
 
