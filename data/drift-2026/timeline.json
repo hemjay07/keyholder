@@ -15,7 +15,7 @@
   },
   {
     "step": 2,
-    "signature": "24UgR18TsvVR... / 9zJGhyotEes1Ni5i4Qki5zUjApWhvWcr5rxJfiLhVGtnDuVzn9eFy1XzvtrZaj8r2SZYRmMQGftGQvDS1o2pPwE",
+    "signature": "9zJGhyotEes1Ni5i4Qki5zUjApWhvWcr5rxJfiLhVGtnDuVzn9eFy1XzvtrZaj8r2SZYRmMQGftGQvDS1o2pPwE",
     "slot": 408886958,
     "blockTime": 1774489595,
     "blockTimeIso": "2026-03-26T01:46:35Z",
@@ -27,11 +27,12 @@
       "old admin E1admb4tW2Y6bpbnpE5jYZsc4TE2NArG7siZqDsafnob",
       "new admin AiLGdNitMjv8n5HMS7HAdV2kaeJZZFd4jdfn5xp1PKrW"
     ],
-    "note": "THE ADMIN HIJACK. Real, on-chain UpdateAdmin routed through the ORIGINAL multisig, 2-of-5 threshold, zero time-lock, decoded log verbatim. New admin AiLGdNitMjv8n5HMS7HAdV2kaeJZZFd4jdfn5xp1PKrW is a plain System-owned wallet (not itself a PDA/multisig)."
+    "note": "THE ADMIN HIJACK. Real, on-chain UpdateAdmin routed through the ORIGINAL multisig, 2-of-5 threshold, zero time-lock, decoded log verbatim. New admin AiLGdNitMjv8n5HMS7HAdV2kaeJZZFd4jdfn5xp1PKrW is a plain System-owned wallet (not itself a PDA/multisig).",
+    "signatureNote": "24UgR18TsvVR... / 9zJGhyotEes1Ni5i4Qki5zUjApWhvWcr5rxJfiLhVGtnDuVzn9eFy1XzvtrZaj8r2SZYRmMQGftGQvDS1o2pPwE"
   },
   {
     "step": 3,
-    "signature": "3pBptza7q... (first failed instr, illustrative; see 3pBptza7qzRq and 4Dd35DSwyp7z in nonce-member-1/transactions)",
+    "signature": "3pBptza7qzRqH4pDKtmHtf43QiaZWBi21oDsa1xZ522vikwpAT55P7R44BF5S28owwFsLFszK295MMQDNFCk4tya",
     "slot": 408888841,
     "blockTime": 1774490329,
     "blockTimeIso": "2026-03-26T01:58:49Z",
@@ -40,7 +41,8 @@
     "accounts": [
       "multisig 61ApQqLoWVfTuzua9c22SWMj78RGv77x6Z2kzcJVGNjP"
     ],
-    "note": "Confirms the old admin's signer set was immediately locked out of admin actions through the ORIGINAL multisig once the hijack took effect."
+    "note": "Confirms the old admin's signer set was immediately locked out of admin actions through the ORIGINAL multisig once the hijack took effect.",
+    "signatureNote": "3pBptza7q... (first failed instr, illustrative; see 3pBptza7qzRq and 4Dd35DSwyp7z in nonce-member-1/transactions)"
   },
   {
     "step": 4,
@@ -126,7 +128,7 @@
   },
   {
     "step": 10,
-    "signature": "63TmENaWr32y... (executor wallet, first activity)",
+    "signature": "63TmENaWr32ysuV3HS6K4wPMZJRhrKHnvj2AxNai8CQKPbYH4BTujFU1nu4Hjjj9yuTyZXu8dvDEeoQyjBLBLMUW",
     "slot": 410114133,
     "blockTime": 1774969560,
     "blockTimeIso": "2026-03-31T15:06:00Z",
@@ -135,7 +137,8 @@
     "accounts": [
       "executor wallet 55udxhScWQxM7cC9d1NPBQoEDC7B38w81EWKPZsM7ZCW"
     ],
-    "note": "From the original session's timeline (unchanged): executor wallet sets up token accounts ~1 day before the reported drain."
+    "note": "From the original session's timeline (unchanged): executor wallet sets up token accounts ~1 day before the reported drain.",
+    "signatureNote": "63TmENaWr32y... (executor wallet, first activity)"
   },
   {
     "step": 11,
@@ -166,7 +169,7 @@
   },
   {
     "step": 13,
-    "signature": "2jCAE2Sak.../5cvVsx81C.../2vQE6pDmH.../2wVxUZDtY.../5euXKK4Ra.../zbw2s1ZwbRhW... (six pairs)",
+    "signature": "2jCAE2SakEHtaZJbSCftpTGV4RKCYsN7Bd2cwu6nL4sumtmvX9PZrxLFYL4wK5vKBtfyu8S1EN2cTw2vcQPB4QfM",
     "slot": 410344135,
     "blockTime": 1775059569,
     "blockTimeIso": "2026-04-01T16:06:09Z",
@@ -175,7 +178,8 @@
     "accounts": [
       "executor wallet 55udxhScWQxM7cC9d1NPBQoEDC7B38w81EWKPZsM7ZCW"
     ],
-    "note": "From the original session's timeline (unchanged): the clearest on-chain fingerprint of the 128-second/18-vault drain claim -- one wallet's slice of it. This uses ordinary user-facing Withdraw, not an admin instruction, consistent with the drain being enabled by market 85's now-loosened parameters (steps 5-7) rather than requiring ongoing admin control."
+    "note": "From the original session's timeline (unchanged): the clearest on-chain fingerprint of the 128-second/18-vault drain claim -- one wallet's slice of it. This uses ordinary user-facing Withdraw, not an admin instruction, consistent with the drain being enabled by market 85's now-loosened parameters (steps 5-7) rather than requiring ongoing admin control.",
+    "signatureNote": "2jCAE2Sak.../5cvVsx81C.../2vQE6pDmH.../2wVxUZDtY.../5euXKK4Ra.../zbw2s1ZwbRhW... (six pairs)"
   },
   {
     "step": 14,
@@ -192,7 +196,7 @@
   },
   {
     "step": 15,
-    "signature": "4U4BaAu986dgSLG2pUBqmVd4ZJT8EMG3U5VN4gY76yg5DUeK2TeWujwCy85VvkexNjxysvYut4S6oxwKJvt3FCt3 (and 3 more)",
+    "signature": "4U4BaAu986dgSLG2pUBqmVd4ZJT8EMG3U5VN4gY76yg5DUeK2TeWujwCy85VvkexNjxysvYut4S6oxwKJvt3FCt3",
     "slot": 410380361,
     "blockTime": 1775073781,
     "blockTimeIso": "2026-04-01T20:03:01Z",
@@ -202,6 +206,7 @@
       "multisig 2LW6PSEjp81xSEttWwXDB6Etb1eKdhYPbFEojYbyhx88",
       "config_authority A1eC8n2tQBHPodn8sZHsc5XWciunZy9B1VgmcHgK1xhP"
     ],
-    "note": "NEW FINDING, and the key negative result closing DEV-021's original open question. Both multisigs (61ApQqLo... and 2LW6PSE...) are Squads 'controlled' multisigs: since a non-null config_authority is set, ConfigTransactionCreate (the member-proposal path for changing threshold/members/time_lock) is REJECTED on-chain -- config changes on a controlled multisig can only be made by config_authority calling a direct instruction. config_authority A1eC8n2tQBHPodn8sZHsc5XWciunZy9B1VgmcHgK1xhP has ZERO signatures anywhere in the March 1 - April 3 2026 window (confirmed via full getSignaturesForAddress paging on that address). CONCLUSION: the rekt.news 3-of-5 -> 2-of-5 threshold reduction, if it happened at all, is NOT evidenced on either multisig's own transaction history in this window; both multisigs already show threshold=2/5 as their live/only-observed state throughout the entire captured period. This is reported as an open gap, not asserted as false -- the change may predate March 2026, or govern a still-different account not yet identified."
+    "note": "NEW FINDING, and the key negative result closing DEV-021's original open question. Both multisigs (61ApQqLo... and 2LW6PSE...) are Squads 'controlled' multisigs: since a non-null config_authority is set, ConfigTransactionCreate (the member-proposal path for changing threshold/members/time_lock) is REJECTED on-chain -- config changes on a controlled multisig can only be made by config_authority calling a direct instruction. config_authority A1eC8n2tQBHPodn8sZHsc5XWciunZy9B1VgmcHgK1xhP has ZERO signatures anywhere in the March 1 - April 3 2026 window (confirmed via full getSignaturesForAddress paging on that address). CONCLUSION: the rekt.news 3-of-5 -> 2-of-5 threshold reduction, if it happened at all, is NOT evidenced on either multisig's own transaction history in this window; both multisigs already show threshold=2/5 as their live/only-observed state throughout the entire captured period. This is reported as an open gap, not asserted as false -- the change may predate March 2026, or govern a still-different account not yet identified.",
+    "signatureNote": "4U4BaAu986dgSLG2pUBqmVd4ZJT8EMG3U5VN4gY76yg5DUeK2TeWujwCy85VvkexNjxysvYut4S6oxwKJvt3FCt3 (and 3 more)"
   }
 ]

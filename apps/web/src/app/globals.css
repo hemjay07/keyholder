@@ -215,3 +215,35 @@ footer.mono { padding: 20px 40px 40px; font-size: 11px; color: var(--ink-2); bor
   table.ptable td:nth-child(4) { grid-column: 2; grid-row: 2; font-size: 12.5px; text-align: right; }
   table.ptable td:nth-child(5) { display: none; }
 }
+
+/* ---- /replay/drift ---- */
+.replay-meta { font-size: 12px; color: var(--ink-2); margin-top: 18px; }
+.span-section { padding: 8px 40px 40px; }
+.span-bar { position: relative; height: 84px; border-top: 3px solid var(--ink); border-bottom: 1px solid var(--hair); }
+.span-day { position: absolute; top: 8px; font-size: 11px; color: var(--ink-2); border-left: 1px solid var(--hair); padding-left: 6px; height: 20px; }
+.span-window { position: absolute; top: 34px; height: 30px; background: rgba(255, 90, 31, .14); border-left: 2px solid var(--signal); border-right: 2px solid var(--ink); display: flex; align-items: center; justify-content: center; }
+.span-window b { font-size: 13px; color: var(--signal-text); font-weight: 500; }
+.span-mark { position: absolute; top: 44px; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: var(--ink-2); display: inline-block; }
+.span-mark.alert { background: var(--signal); }
+.span-mark.drain { background: var(--ink); }
+.span-legend { display: flex; gap: 20px; margin-top: 10px; font-size: 11px; color: var(--ink-2); letter-spacing: .06em; text-transform: uppercase; }
+.span-legend .span-mark { position: static; margin: 0 6px 0 0; vertical-align: middle; }
+.steps-section { padding: 16px 40px 40px; }
+.steps-section h2, .citations-section h2 { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); font-weight: 400; }
+.steps { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); }
+.step { display: grid; grid-template-columns: 170px minmax(0, 1fr) auto; gap: 20px; padding: 14px 0; border-bottom: 1px solid var(--hair); align-items: baseline; }
+.step.warning { border-left: 3px solid var(--signal); padding-left: 12px; }
+.step.drain .step-says { font-weight: 500; }
+.step-time { font-size: 12px; color: var(--ink-2); }
+.step-says { margin: 0; font-size: 15px; }
+.step-alert { margin: 6px 0 0; font-size: 13px; color: var(--signal-text); }
+.step-alert span { text-transform: uppercase; letter-spacing: .08em; font-size: 11px; margin-right: 6px; }
+.step-alert.standing { color: var(--ink-2); }
+.step-sig { font-size: 12px; color: var(--ink-2); }
+
+@media (max-width: 720px) {
+  .span-section, .steps-section { padding-left: 18px; padding-right: 18px; }
+  .span-day { font-size: 9px; padding-left: 3px; }
+  .step { grid-template-columns: 1fr; gap: 4px; }
+  .step-sig { justify-self: start; }
+}
