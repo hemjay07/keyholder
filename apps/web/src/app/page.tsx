@@ -219,7 +219,7 @@ export default async function HomePage() {
           <li>Count the keys.</li>
           <li>Drift&apos;s upgrade key today: 4 of 7 keys, 3,600-second timelock, read at a named slot.</li>
           <li>Solscan says &quot;MULTISIG&quot; and stops; Keyholder follows the key to the multisig behind it.</li>
-          <li>Drift&apos;s admin council was 2 of 5 keys with no timelock (read on-chain); on 25 March 2026 the attackers created a new multisig, on 26 March they took the admin key through it, and on 31 March the first drain landed: 1.55 days after the first change Keyholder would have flagged.</li>
+          <li>Drift&apos;s admin council was 2 of 5 keys with no timelock (read on-chain); on 25 March 2026 the attackers created a new multisig, on 26 March they took the admin key through it, and on 31 March the first drain landed: 5.6 days after the first change Keyholder would have flagged.</li>
           <li>Of {resolved.length} major Solana programs, {resolved.length - noTimelock.length} have a timelock today and {noTimelock.length} do not (read {readDate}).</li>
           <li>Any program can ask Keyholder before it moves money, and be refused on-chain with the reason.</li>
           <li>Our own program is controlled by 2 of 3 keys with a 48-hour public timelock.</li>

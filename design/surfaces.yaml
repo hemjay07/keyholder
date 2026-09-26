@@ -15,7 +15,7 @@ surfaces:
     headline: "Every control change on Solana, as it lands."
   - route: /replay/drift
     name: replay
-    headline: "1.55 days of warning."
+    headline: "5.6 days of warning."
   - route: /wallet
     name: wallet
     headline: "Who can move your money?"
