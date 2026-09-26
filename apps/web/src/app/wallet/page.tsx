@@ -8,6 +8,7 @@ import { PublicKey } from "@solana/web3.js";
 import { fetchProtocols } from "@/lib/api-client";
 import { consoleDataFromFacts, timelockLabel } from "@/lib/console-data";
 import ConsoleDevice from "@/components/console/ConsoleDevice";
+import UnresolvedConsole from "@/components/console/UnresolvedConsole";
 
 export const dynamic = "force-dynamic";
 
@@ -56,7 +57,8 @@ export default async function WalletPage({ searchParams }: { searchParams: Promi
   return (
     <main className="wallet-page">
       <Link className="back-link" href="/">&larr; Keyholder</Link>
-      <section className="wallet-head">
+      <section className={wallet ? "wallet-head" : "hero wallet-idle"}>
+        <div className={wallet ? undefined : "hero-copy"}>
         <p className="kicker">Keyholder · Your wallet</p>
         <h1>Who can move your money?</h1>
         <form className="wallet-form" action="/wallet" method="get">
@@ -70,6 +72,12 @@ export default async function WalletPage({ searchParams }: { searchParams: Promi
           <p className="lede">
             Or try <Link href={`/wallet?w=${EXAMPLE_WALLET}`}>a wallet with money in Kamino, marginfi and Drift</Link>.
           </p>
+        )}
+        </div>
+        {!wallet && (
+          <div className="device-frame">
+            <UnresolvedConsole name="Your wallet" status="WAITING" note="paste an address to count the keys" />
+          </div>
         )}
       </section>
       {wallet && (

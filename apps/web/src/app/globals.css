@@ -270,3 +270,5 @@ footer.mono { padding: 20px 40px 40px; font-size: 11px; color: var(--ink-2); bor
 @media (max-width: 720px) {
   .wallet-head, .wallet-reading, .wallet-page .wallet-error { padding-left: 18px; padding-right: 18px; }
 }
+.wallet-idle .hero-copy h1 { margin-bottom: 14px; }
+.wallet-idle .cf-unresolved .cf-name span:last-child { color: var(--ink-2); }
