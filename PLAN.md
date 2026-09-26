@@ -37,6 +37,51 @@
 
 ---
 
+## Day 0: Pre-Build Documentation Validation
+
+**Purpose:** Ensure thesis alignment and competitive positioning are locked before code begins.  
+**Estimated time:** 1–2 hours
+
+### Task 0.1: Confirm Demo Script Sequencing (THESIS-2 Cross-Review)
+
+**Objective:** Validate PRD §6 demo script order matches WINNER-BRIEF.md §4 HERO FLOW after forge update.
+
+**Steps:**
+1. Open PRD.md §6 (Demo Script)
+2. Open WINNER-BRIEF.md §4 (HERO FLOW): "open Keyholder → console → change arrives → alert fires → refusal"
+3. Verify each scene maps to each step; note any gaps
+4. If all present and ordered: log [VERIFIED] in PULSE.md, proceed to Task 1.1
+5. If gaps found: adjust PRD §6 scenes to match hero flow, commit, then proceed
+
+**Commit (if changes needed):**
+```bash
+git add PRD.md PULSE.md
+git commit -m "fix: demo script sequencing per THESIS-2 hero flow alignment"
+```
+
+**Accept:** Sequence confirmed and logged before starting Phase 1
+
+---
+
+### Task 0.2: Verify Competitive Positioning Narrative (E-2 Applied)
+
+**Objective:** Confirm PRD §1.4 includes the "control plane is observable on-chain but invisible" insight.
+
+**Steps:**
+1. Open PRD.md §1.4 (Thesis Framing)
+2. Verify the opening sentence: "**The control plane is observable on-chain but invisible to dependents.**"
+3. Verify competitive reference to Solana Microscope is present
+4. Log result in PULSE.md Active Facts
+
+**Accept:** Narrative positioning is clear and defensible; proceed to Phase 1
+
+**Pre-commit status:** Already applied by critique (E-2 [AUTO]); commit reference only:
+```bash
+git log --oneline | grep "E-2\|competitive"
+```
+
+---
+
 ## Phase 1: Toolchain & Monorepo Setup (Days 1–2)
 
 **Purpose:** Install Agave/Anchor/Rust, scaffold monorepo, capture real Drift fixtures, verify byte parsers.  

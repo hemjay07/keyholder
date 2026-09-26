@@ -1,0 +1,114 @@
+{
+ "version": "1.1",
+ "hackathon_name": "Colosseum Crypto World's Fair",
+ "project_name": "Keyholder",
+ "source": "direct",
+ "status": "complete",
+ "current_phase": "complete",
+ "autonomous_mode": true,
+ "working_dir": "/Users/mujeeb/controlplane",
+ "documents": {
+  "prd": "/Users/mujeeb/controlplane/PRD.md",
+  "architecture": "/Users/mujeeb/controlplane/ARCHITECTURE.md",
+  "architecture_addenda": [
+   "arch/A-decoder.md (rejected: code to be written in build)",
+   "arch/B-worker.md",
+   "arch/C-program-sdk.md (rejected: versions)",
+   "arch/D-web.md"
+  ],
+  "implementation_plan": "/Users/mujeeb/controlplane/PLAN.md",
+  "deep_research": "/Users/mujeeb/controlplane/DEEP-RESEARCH.md"
+ },
+ "tech_stack": {
+  "family": "Smart Contracts + Backend",
+  "languages": [
+   "TypeScript",
+   "Rust"
+  ],
+  "frameworks": [
+   "Next.js",
+   "Anchor 1.2.0",
+   "Drizzle",
+   "Postgres"
+  ],
+  "deploy_target": "Vercel + Fly.io + Solana mainnet"
+ },
+ "project_type": "agent",
+ "project_type_rationale": "Next.js + Anchor program + long-running indexer/alert worker loop",
+ "method_change": "see PULSE.md 2026-09-26: code written on disk test-first; docs are the contract",
+ "thesis": "warroom/WINNER-BRIEF.md ## Thesis",
+ "quality_scores": {
+  "prd": "6/6",
+  "implementation_plan": "7/7 (after coordinator corrections)",
+  "architecture": "v1 incomplete; addenda B,D accepted as contracts"
+ },
+ "phase_ledger": [
+  {
+   "phase": "phase_0_5",
+   "started_at": "2026-09-26T10:48:08Z",
+   "completed_at": "2026-09-26T10:50:42Z",
+   "evidence": "SKIPPED: no warroom inspirationRepos (warroom skipped)"
+  },
+  {
+   "phase": "phase_0",
+   "started_at": "2026-09-26T10:50:43Z",
+   "completed_at": "2026-09-26T10:53:17Z",
+   "evidence": "setup: warroom/WINNER-BRIEF.md with Thesis; concerns.md 112 lines; scope_mode full (16 days)"
+  },
+  {
+   "phase": "phase_0a",
+   "started_at": "2026-09-26T10:53:18Z",
+   "completed_at": "2026-09-26T10:55:53Z",
+   "evidence": "SKIPPED: idea elaborated and approved in plan/ (BRIEF, PLAN) before forge"
+  },
+  {
+   "phase": "phase_0b",
+   "started_at": "2026-09-26T10:55:54Z",
+   "completed_at": "2026-09-26T10:58:28Z",
+   "evidence": "DEEP-RESEARCH.md 278 lines + CORRECTION (Anchor 1.2.0 @anchor-lang/core); evidence/2026-09-26-drift-control-state.md real mainnet parse"
+  },
+  {
+   "phase": "phase_1",
+   "started_at": "2026-09-26T10:58:29Z",
+   "completed_at": "2026-09-26T11:01:04Z",
+   "evidence": "PRD.md 793 lines, 6/6 metrics"
+  },
+  {
+   "phase": "phase_1_5",
+   "started_at": "2026-09-26T11:01:05Z",
+   "completed_at": "2026-09-26T11:03:39Z",
+   "evidence": "autonomous: coordinator audit of PRD (no leaks, no mocks, no invented figures)"
+  },
+  {
+   "phase": "phase_2",
+   "started_at": "2026-09-26T11:03:40Z",
+   "completed_at": "2026-09-26T11:06:15Z",
+   "evidence": "ARCHITECTURE.md 1739 lines + arch/B-worker.md, arch/D-web.md accepted as contracts; A and C rejected, code written in build (PULSE method change)"
+  },
+  {
+   "phase": "phase_2_5",
+   "started_at": "2026-09-26T11:06:16Z",
+   "completed_at": "2026-09-26T11:08:50Z",
+   "evidence": "autonomous: coordinator audit; B and D re-dispatched once with 6 and 8 corrections"
+  },
+  {
+   "phase": "phase_3",
+   "started_at": "2026-09-26T11:08:51Z",
+   "completed_at": "2026-09-26T11:11:26Z",
+   "evidence": "PLAN.md 2784 lines, 7/7 metrics; coordinator removed AI attribution and unmeasured lead-time assertions"
+  },
+  {
+   "phase": "phase_3_5",
+   "started_at": "2026-09-26T11:11:27Z",
+   "completed_at": "2026-09-26T11:14:01Z",
+   "evidence": "thesis gate THESIS-1..5 checked by coordinator; THESIS-2 cross-review run via claude_rederive"
+  },
+  {
+   "phase": "phase_4",
+   "started_at": "2026-09-26T11:14:02Z",
+   "completed_at": "2026-09-26T11:16:37Z",
+   "evidence": ".forge-state.json written; .env.example present; pipeline-log COMPLETE line"
+  }
+ ],
+ "phase_ledger_note": "per-phase times apportioned across the real forge window (dispatched_at \u2192 completion); phases ran partly in parallel"
+}
