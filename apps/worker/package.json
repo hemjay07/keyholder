@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "tsx src/index.ts",
+    "dev": "tsx src/ingest/index.ts",
     "build": "tsc",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",

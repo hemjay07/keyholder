@@ -44,11 +44,11 @@ const OSEC_BASE_URL = 'https://verify.osec.io/status';
 function mapStatus(res: OsecStatusResponse | null): VerifiedStatus {
   if (!res) return 'unknown';
   if (res.is_verified) return 'verified';
-  // executable_hash present but empty and on_chain_hash present with no
-  // match info -> osec has no verified build on file at all, distinct from
-  // "we verified it before and the bytes have since drifted" (which this
-  // API does not itself report; drift detection is done by this task's
-  // caller comparing successive checks, not by a single call).
+  // A build registered with OtterSec keeps its repo_url after an upgrade
+  // unverifies it ("the API detects your upgrade and unverifies your
+  // program"); a program never registered has an empty repo_url. Live
+  // 2026-09-26: Orca Whirlpool repo_url set -> drifted; Jupiter v6 empty.
+  if (res.repo_url && res.repo_url.trim() !== '') return 'drifted';
   return 'unverified';
 }
 

@@ -13,7 +13,7 @@ describe('fetchVerificationStatus', () => {
   it('happy: real live call to verify.osec.io for Drift returns a typed, non-fabricated result', async () => {
     const result = await fetchVerificationStatus(DRIFT_PROGRAM_ID);
     expect(result.error).toBeNull();
-    expect(['verified', 'unverified']).toContain(result.verifiedStatus);
+    expect(['verified', 'unverified', 'drifted']).toContain(result.verifiedStatus);
     expect(typeof result.isVerified).toBe('boolean');
     // Real field observed live 2026-09-26: on_chain_hash present.
     expect(result.onChainHash).not.toBeNull();
@@ -35,4 +35,29 @@ describe('fetchVerificationStatus', () => {
     expect(result.isVerified).toBeNull();
     expect(result.error).toContain('ECONNRESET');
   });
+
+  // Bodies captured live from verify.osec.io on 2026-09-26 (curl, no auth).
+  const bodyOf = (b: object) => (async () => new Response(JSON.stringify(b), { status: 200 })) as unknown as typeof fetch;
+
+  it('drift: registered build (repo_url set) no longer verified maps to drifted (Orca, live body)', async () => {
+    const result = await fetchVerificationStatus('whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc', { fetchImpl: bodyOf({
+      is_verified: false, message: 'On chain program not verified',
+      on_chain_hash: '46328660fd235e5666e879fdc1a3556fe62980aff504b5a2dfc8acc610154992', executable_hash: '',
+      repo_url: 'https://github.com/orca-so/whirlpools', commit: 'None', last_verified_at: null, is_frozen: false, is_closed: false,
+    }) });
+    expect(result.verifiedStatus).toBe('drifted');
+  });
+
+  it('never registered (empty repo_url) stays unverified, not drifted (Jupiter, live body)', async () => {
+    const result = await fetchVerificationStatus('JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4', { fetchImpl: bodyOf({
+      is_verified: false, message: 'On chain program not verified', on_chain_hash: '', executable_hash: '',
+      repo_url: '', commit: '', last_verified_at: null, is_frozen: false, is_closed: false,
+    }) });
+    expect(result.verifiedStatus).toBe('unverified');
+  });
+
+  it('live: Orca Whirlpool reads drifted from the real endpoint', async () => {
+    const result = await fetchVerificationStatus('whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc');
+    expect(result.verifiedStatus).toBe('drifted');
+  }, 15_000);
 });
