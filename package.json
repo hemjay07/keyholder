@@ -10,6 +10,11 @@
     "lint": "pnpm -r --if-present lint",
     "dev": "pnpm --filter ./apps/* --parallel dev"
   },
+  "dependencies": {
+    "@sqds/multisig": "^2.1.4",
+    "@solana/web3.js": "^1.99.0",
+    "@keyholder/sdk": "workspace:*"
+  },
   "devDependencies": {
     "@types/node": "^22.15.0",
     "typescript": "^7.0.2",

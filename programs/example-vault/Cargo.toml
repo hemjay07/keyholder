@@ -1,28 +1,27 @@
 [package]
-name = "keyholder"
+name = "example-vault"
 version = "0.1.0"
-description = "Keyholder: on-chain control-policy program (Derived + Attested facts, check() CPI gate)"
+description = "Example vault: CPIs keyholder::check before deposit"
 edition.workspace = true
 rust-version.workspace = true
 
 [lib]
 crate-type = ["cdylib", "lib"]
-name = "keyholder"
+name = "example_vault"
 
 [features]
 default = []
 cpi = ["no-entrypoint"]
 no-entrypoint = []
 no-log-ix-name = []
-idl-build = ["anchor-lang/idl-build"]
+idl-build = ["anchor-lang/idl-build", "keyholder/idl-build"]
 anchor-debug = []
 custom-heap = []
 custom-panic = []
 
 [dependencies]
 anchor-lang = "1.2.0"
-sha2 = "0.10"
-borsh = "1.8"
+keyholder = { path = "../keyholder", features = ["cpi"] }
 
 [dev-dependencies]
 litesvm = "0.10.0"
@@ -33,6 +32,8 @@ solana-keypair = "3.0.1"
 solana-account = "3.0.0"
 base64 = "0.22"
 serde_json = "1.0"
+sha2 = "0.10"
+borsh = "1.8"
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(target_os, values("solana"))'] }

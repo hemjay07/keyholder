@@ -6,6 +6,7 @@ Builder: hackathon-build skill (orchestrator + implementation subagents)
 | Phase | Steps | Status | Notes |
 |---|---|---|---|
 | Phase 1 | 1.1–1.4 | complete | toolchain, monorepo, Postgres, byte parsers on real fixtures |
+| Phase 5 | 5.1–5.x | built + tested; devnet deploy BLOCKED (faucet) | program, example vault, SDK, flip script |
 | Phase 4 | 4.1–4.4 | complete except positions (4b) | REST v1, SSE via LISTEN/NOTIFY, SIWS, webhooks HMAC, x402 402 live, badge |
 | Phase 3 | 3.1–3.3 | complete | control state for 15 programs (13 resolved with evidence), risk engine (10 rules, correction path), Drift replay 16 real frames + gap frames |
 | Phase 2 | 2.1–2.4 | complete (2.4 PARTIAL) | decoders on real txs; live ingest (WS+poller); Drift timeline from real txs |
@@ -43,6 +44,11 @@ Builder: hackathon-build skill (orchestrator + implementation subagents)
 | DEV-051 | web badge | contract gold/dark palette (leaked) | rebuilt on design/TOKENS.css; timelock shown as "1 h / 1 d / none / no timelock feature"; widened to 300 px after a read collision | leaked palette in plan docs (removed at source: plan/PRD.md §6.6, arch/D-web.md, arch/B-worker.md) | COSMETIC (fixed) | none |
 | DEV-052 | positions | CLMM, Whirlpool, Kamino, marginfi, Drift users | SPL + Token-2022 real; the five protocol resolvers are stubs returning [] | layouts not yet sourced | UNTESTED | "find your wallet" incomplete until Phase 4b |
 | DEV-053 | web env | .env in app folder | apps/web/.env symlink → root .env (gitignored) | Next reads only app-local .env | COSMETIC | none |
+| DEV-060 | program check CU | ≤ 8,000 CU | 21,183 CU measured (7-member Squads read); regression ceiling 50,000 | not yet optimised (zero-copy is the named fallback) | DEGRADED | integrators pay ~21k CU per check |
+| DEV-061 | program tests | anchor default sBPF v3 | tests run on --arch v1 build (litesvm 0.10 cannot load v3); deploy uses v3 | tooling gap | DEGRADED | none on-chain |
+| DEV-062 | attester lowering | quorum-gated | caller-supplied lower_authorized flag (v1); quorum is v2 in ONCHAIN.md | scope | DEGRADED | single attester key must be protected |
+| DEV-063 | devnet deploy + flip | deployed, flip run | BLOCKED: devnet faucet refused for 50 min; program ids fixed (keyholder 3FX57MQm…R8F, example_vault 4dj7Nu6j…MNY); deployer Ahfy8W15…U8X unfunded | faucet | UNTESTED | founder funds the deployer from faucet.solana.com |
+| DEV-064 | build artefacts | — | programs/keyholder/target was committed by the rejected design-stage agent; untracked + gitignored now | hygiene | COSMETIC | none |
 | DEV-054 | positions Phase 4b | five stubbed resolvers (Kamino Obligation, marginfi MarginfiAccount, Drift User, Raydium CLMM PersonalPositionState, Orca Whirlpool Position) | all five real: discriminators + owner/authority offsets sourced from each protocol's own repo via `gh api` (Kamino-Finance/klend@a087609, 0dotxyz/marginfi-v2@35b5c66 — mrgnlabs/marginfi-v2 now redirects here, velocity-exchange/protocol-v2@13e8e9b — drift-labs/protocol-v2 now redirects here, raydium-io/raydium-clmm@ed7c84a, orca-so/whirlpools@408c945), each offset independently verified against a live mainnet account fetched via Helius before being hard-coded; 15 new unit tests (5 real-fixture happy paths + 10 edge/error) all passing; live end-to-end run against 3 real wallets resolved their known positions correctly | none — fully sourced and verified | TESTED (unit + live) | marginfi and Drift skip the `dataSize` prefilter (Helius accepted discriminator-only memcmp; dataSize added as a second, redundant filter once measured live) — matches the task's "if Helius rejects a query shape, try the alternative" instruction; Raydium/Orca resolvers cost one getAccountInfo per NFT the wallet holds (bounded by wallet's own NFT count, not a program-wide scan) |
 
 ## Failed Attempts & Resolutions
@@ -67,6 +73,7 @@ Builder: hackathon-build skill (orchestrator + implementation subagents)
 | 3 | replay run (agent, live DB) | measured lead time | first transition alert → first drain: 134,268 s (1.55 d) | ✅ |
 | 4 | orchestrator typecheck + vitest | all pass | 6/6; Test Files 23 passed, Tests 225 passed | ✅ |
 | 4 | orchestrator curl badge ×3 + read PNG | correct facts, tokens | drift 4 of 7 / 1 h; jupiter-v6 4 of 7 / no timelock feature; kamino 5 of 10 / 1 d verified; no collisions after widening | ✅ |
+| 5 | orchestrator cargo test --workspace | all pass | 18 parser (real bytes) + 9 LiteSVM + 1 CPI = 28 passed | ✅ |
 
 ## Known Risks (for debug)
 - COPY/TRUTH: TEN.md sentence 5 and PRD/demo say the council went "from 3 of 5 to 2 of 5"; on-chain, the council 61ApQqLo…GNjP is 2 of 5 / 0 s and NO threshold change was found in 2026-03-01..04-03 (49 txs decoded). The 3→2 claim is from rekt.news only. Before any surface ships: either find the change on chain (earlier window) or reword to "a 2-of-5 council with no timelock (rekt reports it was lowered from 3)".

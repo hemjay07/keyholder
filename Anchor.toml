@@ -1,0 +1,24 @@
+[toolchain]
+anchor_version = "1.2.0"
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.localnet]
+keyholder = "3FX57MQmZH8dkpFV5nbA1XWyV6WDeinu7ennZhvx8R8F"
+example_vault = "4dj7Nu6j5sb9dzL1NRk4RRFJFXxSdt6bQzfboqZsXMNY"
+
+[programs.devnet]
+keyholder = "3FX57MQmZH8dkpFV5nbA1XWyV6WDeinu7ennZhvx8R8F"
+example_vault = "4dj7Nu6j5sb9dzL1NRk4RRFJFXxSdt6bQzfboqZsXMNY"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "devnet"
+wallet = "~/.config/keyholder/devnet-deployer.json"
+
+[scripts]
+test = "echo 'use cargo test for program tests'"
