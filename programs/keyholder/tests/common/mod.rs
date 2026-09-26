@@ -92,11 +92,11 @@ impl Harness {
         let payer = payer_kp();
         svm.airdrop(&payer.pubkey(), 10_000_000_000).unwrap();
 
-        let so_path = format!("{}/../../target/deploy/keyholder.so", env!("CARGO_MANIFEST_DIR"));
+        let so_path = format!("{}/../../target/test-sbf/keyholder.so", env!("CARGO_MANIFEST_DIR"));
         svm.add_program_from_file(keyholder::ID, &so_path)
             .unwrap_or_else(|e| panic!("load keyholder.so from {so_path}: {e:?}"));
 
-        let vault_so = format!("{}/../../target/deploy/example_vault.so", env!("CARGO_MANIFEST_DIR"));
+        let vault_so = format!("{}/../../target/test-sbf/example_vault.so", env!("CARGO_MANIFEST_DIR"));
         if std::path::Path::new(&vault_so).exists() {
             svm.add_program_from_file(example_vault_id(), &vault_so).unwrap();
         }

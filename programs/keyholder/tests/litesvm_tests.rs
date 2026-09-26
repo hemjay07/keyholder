@@ -1,7 +1,7 @@
 //! LiteSVM integration tests. Real byte fixtures: Drift's live Squads v4
 //! multisig (4-of-7, 3600s timelock) and Drift's Security Council multisig
 //! (2-of-5, 0s timelock, the weakened state per ONCHAIN.md/PROGRESS.md
-//! evidence). Every test loads `target/deploy/keyholder.so`, so `anchor
+//! evidence). Every test loads `target/test-sbf/keyholder.so` (built by scripts/test-programs.sh), so `anchor
 //! build` must run first.
 
 mod common;

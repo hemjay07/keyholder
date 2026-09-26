@@ -56,9 +56,9 @@ fn setup() -> Setup {
     let payer = Keypair::new();
     svm.airdrop(&payer.pubkey(), 10_000_000_000).unwrap();
 
-    let kh_so = format!("{}/../../target/deploy/keyholder.so", env!("CARGO_MANIFEST_DIR"));
+    let kh_so = format!("{}/../../target/test-sbf/keyholder.so", env!("CARGO_MANIFEST_DIR"));
     svm.add_program_from_file(keyholder::ID, &kh_so).unwrap();
-    let ev_so = format!("{}/../../target/deploy/example_vault.so", env!("CARGO_MANIFEST_DIR"));
+    let ev_so = format!("{}/../../target/test-sbf/example_vault.so", env!("CARGO_MANIFEST_DIR"));
     svm.add_program_from_file(example_vault::ID, &ev_so).unwrap();
 
     let target_program = Pubkey::from_str("dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH").unwrap();
