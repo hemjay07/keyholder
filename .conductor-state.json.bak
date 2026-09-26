@@ -54,14 +54,14 @@
         "completed_at": "2026-09-26T11:17:07Z"
       },
       "critique": {
-        "status": "pending",
-        "dispatched_at": null,
-        "completed_at": null
+        "status": "complete",
+        "dispatched_at": "2026-09-26T11:17:18Z",
+        "completed_at": "2026-09-26T11:23:17Z"
       },
       "url_preverify": {
-        "status": "pending",
+        "status": "complete",
         "dispatched_at": null,
-        "completed_at": null
+        "completed_at": "2026-09-26T11:26:10Z"
       },
       "build": {
         "status": "pending",
@@ -140,9 +140,24 @@
       "answered": true,
       "answer": "Keyholder (control plane); founder 'go ahead' 2026-09-26",
       "at": "2026-09-26T10:47:42Z"
+    },
+    "post_forge_credentials": {
+      "answered": true,
+      "answer": "just-in-time: days 1-3 on public RPC + local Postgres; Telegram bot, Neon, Fly, Vercel, Triton/Helius requested day before day 4; X API + Resend before day 9",
+      "at": "2026-09-26T11:25:43Z"
     }
   },
-  "confirmed_urls": {},
+  "confirmed_urls": {
+    "solana_mainnet_rpc": "https://api.mainnet-beta.solana.com (200, getSlot 450660594)",
+    "solana_devnet_rpc": "https://api.devnet.solana.com (200)",
+    "ottersec_verify": "https://verify.osec.io/status/<id> (200; shape: is_verified,message,on_chain_hash,executable_hash,repo_url,commit,last_verified_at,is_frozen,is_closed)",
+    "x402_facilitator_payai": "https://facilitator.payai.network/supported (200)",
+    "telegram_api": "https://api.telegram.org (302, needs bot token)",
+    "x_api": "https://api.x.com/2/tweets (401 unauthenticated, as expected)",
+    "resend_api": "https://api.resend.com (200)",
+    "anchor_npm": "@anchor-lang/core on npm (200)",
+    "agave_installer": "https://release.anza.xyz/stable/install (200)"
+  },
   "dispatch_context": {
     "skill": "hackathon-forge",
     "working_dir": "/Users/mujeeb/controlplane",

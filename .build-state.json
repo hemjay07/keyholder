@@ -1,0 +1,3 @@
+{"project":"Keyholder","currentPhase":"phase-1","currentStep":"1.1","status":"in-progress","autonomous_mode":true,
+"expected_phases":["day-0","phase-1","phase-2","phase-3","phase-4","phase-5","phase-6"],
+"completedSteps":["day-0: thesis-2 AGREE and E-2 wording verified by coordinator 2026-09-26"],"fileGroups":{},"deviations":[],"phaseExecutors":{},"contractAddresses":{},"env":{},"devPort":3000,"depsVerified":false,"phase_ledger":[],"timestamp":"2026-09-26T13:07:49Z"}

@@ -91,3 +91,9 @@
 #### For Next Skill
 - build: execute PLAN.md Phase 1 starting day 1 (2026-09-27); Day 0 pre-build validation is prerequisite (demo sequencing + E-2 narrative confirmation)
 - build: Demand proof (E-1) not applied; if user provides X quotes + protocol interest, add to PRD §7.4 before or during Phase 1
+
+## Cross-Review
+
+```json
+{"reviewer":"claude","phase":"positioning","verdict":"AGREE","findings":[{"claim_id":"positioning","question":"Given the competitor landscape and the project's differentiation, is the market positioning: crowded, similar, differentiated, or unique? Answer with exactly one of: crowded|similar|differentiated|unique.","lead_answer":"differentiated","reviewer_answer":"differentiated","reviewer_reasoning":"The research brief names several adjacent tools that each cover part of the problem. Solana Foundation's Microscope (self-hosted, watches one program and one Squads multisig per deployment, no verification, diff or shared feed) is described as 'the closest thing to a collision'. The others are Sec3's free nonce and multisig monitor, which serves a protocol's own team; the pre-deploy CLIs UpgradeGuard and solana-upgrade-guard; Phantom, which only warns during transaction simulation; and RugCheck, which covers tokens only. Blowfish is defunct. So the space is not empty, which rules out 'unique', even though PRD.md line 455 says there are 'no known competitors'. None of these tools offers a shared, cross-program feed of control-state and upgrade changes, with verification and diffs, aimed at the protocols and users that depend on a program. Keyholder's clear gap and distinct angle make it differentiated rather than crowded or similar.","match":true,"resolution_note":"Weak-positive convergence; not proof."}],"resolved":false}
+```

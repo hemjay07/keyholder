@@ -1,0 +1,19 @@
+{
+  "name": "@keyholder/sdk",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@solana/web3.js": "^1.99.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.2"
+  }
+}

@@ -1,0 +1,14 @@
+design/shots/
+design/.dirty
+design/.proof-tries
+design/.serve.log
+design/specimen-*.png
+
+# monorepo
+node_modules/
+dist/
+*.tsbuildinfo
+.env
+.env.local
+.pgdata/
+pglog.txt

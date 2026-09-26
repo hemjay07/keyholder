@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790429077983,
+      "tag": "20260926132437_motionless_obadiah_stane",
+      "breakpoints": true
+    }
+  ]
+}

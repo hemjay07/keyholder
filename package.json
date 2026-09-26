@@ -1,0 +1,19 @@
+{
+  "name": "keyholder",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "pnpm -r --if-present build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "lint": "pnpm -r --if-present lint",
+    "dev": "pnpm --filter ./apps/* --parallel dev"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "typescript": "^7.0.2",
+    "tsx": "^4.23.15",
+    "vitest": "^5.0.2"
+  }
+}
