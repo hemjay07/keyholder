@@ -1,0 +1,194 @@
+/* Shipped :root must match design/TOKENS.css exactly (drift.mjs diffs it). Edit tokens
+   there first, then here. */
+:root {
+  --bg: #E6E2D9;
+  --panel: #F4F1EA;
+  --ink: #1B1A17;
+  --ink-2: #5A564E;
+  --signal: #FF5A1F;
+  --signal-text: #A32F06;
+  --verified: #1F6B4A;
+  --hair: rgba(27,26,23,.14);
+
+  --ground: rgb(230, 226, 217);
+  --ink-3: rgb(163, 47, 6);
+  --signal-control-weakened: #FF5A1F;
+  --signal-verified-on: #1F6B4A;
+  --hairline: rgba(27, 26, 23, 0.14);
+  --radius: 50px;
+  --font-display: var(--font-geist), "Geist", sans-serif;
+  --font-body: var(--font-geist-mono), "Geist Mono", monospace;
+  --weight-body: 400;
+  --display-1280: 46.08px;
+  --display-390: 30px;
+  --ease-1: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --d-tick: 90ms;
+  --d-element: 240ms;
+  --d-data: 320ms;
+  --d-count: 1400ms;
+  --cap: 1600ms;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 16px/1.5 var(--font-geist), "Geist", sans-serif;
+}
+
+a { color: inherit; }
+
+.mono { font-family: var(--font-geist-mono), "Geist Mono", monospace; }
+
+/* ---- status strip ---- */
+.strip {
+  display: flex;
+  gap: 22px;
+  flex-wrap: wrap;
+  padding: 12px 40px;
+  border-bottom: 1px solid var(--hair);
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.strip b { color: var(--ink); }
+.strip .weak { color: var(--signal-text); }
+.strip-error { padding: 12px 40px; border-bottom: 1px solid var(--hair); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--signal-text); }
+
+/* ---- hero ---- */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(0,1.35fr);
+  gap: 36px;
+  padding: 48px 40px 40px;
+  align-items: center;
+}
+.hero-copy h1 {
+  font: 400 clamp(30px,3.6vw,52px)/1.08 var(--font-geist), "Geist", sans-serif;
+  margin: 0 0 14px;
+  letter-spacing: -.01em;
+  animation: kh-rise var(--d-element) var(--ease-1) both;
+}
+.kicker { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--signal-text); margin: 0 0 14px; }
+.lede-tape { font-size: 14px; text-transform: uppercase; letter-spacing: .08em; color: var(--ink); margin: 0 0 18px; }
+.lede { font-size: 16px; line-height: 1.6; color: var(--ink-2); max-width: 46ch; margin: 0 0 26px; }
+.cta { display: flex; gap: 12px; flex-wrap: wrap; }
+.cta a { display: inline-block; padding: 12px 20px; border: 1px solid var(--ink); font-size: 13px; letter-spacing: .04em; text-decoration: none; background: transparent; transition: background var(--d-tick) var(--ease-1), color var(--d-tick) var(--ease-1); }
+.cta a.primary { background: var(--ink); color: var(--panel); }
+.cta a:hover { background: var(--ink); color: var(--panel); }
+
+.device-frame {
+  position: relative;
+  background: #0d0c0a;
+  border-radius: 6px;
+  overflow: hidden;
+  aspect-ratio: 16/11;
+  box-shadow: 0 30px 60px -30px rgba(27,26,23,.35);
+}
+.console-frame, .console-canvas { width: 100%; height: 100%; }
+
+/* ---- console static fallback ---- */
+.console-fallback {
+  width: 100%;
+  height: 100%;
+  background: #EFE7D6;
+  color: var(--ink);
+  font-family: var(--font-geist-mono), "Geist Mono", monospace;
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+}
+.cf-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 12px; }
+.cf-name { font-size: 13px; letter-spacing: .08em; }
+.cf-label { color: var(--ink-2); letter-spacing: .12em; font-size: 10px; width: 44px; flex: none; }
+.cf-slots { display: flex; gap: 6px; flex: 1; }
+.cf-slot { width: 14px; height: 14px; border-radius: 50%; border: 1px solid var(--ink-2); background: transparent; }
+.cf-slot.on { background: var(--ink); border-color: var(--ink); }
+.cf-value { text-align: right; }
+.cf-weak { color: var(--signal-text); }
+.cf-nominal { color: var(--verified); }
+.cf-dim { color: var(--ink-2); }
+.cf-readout { background: #26221A; color: #EAE5D7; padding: 4px 8px; border-radius: 3px; font-size: 11px; flex: 1; margin-left: 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cf-keys, .cf-time { flex-wrap: nowrap; }
+
+/* ---- rails ---- */
+.rails { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-top: 3px solid var(--ink); border-bottom: 1px solid var(--hair); margin: 0 40px; }
+.rail { padding: 22px 24px; border-right: 1px solid var(--hair); }
+.rail:last-child { border-right: 0; }
+.rail h2 { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-2); margin: 0 0 14px; }
+.rail-empty { color: var(--ink-2); font-size: 13px; }
+.row { display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--hair); font-size: 13.5px; }
+.row:last-child { border-bottom: 0; }
+.row .who { color: var(--ink); }
+.row .meta { color: var(--ink-2); font-size: 12px; }
+.row.weak .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--signal); margin-right: 8px; }
+.row a.evlink { color: var(--ink-2); font-size: 11px; text-decoration: underline; margin-left: 8px; }
+
+/* ---- protocols table ---- */
+.protocols-section { padding: 48px 40px 30px; }
+.protocols-section h2 { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-2); margin: 0 0 6px; }
+.protocols-section .finding { font-size: 15px; color: var(--ink); margin: 0 0 20px; max-width: 60ch; }
+.protocols-section .finding b { color: var(--signal-text); }
+table.ptable { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+table.ptable caption { text-align: left; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-2); padding-bottom: 8px; }
+table.ptable th { text-align: left; font-weight: 400; color: var(--ink-2); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; border-bottom: 1px solid var(--ink); padding: 0 12px 8px 0; }
+table.ptable td { border-bottom: 1px solid var(--hair); padding: 10px 12px 10px 0; font-variant-numeric: tabular-nums; }
+table.ptable tr.pt-weak td:first-child { border-left: 3px solid var(--signal); padding-left: 9px; }
+table.ptable a.pt-name { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--hair); }
+table.ptable a.pt-name:hover { border-bottom-color: var(--ink); }
+.lamp { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+.lamp.on { background: var(--verified); }
+.lamp.off { background: var(--ink-2); opacity: .4; }
+.pt-timelock.none { color: var(--signal-text); }
+.pt-evlink { font-size: 11px; color: var(--ink-2); text-decoration: underline; }
+
+/* ---- what ships / ten ---- */
+.ten { padding: 40px 40px 70px; max-width: 840px; }
+.ten h2 { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-2); margin: 0 0 20px; }
+.ten ol { margin: 0; padding: 0 0 0 22px; }
+.ten li { margin-bottom: 12px; font-size: 14.5px; line-height: 1.6; }
+.ten .catch { margin-top: 26px; color: var(--ink-2); font-size: 13px; }
+footer.mono { padding: 20px 40px 40px; font-size: 11px; color: var(--ink-2); border-top: 1px solid var(--hair); }
+
+/* ---- protocol page ---- */
+.protocol-hero { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.35fr); gap: 36px; padding: 40px 40px 30px; align-items: center; }
+.protocol-hero h1 { font: 400 clamp(26px,3.4vw,42px)/1.1 var(--font-geist), "Geist", sans-serif; margin: 0 0 10px; }
+.protocol-meta { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; color: var(--ink-2); margin: 0 0 18px; }
+.unresolved-panel { background: var(--panel); border: 1px solid var(--hair); padding: 24px; font-size: 14px; color: var(--ink); }
+.unresolved-panel b { color: var(--signal-text); }
+.programs-section, .changelog-section, .badge-section, .citations-section { padding: 30px 40px; border-top: 1px solid var(--hair); }
+.programs-section h2, .changelog-section h2, .badge-section h2, .citations-section h2 { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-2); margin: 0 0 16px; }
+.program-row { display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--hair); font-size: 13.5px; }
+.program-row:last-child { border-bottom: 0; }
+.program-row .addr { font-family: var(--font-geist-mono), monospace; font-size: 12px; color: var(--ink-2); }
+.changelog-row { display: flex; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--hair); font-size: 13.5px; align-items: baseline; }
+.changelog-row:last-child { border-bottom: 0; }
+.changelog-row .cl-date { color: var(--ink-2); font-size: 11px; width: 100px; flex: none; font-family: var(--font-geist-mono), monospace; }
+.changelog-row .cl-sev { width: 20px; flex: none; font-family: var(--font-geist-mono), monospace; }
+.badge-embed { background: var(--panel); border: 1px solid var(--hair); padding: 16px; font-family: var(--font-geist-mono), monospace; font-size: 12.5px; overflow-x: auto; }
+.citations-section ul { margin: 0; padding-left: 20px; font-size: 13px; color: var(--ink-2); }
+.back-link { display: inline-block; padding: 12px 40px 0; font-size: 12px; color: var(--ink-2); text-decoration: none; }
+.back-link:hover { color: var(--ink); }
+
+@keyframes kh-rise { from { transform: translateY(10px); opacity: 1; } to { transform: none; } }
+
+@media (max-width: 720px) {
+  .strip { padding: 10px 18px; gap: 8px 16px; }
+  .hero, .protocol-hero { grid-template-columns: 1fr; padding: 24px 18px; }
+  .device-frame { aspect-ratio: 4/5; }
+  .rails { grid-template-columns: 1fr; margin: 0 18px; }
+  .rail { border-right: 0; border-bottom: 1px solid var(--hair); }
+  .protocols-section, .ten, .programs-section, .changelog-section, .badge-section, .citations-section { padding-left: 18px; padding-right: 18px; }
+  footer.mono, .back-link { padding-left: 18px; padding-right: 18px; }
+  table.ptable { display: block; overflow-x: auto; }
+  .row { flex-direction: column; gap: 4px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-copy h1, .cta a { animation: none !important; transition: none !important; }
+}

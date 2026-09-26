@@ -1,12 +1,21 @@
 // File: apps/web/src/app/layout.tsx
-// Minimal root layout. Phase 4 scope is the API layer; page UI is out of
-// scope for this phase (SURFACE kit owns presentation — see design/CONTEXT.md).
+// Root layout: fonts (design/TOKENS.css: Geist / Geist Mono) and the token stylesheet.
 
 import type { ReactNode } from 'react';
+import { Geist, Geist_Mono } from 'next/font/google';
+import './globals.css';
+
+const geist = Geist({ subsets: ['latin'], variable: '--font-geist', weight: ['400'] });
+const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-geist-mono', weight: ['400'] });
+
+export const metadata = {
+  title: 'Keyholder',
+  description: 'Keyholder shows who can move the money in every Solana protocol.',
+};
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${geist.variable} ${geistMono.variable}`}>
       <body>{children}</body>
     </html>
   );
