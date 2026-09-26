@@ -75,6 +75,15 @@ export const authorities = pgTable('authorities', {
   kind: varchar('kind', { length: 20 }).notNull(), // 'single' | 'squads_v4' | etc.
   multisig_addr: text('multisig_addr'),
   updated_slot: bigint('updated_slot', { mode: 'number' }),
+  // DEV-043 (coordinator review, 2026-09-26): the real transaction signature
+  // that supports this authority's classification (a Squads invocation that
+  // resolved it to a vault, or a loader Upgrade/SetAuthority ix it signed
+  // itself), or null when classified from account ownership alone (e.g. SPL
+  // Governance) or when unresolved. `evidence_note` carries the free-text
+  // reason when there is no single signature (e.g. "no on-chain history:
+  // N signatures observed").
+  evidence_signature: text('evidence_signature'),
+  evidence_note: text('evidence_note'),
 });
 
 export const multisigs = pgTable('multisigs', {
@@ -301,8 +310,20 @@ export const replay_runs = pgTable('replay_runs', {
   from_slot: bigint('from_slot', { mode: 'number' }).notNull(),
   to_slot: bigint('to_slot', { mode: 'number' }).notNull(),
   rules_version: integer('rules_version').notNull(),
+  // DEV-043 (coordinator review, 2026-09-26): redefined to mean the FIRST
+  // TRANSITION ALERT — the first delta caused by a real change/event (a
+  // new multisig created, an admin change, a durable nonce created by a
+  // controller, a privileged ix by a newly-assigned admin, ...) — not a
+  // standing condition that was already true when the window opened (that
+  // is `posture`, below). See apps/worker/src/replay/drift-replay.ts.
   first_alert_slot: bigint('first_alert_slot', { mode: 'number' }),
   lead_time_seconds: integer('lead_time_seconds'),
+  // The standing control posture observed at the START of the replay
+  // window (e.g. "2-of-5 multisig, no timelock") — real facts, reported as
+  // posture, never as an "alert the product fired" (a standing condition's
+  // lead time is an artifact of where the window happens to start, not a
+  // warning that fired).
+  posture: jsonb('posture'),
   event_sequence: text('event_sequence'),
   created_at: timestamp('created_at').default(sql`CURRENT_TIMESTAMP`),
 });

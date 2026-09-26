@@ -1,3 +1,6 @@
-// Task 1.2 scaffold placeholder. Rule loading/evaluation and the score
-// function are built in a later phase against ARCHITECTURE.md §8.
-export {};
+// File: packages/risk/src/index.ts
+// Task 3.2 — public surface of the risk engine package.
+export * from './types';
+export * from './rules';
+export * from './engine';
+export * from './score';

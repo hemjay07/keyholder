@@ -6,6 +6,7 @@ Builder: hackathon-build skill (orchestrator + implementation subagents)
 | Phase | Steps | Status | Notes |
 |---|---|---|---|
 | Phase 1 | 1.1–1.4 | complete | toolchain, monorepo, Postgres, byte parsers on real fixtures |
+| Phase 3 | 3.1–3.3 | complete | control state for 15 programs (13 resolved with evidence), risk engine (10 rules, correction path), Drift replay 16 real frames + gap frames |
 | Phase 2 | 2.1–2.4 | complete (2.4 PARTIAL) | decoders on real txs; live ingest (WS+poller); Drift timeline from real txs |
 | Day 0 | 0.1, 0.2 | complete | THESIS-2 AGREE; E-2 wording corrected |
 
@@ -32,6 +33,11 @@ Builder: hackathon-build skill (orchestrator + implementation subagents)
 | DEV-030 | ingest yellowstone.ts | live Triton stream | built + unit-tested on proto-typed updates; disabled (no YELLOWSTONE_TOKEN), not wired | just-in-time credential | UNTESTED | live ingest runs on Helius WS + 30 s poller meanwhile |
 | DEV-031 | ingest registry seeds | 15 programs | agent seeded Drift only (no ID source); orchestrator then verified the other 14 IDs on-chain (executable, owner BPF Upgradeable Loader) → apps/worker/src/ingest/verified-programs.json | real-only discipline | COSMETIC (closed) | Phase 3 seeds all 15 from that file |
 | DEV-032 | ingest live-check wiring | reconcile admin/state accounts | first run polled the program ID itself (429 storm); fixed to ProgramData + multisig only | bug in script | COSMETIC | none |
+| DEV-041 | state authority resolution | resolve all 15 | first pass 1/15 → coordinator-required history resolution → 13/15 with evidence tx/ownership; marinade unresolved (14 sigs, no evidence); squads-v4 immutable | real-only | DEGRADED (1 unresolved) | marinade shows "unresolved: 14 txs scanned" |
+| DEV-042 | risk standing rules | per-slot deltas | standing rules emit only on change (engine-level) | noise | COSMETIC (fixed) | none |
+| DEV-043 | replay lead time | first alert → drain | posture (standing) reported separately; lead time = first TRANSITION alert (new multisig 2026-03-25T16:58:31Z) → first drain (2026-03-31T07:16:19Z) = 134,268 s (1.55 d), measured | first definition measured a standing condition | COSMETIC (fixed) | demo copy must use the measured 1.55 days, never "9 days" |
+| DEV-043c | Squads v3 multisigs | timelock | stored as 0 because v3 has no timelock feature | model simplification | DEGRADED | UI must say "no timelock feature (Squads v3)", not "0 s" |
+| DEV-043d | squads-v3-decoder | real fixture | layout tests on synthetic bytes from the real Rust source; live parses succeeded for 5 v3 multisigs | none saved | UNTESTED (unit) | save one live v3 account as a fixture |
 
 ## Failed Attempts & Resolutions
 | Step | Error | Attempts | Resolution |
@@ -50,6 +56,9 @@ Builder: hackathon-build skill (orchestrator + implementation subagents)
 | 2 | orchestrator `pnpm -r typecheck` + `pnpm test` | all green | 6/6 Done; Test Files 14 passed, Tests 132 passed | ✅ |
 | 2 | agent 90 s live run (mainnet via Helius) | real rows | 194 raw_tx rows from poller, 0 fetch errors; 0 real-time events in the window (none injected) | ✅ |
 | 2 | orchestrator getAccountInfo ×14 | executable programs | all 14 executable, owner BPF Upgradeable Loader | ✅ |
+| 3 | orchestrator vitest risk/decoder/worker | all pass | 39/39, 85/85, 97/97; typecheck 6/6 | ✅ |
+| 3 | orchestrator getAccountInfo DyJmzHXG…623k… (resolved v4 multisig) | parsed state | owner Squads v4, threshold 4, time_lock 0, members 7 | ✅ |
+| 3 | replay run (agent, live DB) | measured lead time | first transition alert → first drain: 134,268 s (1.55 d) | ✅ |
 
 ## Known Risks (for debug)
 - COPY/TRUTH: TEN.md sentence 5 and PRD/demo say the council went "from 3 of 5 to 2 of 5"; on-chain, the council 61ApQqLo…GNjP is 2 of 5 / 0 s and NO threshold change was found in 2026-03-01..04-03 (49 txs decoded). The 3→2 claim is from rekt.news only. Before any surface ships: either find the change on chain (earlier window) or reword to "a 2-of-5 council with no timelock (rekt reports it was lowered from 3)".

@@ -5,4 +5,5 @@ export * from './anchor-decoder';
 export * from './privilege-classifier';
 export * from './loader-decoder';
 export * from './squads-decoder';
+export * from './squads-v3-decoder';
 export * from './system-decoder';
