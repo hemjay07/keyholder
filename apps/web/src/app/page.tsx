@@ -124,39 +124,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <div className="rails">
-        <div className="rail">
-          <h2>Weakened in 24h</h2>
-          <div className="row weak">
-            <span className="who"><span className="dot" />Drift admin council · 2 of 5 · no timelock</span>
-            <span className="meta mono">timelock 0 · 1 Apr 2026 · reconstructed</span>
-          </div>
-          {changes24h.length === 0 && (
-            <p className="rail-empty">No live weakening events in the last 24 hours.</p>
-          )}
-        </div>
-        <div className="rail">
-          <h2>Latest changes</h2>
-          {events.length === 0 ? (
-            <p className="rail-empty">No control changes recorded yet for these protocols.</p>
-          ) : (
-            events.slice(0, 6).map((e) => {
-              const p = protocolById.get(e.protocolId);
-              return (
-                <div className="row" key={e.uid}>
-                  <span className="who">{p?.name ?? e.protocolId} · {e.ruleId.replace(/_/g, " ")}</span>
-                  <span className="meta mono">
-                    {e.severity} · {e.createdAt ? new Date(e.createdAt).toISOString().slice(0, 16).replace("T", " ") : "—"}
-                    {" "}
-                    <Link className="evlink" href={`/events/${e.uid}`}>view</Link>
-                  </span>
-                </div>
-              );
-            })
-          )}
-        </div>
-      </div>
-
       <section className="protocols-section">
         <h2>Who holds the keys</h2>
         {resolved.length > 0 && (
@@ -210,6 +177,40 @@ export default async function HomePage() {
           </tbody>
         </table>
       </section>
+
+      <div className="rails">
+        <div className="rail">
+          <h2>Weakened in 24h</h2>
+          <div className="row weak">
+            <span className="who"><span className="dot" />Drift admin council · 2 of 5 · no timelock</span>
+            <span className="meta mono">timelock 0 · 1 Apr 2026 · reconstructed</span>
+          </div>
+          {changes24h.length === 0 && (
+            <p className="rail-empty">No live weakening events in the last 24 hours.</p>
+          )}
+        </div>
+        <div className="rail">
+          <h2>Latest changes</h2>
+          {events.length === 0 ? (
+            <p className="rail-empty">No control changes recorded yet for these protocols.</p>
+          ) : (
+            events.slice(0, 6).map((e) => {
+              const p = protocolById.get(e.protocolId);
+              return (
+                <div className="row" key={e.uid}>
+                  <span className="who">{p?.name ?? e.protocolId} · {e.ruleId.replace(/_/g, " ")}</span>
+                  <span className="meta mono">
+                    {e.severity} · {e.createdAt ? new Date(e.createdAt).toISOString().slice(0, 16).replace("T", " ") : "—"}
+                    {" "}
+                    <Link className="evlink" href={`/events/${e.uid}`}>view</Link>
+                  </span>
+                </div>
+              );
+            })
+          )}
+        </div>
+      </div>
+
 
       <section className="ten">
         <h2>What ships</h2>

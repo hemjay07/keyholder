@@ -129,10 +129,6 @@ function Scene({ data, reduced, mobile }: { data: ConsoleData; reduced: boolean;
             <Rig reduced={reduced} data={data} />
           </ScrollControls>
         )}
-        <mesh rotation-x={-Math.PI / 2} position={[0, -1.66, 0]} receiveShadow>
-          <planeGeometry args={[20, 20]} />
-          <meshStandardMaterial color="#E6E2D9" roughness={1} />
-        </mesh>
         <ContactShadows position={[0, -1.65, 0]} resolution={256} scale={6} blur={1.8} far={1.4} opacity={0.55} color="#2a2620" frames={reduced ? 1 : Infinity} />
       </Suspense>
     </Canvas>
