@@ -29,6 +29,20 @@
       "when": 1790446223204,
       "tag": "20260926181023_risk_delta_notify",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1790460345114,
+      "tag": "20260926220545_events_id_identity",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1790461163007,
+      "tag": "20260926221923_events_id_by_default",
+      "breakpoints": true
     }
   ]
 }

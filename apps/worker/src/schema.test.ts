@@ -15,10 +15,11 @@ import { eq } from 'drizzle-orm';
 import * as dotenv from 'dotenv';
 import { join } from 'node:path';
 import * as schema from './schema';
+import { testDatabaseUrl } from './test-db';
 
 dotenv.config({ path: join(__dirname, '..', '..', '..', '.env') });
 
-const databaseUrl = process.env.DATABASE_URL;
+const databaseUrl = testDatabaseUrl();
 
 describe.skipIf(!databaseUrl)('core table round-trips', () => {
   let sql: ReturnType<typeof postgres>;

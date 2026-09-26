@@ -92,3 +92,13 @@ Builder: hackathon-build skill (orchestrator + implementation subagents)
 ## Environment Variables Added
 | Key | Source Step | Value/Description |
 |---|---|---|
+
+## Live pipeline wiring (2026-09-26/27)
+- Runner + decode/state/risk/verification/alert stages built by agent (stopped at its usage limit before the live run); orchestrator verified: tsc clean, 160 tests.
+- Live run 1 (mainnet, 10 min): 4 FALSE risk deltas. Cause: on a Helius 429 the state stage fell back to event-folded facts ("authority -> immutable" and back); base state came from recent events only. Nothing was delivered (0 subscriptions/webhooks). Rows deleted.
+- DEV-068 state stage: a failed live read writes nothing (skipped, retried); same upgrade authority keeps the history-resolved multisig; non-authority facts carry over from the last state; change judged on control facts only (multisig address/threshold/members/timelock/config authority). The pre-existing test asserting the fold fallback was REPLACED (it encoded the defect), stated here. Class: DEGRADED (fixes a correctness defect).
+- DEV-069 runner: decode ticks never overlap (a slow tick under backoff raced on one protocol).
+- DEV-070 tests: every DB test goes through src/test-db.ts (only a `_test` database); schema.test.ts had corrupted the dev Drift row twice (once via vitest started from src/). Proven: from src/ 8 DB files skip and dev unchanged; from apps/worker 160/160 on _test.
+- DEV-071 verify-osec: registered build (repo_url set) not verified -> `drifted`; live result 3 verified / 6 drifted / 6 never registered.
+- Live run 3 (mainnet, 10 min): 143 raw_tx, events 6,686 total, 0 state writes, 0 risk deltas, one 429 skipped correctly.
+- Known: attestation writer not started (no attester key path); Telegram/email/X disabled (no tokens); most decoded events belong to untracked multisigs (protocol_id null) and must not reach the public feed.

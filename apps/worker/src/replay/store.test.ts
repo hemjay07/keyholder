@@ -12,10 +12,11 @@ import { join } from 'node:path';
 import * as schema from '../schema';
 import { storeReplayRun } from './store';
 import { replayDriftIncident } from './drift-replay';
+import { testDatabaseUrl } from '../test-db';
 
 dotenv.config({ path: join(__dirname, '..', '..', '..', '..', '.env') });
 
-const databaseUrl = process.env.DATABASE_URL;
+const databaseUrl = testDatabaseUrl();
 const TEST_RUN_ID = 'drift-2026-replay-test-1';
 
 describe.skipIf(!databaseUrl)('storeReplayRun (real local Postgres)', () => {

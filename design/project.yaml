@@ -1,19 +1,19 @@
 # design/project.yaml -- read by every SURFACE hook and script (schema: ~/.claude/surface/project.schema.yaml)
-name: .
-stack: html
+name: keyholder
+stack: next-dev
 serve:
-  command: ""
-  url: ""
+  command: "pnpm start -p 3000"
+  url: "http://localhost:3000"
   ready_path: "/"
-  cwd: "."
+  cwd: "apps/web"
 globs:
-  ui: ["src/*.html", "design/proto/*.html", "design/devices/**/*"]
+  ui: ["apps/web/src/app/**/*.tsx", "apps/web/src/components/**/*.tsx", "apps/web/src/app/**/*.css", "design/proto/*.html", "design/devices/**/*"]
   tokens: "design/TOKENS.css"
-routes_from: ""
-shared_dirs: []
+routes_from: "apps/web/src/app"
+shared_dirs: ["apps/web/src/components", "apps/web/src/lib"]
 widths: [390, 1280]
 budgets:
-  bytes_kb: 300
+  bytes_kb: 3000              # the console carries three.js + a 512 px HDR; measured 2026-09-26
   frame_p95_ms: 16.7
   long_tasks: 0
-depth_level: 0
+depth_level: 3                # mirrors CHARTER.md (founder, 2026-09-26)
