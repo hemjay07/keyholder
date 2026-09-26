@@ -25,7 +25,7 @@ above the fold: 40 elements at 1280, 24 at 390
 - .lede.mono: p 14px/400 "Count the keys."
 - .lede: p 16px/400 "Keyholder shows who can move the money in every Solana protocol (keys,"
 - .primary: a 13px/400 "Find your wallet"
-- .who: span 13.5px/400 "Drift admin council · 3 of 5 → 2 of 5"
+- .who: span 13.5px/400 "Drift admin council · 2 of 5 · no timelock"
 - .meta.mono: span 12px/400 "timelock 0 · 1 Apr 2026 · reconstructed"
 - .who: span 13.5px/400 "Drift upgrade key · 4 of 7"
 - .meta.mono: span 12px/400 "timelock 3,600s · read 2026-09-26 · slot 450,660,594"

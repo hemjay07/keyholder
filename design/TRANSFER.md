@@ -20,7 +20,7 @@
 | 15 | a | Watch the Drift replay | 13px | | |
 | 16 | h2 | Weakened in 24h | 11px | | |
 | 17 | h2 | Latest changes | 11px | | |
-| 18 | span.who | Drift admin council · 3 of 5 → 2 of 5 | 13.5px | | |
+| 18 | span.who | Drift admin council · 2 of 5 · no timelock | 13.5px | | |
 | 19 | span.meta.mono | timelock 0 · 1 Apr 2026 · reconstructed | 12px | | |
 | 20 | span.who | Drift upgrade key · 4 of 7 | 13.5px | | |
 | 21 | span.meta.mono | timelock 3,600s · read 2026-09-26 · slot 450,660,594 | 12px | | |
