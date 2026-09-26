@@ -68,7 +68,7 @@ export default async function ProtocolPage({ params }: { params: Promise<{ slug:
           <div className="protocol-meta mono">
             <span>read {readDate}</span>
             {facts?.asOfSlot != null && <span>slot {facts.asOfSlot.toLocaleString("en-US")}</span>}
-            <span>{facts?.verifiedStatus === "verified" ? "verified" : "not verified"}</span>
+            <span>{facts?.verifiedStatus === "verified" ? "code verified" : facts?.verifiedStatus === "drifted" ? "code drifted from its verified build" : "code never registered for verification"}</span>
           </div>
           {protocol.evidenceSignature && (
             <p className="lede">

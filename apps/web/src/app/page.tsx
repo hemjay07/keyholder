@@ -84,6 +84,8 @@ export default async function HomePage() {
     return tl && (tl.kind === "none" || tl.kind === "no_timelock_feature");
   });
 
+  const vCount = (status: string) => protocols.filter((p) => p.controlFacts?.verifiedStatus === status).length;
+
   const protocolById = new Map(protocols.map((p) => [p.id, p]));
   const readDate = new Date().toISOString().slice(0, 10);
 
@@ -98,6 +100,7 @@ export default async function HomePage() {
           <span><b>{protocols.length}</b> PROTOCOLS TRACKED</span>
           <span><b>{changes24h.length}</b> CHANGES 24H</span>
           <span className="weak"><b>{noTimelock.length}</b> OF {resolved.length} WITH NO TIMELOCK</span>
+          <span>CODE <b>{vCount("verified")}</b> VERIFIED · <b>{vCount("drifted")}</b> DRIFTED · <b>{vCount("unverified")}</b> NEVER REGISTERED</span>
         </header>
       )}
 
@@ -187,8 +190,8 @@ export default async function HomePage() {
                     {unresolved ? "—" : timelockLabel(facts)}
                   </td>
                   <td>
-                    <span className={`lamp ${facts?.verifiedStatus === "verified" ? "on" : "off"}`} />
-                    {facts?.verifiedStatus === "verified" ? "verified" : facts?.verifiedStatus === "unverified" ? "not verified" : "—"}
+                    <span className={`lamp ${facts?.verifiedStatus === "verified" ? "on" : facts?.verifiedStatus === "drifted" ? "drift" : "off"}`} />
+                    {facts?.verifiedStatus === "verified" ? "verified" : facts?.verifiedStatus === "drifted" ? "drifted" : facts?.verifiedStatus === "unverified" ? "never registered" : "—"}
                   </td>
                   <td>
                     {p.evidenceSignature ? (
