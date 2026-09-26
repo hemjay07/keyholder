@@ -76,8 +76,10 @@ export async function GET(req: Request, { params }: { params: Promise<{ wallet: 
       { headers: { ...limit.headers, 'Cache-Control': 'public, max-age=60' } }
     );
   } catch (error) {
-    console.error('GET /api/v1/positions/[wallet] failed', error);
-    return NextResponse.json({ data: null, error: { code: 'SERVER_ERROR', message: String(error) } }, { status: 500 });
+    // The raw message can carry the RPC endpoint (and its key); never send it to the client.
+    const rateLimited = /429|Too Many Requests/.test(String(error));
+    console.error('GET /api/v1/positions/[wallet] failed', rateLimited ? 'rpc rate limited' : 'resolver error');
+    return NextResponse.json({ data: null, error: { code: rateLimited ? 'RPC_RATE_LIMITED' : 'SERVER_ERROR' } }, { status: rateLimited ? 503 : 500 });
   }
 }
 

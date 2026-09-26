@@ -233,12 +233,16 @@ export default function Console({ data }: { data: ConsoleData }) {
   const { protocol, threshold, members, timelockSeconds, noTimelockFeature, verified, codeDrifted, weakened, label } = data;
   const { rough, normal } = usePanelTextures();
 
-  const socketXs = useMemo(() => {
+  // Up to 7 keys sit on the left of the row; more run the full width (the
+  // "N of M required" readout is on the line below) and each slot shrinks to
+  // its pitch, so 15 keys (marginfi) never overlap.
+  const { socketXs, slotScale } = useMemo(() => {
     const n = Math.max(members, 1);
-    const startX = -0.95, endX = 0.55;
-    if (n === 1) return [startX];
+    const startX = -0.95;
+    const endX = n > 7 ? 1.5 : 0.55;
+    if (n === 1) return { socketXs: [startX], slotScale: 1 };
     const step = (endX - startX) / (n - 1);
-    return Array.from({ length: n }, (_, i) => startX + step * i);
+    return { socketXs: Array.from({ length: n }, (_, i) => startX + step * i), slotScale: Math.min(1, step / 0.26) };
   }, [members]);
 
   const PANEL_H = 3.1;
@@ -279,7 +283,9 @@ export default function Console({ data }: { data: ConsoleData }) {
       <RowLabel y={Y_KEYS}>KEYS</RowLabel>
       <group position={[0, Y_KEYS, 0]}>
         {socketXs.map((x, i) => (
-          <KeySlot key={i} x={x} turned={i < threshold} delay={0.06 + i * 0.045} />
+          <group key={i} position={[x, 0, 0]} scale={[slotScale, slotScale, 1]}>
+            <KeySlot x={0} turned={i < threshold} delay={0.06 + i * 0.045} />
+          </group>
         ))}
       </group>
       <Text position={[1.62, Y_KEYS - 0.28, 0.093]} fontSize={0.16} color={INK} font={FONT} letterSpacing={0.01} anchorX="right">
