@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Keyholder — Count the keys</title>
+<link rel="stylesheet" href="../parts/Geist.css" />
+<link rel="stylesheet" href="../parts/GeistMono.css" />
+<style>
+  :root{
+    --bg:#E6E2D9; --panel:#F4F1EA; --ink:#1B1A17; --ink-2:#5A564E;
+    --signal:#FF5A1F; --signal-text:#A32F06; --verified:#1F6B4A; --hair:rgba(27,26,23,.14);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 'Geist',sans-serif}
+  .mono{font-family:'Geist Mono',monospace}
+  a{color:inherit}
+  .strip{display:flex;gap:22px;flex-wrap:wrap;padding:12px 40px;border-bottom:1px solid var(--hair);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+  .strip b{color:var(--ink)}
+  .hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);gap:36px;padding:48px 40px 40px;align-items:center}
+  .hero-copy h1{font:400 clamp(30px,3.6vw,52px)/1.08 'Geist',sans-serif;margin:0 0 14px;letter-spacing:-.01em}
+  .kicker{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--signal-text);margin:0 0 14px}
+  .lede{font-size:16px;line-height:1.6;color:var(--ink-2);max-width:46ch;margin:0 0 26px}
+  .cta{display:flex;gap:12px;flex-wrap:wrap}
+  .cta a{display:inline-block;padding:12px 20px;border:1px solid var(--ink);font-size:13px;letter-spacing:.04em;text-decoration:none;background:transparent}
+  .cta a.primary{background:var(--ink);color:var(--panel)}
+  .device-frame{position:relative;background:#0d0c0a;border-radius:6px;overflow:hidden;aspect-ratio:16/11;box-shadow:0 30px 60px -30px rgba(27,26,23,.35)}
+  .device-frame iframe{width:100%;height:100%;border:0;display:block}
+  .rails{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:3px solid var(--ink);border-bottom:1px solid var(--hair);margin:0 40px}
+  .rail{padding:22px 24px;border-right:1px solid var(--hair)}
+  .rail:last-child{border-right:0}
+  .rail h2{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2);margin:0 0 14px}
+  .row{display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px solid var(--hair);font-size:13.5px}
+  .row:last-child{border-bottom:0}
+  .row .who{color:var(--ink)}
+  .row .meta{color:var(--ink-2);font-size:12px}
+  .row.weak .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--signal);margin-right:8px}
+  .ten{padding:56px 40px 70px;max-width:840px}
+  .ten h2{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2);margin:0 0 20px}
+  .ten ol{margin:0;padding:0 0 0 22px}
+  .ten li{margin-bottom:12px;font-size:14.5px;line-height:1.6}
+  .ten .catch{margin-top:26px;color:var(--ink-2);font-size:13px}
+  footer{padding:20px 40px 40px;font-size:11px;color:var(--ink-2);border-top:1px solid var(--hair)}
+  @media (max-width:720px){
+    .hero{grid-template-columns:1fr;padding:28px 18px}
+    .strip{padding:10px 18px;gap:10px 16px}
+    .rails{grid-template-columns:1fr;margin:0 18px}
+    .rail{border-right:0;border-bottom:1px solid var(--hair)}
+    .ten{padding:40px 18px 56px}
+    footer{padding:16px 18px 28px}
+  }
+
+@keyframes kh-rise{from{transform:translateY(10px)}to{transform:none}}
+@keyframes kh-lamp{from{filter:brightness(.55)}to{filter:none}}
+h1{animation:kh-rise 240ms cubic-bezier(.2,.7,.2,1) both}
+.lamp,[data-lamp]{animation:kh-lamp 90ms linear 320ms both}
+@media (prefers-reduced-motion: reduce){h1,.lamp,[data-lamp]{animation:none}}
+</style>
+</head>
+<body>
+
+<header class="strip mono">
+  <span>SLOT <b data-odo="450660594">450,660,594</b></span>
+  <span>READ <b>2026-09-26</b></span>
+  <span><b>15</b> PROGRAMS TRACKED</span>
+  <span style="color:var(--signal-text)"><b>1</b> WEAKENED (RECONSTRUCTED)</span>
+</header>
+
+<section class="hero">
+  <div class="hero-copy">
+    <p class="kicker">Keyholder</p>
+    <h1>Drift needed two keys to lose $285M.</h1>
+    <p class="lede mono" style="font-size:14px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink)">Count the keys.</p>
+    <p class="lede">Keyholder shows who can move the money in every Solana protocol (keys, threshold, timelock, verified code), rings when that control weakens, and lets any program refuse to deposit where it just did.</p>
+    <div class="cta">
+      <a class="primary" href="#wallet">Find your wallet</a>
+      <a href="#replay">Watch the Drift replay</a>
+    </div>
+  </div>
+  <div class="device-frame">
+    <iframe data-device="console" src="http://localhost:5199/?state=hero" title="Drift admin council console, reconstructed 1 April 2026"></iframe>
+  </div>
+</section>
+
+<div class="rails">
+  <div class="rail">
+    <h2>Weakened in 24h</h2>
+    <div class="row weak">
+      <span class="who"><span class="dot"></span>Drift admin council · 3 of 5 → 2 of 5</span>
+      <span class="meta mono">timelock 0 · 1 Apr 2026 · reconstructed</span>
+    </div>
+  </div>
+  <div class="rail">
+    <h2>Latest changes</h2>
+    <div class="row">
+      <span class="who">Drift upgrade key · 4 of 7</span>
+      <span class="meta mono">timelock 3,600s · read 2026-09-26 · slot 450,660,594</span>
+    </div>
+    <div class="row">
+      <span class="who">Drift admin council · nonces staged</span>
+      <span class="meta mono">23 Mar 2026 · reconstructed</span>
+    </div>
+    <div class="row">
+      <span class="who">15 major Solana programs · 3 verified, 6 drifted, 6 unregistered</span>
+      <span class="meta mono">verify.osec.io · 26 Sep 2026</span>
+    </div>
+  </div>
+</div>
+
+<section class="ten">
+  <h2>What ships</h2>
+  <ol class="mono">
+    <li>Drift needed two keys to lose $285M.</li>
+    <li>Count the keys.</li>
+    <li>Drift's upgrade key today: 4 of 7 keys, 3,600-second timelock, read at a named slot.</li>
+    <li>Solscan says "MULTISIG" and stops; Keyholder follows the key to the multisig behind it.</li>
+    <li>On 23 March 2026 durable nonces were staged; then the council went from 3 of 5 to 2 of 5 with no timelock; on 1 April 18 vaults drained in 128 seconds.</li>
+    <li>Of 15 major Solana programs, 3 are verified today, 6 drifted from their registered source, 6 were never registered (verify.osec.io, 26 Sep 2026).</li>
+    <li>Any program can ask Keyholder before it moves money, and be refused on-chain with the reason.</li>
+    <li>Our own program is controlled by 2 of 3 keys with a 48-hour public timelock.</li>
+    <li>Find your wallet: see who holds the keys to every protocol your money is in.</li>
+    <li>Every number here carries the slot or transaction it was read from; rebuilt history is labelled reconstructed.</li>
+  </ol>
+  <p class="catch">"Count the keys." · "Who can move your money, and did that just change?"</p>
+</section>
+
+<footer class="mono">KEYHOLDER · every figure carries its slot, transaction or reconstructed label</footer>
+
+<script>
+/* number-odometer (charter part): status-strip figures roll once to their read value, 1400 ms (charter count), then stop; reduced motion shows the value at once */
+(()=>{const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;document.querySelectorAll('[data-odo]').forEach(el=>{const target=+el.dataset.odo;if(reduce){return}const t0=performance.now();const f=t=>{const p=Math.min(1,(t-t0)/1400);const e=1-Math.pow(1-p,3);el.textContent=Math.round(target*e).toLocaleString('en-US');if(p<1)requestAnimationFrame(f)};el.textContent='0';requestAnimationFrame(f)})})();
+</script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+/* design/TOKENS.css -- extracted by spec.mjs from design/proto/A.html on 2026-09-26.
+   Exact values. The shipped :root is diffed against this file (drift.mjs). Edit here first, then the code. */
+:root {
+  --bg: #E6E2D9;
+  --panel: #F4F1EA;
+  --ink: #1B1A17;
+  --ink-2: #5A564E;
+  --signal: #FF5A1F;
+  --signal-text: #A32F06;
+  --verified: #1F6B4A;
+  --hair: rgba(27,26,23,.14);
+
+  /* derived from computed styles; names the prototype already declares above are not repeated. The build declares all of these. */
+  --ground: rgb(230, 226, 217);
+  --ink-3: rgb(163, 47, 6);
+  --signal-control-weakened: #FF5A1F;   /* painted as rgb(255, 90, 31) */
+  --signal-verified-on: #1F6B4A;   /* declared in CHARTER; not painted on this prototype */
+  --hairline: rgba(27, 26, 23, 0.14);
+  --radius: 50px;   /* others seen: 50px */
+  --font-display: Geist;   /* the largest text, 46.08px/400 */
+  --font-body: Geist Mono;   /* most common */
+  --weight-body: 400;
+  --display-1280: 46.08px;
+  --display-390: 30px;
+  --ease-1: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --d-tick: 90ms;
+  --d-element: 240ms;
+  --d-data: 320ms;
+  --d-count: 1400ms;
+  --cap: 1600ms;
+}

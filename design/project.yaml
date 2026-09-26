@@ -1,0 +1,19 @@
+# design/project.yaml -- read by every SURFACE hook and script (schema: ~/.claude/surface/project.schema.yaml)
+name: .
+stack: html
+serve:
+  command: ""
+  url: ""
+  ready_path: "/"
+  cwd: "."
+globs:
+  ui: ["src/*.html", "design/proto/*.html", "design/devices/**/*"]
+  tokens: "design/TOKENS.css"
+routes_from: ""
+shared_dirs: []
+widths: [390, 1280]
+budgets:
+  bytes_kb: 300
+  frame_p95_ms: 16.7
+  long_tasks: 0
+depth_level: 0

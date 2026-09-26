@@ -1,0 +1,8 @@
+{
+  "derivedFrom": "Metal027_1K-JPG.zip (ambientCG, CC0, asset Metal027, query \"painted metal\", see Metal027_1K-JPG.zip.SOURCE.json)",
+  "map": "Roughness",
+  "derivation": "unzipped Metal027_1K-JPG_Roughness.jpg (1024x1024), converted to greyscale, resized to 256x256 (Lanczos), re-encoded JPEG quality 72",
+  "reason": "the 1K PBR set is 6.3 MB total; only the roughness+normal maps are used (colour is set on the material), downsampled to fit the page's 3000 KB budget",
+  "bytes": 1546,
+  "licence": "CC0"
+}
