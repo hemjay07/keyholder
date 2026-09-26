@@ -754,7 +754,7 @@ Last Updated: 2 hours ago
 [View Full Control Map]
 ```
 
-Protocols can embed this badge on their website, governance docs, or risk dashboards. Badge design matches Crypto Casino Dark aesthetic (gold, dark background).
+Protocols can embed this badge on their website, governance docs, or risk dashboards. Badge design follows design/TOKENS.css (warm paper #F4F1EA panel, ink #1B1A17, signal #FF5A1F only for weakened control, verified #1F6B4A).
 
 ### 6.4 Incident Replay as Content
 
@@ -797,21 +797,8 @@ Protocols can embed this badge on their website, governance docs, or risk dashbo
 **Day 16 (Oct 12):**
 - [ ] Submit by 23:59 PT (2026-10-13 06:59:59 UTC).
 
-### 6.6 Design: Crypto Casino Dark Aesthetic
-
-From /Users/mujeeb/CLAUDE.md (project instructions):
-- **Background:** `#0A0A0F` (main), `#12121A` (cards/surfaces), `#1A1A24` (elevated).
-- **Gold accent:** `#F59E0B` (primary actions), `#FBBF24` (hover), `#D97706` (muted).
-- **Typography:** Inter for all text, JetBrains Mono for wallet addresses, program IDs, hashes.
-- **Animations:** subtle 150–300ms, no jarring transitions.
-- **Do NOT use:** purple, violet, or any "AI slop" colors.
-- **Inspiration:** High-end casino websites (dark + gold), Linear App (clean UI, professional).
-
-Every component feels intentional and polished; this is a hackathon demo.
-
----
-
-## 7. Metrics for the Submission & Success Criteria
+### 6.6 Design
+SUPERSEDED: the visual system is design/DESIGN_SYSTEM.md + design/TOKENS.css (from plan/CREATIVE.md v3). The palette formerly written here leaked from an unrelated project and must not be used.
 
 ### Submission Metrics (What Judges See)
 

@@ -6,6 +6,7 @@ Builder: hackathon-build skill (orchestrator + implementation subagents)
 | Phase | Steps | Status | Notes |
 |---|---|---|---|
 | Phase 1 | 1.1–1.4 | complete | toolchain, monorepo, Postgres, byte parsers on real fixtures |
+| Phase 4 | 4.1–4.4 | complete except positions (4b) | REST v1, SSE via LISTEN/NOTIFY, SIWS, webhooks HMAC, x402 402 live, badge |
 | Phase 3 | 3.1–3.3 | complete | control state for 15 programs (13 resolved with evidence), risk engine (10 rules, correction path), Drift replay 16 real frames + gap frames |
 | Phase 2 | 2.1–2.4 | complete (2.4 PARTIAL) | decoders on real txs; live ingest (WS+poller); Drift timeline from real txs |
 | Day 0 | 0.1, 0.2 | complete | THESIS-2 AGREE; E-2 wording corrected |
@@ -38,6 +39,10 @@ Builder: hackathon-build skill (orchestrator + implementation subagents)
 | DEV-043 | replay lead time | first alert → drain | posture (standing) reported separately; lead time = first TRANSITION alert (new multisig 2026-03-25T16:58:31Z) → first drain (2026-03-31T07:16:19Z) = 134,268 s (1.55 d), measured | first definition measured a standing condition | COSMETIC (fixed) | demo copy must use the measured 1.55 days, never "9 days" |
 | DEV-043c | Squads v3 multisigs | timelock | stored as 0 because v3 has no timelock feature | model simplification | DEGRADED | UI must say "no timelock feature (Squads v3)", not "0 s" |
 | DEV-043d | squads-v3-decoder | real fixture | layout tests on synthetic bytes from the real Rust source; live parses succeeded for 5 v3 multisigs | none saved | UNTESTED (unit) | save one live v3 account as a fixture |
+| DEV-050 | web x402 | contract withX402(handler,{price}) | installed @x402/next API: withX402(handler, routeConfig, x402ResourceServer) + registerExactSvmScheme + PayAI HTTPFacilitatorClient; unpaid → real 402 (network solana:5eykt4…, USDC, 10000 atomic) | contract stale | COSMETIC | paid leg UNTESTED until a payer holds USDC |
+| DEV-051 | web badge | contract gold/dark palette (leaked) | rebuilt on design/TOKENS.css; timelock shown as "1 h / 1 d / none / no timelock feature"; widened to 300 px after a read collision | leaked palette in plan docs (removed at source: plan/PRD.md §6.6, arch/D-web.md, arch/B-worker.md) | COSMETIC (fixed) | none |
+| DEV-052 | positions | CLMM, Whirlpool, Kamino, marginfi, Drift users | SPL + Token-2022 real; the five protocol resolvers are stubs returning [] | layouts not yet sourced | UNTESTED | "find your wallet" incomplete until Phase 4b |
+| DEV-053 | web env | .env in app folder | apps/web/.env symlink → root .env (gitignored) | Next reads only app-local .env | COSMETIC | none |
 
 ## Failed Attempts & Resolutions
 | Step | Error | Attempts | Resolution |
@@ -59,6 +64,8 @@ Builder: hackathon-build skill (orchestrator + implementation subagents)
 | 3 | orchestrator vitest risk/decoder/worker | all pass | 39/39, 85/85, 97/97; typecheck 6/6 | ✅ |
 | 3 | orchestrator getAccountInfo DyJmzHXG…623k… (resolved v4 multisig) | parsed state | owner Squads v4, threshold 4, time_lock 0, members 7 | ✅ |
 | 3 | replay run (agent, live DB) | measured lead time | first transition alert → first drain: 134,268 s (1.55 d) | ✅ |
+| 4 | orchestrator typecheck + vitest | all pass | 6/6; Test Files 23 passed, Tests 225 passed | ✅ |
+| 4 | orchestrator curl badge ×3 + read PNG | correct facts, tokens | drift 4 of 7 / 1 h; jupiter-v6 4 of 7 / no timelock feature; kamino 5 of 10 / 1 d verified; no collisions after widening | ✅ |
 
 ## Known Risks (for debug)
 - COPY/TRUTH: TEN.md sentence 5 and PRD/demo say the council went "from 3 of 5 to 2 of 5"; on-chain, the council 61ApQqLo…GNjP is 2 of 5 / 0 s and NO threshold change was found in 2026-03-01..04-03 (49 txs decoded). The 3→2 claim is from rekt.news only. Before any surface ships: either find the change on chain (earlier window) or reword to "a 2-of-5 council with no timelock (rekt reports it was lowered from 3)".

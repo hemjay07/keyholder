@@ -1,3 +1,5 @@
+> NOTE (coordinator 2026-09-26): all colours in this file are superseded by design/TOKENS.css; the gold #F59E0B that appeared here leaked from an unrelated project.
+
 # Keyholder — Worker Architecture (B)
 
 **Version:** 1.1  
@@ -737,7 +739,7 @@ function formatEmailAlert(delta: any): string {
     delta.severity === 'critical'
       ? '#EF4444'
       : delta.severity === 'high'
-        ? '#F59E0B'
+        ? '#1B1A17'
         : '#3B82F6';
 
   return `

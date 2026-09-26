@@ -1,3 +1,5 @@
+> NOTE (coordinator 2026-09-26): all colours in this file are superseded by design/TOKENS.css; the gold #F59E0B that appeared here leaked from an unrelated project.
+
 # Keyholder — Web Layer Architecture (D-web)
 
 **Version:** 1.1 (corrected)  
@@ -1184,10 +1186,10 @@ import { getDb } from '@/lib/db';
 
 const SVG = (keys: string, timelock: string, verified: boolean) => `
 <svg xmlns="http://www.w3.org/2000/svg" width="200" height="40" viewBox="0 0 200 40">
-  <rect width="200" height="40" fill="#0A0A0F" stroke="#F59E0B" stroke-width="1" rx="4"/>
-  <text x="10" y="12" font-size="11" fill="#F59E0B" font-weight="bold">KEYS</text>
+  <rect width="200" height="40" fill="#F4F1EA" stroke="#1B1A17" stroke-width="1" rx="4"/>
+  <text x="10" y="12" font-size="11" fill="#1B1A17" font-weight="bold">KEYS</text>
   <text x="50" y="12" font-size="11" fill="#FAFAFA">${keys}</text>
-  <text x="100" y="12" font-size="11" fill="#F59E0B">TIMELOCK</text>
+  <text x="100" y="12" font-size="11" fill="#1B1A17">TIMELOCK</text>
   <text x="160" y="12" font-size="11" fill="#FAFAFA">${timelock}</text>
   <text x="10" y="32" font-size="10" fill="#A1A1AA">${verified ? '✓' : '○'}</text>
 </svg>

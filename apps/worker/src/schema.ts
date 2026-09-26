@@ -371,6 +371,16 @@ export const jobs = pgTable(
   })
 );
 
+// DEV (Phase 4, web layer): Postgres-backed sliding-window rate limiting
+// (arch/D-web.md §6, §14) — one database, no external rate-limit service.
+export const rate_limits = pgTable('rate_limits', {
+  key: text('key').primaryKey(),
+  count: integer('count').default(0),
+  reset_at: bigint('reset_at', { mode: 'number' }),
+  created_at: timestamp('created_at', { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`),
+  updated_at: timestamp('updated_at', { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`),
+});
+
 export const positions = pgTable(
   'positions',
   {

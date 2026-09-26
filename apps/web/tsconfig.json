@@ -1,13 +1,17 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./src",
     "jsx": "preserve",
     "moduleResolution": "bundler",
     "noEmit": true,
-    "types": ["node"]
+    "types": ["node"],
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@keyholder/db": ["../../packages/db/src"],
+      "@keyholder/sdk": ["../../packages/sdk/src"]
+    }
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "next-env.d.ts"],
   "exclude": ["node_modules", "dist", ".next"]
 }
