@@ -4,8 +4,9 @@ import type { ConsoleData } from "./Console";
 
 function timelockText(data: ConsoleData): string {
   if (data.noTimelockFeature) return "no timelock feature";
-  if (data.timelockSeconds === 0) return "0 h (none)";
-  return `${(data.timelockSeconds / 3600).toFixed(1)} h`;
+  if (data.timelockSeconds === 0) return "none";
+  if (data.timelockSeconds % 86400 === 0) return `${data.timelockSeconds / 86400} d`;
+  return `${+(data.timelockSeconds / 3600).toFixed(1)} h`;
 }
 
 export default function ConsoleFallback({ data }: { data: ConsoleData }) {
@@ -32,7 +33,7 @@ export default function ConsoleFallback({ data }: { data: ConsoleData }) {
       <div className="cf-row cf-code">
         <span className="cf-label">CODE</span>
         <span className={data.verified ? "cf-nominal" : "cf-dim"}>{data.verified ? "verified" : "not verified"}</span>
-        <span className={data.weakened ? "cf-weak" : "cf-dim"}>{data.weakened ? "drifted" : "current"}</span>
+        <span className={data.codeDrifted ? "cf-weak" : "cf-dim"}>{data.codeDrifted ? "drifted" : "no drift record"}</span>
       </div>
       <div className="cf-row cf-last">
         <span className="cf-label">LAST</span>

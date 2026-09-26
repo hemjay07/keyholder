@@ -222,6 +222,7 @@ export interface ConsoleData {
   timelockSeconds: number;
   noTimelockFeature?: boolean;
   verified: boolean;
+  codeDrifted: boolean;
   weakened: boolean;
   /** null when reconstructed, not a live read */
   slot: number | string | null;
@@ -229,7 +230,7 @@ export interface ConsoleData {
 }
 
 export default function Console({ data }: { data: ConsoleData }) {
-  const { protocol, threshold, members, timelockSeconds, noTimelockFeature, verified, weakened, label } = data;
+  const { protocol, threshold, members, timelockSeconds, noTimelockFeature, verified, codeDrifted, weakened, label } = data;
   const { rough, normal } = usePanelTextures();
 
   const socketXs = useMemo(() => {
@@ -290,7 +291,7 @@ export default function Console({ data }: { data: ConsoleData }) {
         <TimelockDial seconds={timelockSeconds} />
       </group>
       <Text position={[1.62, Y_TIME, 0.093]} fontSize={0.08} color={INK} font={FONT} anchorX="right">
-        {noTimelockFeature ? "no timelock feature" : timelockSeconds === 0 ? "0 h (none)" : `${(timelockSeconds / 3600).toFixed(1)} h`}
+        {noTimelockFeature ? "no timelock feature" : timelockSeconds === 0 ? "none" : timelockSeconds % 86400 === 0 ? `${timelockSeconds / 86400} d` : `${+(timelockSeconds / 3600).toFixed(1)} h`}
       </Text>
 
       <RowLabel y={Y_CODE}>CODE</RowLabel>
@@ -301,10 +302,10 @@ export default function Console({ data }: { data: ConsoleData }) {
         {verified ? "verified" : "not verified"}
       </Text>
       <group position={[0.55, Y_CODE, 0]}>
-        <Lamp x={0} on={weakened} color={WEAKENED} delay={0.55} />
+        <Lamp x={0} on={codeDrifted} color={WEAKENED} delay={0.55} />
       </group>
-      <Text position={[0.68, Y_CODE, 0.093]} fontSize={0.078} color={weakened ? WEAKENED : INK} font={FONT} anchorX="left">
-        {weakened ? "drifted" : "current"}
+      <Text position={[0.68, Y_CODE, 0.093]} fontSize={0.078} color={codeDrifted ? WEAKENED : INK} font={FONT} anchorX="left">
+        {codeDrifted ? "drifted" : "no drift record"}
       </Text>
 
       <RowLabel y={Y_LAST}>LAST</RowLabel>

@@ -66,10 +66,11 @@ function FitCamera({ mobile }: { mobile: boolean }) {
     const aspect = size.width / size.height;
     const halfFov = (persp.fov * Math.PI) / 360;
     if (mobile) {
-      const targetHalfWidth = 1.8;
-      const d = targetHalfWidth / (Math.tan(halfFov) * Math.max(aspect, 0.001));
-      camera.position.set(0, 0, d);
-      camera.lookAt(0, 0.42, 0);
+      // Same two-axis fit as desktop, looking straight at the panel's centre, so the
+      // nameplate and the LAST row both stay in frame with no empty band.
+      const d = Math.max(1.95 / (Math.tan(halfFov) * Math.max(aspect, 0.001)), 1.72 / Math.tan(halfFov));
+      camera.position.set(0, -0.05, d);
+      camera.lookAt(0, -0.05, 0);
     } else {
       // Fit both axes: the panel's full height (nameplate to the LAST readout, whose
       // label is required by design/CHARTER.md) must stay in frame, not just its width —
@@ -118,7 +119,7 @@ function Scene({ data, reduced, mobile }: { data: ConsoleData; reduced: boolean;
       <directionalLight position={[2.5, 3.5, 2.5]} intensity={1.5} color="#FFF1DE" castShadow />
       <directionalLight position={[-3, 1.5, -2]} intensity={0.45} color="#FFEBD2" />
       <Suspense fallback={null}>
-        <Environment files="/hdri/wooden_studio_17_1k.hdr" resolution={256} />
+        <Environment files="/hdri/wooden_studio_17_512.hdr" resolution={256} />
         {frontOn ? (
           <group scale={1.05}>
             <Console data={data} />
@@ -128,11 +129,11 @@ function Scene({ data, reduced, mobile }: { data: ConsoleData; reduced: boolean;
             <Rig reduced={reduced} data={data} />
           </ScrollControls>
         )}
-        <mesh rotation-x={-Math.PI / 2} position={[0, -1.15, 0]} receiveShadow>
+        <mesh rotation-x={-Math.PI / 2} position={[0, -1.66, 0]} receiveShadow>
           <planeGeometry args={[20, 20]} />
           <meshStandardMaterial color="#E6E2D9" roughness={1} />
         </mesh>
-        <ContactShadows position={[0, -1.1, 0]} resolution={256} scale={6} blur={1.8} far={1.4} opacity={0.55} color="#2a2620" frames={reduced ? 1 : Infinity} />
+        <ContactShadows position={[0, -1.65, 0]} resolution={256} scale={6} blur={1.8} far={1.4} opacity={0.55} color="#2a2620" frames={reduced ? 1 : Infinity} />
       </Suspense>
     </Canvas>
   );

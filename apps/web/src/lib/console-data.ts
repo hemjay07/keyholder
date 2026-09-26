@@ -29,6 +29,7 @@ export function consoleDataFromFacts(opts: {
     timelockSeconds: seconds,
     noTimelockFeature,
     verified: facts.verifiedStatus === "verified",
+    codeDrifted: facts.verifiedStatus === "drifted",
     weakened,
     slot,
     label: `${rowLabel} · read ${readDate}${slot != null ? ` · slot ${slot.toLocaleString("en-US")}` : ""}`,

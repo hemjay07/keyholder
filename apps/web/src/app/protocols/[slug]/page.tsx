@@ -4,6 +4,7 @@
 // embed, and citations. Unresolved protocols never guess — they print the scan note.
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { headers } from "next/headers";
 import { fetchProtocol, fetchEvents } from "@/lib/api-client";
 import { consoleDataFromFacts, timelockLabel } from "@/lib/console-data";
 
@@ -18,11 +19,14 @@ function timelockPhrase(facts: Parameters<typeof timelockLabel>[0]): string {
   return `${label} timelock`;
 }
 import ConsoleDevice from "@/components/console/ConsoleDevice";
+import UnresolvedConsole from "@/components/console/UnresolvedConsole";
 
 export const dynamic = "force-dynamic";
 
 export default async function ProtocolPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+  const h = await headers();
+  const origin = `${h.get("x-forwarded-proto") ?? "http"}://${h.get("host")}`;
   const protocol = await fetchProtocol(slug).catch((err) => {
     console.error("ProtocolPage: fetchProtocol failed", err);
     return null;
@@ -76,9 +80,7 @@ export default async function ProtocolPage({ params }: { params: Promise<{ slug:
           {consoleData ? (
             <ConsoleDevice data={consoleData} />
           ) : (
-            <div className="unresolved-panel">
-              <b>unresolved:</b> {protocol.evidenceNote ?? "no on-chain evidence of a multisig or governance authority was found for this program."}
-            </div>
+            <UnresolvedConsole name={protocol.name} note={protocol.evidenceNote ?? "no on-chain evidence of a multisig or governance authority was found for this program."} />
           )}
         </div>
       </section>
@@ -119,7 +121,7 @@ export default async function ProtocolPage({ params }: { params: Promise<{ slug:
         <p className="lede" style={{ margin: "0 0 12px" }}>
           <img src={`/api/v1/badge/${protocol.id}.svg`} alt={`${protocol.name} control badge`} width={300} height={40} />
         </p>
-        <pre className="badge-embed mono">{`<img src="https://keyholder.example/api/v1/badge/${protocol.id}.svg" alt="${protocol.name} control badge" width="300" height="40" />`}</pre>
+        <pre className="badge-embed mono">{`<img src="${origin}/api/v1/badge/${protocol.id}.svg" alt="${protocol.name} control badge" width="300" height="40" />`}</pre>
       </section>
 
       <section className="citations-section">

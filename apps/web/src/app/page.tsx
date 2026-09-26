@@ -20,6 +20,7 @@ const HERO_CONSOLE: ConsoleData = {
   timelockSeconds: 0,
   noTimelockFeature: false,
   verified: false,
+  codeDrifted: false,
   weakened: true,
   slot: null,
   label: "Drift · admin council · 1 Apr 2026 · reconstructed",
@@ -96,7 +97,7 @@ export default async function HomePage() {
           <span>READ <b>{readDate}</b></span>
           <span><b>{protocols.length}</b> PROTOCOLS TRACKED</span>
           <span><b>{changes24h.length}</b> CHANGES 24H</span>
-          <span className="weak"><b>1</b> WEAKENED (RECONSTRUCTED)</span>
+          <span className="weak"><b>{noTimelock.length}</b> OF {resolved.length} WITH NO TIMELOCK</span>
         </header>
       )}
 
