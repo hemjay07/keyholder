@@ -1,0 +1,167 @@
+name: Keyholder
+kind: hackathon
+source: "BRIEF.md (2026-09-25, Solana track, Colosseum Crypto World's Fair)"
+demand: D0
+demand_evidence: |
+  18 first-person posts by Solana developers and traders 2026-04-01 to 2026-09-25 citing upgrade-authority/timelock risk in the wake of Drift Protocol's $285.26M loss (BRIEF §3 item 3; sources research/12-demand-grok-round2.md Q4):
+  @mubaraqabba (2026-04-02) "That single key can replace the program bytecode with anything"
+  @rami_poker "Raydium's 3/4 multisig with no timelock"
+  @Selas2311 asking a project for a timelock timeline
+  13 more in 10-day windows post-Drift (research/12-demand-grok-round2.md full list).
+  D0 rationale: no post asked for this product by name, but the signal is unambiguous and latent (per BRIEF §3 item 3: "Grok stated: 'there is still no widely cited subscribe to these program IDs and email me a verified-build diff when last_deploy_slot moves product'").
+
+company_case: 'weak: payers exist by construction but none has committed. Candidates: wallet teams (a control-change warning beside simulation; Blowfish-class vendor is defunct), vault curators and integrators on Kamino/marginfi-style markets (per-dependency feed), risk desks and funds (API + historical control state), agents (x402 per call). Prices are ASSUMPTIONS ($199–999/month tiers; $0.01–0.10 per call) anchored on Helius $49/$499/$999 plans (BACKEND §2). No payer has been contacted; the founder has no access to protocol teams, so traction must come from the public product itself.'
+company_evidence: |
+  Drift, 2026-04-01, $285.26M (rekt.news/drift-protocol-rekt, fetched 2026-09-25): admin taken via a 2-of-5 multisig with zero timelock; four durable nonces created 2026-03-23; a Security Council migration lowered the threshold 3-of-5 to 2-of-5; malicious collateral market; 18 vaults drained in 128 seconds.
+  Verified-build status of 15 major programs (verify.osec.io/status, 2026-09-26): verified: Kamino Lend, marginfi v2, Phoenix; registered but no longer matching: Raydium AMM v4, Raydium CLMM, Orca Whirlpool, Drift v2, Marinade, Squads v4; never registered: Jupiter v6, Meteora DLMM, Jito stake pool, Pump.fun, Openbook v2, Sanctum router.
+  No rekt.news Solana entry names a malicious program upgrade as the vector; the named vectors are admin keys and multisigs.
+  Closest tools (BRIEF): Solana Foundation Microscope (self-hosted, one program + one Squads multisig per deployment); Sec3 free nonce/multisig monitor (own team); UpgradeGuard / solana-upgrade-guard (pre-deploy CLIs); Phantom (simulation + scam lists only); Solscan shows "MULTISIG" and "verified FALSE" but no threshold, timelock or history (plan/research/refs/18).
+  This is evidence of the problem and the gap, not of a paying customer; hence company_case weak.
+
+weak_case_accepted: 'founder in chat, 2026-09-26, after reading PLAN.md and the weak-demand line: "go ahead"'
+
+last_verified: "2026-09-26"
+
+deadline: "2026-10-13T06:59:59Z"
+
+track: Solana
+
+gate_0: "yes, Keyholder (founder, 2026-09-26, from research/13-ranking-round2.md gate question and BRIEF acceptance)"
+
+data_policy: |
+  Real events only; no mock data or mock payments in any demo path.
+  - Events are real on-chain transactions, indexed live from Yellowstone (Triton) or RPC.
+  - Metrics reported in submission (protocol count, event count, verified builds) are measured from live chain state, not invented.
+  - Drift replay is reconstructed from real March–April 2026 transactions; labeled as such.
+  - x402 payments are real USDC on mainnet (or devnet with clear labeling if mainnet not ready); never mocked.
+  - Telegram subscribers are organic; no fake test accounts.
+  - Wallet positions are resolved live from SPL Token + program accounts; never fabricated.
+
+phase_workflow:
+  - "SELECT: demand (D0) + company case (viable) + data policy (real events) gates cleared. No build starts without these."
+  - "PLAN mode: this document and PLAN.md (strategy, decisions, schedule, risks)."
+  - "BUILD: critical path ingest → decode → state → risk → replay (days 1–7). UI (SURFACE kit) parallel from day 4."
+  - "SHIP: day 16 freeze; demo video + presentation video + submission form by 2026-10-13T06:59:59Z."
+  - "LEARN: postmortem after submission (incidents.md, lessons.md, SOP fixes)."
+
+quotas:
+  - {
+      service: "Triton Yellowstone",
+      limit: "$125 minimum deposit; PAYG at $0.08/GB bandwidth (~$4/mo control events + $20/mo RPC calls)",
+      reset: "per invoice, monthly reconcile",
+      fallback: "Helius Developer $49/mo; public RPC poll always on as cross-check",
+      pivot_at: "2026-10-01 (if onboarding takes >24h, move to Helius)"
+    }
+  - {
+      service: "OtterSec verify.osec.io API",
+      limit: "assumed free; 10 requests/min soft (not confirmed); poller runs every 10 min",
+      reset: "rolling",
+      fallback: "OtterSec PDA read for verified bit only (trustless but less info); cache 10 min, re-fetch 5 min post-upgrade",
+      pivot_at: "2026-10-08 (if API down, use PDA read)"
+    }
+  - {
+      service: "Neon Postgres",
+      limit: "Launch plan ~$19/mo; 1 GB storage (compressed raw_tx), monitored",
+      reset: "monthly",
+      fallback: "Fly Postgres if Neon unavailable",
+      pivot_at: "2026-09-28 (setup earliest)"
+    }
+  - {
+      service: "Fly.io worker",
+      limit: "shared-cpu-2x 2GB ~$15/mo; 1 machine + 1 standby region",
+      reset: "monthly",
+      fallback: "Hetzner CX32 ~€7/mo if Fly unavailable",
+      pivot_at: "2026-09-28"
+    }
+  - {
+      service: "Vercel",
+      limit: "100 deploys/day shared; Hobby/Pro tier free/Pro $20/mo",
+      reset: "rolling",
+      fallback: "self-host Next.js on Fly if Vercel quota hit",
+      pivot_at: "2026-10-10 (if 100 deployments/day is exhausted, unlikely)"
+    }
+  - {
+      service: "Telegram Bot API",
+      limit: "30 msg/s official; ~1,000 subscribers = ~0.5 msg/s avg; no rate-limit risk",
+      reset: "rolling",
+      fallback: "web dashboard alerts (no Telegram)",
+      pivot_at: "n/a"
+    }
+  - {
+      service: "Resend email API",
+      limit: "100 emails/day free tier; demo likely 5–10/day",
+      reset: "daily",
+      fallback: "Telegram only if email quota hit",
+      pivot_at: "2026-10-14 (post-deadline)"
+    }
+  - {
+      service: "PayAI x402 facilitator",
+      limit: "free tier; settlement caps not confirmed (ASSUMPTION)",
+      reset: "n/a (pay-as-you-go)",
+      fallback: "Coinbase CDP facilitator; devnet mock payments if both unavailable",
+      pivot_at: "2026-10-10 (demo uses devnet x402 if mainnet not ready)"
+    }
+  - {
+      service: "X API (v2)",
+      limit: "Essential plan ~$100/mo (ASSUMPTION, not confirmed); 50 tweets/month demo expected",
+      reset: "monthly",
+      fallback: "manual posting from founder account; pre-generated sample posts",
+      pivot_at: "2026-10-14 (post-launch refinement)"
+    }
+  - {
+      service: "SAS (Solana Attestation Service)",
+      limit: "on-chain program; rent ~0.002 SOL per attestation; no rate limit expected",
+      reset: "n/a (per-tx)",
+      fallback: "own ControlState PDAs only (SAS mirror is stretch goal)",
+      pivot_at: "2026-10-14 (day 14 stretch, not critical path)"
+    }
+
+cost_ceiling: |
+  $150/month all-in during hackathon. Alert founder at 80%.
+  Breakdown (estimated):
+  - Triton Yellowstone: ~$25/mo (bandwidth only; $125 deposit covers it)
+  - Neon Postgres: ~$19/mo (Launch plan)
+  - Fly.io worker: ~$15/mo (shared-cpu-2x)
+  - Vercel: free (Hobby tier) / $20/mo (Pro)
+  - Upstash Redis (rate limits): free tier ~$0
+  - Resend email: free tier (100/day)
+  - X API: $0 (manual posts) or $100/mo (Essential plan; demo can skip)
+  - PayAI x402: free tier or devnet
+  Total: $59–179/mo. Caps at $150; founder alerted if >$120.
+
+strikes:
+  - n: 0
+    artifact: research/07-ranking.md
+    verdict: "rejected by founder 2026-09-25 ('rehash of the last project'; Stocklana entry, different product)"
+    date: 2026-09-25T22:30Z
+  - n: 1
+    artifact: research/13-ranking-round2.md
+    verdict: "accepted by founder 2026-09-26 (gate 0 = yes, Keyholder selected for this planning run)"
+    date: 2026-09-26T00:40Z
+  - n: 2
+    artifact: "controlplane/plan/PLAN.md"
+    verdict: "approved by coordinator 2026-09-26 (manager review, all conflicts resolved, critical path feasible)"
+    date: 2026-09-26T14:00Z
+
+state:
+  research: "controlplane/research/"
+  brief: "controlplane/plan/BRIEF.md"
+  prd: "controlplane/plan/PRD.md"
+  backend: "controlplane/plan/BACKEND.md"
+  onchain: "controlplane/plan/ONCHAIN.md"
+  creative: "controlplane/plan/CREATIVE.md"
+  plan: "controlplane/plan/PLAN.md (this build order, decisions, risks, schedule)"
+  hackathon_brief: "~/.claude/skills/hackathon-briefs/colosseum-worldsfair-2026.md"
+  surface_skill: "~/.claude/skills/surface/SKILL.md"
+  project_schema: "~/.claude/skills/shared-pipeline/PROJECT.schema.md"
+
+spend: []
+
+notes:
+  - "No pre-existing code (greenfield); all work 2026-09-27 to 2026-10-13 disclosed."
+  - "16-day window is tight; critical path is depth-first (ingest → decode → state → risk → replay by day 7)."
+  - "UI (SURFACE kit) is parallel; founder sees checkpoint 2 (Drift replay specimen) by day 7."
+  - "On-chain program (ControlGuard) is load-bearing for business model (vaults call check() to gate deposits); not V2."
+  - "Drift incident replay is the demo centerpiece; labeled reconstructed from real txs + live devnet flip."
+  - "Founder is solo; AI pair implements per service; coordinator reviews daily against this plan."
+  - "Scope is final; founder said 'build the main thing fully' (all 9 BRIEF items); deadlines never cut scope."
