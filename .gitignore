@@ -12,3 +12,6 @@ dist/
 .env.local
 .pgdata/
 pglog.txt
+
+# Task 2.4 Drift history backfill raw RPC dumps (64MB+, real chain data, not source)
+data/drift-2026/

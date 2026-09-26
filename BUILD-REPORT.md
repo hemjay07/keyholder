@@ -21,6 +21,10 @@ Builder: hackathon-build skill (orchestrator + implementation subagents)
 | DEV-008b | decoder loader tags 0,2,5,6,7 | real tx per tag | tags 1,3,4 tested on Drift's real slot-429,731,225 deploy; others from spec | no real tx found yet | UNTESTED | low: upgrades use tags 3/4 |
 | DEV-008c | idl-loader Program Metadata | all data sources | Direct+Json only (the only real shape found); others rejected honestly | one real account | DEGRADED | protocols with URL/External IDLs show "undecoded" |
 | DEV-009 | decoder Squads config actions | real tx per action | AddMember real-tested; other actions via the same verified enum decoder | only AddMember in real history of 7qipz… | UNTESTED | threshold/timelock actions need a real tx (devnet flip will produce one) |
+| DEV-020 | Task 2.4 backfill | full history via public RPC | public RPC 429-throttled; hub accounts (State, program) page only back to 2026-05-16 in 20,000 sigs | shared public endpoint + two agents | DEGRADED | needs a non-shared RPC (Helius free tier) to reach March on hub accounts |
+| DEV-021 | Task 2.4 | council multisig address | Squads v4 program invocation seen; the multisig account itself not yet resolved | budget | UNTESTED | replay frame 3 needs it |
+| DEV-022 | Task 2.4 | malicious market creation + withdraw-guard change | not located (CVT mint March window unread) | budget | UNTESTED | replay frames 4 labelled "not retrieved" until found |
+| DEV-023 | backfill script | — | unbounded 429 retry fixed to 5 attempts | bug | COSMETIC | none |
 
 ## Failed Attempts & Resolutions
 | Step | Error | Attempts | Resolution |
@@ -33,6 +37,8 @@ Builder: hackathon-build skill (orchestrator + implementation subagents)
 | 1 | `pnpm -r typecheck` (orchestrator) | 6 packages pass | all Done | ✅ |
 | 1 | `pnpm test` (orchestrator) | decoder + db tests | Test Files 2 passed, Tests 22 passed | ✅ |
 | 2 | decoder `vitest run` + tsc (orchestrator) | 2.1/2.2 decoders on real txs | Test Files 7 passed, Tests 78 passed; tsc clean | ✅ |
+| 2 | orchestrator getTransaction 9zJGhyot…pPwE (mainnet) | the reported admin hijack | slot 408,886,958, 2026-03-26T01:46:35Z, err None, logs: VaultTransactionExecute → UpdateAdmin, admin E1admb4t…fnob -> AiLGdNit…PKrW | ✅ |
+| 2 | Task 2.4 verdict | FULL/PARTIAL/KILL | PARTIAL (research/drift-2026-history.md) | ✅ |
 
 ## Known Risks (for debug)
 - Local Postgres 15 must be restarted after reboot: `export PATH=/opt/homebrew/opt/postgresql@15/bin:$PATH; pg_ctl -D .pgdata -o "-p 5433 -k /tmp" -l pglog.txt start`.
