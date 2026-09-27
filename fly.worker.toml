@@ -1,0 +1,10 @@
+# Keyholder worker: one always-on machine, no public port.
+app = "keyholder-worker"
+primary_region = "iad"
+
+[build]
+  dockerfile = "Dockerfile.worker"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"

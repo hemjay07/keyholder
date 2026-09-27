@@ -1,6 +1,12 @@
 /** @type {import('next').NextConfig} */
+const path = require('path');
+// Monorepo: the workspace root (pnpm-lock.yaml, node_modules) is two levels up.
+// Explicit so builds that start in apps/web (vercel build) still resolve next.
+const root = path.join(__dirname, '..', '..');
 const nextConfig = {
   reactStrictMode: true,
+  turbopack: { root },
+  outputFileTracingRoot: root,
   async headers() {
     return [
       {

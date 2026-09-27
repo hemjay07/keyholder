@@ -79,4 +79,5 @@ export const GET = withX402(
 );
 
 export const dynamic = 'force-dynamic';
-export const maxDuration = 3600;
+// Vercel Hobby caps functions at 300 s; stream clients reconnect.
+export const maxDuration = 300;

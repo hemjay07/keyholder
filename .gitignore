@@ -22,3 +22,5 @@ data/drift-2026/
 target/
 programs/*/target/
 Cargo.lock
+.vercel
+.env*.local

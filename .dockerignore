@@ -1,0 +1,14 @@
+**/node_modules
+**/dist
+**/.next
+target
+data
+design
+evidence
+research
+plan
+warroom
+arch
+.pgdata
+*.log
+.git

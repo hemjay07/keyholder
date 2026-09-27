@@ -15,6 +15,10 @@ let db: PostgresJsDatabase<typeof schema> | null = null;
 export function getDb(): PostgresJsDatabase<typeof schema> {
   if (!db) {
     client = postgres(env.DATABASE_URL, {
+      // Through Supabase's transaction pooler (port 6543), which allows many clients.
+      // Keep this above the most parallel queries a page runs: when every connection is
+      // busy postgres.js pipelines extra queries, which the transaction pooler does not
+      // support, and the page hangs (seen live 2026-09-27 with max 3).
       max: 10,
       idle_timeout: 30,
       connect_timeout: 10,

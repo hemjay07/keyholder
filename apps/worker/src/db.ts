@@ -9,7 +9,9 @@ export function initDb(databaseUrl: string = process.env.DATABASE_URL ?? ''): Po
   if (!databaseUrl) {
     throw new Error('DATABASE_URL is required to initialize the database');
   }
-  const pgClient = postgres(databaseUrl);
+  // Supabase's session pooler allows 15 clients in total; the worker keeps a small
+  // share so the web app (transaction pooler) never starves (2026-09-27).
+  const pgClient = postgres(databaseUrl, { max: Number(process.env.PG_POOL_MAX ?? 4) });
   return drizzle(pgClient, { schema });
 }
 
