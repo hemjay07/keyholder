@@ -4,27 +4,9 @@
 // says so, never a placeholder number.
 import Link from "next/link";
 import { fetchControlChanges, fetchProtocols, type ProtocolSummary } from "@/lib/api-client";
-import { timelockLabel, controlLabel, consoleDataFromFacts } from "@/lib/console-data";
-import HomeStory, { type Beat } from "@/components/HomeStory";
-import type { ConsoleData } from "@/components/console/Console";
+import { timelockLabel, controlLabel } from "@/lib/console-data";
 
 export const dynamic = "force-dynamic";
-
-// The prototype's fixed HERO state (design/devices/console/src/state.js, design/CONTEXT.md
-// "the one moment"): Drift's admin council at the drain, reconstructed from on-chain
-// history, not a live read. Never mixed with a live protocol's facts.
-const HERO_CONSOLE: ConsoleData = {
-  protocol: "DRIFT · ADMIN",
-  threshold: 2,
-  members: 5,
-  timelockSeconds: 0,
-  noTimelockFeature: false,
-  verified: false,
-  codeDrifted: false,
-  weakened: true,
-  slot: null,
-  label: "Drift · admin council · 1 Apr 2026 · reconstructed",
-};
 
 function isRealProtocol(p: ProtocolSummary) {
   // "Drift (test)" is a QA fixture in the shared DB, not one of the 15 tracked protocols
@@ -43,6 +25,10 @@ function keyRatio(p: ProtocolSummary): number {
   if (!p.controlFacts?.threshold || !p.controlFacts?.members) return 1;
   return p.controlFacts.threshold / p.controlFacts.members;
 }
+
+// The replay strip's axis: 24 March to 3 April 2026, linear.
+const A0 = Date.parse("2026-03-24T00:00:00Z"), A1 = Date.parse("2026-04-03T00:00:00Z");
+const pos = (iso: string) => ((Date.parse(iso) - A0) / (A1 - A0)) * 100;
 
 export default async function HomePage() {
   let protocols: ProtocolSummary[] = [];
@@ -81,87 +67,8 @@ export default async function HomePage() {
     return tl && (tl.kind === "none" || tl.kind === "no_timelock_feature");
   });
 
-  // The story's beats: the Drift council as the replay rebuilt it, then the
-  // weakest protocol as read today.
-  const council = (label: string, weakened: boolean): ConsoleData => ({ ...HERO_CONSOLE, protocol: "DRIFT · ADMIN COUNCIL", weakened, label });
-  const weakest = sorted.find((p) => p.controlFacts?.threshold != null);
-  const liveDevice = weakest?.controlFacts
-    ? consoleDataFromFacts({
-        name: weakest.name,
-        rowLabel: `${weakest.name} · read today`,
-        facts: weakest.controlFacts,
-        weakened: weakest.controlFacts.timelock?.kind === "none" || weakest.controlFacts.timelock?.kind === "no_timelock_feature",
-        readDate: new Date().toISOString().slice(0, 10),
-      })
-    : null;
-  const beats: Beat[] = [
-    {
-      id: "hero",
-      device: council("admin council · 2 of 5 · no timelock · read on-chain", false),
-      body: (
-        <>
-          <h1>Drift needed two keys to lose $285M.</h1>
-          <p className="lede-tape mono">Count the keys.</p>
-          <p className="lede">
-            Keyholder shows who can move the money in every Solana protocol (keys, threshold, timelock, verified code), rings when that
-            control weakens, and lets any program refuse to deposit where it just did.
-          </p>
-          <div className="cta">
-            <Link className="primary" href="/wallet">Check your wallet</Link>
-            <Link href="/replay/drift">Watch the Drift replay</Link>
-          </div>
-          <p className="story-hint mono">Scroll: the console replays what the chain showed.</p>
-        </>
-      ),
-    },
-    {
-      id: "multisig",
-      device: council("HIGH · new multisig by a controller · 25 Mar 2026", true),
-      body: (
-        <>
-          <p className="story-date mono">25 March 2026 · 16:58 UTC</p>
-          <p className="story-line">A second multisig appears: 2 of 5 keys, no timelock, set up by the council&apos;s own signers.</p>
-          <p className="story-note">Keyholder&apos;s first alert. Hours later the admin key moves through it.</p>
-        </>
-      ),
-    },
-    {
-      id: "drain",
-      device: council("first withdrawal · 31 Mar 2026 · 5.6 days after the first alert", true),
-      body: (
-        <>
-          <p className="story-date mono">31 March 2026 · 07:16 UTC</p>
-          <p className="story-line">The first withdrawal from the insurance fund. <b>5.6 days</b> after the first alert.</p>
-          <p className="story-note">On 1 April, $285M left in minutes. <Link href="/replay/drift">Every step, with its transaction &rarr;</Link></p>
-        </>
-      ),
-    },
-    ...(liveDevice && weakest
-      ? [
-          {
-            id: "today",
-            device: liveDevice,
-            body: (
-              <>
-                <p className="story-date mono">Today · {new Date().toISOString().slice(0, 10)}</p>
-                <p className="story-line">
-                  Every protocol has keys like these. {noTimelock.length} of {resolved.length} have no timelock at all.
-                </p>
-                <p className="story-note">
-                  Right now: <Link href={`/protocols/${weakest.id}`}>{weakest.name}</Link>. <a href="#protocols">All {protocols.length} protocols &darr;</a>
-                </p>
-              </>
-            ),
-          },
-        ]
-      : []),
-  ];
-
-
-
-
-  const protocolById = new Map(protocols.map((p) => [p.id, p]));
   const readDate = new Date().toISOString().slice(0, 10);
+  const protocolById = new Map(protocols.map((p) => [p.id, p]));
 
   return (
     <main>
@@ -175,13 +82,54 @@ export default async function HomePage() {
         </header>
       )}
 
-      <HomeStory beats={beats} />
+      <section className="home-fold">
+        <div className="home-lede">
+          <h1>Drift needed two keys to lose $285M.</h1>
+          <p className="lede-tape mono">Count the keys.</p>
+          <p className="lede">
+            Keyholder shows who can move the money in every Solana protocol, rings when that control weakens, and lets any program
+            refuse to deposit where it just did.
+          </p>
+          <div className="cta">
+            <Link className="primary" href="/wallet">Check your wallet</Link>
+            <a href="#protocols">All {protocols.length} protocols</a>
+          </div>
+        </div>
+        <div className="home-weakest" aria-label="Weakest control today">
+          <p className="hw-label mono">Weakest control today · read {readDate}</p>
+          {sorted.filter((p) => p.controlFacts?.threshold != null).slice(0, 5).map((p) => {
+            const f = p.controlFacts!;
+            const noTl = f.timelock?.kind === "none" || f.timelock?.kind === "no_timelock_feature";
+            return (
+              <Link key={p.id} href={`/protocols/${p.id}`} className={`hw-row${noTl ? " weak" : ""}`}>
+                <span className="hw-name">{p.name}</span>
+                <span className="hw-keys" aria-label={`${f.threshold} of ${f.members} keys`}>
+                  {Array.from({ length: Math.min(f.members ?? 0, 15) }, (_, i) => <i key={i} className={i < (f.threshold ?? 0) ? "on" : ""} />)}
+                </span>
+                <span className="hw-meta mono">{f.threshold} of {f.members} · {noTl ? "no timelock" : timelockLabel(f)}</span>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+
+      <Link href="/replay/drift" className="home-replay" aria-label="Watch the Drift replay">
+        <span className="hr-text">
+          <b className="mono">5.6 days of warning</b>
+          <span>Keyholder&apos;s first alert on Drift fired on 25 March. The money left on 31 March. Watch it step by step &rarr;</span>
+        </span>
+        <span className="hr-lanes" aria-hidden="true">
+          <span className="hr-band" style={{ left: `${pos("2026-03-25T16:58:31Z")}%`, width: `${pos("2026-03-31T07:16:19Z") - pos("2026-03-25T16:58:31Z")}%` }} />
+          <span className="hr-lane"><em>Alerts</em><i className="hr-tick a" style={{ left: `${pos("2026-03-25T16:58:31Z")}%` }} /></span>
+          <span className="hr-lane"><em>Money out</em><i className="hr-tick m" style={{ left: `${pos("2026-03-31T07:16:19Z")}%` }} /><i className="hr-tick m" style={{ left: `${pos("2026-04-01T20:03:00Z")}%` }} /></span>
+          <span className="hr-axis mono"><span style={{ left: 0 }}>24 Mar</span><span style={{ left: `${pos("2026-03-31T00:00:00Z")}%` }}>31 Mar</span></span>
+        </span>
+      </Link>
 
       <section className="protocols-section" id="protocols">
-        <h2>Who holds the keys</h2>
         {resolved.length > 0 && (
           <p className="finding">
-            <b>{noTimelock.length} of {resolved.length}</b> resolved protocols have no timelock at all — a
+            <b>{noTimelock.length} of {resolved.length}</b> resolved protocols have no timelock at all: a
             multisig can move funds the moment enough keys sign.
           </p>
         )}
