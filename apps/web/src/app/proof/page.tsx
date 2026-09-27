@@ -2,7 +2,7 @@
 // protocol's multisig is weakened, the same deposit is refused. Every figure
 // is read from devnet (lib/proof.ts says how).
 import Link from "next/link";
-import ConsoleDevice from "@/components/console/ConsoleDevice";
+import HomeStory from "@/components/HomeStory";
 import type { ConsoleData } from "@/components/console/Console";
 import { OWN_CONTROL, PROGRAMS, STEPS, explorerAddr, explorerTx } from "@/lib/proof";
 
@@ -43,8 +43,8 @@ export default function ProofPage() {
   return (
     <main className="proof-page">
 
-      <section className="hero">
-        <div className="hero-copy">
+      <section className="replay-head">
+        <div>
           <p className="kicker">Proof · devnet</p>
           <h1>Refused on-chain.</h1>
           <p className="lede">
@@ -62,33 +62,35 @@ export default function ProofPage() {
             </div>
           </div>
         </div>
-        <div className="device-frame">
-          <ConsoleDevice data={AT_REFUSAL} />
-        </div>
       </section>
 
       <section className="steps-section">
         <h2>Three transactions, 23 seconds</h2>
-        <ol className="steps">
-          {STEPS.map((s) => (
-            <li key={s.signature} className={`step proof-${s.outcome}`}>
-              <span className="step-time mono">{fmt(s.time)}<br />slot {s.slot.toLocaleString("en-US")}</span>
-              <div className="step-body">
-                <p className="step-says"><b>{s.title}.</b> {s.detail}</p>
-                {s.facts && (
-                  <p className="step-facts mono">
-                    {s.facts.threshold} of {s.facts.members} · timelock {s.facts.timelockS} s · score {s.facts.score}
-                    {s.facts.reasons && <> · {s.facts.reasons.join(", ")}</>}
-                  </p>
-                )}
-              </div>
-              <a className="step-sig mono" href={explorerTx(s.signature)} target="_blank" rel="noreferrer" title={s.signature}>
-                {s.signature.slice(0, 6)}…{s.signature.slice(-6)}
-              </a>
-            </li>
-          ))}
-        </ol>
       </section>
+      <HomeStory compact label="The devnet proof, step by step" beats={STEPS.map((s) => ({
+        id: s.signature,
+        device: {
+          ...AT_REFUSAL,
+          threshold: s.facts!.threshold,
+          members: s.facts!.members,
+          timelockSeconds: s.facts!.timelockS,
+          weakened: s.outcome !== "pass",
+          label: s.outcome === "pass" ? "deposit accepted · score 70 · slot 504,518,184" : s.outcome === "change" ? "multisig weakened · 2 of 5, timelock 0 · slot 504,518,274" : AT_REFUSAL.label,
+        },
+        body: (
+          <div className={`step proof-${s.outcome}`}>
+            <span className="step-time mono">{fmt(s.time)} · slot {s.slot.toLocaleString("en-US")}</span>
+            <p className="step-says"><b>{s.title}.</b> {s.detail}</p>
+            {s.facts && (
+              <p className="step-facts mono">
+                {s.facts.threshold} of {s.facts.members} · timelock {s.facts.timelockS} s · score {s.facts.score}
+                {s.facts.reasons && <> · {s.facts.reasons.join(", ")}</>}
+              </p>
+            )}
+            <a className="step-sig mono" href={explorerTx(s.signature)} target="_blank" rel="noreferrer" title={s.signature}>{s.signature.slice(0, 6)}…{s.signature.slice(-6)}</a>
+          </div>
+        ),
+      }))} />
 
       <section className="proof-code">
         <h2>What the vault adds</h2>

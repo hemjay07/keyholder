@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { fetchDriftReplay } from "@/lib/api-client";
 import { loadDriftSteps, type DriftStep } from "@/lib/drift-steps";
-import ConsoleDevice from "@/components/console/ConsoleDevice";
+import HomeStory from "@/components/HomeStory";
 import type { ConsoleData } from "@/components/console/Console";
 
 export const dynamic = "force-dynamic";
@@ -93,8 +93,8 @@ export default async function DriftReplayPage() {
   return (
     <main className="replay">
 
-      <section className="hero">
-        <div className="hero-copy">
+      <section className="replay-head">
+        <div>
           <p className="kicker">Replay · reconstructed</p>
           <h1>{lead} days of warning.</h1>
           <p className="lede mono">Drift lost $285M on 1 April 2026.</p>
@@ -106,9 +106,6 @@ export default async function DriftReplayPage() {
           <p className="replay-meta mono">
             {steps.length} transactions · slots {Number(replay.fromSlot).toLocaleString("en-US")}–{Number(replay.toSlot).toLocaleString("en-US")} · {replay.frames.length} alerts
           </p>
-        </div>
-        <div className="device-frame">
-          <ConsoleDevice data={COUNCIL_AT_FIRST_ALERT} />
         </div>
       </section>
 
@@ -139,33 +136,37 @@ export default async function DriftReplayPage() {
 
       <section className="steps-section">
         <h2>Step by step</h2>
-        <ol className="steps">
-          {steps.map((s) => {
-            const alerts = alertsBySlot.get(s.slot) ?? [];
-            return (
-              <li key={s.slot} className={`step ${s.phase}`}>
-                <span className="step-time mono">{fmtTime(s.time)}</span>
-                <div className="step-body">
-                  <p className="step-says">{s.says}</p>
-                  {alerts.map((a) => (
-                    <p key={a.ruleId} className={`step-alert ${a.ruleId === "no_timelock" && s.phase === "before" ? "standing" : ""}`}>
-                      <span className="mono">{a.ruleId === "no_timelock" && s.phase === "before" ? "Standing" : a.severity}</span>{" "}
-                      {RULE_WORDS[a.ruleId] ?? a.ruleId}
-                    </p>
-                  ))}
-                </div>
-                {/^[1-9A-HJ-NP-Za-km-z]{86,88}$/.test(s.signature) ? (
-                  <a className="step-sig mono" href={`https://solscan.io/tx/${s.signature}`} target="_blank" rel="noreferrer" title={s.signature}>
-                    {shortSig(s.signature)}
-                  </a>
-                ) : (
-                  <span className="step-sig mono">signature not recorded</span>
-                )}
-              </li>
-            );
-          })}
-        </ol>
       </section>
+      <HomeStory compact label="The Drift incident, step by step" beats={steps.map((s) => {
+        const alerts = alertsBySlot.get(s.slot) ?? [];
+        const warned = s.phase !== "before";
+        const top = alerts.find((a) => !(a.ruleId === "no_timelock" && s.phase === "before"));
+        return {
+          id: String(s.slot),
+          device: {
+            ...COUNCIL_AT_FIRST_ALERT,
+            protocol: "DRIFT · ADMIN COUNCIL",
+            weakened: warned,
+            label: top ? `${top.severity.toUpperCase()} · ${RULE_WORDS[top.ruleId] ?? top.ruleId} · ${fmtTime(s.time).split(" · ")[0]}` : `${fmtTime(s.time)} · ${s.phase === "before" ? "standing: no timelock" : "no new alert"}`,
+          },
+          body: (
+            <div className={`step ${s.phase}`}>
+              <span className="step-time mono">{fmtTime(s.time)}</span>
+              <p className="step-says">{s.says}</p>
+              {alerts.map((a) => (
+                <p key={a.ruleId} className={`step-alert ${a.ruleId === "no_timelock" && s.phase === "before" ? "standing" : ""}`}>
+                  <span className="mono">{a.ruleId === "no_timelock" && s.phase === "before" ? "Standing" : a.severity}</span> {RULE_WORDS[a.ruleId] ?? a.ruleId}
+                </p>
+              ))}
+              {/^[1-9A-HJ-NP-Za-km-z]{86,88}$/.test(s.signature) ? (
+                <a className="step-sig mono" href={`https://solscan.io/tx/${s.signature}`} target="_blank" rel="noreferrer" title={s.signature}>{shortSig(s.signature)}</a>
+              ) : (
+                <span className="step-sig mono">signature not recorded</span>
+              )}
+            </div>
+          ),
+        };
+      })} />
 
       <section className="citations-section">
         <h2>How this was rebuilt</h2>

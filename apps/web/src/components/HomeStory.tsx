@@ -38,7 +38,7 @@ function StoryHud({ d }: { d: ConsoleData }) {
   );
 }
 
-export default function HomeStory({ beats }: { beats: Beat[] }) {
+export default function HomeStory({ beats, compact = false, label = "How Drift lost control, step by step" }: { beats: Beat[]; compact?: boolean; label?: string }) {
   const [active, setActive] = useState(0);
   const refs = useRef<Array<HTMLDivElement | null>>([]);
 
@@ -60,7 +60,7 @@ export default function HomeStory({ beats }: { beats: Beat[] }) {
   const current = beats[Math.min(active, beats.length - 1)]!;
   const [phone, setPhone] = useState(false);
   useEffect(() => {
-    const mq = window.matchMedia("(max-width: 720px)");
+    const mq = window.matchMedia("(max-width: 900px)");
     setPhone(mq.matches);
     const on = () => setPhone(mq.matches);
     mq.addEventListener("change", on);
@@ -68,7 +68,7 @@ export default function HomeStory({ beats }: { beats: Beat[] }) {
   }, []);
 
   return (
-    <section className="story" aria-label="How Drift lost control, step by step">
+    <section className={`story${compact ? " compact" : ""}`} aria-label={label}>
       <StoryHud d={current.device} />
       <div className="story-beats">
         {beats.map((b, i) => (
@@ -78,13 +78,13 @@ export default function HomeStory({ beats }: { beats: Beat[] }) {
               refs.current[i] = el;
             }}
             data-beat={i}
-            className={`story-beat${i === active ? " on" : ""}${i === 0 ? " first" : ""}`}
+            className={`story-beat${i === active ? " on" : ""}${i === 0 && !compact ? " first" : ""}`}
           >
             {b.body}
           </div>
         ))}
       </div>
-      <div className="story-device">
+      {!(compact && phone) && <div className="story-device">
         <div className="device-frame">
           {/* On a phone the 3D console shows once, in beat 0's state; the HUD tells the story. */}
           <ConsoleDevice data={phone ? beats[0]!.device : current.device} />
@@ -94,7 +94,7 @@ export default function HomeStory({ beats }: { beats: Beat[] }) {
             <li key={b.id} className={i === active ? "on" : i < active ? "done" : ""} />
           ))}
         </ol>
-      </div>
+      </div>}
     </section>
   );
 }

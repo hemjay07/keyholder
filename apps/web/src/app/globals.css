@@ -444,12 +444,13 @@ footer.mono { padding: 20px 40px 40px; font-size: 11px; color: var(--ink-2); bor
 .story-beat.first { opacity: 1; transform: none; }
 .rails.single { grid-template-columns: 1fr; }
 .story-hud { display: none; }
-@media (max-width: 720px) {
+@media (max-width: 900px) {
   .strip { flex-wrap: nowrap; white-space: nowrap; gap: 14px; font-size: 10px; }
   .strip-slot { display: none; }
   .story { display: flex; flex-direction: column; padding: 0 18px; }
   .story-device { position: static; order: -2; height: auto; margin: 0 -18px; padding: 0; border: 0; background: none; }
-  .story-device .device-frame { aspect-ratio: auto; height: 80vw; overflow: hidden; }
+  .story-device { width: calc(100% + 36px); align-self: stretch; }
+  .story-device .device-frame { aspect-ratio: auto; width: 100%; height: min(80vw, 560px); overflow: hidden; }
   .story-device .console-fallback { height: 100%; overflow: hidden; }
   .story-progress { display: none; }
   .story-hud { order: -1; display: flex; align-items: center; gap: 10px; position: sticky; top: 0; z-index: 3; height: 52px; margin: 0 -18px; padding: 0 18px; background: var(--bg); border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); font-size: 12px; }
@@ -459,6 +460,23 @@ footer.mono { padding: 20px 40px 40px; font-size: 11px; color: var(--ink-2); bor
   .hud-keys i { width: 9px; height: 9px; border-radius: 50%; border: 1px solid var(--ink-2); transition: background var(--d-element) var(--ease-1); }
   .hud-keys i.on { background: var(--ink); border-color: var(--ink); }
   .hud-weak { color: var(--signal-text); }
-  .story-beat, .story-beat.first { min-height: 48vh; padding: 24px 0; }
-  .story-beat.first { min-height: auto; }
+  .story-beat, .story-beat.first { min-height: 0; padding: 28px 0; border-bottom: 1px solid var(--hair); }
+  .story-beat:not(.on) { opacity: 1; }
+  .story-beats { padding-bottom: 8px; }
 }
+/* compact story: many short steps beside a pinned console (replay, proof) */
+.story.compact .story-beat { min-height: 0; padding: 18px 0 18px 14px; border-left: 3px solid transparent; border-bottom: 1px solid var(--hair); justify-content: flex-start; }
+.story.compact .story-beat.on { border-left-color: var(--signal); }
+.story.compact .story-beats { padding: 0 0 30vh; }
+.story.compact .story-device { top: 90px; }
+@media (max-width: 900px) {
+  .story.compact .story-device { display: none; }
+  .story.compact .story-beat { padding-left: 10px; }
+}
+.replay-head { padding: 24px 40px 8px; max-width: 900px; }
+.replay-head h1 { font: 400 clamp(38px,5vw,72px)/1.02 var(--font-geist), "Geist", sans-serif; margin: 0 0 14px; letter-spacing: -.02em; }
+.story.compact .step { display: block; border: 0; padding: 0; }
+.story.compact .step .step-time { display: block; margin-bottom: 4px; }
+.story.compact .step .step-sig { display: inline-block; margin-top: 6px; }
+@media (max-width: 720px) { .replay-head { padding: 18px 18px 4px; } }
+@media (max-width: 900px) { .story.compact .story-beats { padding-bottom: 12px; } }
