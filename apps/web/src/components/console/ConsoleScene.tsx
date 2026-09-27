@@ -7,7 +7,7 @@
 // still under reduced motion or at phone width; static fallback without WebGL.
 import { Suspense, useEffect, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Environment, Lightformer, ContactShadows } from "@react-three/drei";
+import { Environment, Lightformer } from "@react-three/drei";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
 import Console, { ConsoleMotion, type ConsoleData } from "./Console";
@@ -151,7 +151,6 @@ function Scene({ data, companion, reduced, mobile }: { data: ConsoleData; compan
             {companion !== undefined && <Companion data={companion} reduced={reduced} />}
           </Rig>
         </ConsoleMotion.Provider>
-        <ContactShadows position={[0, -1.75, 0]} resolution={512} scale={12} blur={2.6} far={1.8} opacity={0.45} color="#2a2620" frames={1} />
         <EffectComposer multisampling={4}>
           <Bloom mipmapBlur intensity={0.9} luminanceThreshold={1.0} luminanceSmoothing={0.1} radius={0.6} />
         </EffectComposer>

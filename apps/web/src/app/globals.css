@@ -706,3 +706,5 @@ html.lenis, html.lenis body { height: auto; }
 .film-vault-amt { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); font-size: 18px; color: var(--bg); mix-blend-mode: difference; }
 .film.g-ink .film-vault-amt { color: #151311; mix-blend-mode: normal; }
 @media (max-width: 900px) { .film-lane.vault .film-bar em { display: none; } }
+/* the console floats: a soft CSS shadow instead of a 3D ground plane (founder: the box behind was unnecessary) */
+.console-canvas { filter: drop-shadow(0 30px 40px rgba(27,26,23,.18)); }
