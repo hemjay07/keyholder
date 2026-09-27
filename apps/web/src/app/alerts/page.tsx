@@ -2,25 +2,10 @@
 // Telegram, email and X senders exist in the plan but are off until their
 // tokens exist; they are listed as not live, never offered as working.
 import Link from "next/link";
-import { fetchProtocols } from "@/lib/api-client";
+import { fetchProtocols, fetchDriftReplay } from "@/lib/api-client";
 import AlertsSignup from "@/components/AlertsSignup";
-import ConsoleDevice from "@/components/console/ConsoleDevice";
-import type { ConsoleData } from "@/components/console/Console";
 
 export const dynamic = "force-dynamic";
-
-// What an alert looks like when it fires: the Drift replay's first alert.
-const ALERT_EXAMPLE: ConsoleData = {
-  protocol: "DRIFT · ADMIN",
-  threshold: 2,
-  members: 5,
-  timelockSeconds: 0,
-  verified: false,
-  codeDrifted: false,
-  weakened: true,
-  slot: null,
-  label: "HIGH · new multisig by a controller · 25 Mar 2026 · replay",
-};
 
 export default async function AlertsPage() {
   let protocols: Array<{ id: string; name: string }> = [];
@@ -29,6 +14,13 @@ export default async function AlertsPage() {
   } catch {
     protocols = [];
   }
+  // The alert a subscriber would have received: the replay's first alert on Drift,
+  // in the webhook's own body shape (apps/worker RiskDeltaNotification).
+  const replay = await fetchDriftReplay().catch(() => null);
+  const first = replay?.frames.find((f) => f.slot === replay.firstAlertSlot) ?? replay?.frames[0] ?? null;
+  const body = first
+    ? JSON.stringify({ protocol_id: "drift", rule_id: first.ruleId, severity: first.severity, explanation: first.explanation, facts: first.facts }, null, 2)
+    : null;
   return (
     <main className="alerts-page">
       <section className="hero">
@@ -44,9 +36,17 @@ export default async function AlertsPage() {
             Channels live now: signed webhook. Telegram, email and X: not live yet.
           </p>
         </div>
-        <div className="device-frame">
-          <ConsoleDevice data={ALERT_EXAMPLE} />
-        </div>
+        {body && (
+          <figure className="alert-sample">
+            <figcaption className="mono">What you would have received · 25 Mar 2026 16:58 UTC · slot {first!.slot.toLocaleString("en-US")}</figcaption>
+            <div className="as-head mono">
+              <span>POST https://your-endpoint</span>
+              <span>X-Keyholder-Signature: t=&lt;unix time&gt;,v1=&lt;hmac-sha256&gt;</span>
+            </div>
+            <pre className="mono">{body.length > 1400 ? body.slice(0, 1400) + "\n  …" : body}</pre>
+            <p className="as-note mono">Drift&apos;s first withdrawal came 5.6 days later.</p>
+          </figure>
+        )}
       </section>
     </main>
   );

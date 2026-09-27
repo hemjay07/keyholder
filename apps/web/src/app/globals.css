@@ -860,3 +860,10 @@ html.lenis, html.lenis body { height: auto; }
 @media (max-width: 900px) { .lanes-section, .badge-section { padding-left: 16px; padding-right: 16px; } .plane { margin-left: 0; padding-top: 22px; } .plane-lane { margin-top: 18px; } .plane-label { right: auto; left: 0; top: -16px; } }
 .event-hero { grid-template-columns: minmax(0, 820px) !important; min-height: 0 !important; padding-bottom: 12px; }
 @media (max-width: 900px) { .plane-axis span:nth-child(even):not(.plane-today) { display: none; } .plane-axis span:first-child { transform: none; } }
+.wallet-solo { max-width: 720px; margin: 0 auto; padding: 16vh 24px 12vh; }
+.wallet-solo h1 { font-size: clamp(40px, 5vw, 72px); line-height: 1.02; letter-spacing: -0.02em; font-weight: 400; margin: 8px 0 28px; }
+.alert-sample { margin: 0; background: #161513; color: #EDE8DD; padding: 22px 24px; border-radius: 4px; box-shadow: inset 3px 0 0 var(--signal); align-self: center; min-width: 0; }
+.alert-sample figcaption { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #FF6B33; margin-bottom: 14px; }
+.as-head { display: grid; gap: 4px; font-size: 11.5px; opacity: .7; padding-bottom: 12px; border-bottom: 1px solid rgba(237,232,221,.2); overflow-wrap: anywhere; }
+.alert-sample pre { font-size: 12px; line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere; margin: 12px 0; max-height: 420px; overflow: auto; }
+.as-note { font-size: 11px; opacity: .7; margin: 0; }

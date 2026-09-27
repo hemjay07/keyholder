@@ -9,7 +9,6 @@ import { fetchProtocols } from "@/lib/api-client";
 import { consoleDataFromFacts, timelockLabel, controlLabel } from "@/lib/console-data";
 import CountUp from "@/components/CountUp";
 import ConsoleDevice from "@/components/console/ConsoleDevice";
-import type { ConsoleData } from "@/components/console/Console";
 
 export const dynamic = "force-dynamic";
 
@@ -25,20 +24,6 @@ const POSITION_TO_PROTOCOL: Record<string, string> = {
 // A public mainnet wallet with open positions in Kamino, marginfi and Drift
 // (from the resolver's own fixtures, read on chain 2026-09-26).
 const EXAMPLE_WALLET = "HHVQnKkXSq3xKYviLpig8Rg4pLQ2J9QFsHNfggHNohuF";
-
-// Before an address is pasted: the real console with every reading blank.
-const WAITING_CONSOLE: ConsoleData = {
-  protocol: "YOUR WALLET",
-  threshold: 0,
-  members: 5,
-  timelockSeconds: 0,
-  verified: false,
-  codeDrifted: false,
-  weakened: false,
-  slot: null,
-  label: "paste an address to count the keys",
-  waiting: true,
-};
 
 interface Position { protocolId: string; kind: string }
 type PositionsResult = { ok: true; positions: Position[] } | { ok: false; reason: "invalid" | "rate_limited" | "error" };
@@ -71,7 +56,7 @@ export default async function WalletPage({ searchParams }: { searchParams: Promi
   const wallet = w?.trim() ?? "";
   return (
     <main className="wallet-page">
-      <section className={wallet ? "wallet-head" : "hero wallet-idle"}>
+      <section className={wallet ? "wallet-head" : "wallet-idle wallet-solo"}>
         <div className={wallet ? undefined : "hero-copy"}>
         <p className="kicker">Your wallet</p>
         <h1>Who can move your money?</h1>
@@ -88,11 +73,6 @@ export default async function WalletPage({ searchParams }: { searchParams: Promi
           </p>
         )}
         </div>
-        {!wallet && (
-          <div className="device-frame">
-            <ConsoleDevice data={WAITING_CONSOLE} />
-          </div>
-        )}
       </section>
       {wallet && (
         <Suspense key={wallet} fallback={<p className="wallet-reading mono">Reading this wallet&apos;s positions on chain…</p>}>
