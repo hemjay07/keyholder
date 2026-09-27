@@ -176,7 +176,7 @@ export default function ReplayFilm({ events, leadDays }: { events: FilmEvent[]; 
   ];
 
   return (
-    <div className={`film g-${mo.ground}`}>
+    <div className={`film g-${mo.ground} cam-${mo.id}`}>
       <div className="film-stage" aria-live="polite">
         <div className="film-scene">
           <div className="film-console">
@@ -190,12 +190,14 @@ export default function ReplayFilm({ events, leadDays }: { events: FilmEvent[]; 
             </div>
             <div className="film-vault" aria-label={`Drift funds: ${vaultLabel}`}>
               <span className="mono film-side-label">Drift funds at risk</span>
-              <div className="film-vault-tank">
-                <span className="film-vault-fill" style={{ height: `${vaultFill}%` }} />
-                <span className="film-vault-amt mono">{vaultFill > 0 ? "$285M" : "$0"}</span>
-                {mo.id === "money" && <span className="film-vault-notch mono">first withdrawal</span>}
+              <div className="film-meter">
+                <span className="film-meter-fill" style={{ width: `${vaultFill}%` }} />
+                {[0, 25, 50, 75, 100].map((t) => <i key={t} style={{ left: `${t}%` }} />)}
               </div>
-              <span className="mono film-side-sub">{vaultLabel}</span>
+              <div className="film-meter-row mono">
+                <b>{vaultFill > 0 ? "$285M" : "$0"}</b>
+                <span>{vaultLabel}</span>
+              </div>
             </div>
           </aside>
         </div>

@@ -708,3 +708,25 @@ html.lenis, html.lenis body { height: auto; }
 @media (max-width: 900px) { .film-lane.vault .film-bar em { display: none; } }
 /* the console floats: a soft CSS shadow instead of a 3D ground plane (founder: the box behind was unnecessary) */
 .console-canvas { filter: drop-shadow(0 30px 40px rgba(27,26,23,.18)); }
+
+/* film: side column sits beside the console, meter replaces the box */
+@media (min-width: 901px) { .film-scene { grid-template-columns: minmax(0, 1fr) 280px; max-width: 1280px; margin: 0 auto; width: 100%; } }
+.film-meter { position: relative; height: 18px; border: 1.5px solid currentColor; border-radius: 3px; overflow: hidden; }
+.film-meter-fill { position: absolute; inset: 0 auto 0 0; background: currentColor; transition: width 1400ms var(--ease-1); }
+.film.g-ink .film-meter-fill { background: #ECE8DF; }
+.film-meter i { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--film-bg); opacity: .6; }
+.film-meter-row { display: flex; align-items: baseline; gap: 12px; margin-top: 8px; }
+.film-meter-row b { font-size: 32px; font-weight: 400; letter-spacing: -.01em; }
+.film-meter-row span { font-size: 11px; opacity: .65; }
+.film-vault-tank, .film-vault-amt, .film-vault-notch { display: none; }
+/* camera: the console frame zooms and drifts per moment (CSS on the canvas box: cheap, no re-render) */
+.film-console .console-frame { transition: transform 1600ms var(--ease-1); transform-origin: 45% 35%; }
+.film.cam-setup .film-console .console-frame { transform: scale(1.18) translateY(4%); }
+.film.cam-routine .film-console .console-frame { transform: scale(1.0); }
+.film.cam-alert .film-console .console-frame { transform: scale(.94) translateX(-2%); }
+.film.cam-takeover .film-console .console-frame { transform: scale(.94) translateX(-2%) rotate(-.4deg); }
+.film.cam-money .film-console .console-frame { transform: scale(.9) translateY(2%); }
+.film.cam-loss .film-console .console-frame { transform: scale(.86) translateY(3%); }
+.film.cam-end .film-console .console-frame { transform: scale(1.04); }
+@media (prefers-reduced-motion: reduce) { .film-console .console-frame, .film-meter-fill { transition: none; } }
+@media (max-width: 900px) { .film-meter-row b { font-size: 22px; } }
