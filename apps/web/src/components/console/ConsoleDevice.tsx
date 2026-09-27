@@ -10,11 +10,11 @@ import ConsoleFallback from "./ConsoleFallback";
 
 const ConsoleScene = lazy(() => import("./ConsoleScene"));
 
-export default function ConsoleDevice({ data }: { data: ConsoleData }) {
+export default function ConsoleDevice({ data, companion }: { data: ConsoleData; companion?: ConsoleData | null }) {
   return (
     <div className="console-frame">
       <Suspense fallback={<ConsoleFallback data={data} />}>
-        <ConsoleScene data={data} />
+        <ConsoleScene data={data} companion={companion} />
       </Suspense>
     </div>
   );

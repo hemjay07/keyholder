@@ -19,12 +19,12 @@
 | P11 | home | loader that is a number (protocols read) | CREATIVE ref 18 | open | |
 | P12 | home | status strip as slot ribbon, orange where a change landed | CREATIVE ref 11 | open | |
 | P13 | home | table rows open an inline mini-console | REVAMP-2 §2 | open | |
-| P14 | replay | time brush 1 Mar – 3 Apr under the console | CREATIVE §5 | open | |
-| P15 | replay | second multisig appears on the console; admin key moves; lamp lights 25 Mar | CREATIVE §5 (facts corrected) | open | |
-| P16 | replay | the alert shown as a phone notification with its timestamp | CREATIVE §5 | open | |
-| P17 | replay | drain: ground turns to dark trace texture while withdrawals run | CREATIVE §5, ref 8 | open | |
-| P18 | replay | the vault's check refusing at the first alert | CREATIVE §5 | open | |
-| P19 | replay | choreography editable (Theatre.js) | CREATIVE §7 | open | |
+| P14 | replay | time brush 1 Mar – 3 Apr under the console | CREATIVE §5 | built | ReplayPlayer brush 1 Mar–3 Apr, drag/click/arrow keys, autoplay 3.6 s/step (~58 s) |
+| P15 | replay | second multisig appears on the console; admin key moves; lamp lights 25 Mar | CREATIVE §5 (facts corrected) | built | second multisig console slides in at 25 Mar; readout names admin move; lamp lights at first alert |
+| P16 | replay | the alert shown as a phone notification with its timestamp | CREATIVE §5 | built | phone notification card, 25 Mar 16:58 UTC |
+| P17 | replay | drain: ground turns to dark trace texture while withdrawals run | CREATIVE §5, ref 8 | built | ground turns dark with trace texture on drain frames |
+| P18 | replay | the vault's check refusing at the first alert | CREATIVE §5 | built | vault check chip PASS → REFUSED at first alert (illustrative policy: weakened <24 h) |
+| P19 | replay | choreography editable (Theatre.js) | CREATIVE §7 | open | choreography is a code table in ReplayPlayer; Theatre.js not used |
 | P20 | replay | every frame cites its transaction; rebuilt state labelled reconstructed | CREATIVE §5 | built | b37e40a |
 | P21 | feed | type glyphs + filters: upgrade, key change, threshold, timelock, nonce, admin action, verification drift, proposal created | CREATIVE §5, BRIEF 2 | open | |
 | P22 | feed | severity number leads each row | CREATIVE ref 2 | open | |

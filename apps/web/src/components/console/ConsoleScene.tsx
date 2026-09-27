@@ -77,20 +77,20 @@ function Rig({ still, children }: { still: boolean; children: React.ReactNode })
   );
 }
 
-function FitCamera({ still }: { still: boolean }) {
+function FitCamera({ still, wide = false }: { still: boolean; wide?: boolean }) {
   const { camera, size } = useThree();
   useEffect(() => {
     const persp = camera as THREE.PerspectiveCamera;
     const aspect = size.width / size.height;
     const halfFov = (persp.fov * Math.PI) / 360;
     // Panel is 3.9 x 3.28; turned, its near edge grows, so fit with margin.
-    const halfW = still ? 2.06 : 2.42;
-    const halfH = still ? 1.74 : 1.86;
+    const halfW = (still ? 2.06 : 2.42) + (wide ? 0.95 : 0);
+    const halfH = (still ? 1.74 : 1.86) + (wide ? 0.25 : 0);
     const d = Math.max(halfW / (Math.tan(halfFov) * Math.max(aspect, 0.001)), halfH / Math.tan(halfFov));
     camera.position.set(still ? 0 : 0.35, still ? -0.02 : 0.25, d);
-    camera.lookAt(0, -0.02, 0);
+    camera.lookAt(wide ? 0.25 : 0, wide ? -0.2 : -0.02, 0);
     persp.updateProjectionMatrix();
-  }, [size.width, size.height, camera, still]);
+  }, [size.width, size.height, camera, still, wide]);
   return null;
 }
 
@@ -105,24 +105,50 @@ function Studio() {
   );
 }
 
-function Scene({ data, reduced, mobile }: { data: ConsoleData; reduced: boolean; mobile: boolean }) {
+/** A second console that slides in beside the first (the replay's second multisig). */
+function Companion({ data, reduced }: { data: ConsoleData | null; reduced: boolean }) {
+  const g = useRef<THREE.Group>(null);
+  const shown = useRef(data ? 1 : 0);
+  const last = useRef<ConsoleData | null>(data);
+  if (data) last.current = data;
+  useFrame((state, dt) => {
+    const target = data ? 1 : 0;
+    shown.current = reduced ? target : THREE.MathUtils.damp(shown.current, target, 7, Math.min(dt, 0.05));
+    if (g.current) {
+      g.current.position.x = 2.55 + (1 - shown.current) * 2.2;
+      g.current.visible = shown.current > 0.01;
+    }
+    if (Math.abs(shown.current - target) > 0.001) state.invalidate();
+  });
+  if (!last.current) return null;
+  return (
+    <group ref={g} position={[4.75, -0.95, -0.6]} scale={0.46} rotation-y={-0.18}>
+      <Console data={last.current} />
+    </group>
+  );
+}
+
+function Scene({ data, companion, reduced, mobile }: { data: ConsoleData; companion: ConsoleData | null | undefined; reduced: boolean; mobile: boolean }) {
   const still = reduced || mobile;
   return (
     <Canvas
       dpr={[1, 1.75]}
-      gl={{ preserveDrawingBuffer: true, antialias: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 0.88 }}
+      gl={{ preserveDrawingBuffer: true, antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 0.88 }}
       camera={{ position: [0.35, 0.25, 5.4], fov: 28 }}
       frameloop="demand"
     >
-      <FitCamera still={still} />
-      <color attach="background" args={["#E6E2D9"]} />
+      <FitCamera still={still} wide={companion !== undefined} />
+
       <ambientLight intensity={0.25} color="#FFF6E9" />
       <directionalLight position={[-2.5, 3.2, 3]} intensity={0.55} color="#FFF1DE" />
       <Suspense fallback={null}>
         <Studio />
         <ConsoleMotion.Provider value={{ reduced }}>
           <Rig still={still}>
-            <Console data={data} />
+            <group position-x={companion !== undefined ? -0.55 : 0}>
+              <Console data={data} />
+            </group>
+            {companion !== undefined && <Companion data={companion} reduced={reduced} />}
           </Rig>
         </ConsoleMotion.Provider>
         <ContactShadows position={[0, -1.75, 0]} resolution={512} scale={12} blur={2.6} far={1.8} opacity={0.45} color="#2a2620" frames={1} />
@@ -134,7 +160,7 @@ function Scene({ data, reduced, mobile }: { data: ConsoleData; reduced: boolean;
   );
 }
 
-export default function ConsoleScene({ data }: { data: ConsoleData }) {
+export default function ConsoleScene({ data, companion }: { data: ConsoleData; companion?: ConsoleData | null }) {
   const reduced = useReducedMotion();
   const mobile = useMobile();
   const [mounted, setMounted] = useState(false);
@@ -153,7 +179,7 @@ export default function ConsoleScene({ data }: { data: ConsoleData }) {
 
   return (
     <div data-device="console" className="console-canvas">
-      <Scene data={data} reduced={reduced} mobile={mobile} />
+      <Scene data={data} companion={companion} reduced={reduced} mobile={mobile} />
     </div>
   );
 }

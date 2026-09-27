@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { fetchDriftReplay } from "@/lib/api-client";
 import { loadDriftSteps, type DriftStep } from "@/lib/drift-steps";
-import HomeStory from "@/components/HomeStory";
+import ReplayPlayer from "@/components/ReplayPlayer";
 import type { ConsoleData } from "@/components/console/Console";
 
 export const dynamic = "force-dynamic";
@@ -109,64 +109,19 @@ export default async function DriftReplayPage() {
         </div>
       </section>
 
-      {firstAlert && firstDrain && (
-        <section className="span-section" aria-label={`Warning window: ${lead} days from the first alert to the first withdrawal`}>
-          <div className="span-bar">
-            {dayTicks.map((d) => (
-              <span key={d} className="span-day mono" style={{ left: `${pct(d)}%` }}>{fmtTime(d).split(" · ")[0]}</span>
-            ))}
-            <span className="span-window" style={{ left: `${pct(firstAlert.time)}%`, width: `${pct(firstDrain.time) - pct(firstAlert.time)}%` }}>
-              <b className="mono">{lead} days</b>
-            </span>
-            {steps.filter((s) => s.phase !== "before").map((s) => (
-              <span
-                key={s.slot}
-                className={`span-mark ${alertsBySlot.has(s.slot) ? "alert" : ""} ${s.phase}`}
-                style={{ left: `${pct(s.time)}%` }}
-                title={`${fmtTime(s.time)} · ${s.says}`}
-              />
-            ))}
-          </div>
-          <div className="span-legend mono">
-            <span><i className="span-mark alert" /> Keyholder alert</span>
-            <span><i className="span-mark drain" /> money leaves</span>
-          </div>
-        </section>
-      )}
-
-      <section className="steps-section">
-        <h2>Step by step</h2>
-      </section>
-      <HomeStory compact label="The Drift incident, step by step" beats={steps.map((s) => {
-        const alerts = alertsBySlot.get(s.slot) ?? [];
-        const warned = s.phase !== "before";
-        const top = alerts.find((a) => !(a.ruleId === "no_timelock" && s.phase === "before"));
-        return {
-          id: String(s.slot),
-          device: {
-            ...COUNCIL_AT_FIRST_ALERT,
-            protocol: "DRIFT · ADMIN COUNCIL",
-            weakened: warned,
-            label: top ? `${top.severity.toUpperCase()} · ${RULE_WORDS[top.ruleId] ?? top.ruleId} · ${fmtTime(s.time).split(" · ")[0]}` : `${fmtTime(s.time)} · ${s.phase === "before" ? "standing: no timelock" : "no new alert"}`,
-          },
-          body: (
-            <div className={`step ${s.phase}`}>
-              <span className="step-time mono">{fmtTime(s.time)}</span>
-              <p className="step-says">{s.says}</p>
-              {alerts.map((a) => (
-                <p key={a.ruleId} className={`step-alert ${a.ruleId === "no_timelock" && s.phase === "before" ? "standing" : ""}`}>
-                  <span className="mono">{a.ruleId === "no_timelock" && s.phase === "before" ? "Standing" : a.severity}</span> {RULE_WORDS[a.ruleId] ?? a.ruleId}
-                </p>
-              ))}
-              {/^[1-9A-HJ-NP-Za-km-z]{86,88}$/.test(s.signature) ? (
-                <a className="step-sig mono" href={`https://solscan.io/tx/${s.signature}`} target="_blank" rel="noreferrer" title={s.signature}>{shortSig(s.signature)}</a>
-              ) : (
-                <span className="step-sig mono">signature not recorded</span>
-              )}
-            </div>
-          ),
-        };
-      })} />
+      <ReplayPlayer
+        leadDays={lead}
+        frames={steps.map((s) => ({
+          slot: s.slot,
+          time: s.time,
+          signature: /^[1-9A-HJ-NP-Za-km-z]{86,88}$/.test(s.signature) ? s.signature : null,
+          says: s.says,
+          phase: s.phase,
+          alerts: (alertsBySlot.get(s.slot) ?? [])
+            .filter((a) => !(a.ruleId === "no_timelock" && s.phase === "before"))
+            .map((a) => ({ severity: a.severity, rule: RULE_WORDS[a.ruleId] ?? a.ruleId })),
+        }))}
+      />
 
       <section className="citations-section">
         <h2>How this was rebuilt</h2>
