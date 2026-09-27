@@ -10,9 +10,9 @@
 | P02 | identity | favicon + apple icon, readable at 16 px | REVAMP-2 §0 | tested | app/icon.svg + apple-icon.png served; read at 16 px in a tab mock (design/identity/sheet.png) |
 | P03 | identity | 1200×630 share card per page; protocol cards show live console state | REVAMP-2 §0 | built | next/og cards: /, /replay/drift, /proof, /protocols/[slug] (live state); feed/wallet/alerts/policy/events inherit the home card |
 | P04 | identity | X avatar | REVAMP-2 §0 | built | finals/avatar.png 400, x-header.png 1500x500; not uploaded (needs founder's X login) |
-| P05 | device | console from a real modelled object (GLB), not primitives | CREATIVE §7, FOUNDER 2026-09-19 | open | |
-| P06 | device | brushed-metal PBR bezel, baked AO | CREATIVE §7 | open | |
-| P07 | device | Departure Mono on readouts; labels as decals | CREATIVE §4 | open | |
+| P05 | device | console from a real modelled object (GLB), not primitives | CREATIVE §7, FOUNDER 2026-09-19 | built | parametric machined model in code (bevelled extrusions, turned wells/dial/screws) per DEVICE.md SEAL for thin flat objects; not a GLB file (no Tripo key, no disk for Blender) |
+| P06 | device | brushed-metal PBR bezel, baked AO | CREATIVE §7 | built | ambientCG Metal009 PBR (CC0) on the bezel + Poly Haven studio_small_09 HDRI (CC0) reflections; no baked AO yet |
+| P07 | device | Departure Mono on readouts; labels as decals | CREATIVE §4 | open | Departure Mono on the LAST readout done; row labels and dial scale are still floating text, not decals |
 | P08 | device | keys turn 240 ms, lamp 90 ms no blink, needle 320 ms spring, nothing loops | CREATIVE §4 | built | 5ae08a6 (on primitive model) |
 | P09 | device | waiting / unresolved / immutable / governance states | REVAMP 1 | built | 5e4740c, 98b7242 |
 | P10 | home | headline + "Count the keys." + scroll story | CREATIVE §5, REVAMP 1 | built | 293ef45, 50ec8f2 |

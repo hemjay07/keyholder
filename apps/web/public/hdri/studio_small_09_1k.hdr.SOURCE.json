@@ -1,0 +1,15 @@
+{
+  "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_09_1k.hdr",
+  "bytes": 1615248,
+  "fetched": "2026-09-27T07:01:51.268Z",
+  "source": "Poly Haven",
+  "licence": "CC0",
+  "slug": "studio_small_09",
+  "query": "studio small softbox",
+  "alternatives": [
+    "studio_small_03",
+    "studio_small_08",
+    "studio_small_01",
+    "wooden_studio_03"
+  ]
+}

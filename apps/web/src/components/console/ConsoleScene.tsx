@@ -84,8 +84,8 @@ function FitCamera({ still }: { still: boolean }) {
     const aspect = size.width / size.height;
     const halfFov = (persp.fov * Math.PI) / 360;
     // Panel is 3.9 x 3.28; turned, its near edge grows, so fit with margin.
-    const halfW = still ? 2.02 : 2.2;
-    const halfH = still ? 1.72 : 1.8;
+    const halfW = still ? 2.06 : 2.42;
+    const halfH = still ? 1.74 : 1.86;
     const d = Math.max(halfW / (Math.tan(halfFov) * Math.max(aspect, 0.001)), halfH / Math.tan(halfFov));
     camera.position.set(still ? 0 : 0.35, still ? -0.02 : 0.25, d);
     camera.lookAt(0, -0.02, 0);
@@ -98,13 +98,10 @@ function Studio() {
   // A studio built from lightformers: one broad key from upper left, a rim
   // strip from the right, a soft fill from below. Warm, token-coloured.
   return (
-    <Environment resolution={256} frames={1}>
-      <color attach="background" args={["#E6E2D9"]} />
-      <Lightformer form="rect" intensity={1.3} color="#FFF4E6" position={[-3, 3, 4]} scale={[6, 3, 1]} target={[0, 0, 0]} />
-      <Lightformer form="rect" intensity={1.4} color="#FFFFFF" position={[4, 0.5, 2]} scale={[0.5, 5, 1]} target={[0, 0, 0]} />
-      <Lightformer form="rect" intensity={0.6} color="#E9DFCB" position={[0, -3, 3]} scale={[8, 1, 1]} target={[0, 0, 0]} />
-      <Lightformer form="circle" intensity={0.8} color="#FFFFFF" position={[0, 4, -2]} scale={2} target={[0, 0, 0]} />
-    </Environment>
+    <>
+      {/* Photographed studio (Poly Haven studio_small_09, CC0) for real metal reflections, */}
+      <Environment files="/hdri/studio_small_09_512.hdr" environmentIntensity={0.9} />
+    </>
   );
 }
 

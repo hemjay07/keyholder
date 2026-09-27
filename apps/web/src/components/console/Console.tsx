@@ -10,6 +10,7 @@ import { useFrame } from "@react-three/fiber";
 import { RoundedBox, Text, useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import { dialFrac, dialAngle, needleRotationZ } from "./dialMath.js";
+import { Bezel, BackPlate, Face, Turned } from "./parts";
 
 // MOTION.md: element 240 ms (key turn), data 320 ms (needle), tick 90 ms (lamp).
 // Damping rates chosen so each settles within its budget.
@@ -20,7 +21,7 @@ const EPS = 0.001;
 
 // Palette: token-derived. Bone enamel face in a deep anodised bezel.
 const BEZEL = "#2B2822";
-const BEZEL_EDGE = "#4A443A";
+const BEZEL_EDGE = "#6B6357";
 const FACE = "#F1EAD9";
 const INK = "#1B1A17";
 const INK_SOFT = "#4A453C";
@@ -34,6 +35,7 @@ const VERIFIED_ON = "#2FA36F";
 const LAMP_GLASS = "#3A342B";
 
 const FONT = "/fonts/GeistMono-Regular.ttf";
+const READOUT_FONT = "/fonts/DepartureMono-Regular.otf";
 
 /** Reduced motion: every part snaps to its target. */
 export const ConsoleMotion = createContext({ reduced: false });
@@ -85,18 +87,10 @@ function KeySlot({ turned, delay }: { turned: boolean; delay: number }) {
   });
   return (
     <group>
-      {/* bezel ring */}
-      <mesh position={[0, 0, 0.082]}>
-        <torusGeometry args={[0.086, 0.014, 12, 40]} />
-        <meshStandardMaterial color={STEEL_DARK} roughness={0.22} metalness={0.95} />
-      </mesh>
-      {/* socket face and void */}
-      <mesh rotation-x={Math.PI / 2} position={[0, 0, 0.08]}>
-        <cylinderGeometry args={[0.078, 0.078, 0.012, 36]} />
-        <meshStandardMaterial color={STEEL} roughness={0.3} metalness={0.9} />
-      </mesh>
-      <mesh rotation-x={Math.PI / 2} position={[0, 0, 0.083]}>
-        <cylinderGeometry args={[0.03, 0.03, 0.014, 20]} />
+      {/* turned key well: raised chamfered rim, recessed floor, keyway */}
+      <Turned profile={[[0, 0.074], [0.026, 0.074], [0.026, 0.08], [0.066, 0.08], [0.074, 0.094], [0.094, 0.097], [0.104, 0.089]]} color={STEEL} roughness={0.22} />
+      <mesh rotation-x={Math.PI / 2} position={[0, 0, 0.078]}>
+        <cylinderGeometry args={[0.026, 0.026, 0.01, 20]} />
         <meshStandardMaterial color={SOCKET_VOID} roughness={0.9} metalness={0.1} />
       </mesh>
       {/* the key */}
@@ -140,11 +134,8 @@ function TimelockDial({ seconds, hideNeedle = false }: { seconds: number; hideNe
   });
   return (
     <group position={[0, 0, 0.082]}>
-      {/* bezel */}
-      <mesh position={[0, 0, 0.004]}>
-        <torusGeometry args={[R + 0.018, 0.022, 16, 64]} />
-        <meshStandardMaterial color={STEEL_DARK} roughness={0.2} metalness={0.95} />
-      </mesh>
+      {/* turned dial bezel with a chamfered lip */}
+      <Turned profile={[[R - 0.004, 0.034], [R + 0.01, 0.036], [R + 0.034, 0.024], [R + 0.046, 0.004], [R + 0.05, -0.006]]} color={STEEL} roughness={0.2} segments={72} z={-0.006} />
       {/* printed face */}
       <mesh position={[0, 0, -0.006]} rotation-x={Math.PI / 2}>
         <cylinderGeometry args={[R, R, 0.012, 64]} />
@@ -238,15 +229,13 @@ function Lamp({ on, color, delay }: { on: boolean; color: string; delay: number 
 }
 
 function Screw({ x, y }: { x: number; y: number }) {
+  // Domed, slotted cap screw sitting on the bezel face.
   return (
-    <group position={[x, y, 0.086]}>
-      <mesh rotation-x={Math.PI / 2}>
-        <cylinderGeometry args={[0.034, 0.034, 0.012, 24]} />
-        <meshStandardMaterial color={STEEL} roughness={0.25} metalness={0.95} />
-      </mesh>
-      <mesh position={[0, 0, 0.008]} rotation-z={0.5}>
-        <boxGeometry args={[0.052, 0.008, 0.004]} />
-        <meshStandardMaterial color={BEZEL} roughness={0.6} metalness={0.4} />
+    <group position={[x, y, 0]} rotation-z={0.5 + x * 0.7}>
+      <Turned profile={[[0, 0.132], [0.014, 0.131], [0.026, 0.126], [0.034, 0.118], [0.036, 0.11]]} color={STEEL} roughness={0.28} />
+      <mesh position={[0, 0, 0.128]}>
+        <boxGeometry args={[0.056, 0.009, 0.012]} />
+        <meshStandardMaterial color={BEZEL} roughness={0.7} metalness={0.3} />
       </mesh>
     </group>
   );
@@ -278,7 +267,7 @@ function Readout({ text, y }: { text: string; y: number }) {
     state.invalidate();
   });
   return (
-    <Text position={[-0.75, y, 0.092]} fontSize={0.058} color={READOUT_INK} font={FONT} letterSpacing={0.02} anchorX="left" maxWidth={2.0}>
+    <Text position={[-0.75, y, 0.096]} fontSize={0.056} color={READOUT_INK} font={READOUT_FONT} anchorY="middle" overflowWrap="break-word" letterSpacing={0.01} anchorX="left" maxWidth={1.98} lineHeight={1.25}>
       {text.slice(0, shown) + (shown < text.length ? "▌" : "")}
     </Text>
   );
@@ -335,22 +324,21 @@ export default function Console({ data }: { data: ConsoleData }) {
 
   return (
     <group>
-      {/* anodised bezel: outer edge band + body */}
-      <RoundedBox args={[3.9, PANEL_H + 0.18, 0.16]} radius={0.08} smoothness={5} position={[0, 0, -0.025]}>
-        <meshPhysicalMaterial color={BEZEL_EDGE} roughness={0.32} metalness={0.85} clearcoat={0.4} clearcoatRoughness={0.3} />
-      </RoundedBox>
-      <RoundedBox args={[3.74, PANEL_H, 0.17]} radius={0.05} smoothness={5} position={[0, 0, 0]}>
-        <meshPhysicalMaterial color={BEZEL} roughness={0.42} roughnessMap={rough} normalMap={normal} normalScale={new THREE.Vector2(0.35, 0.35)} metalness={0.8} clearcoat={0.5} clearcoatRoughness={0.25} />
-      </RoundedBox>
-      {/* bone enamel face */}
-      <RoundedBox args={[3.42, FACE_H, 0.02]} radius={0.03} smoothness={4} position={[0, 0, 0.078]}>
-        <meshPhysicalMaterial color={FACE} roughness={0.62} roughnessMap={rough} metalness={0.02} clearcoat={0.2} clearcoatRoughness={0.5} />
-      </RoundedBox>
-
-      <Screw x={-1.76} y={PANEL_H / 2 - 0.16} />
-      <Screw x={1.76} y={PANEL_H / 2 - 0.16} />
-      <Screw x={-1.76} y={-(PANEL_H / 2 - 0.16)} />
-      <Screw x={1.76} y={-(PANEL_H / 2 - 0.16)} />
+      {/* machined body: back plate, recessed enamel face, bevelled anodised bezel */}
+      <BackPlate w={3.86} h={3.24} z={0.04} color={BEZEL} />
+      <Face w={3.46} h={2.84} z={0.048} color={FACE} roughMap={rough} />
+      <Bezel w={3.92} h={3.3} depth={0.16} border={0.22} tint={BEZEL_EDGE} />
+      {/* engraved rules between rows, like a printed panel */}
+      {[1.02, 0.4, -0.66, -1.06].map((y) => (
+        <mesh key={y} position={[0, y, 0.0885]}>
+          <planeGeometry args={[3.3, 0.006]} />
+          <meshBasicMaterial color={INK_SOFT} transparent opacity={0.28} />
+        </mesh>
+      ))}
+      <Screw x={-1.845} y={1.535} />
+      <Screw x={1.845} y={1.535} />
+      <Screw x={-1.845} y={-1.535} />
+      <Screw x={1.845} y={-1.535} />
 
       <Text position={[-1.62, Y_NAME, 0.093]} fontSize={0.09} color={INK} font={FONT} letterSpacing={0.1} anchorX="left">
         {protocol}
