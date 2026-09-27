@@ -24,3 +24,6 @@ surfaces:
   - route: /proof
     name: proof
     headline: "Refused on-chain."
+  - route: /policy
+    name: policy
+    headline: "Refuse deposits where control just weakened."

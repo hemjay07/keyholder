@@ -330,3 +330,40 @@ footer.mono { padding: 20px 40px 40px; font-size: 11px; color: var(--ink-2); bor
   .proof-code { padding-left: 18px; padding-right: 18px; }
   .proof-code pre { font-size: 11px; padding: 14px; }
 }
+
+/* ---- /policy ---- */
+.sim-section { padding: 8px 40px 48px; }
+.sim { border-top: 3px solid var(--ink); padding-top: 16px; }
+.sim-controls { display: flex; flex-wrap: wrap; gap: 20px 48px; align-items: flex-end; }
+.sim-controls label, .sim-controls legend { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); display: block; }
+.sim-controls label b { font-size: 22px; color: var(--ink); margin-left: 10px; letter-spacing: 0; vertical-align: middle; }
+.sim-controls input[type=range] { display: block; width: 260px; margin-top: 10px; accent-color: var(--ink); }
+.sim-controls fieldset { border: 0; margin: 0; padding: 0; }
+.sim-seg { display: flex; margin-top: 10px; border: 1px solid var(--ink); }
+.sim-seg button { font: inherit; font-size: 13px; padding: 8px 14px; background: transparent; border: 0; border-right: 1px solid var(--ink); cursor: pointer; color: var(--ink); }
+.sim-seg button:last-child { border-right: 0; }
+.sim-seg button.on { background: var(--ink); color: var(--panel); }
+.sim-result { font-size: 18px; margin: 24px 0 8px; }
+.sim-result b { font-weight: 500; }
+.sim-result b.weak { color: var(--signal-text); }
+.sim-rows { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); }
+.sim-rows li { display: grid; grid-template-columns: 72px 200px minmax(0,1fr); gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--hair); align-items: baseline; transition: background var(--d-element) var(--ease-1); }
+.sim-verdict { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
+.sim-rows li.pass .sim-verdict { color: var(--verified); }
+.sim-rows li.refuse .sim-verdict { color: var(--signal-text); }
+.sim-name { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--hair); justify-self: start; }
+.sim-why { font-size: 12px; color: var(--ink-2); }
+.sim-note { font-size: 11px; color: var(--ink-2); margin-top: 18px; line-height: 1.6; max-width: 820px; }
+@media (max-width: 720px) {
+  .sim-section { padding-left: 18px; padding-right: 18px; }
+  .sim-rows li { grid-template-columns: 60px minmax(0,1fr); }
+  .sim-why { grid-column: 2; }
+  .sim-controls input[type=range] { width: 100%; }
+  .sim-controls label { width: 100%; }
+}
+.sim-gate { display: grid; grid-template-columns: repeat(15, 1fr); gap: 4px; margin-top: 22px; height: 44px; }
+.gate-cell { display: block; border-radius: 2px; transition: background-color var(--d-element) var(--ease-1); animation: gate-in var(--d-data) var(--ease-1) both; }
+.gate-cell.pass { background: var(--verified); }
+.gate-cell.refuse { background: var(--signal); }
+@keyframes gate-in { from { transform: scaleY(0.2); opacity: .3; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .gate-cell { animation: none; transition: none; } }
