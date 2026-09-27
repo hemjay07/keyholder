@@ -721,12 +721,14 @@ html.lenis, html.lenis body { height: auto; }
 .film-vault-tank, .film-vault-amt, .film-vault-notch { display: none; }
 /* camera: the console frame zooms and drifts per moment (CSS on the canvas box: cheap, no re-render) */
 .film-console .console-frame { transition: transform 1600ms var(--ease-1); transform-origin: 45% 35%; }
-.film.cam-setup .film-console .console-frame { transform: scale(1.18) translateY(4%); }
+.film.cam-setup .film-console .console-frame { transform: scale(1.06); }
 .film.cam-routine .film-console .console-frame { transform: scale(1.0); }
 .film.cam-alert .film-console .console-frame { transform: scale(.94) translateX(-2%); }
 .film.cam-takeover .film-console .console-frame { transform: scale(.94) translateX(-2%) rotate(-.4deg); }
 .film.cam-money .film-console .console-frame { transform: scale(.9) translateY(2%); }
 .film.cam-loss .film-console .console-frame { transform: scale(.86) translateY(3%); }
-.film.cam-end .film-console .console-frame { transform: scale(1.04); }
+.film.cam-end .film-console .console-frame { transform: scale(1.02); }
 @media (prefers-reduced-motion: reduce) { .film-console .console-frame, .film-meter-fill { transition: none; } }
 @media (max-width: 900px) { .film-meter-row b { font-size: 22px; } }
+.film-console { overflow: hidden; position: relative; z-index: 0; }
+.film-side, .film-note { position: relative; z-index: 1; }
