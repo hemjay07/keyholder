@@ -36,7 +36,7 @@ export default function ProtocolLanes({ changes, highlight, now }: { changes: La
   return (
     <div className="plane" role="group" aria-label="Control history">
       <div className="plane-axis mono">
-        {monthTicks(t0, t1).filter((m) => x(m.t) < 90).map((m) => <span key={m.t} style={{ left: `${x(m.t)}%` }}>{m.label}</span>)}
+        {monthTicks(t0, t1).filter((m) => x(m.t) < 84).map((m) => <span key={m.t} style={{ left: `${x(m.t)}%` }}>{m.label}</span>)}
         <span className="plane-today" style={{ left: "100%" }}>today</span>
       </div>
       {LANES.map((l) => (

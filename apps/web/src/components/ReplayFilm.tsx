@@ -188,7 +188,7 @@ export default function ReplayFilm({ events, leadDays }: { events: FilmEvent[]; 
           <aside className="film-side">
             <div className={`film-count${w.started ? " on" : ""}${w.frozen ? " frozen" : ""}`}>
               <span className="mono film-side-label">{w.frozen ? "Warning Keyholder would have given" : w.started ? "Warning so far" : "Warning"}</span>
-              <b className="mono">{w.started ? <>{w.d}<small>d</small> {String(w.h).padStart(2, "0")}<small>h</small></> : "—"}</b>
+              {w.started ? <b className="mono">{w.d}<small>d</small> {String(w.h).padStart(2, "0")}<small>h</small></b> : <span className="mono film-count-none">not yet</span>}
               <span className="mono film-side-sub">{w.frozen ? "then the money moved" : w.started ? "since the first alert, nothing has moved yet" : "no alert yet"}</span>
             </div>
           </aside>

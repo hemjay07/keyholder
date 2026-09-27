@@ -875,3 +875,16 @@ html.lenis, html.lenis body { height: auto; }
 .feed-chips a.on { background: var(--ink); color: var(--ground, #E6E2D9); border-color: var(--ink); }
 @media (max-width: 900px) { .feed-chips { padding: 0 16px; flex-wrap: nowrap; overflow-x: auto; } .feed-chips a { white-space: nowrap; } }
 .feed-chips { padding: 0; max-width: none; } @media (max-width: 900px) { .feed-chips { padding: 0; } }
+.cf-keys { flex-wrap: wrap !important; }
+.cf-slots { flex-wrap: wrap; min-width: 0; }
+.film-count .film-count-none { display: block; font-size: 24px; opacity: .5; margin: 8px 0; }
+@media (max-width: 900px) {
+  .feed-chips { flex-wrap: wrap !important; overflow: visible !important; }
+  .feed-chips a { white-space: normal; }
+  .film-count .film-count-none { font-size: 18px; }
+}
+@media (max-width: 900px) {
+  .film-stage { grid-template-rows: auto auto auto auto !important; align-content: center; gap: 14px; }
+  .film-scene { gap: 12px; }
+  .film-side { margin: 0; }
+}
