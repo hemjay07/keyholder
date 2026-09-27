@@ -6,10 +6,10 @@
 
 | id | surface | promise | source | state | evidence / reason |
 |---|---|---|---|---|---|
-| P01 | identity | mark (two key bows crossed, orange notch), SVG | REVAMP-2 §0 | open | |
-| P02 | identity | favicon + apple icon, readable at 16 px | REVAMP-2 §0 | open | |
-| P03 | identity | 1200×630 share card per page; protocol cards show live console state | REVAMP-2 §0 | open | |
-| P04 | identity | X avatar | REVAMP-2 §0 | open | |
+| P01 | identity | mark (two key bows crossed, orange notch), SVG | REVAMP-2 §0 | built | design/identity/finals/mark.svg, logo(.dark).svg; wordmark outlined from Geist |
+| P02 | identity | favicon + apple icon, readable at 16 px | REVAMP-2 §0 | tested | app/icon.svg + apple-icon.png served; read at 16 px in a tab mock (design/identity/sheet.png) |
+| P03 | identity | 1200×630 share card per page; protocol cards show live console state | REVAMP-2 §0 | built | next/og cards: /, /replay/drift, /proof, /protocols/[slug] (live state); feed/wallet/alerts/policy/events inherit the home card |
+| P04 | identity | X avatar | REVAMP-2 §0 | built | finals/avatar.png 400, x-header.png 1500x500; not uploaded (needs founder's X login) |
 | P05 | device | console from a real modelled object (GLB), not primitives | CREATIVE §7, FOUNDER 2026-09-19 | open | |
 | P06 | device | brushed-metal PBR bezel, baked AO | CREATIVE §7 | open | |
 | P07 | device | Departure Mono on readouts; labels as decals | CREATIVE §4 | open | |

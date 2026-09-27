@@ -18,7 +18,7 @@ function timelockText(d: ConsoleData): string {
   if (d.noTimelockFeature) return "no timelock";
   const t = d.timelockSeconds;
   if (t === 0) return "no timelock";
-  return t % 86400 === 0 ? `${t / 86400} d timelock` : `${+(t / 3600).toFixed(1)} h timelock`;
+  return t % 86400 === 0 ? `${t / 86400} d timelock` : t < 3600 ? `${t} s timelock` : `${+(t / 3600).toFixed(1)} h timelock`;
 }
 
 /** Phone only: a slim pinned read-out of the console's state for the current beat. */

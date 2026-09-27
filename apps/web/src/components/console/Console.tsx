@@ -379,7 +379,7 @@ export default function Console({ data }: { data: ConsoleData }) {
         <TimelockDial seconds={timelockSeconds} hideNeedle={waiting} />
       </group>
       <Text position={[1.62, Y_TIME, 0.093]} fontSize={0.16} color={INK} font={FONT} letterSpacing={0.01} anchorX="right" anchorY="middle">
-        {waiting ? "not read" : noTimelockFeature ? "no timelock feature" : timelockSeconds === 0 ? "none" : timelockSeconds % 86400 === 0 ? `${timelockSeconds / 86400} d` : `${+(timelockSeconds / 3600).toFixed(1)} h`}
+        {waiting ? "not read" : noTimelockFeature ? "no timelock feature" : timelockSeconds === 0 ? "none" : timelockSeconds % 86400 === 0 ? `${timelockSeconds / 86400} d` : timelockSeconds < 3600 ? `${timelockSeconds} s` : `${+(timelockSeconds / 3600).toFixed(1)} h`}
       </Text>
 
       <RowLabel y={Y_CODE}>CODE</RowLabel>

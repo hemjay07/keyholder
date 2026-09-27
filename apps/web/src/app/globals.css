@@ -398,7 +398,8 @@ footer.mono { padding: 20px 40px 40px; font-size: 11px; color: var(--ink-2); bor
 
 /* ---- site nav ---- */
 .site-nav { display: flex; align-items: baseline; justify-content: space-between; gap: 12px 24px; flex-wrap: wrap; padding: 14px 40px; border-bottom: 1px solid var(--hair); }
-.site-home { font-size: 13px; letter-spacing: .14em; text-transform: uppercase; text-decoration: none; color: var(--signal-text); }
+.site-home { display: inline-flex; align-items: center; gap: 10px; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; text-decoration: none; color: var(--ink); }
+.site-mark { display: block; flex: none; }
 .site-links { display: flex; flex-wrap: wrap; gap: 6px 22px; }
 .site-links a { font-size: 14px; color: var(--ink-2); text-decoration: none; border-bottom: 1px solid transparent; transition: color var(--d-tick) var(--ease-1), border-color var(--d-tick) var(--ease-1); }
 .site-links a:hover { color: var(--ink); }

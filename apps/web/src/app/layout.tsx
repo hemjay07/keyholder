@@ -11,7 +11,8 @@ const geist = Geist({ subsets: ['latin'], variable: '--font-geist', weight: ['40
 const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-geist-mono', weight: ['400'] });
 
 export const metadata = {
-  title: 'Keyholder',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
+  title: { default: 'Keyholder', template: '%s · Keyholder' },
   description: 'Keyholder shows who can move the money in every Solana protocol.',
 };
 

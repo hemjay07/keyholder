@@ -7,7 +7,7 @@ function timelockText(data: ConsoleData): string {
   if (data.noTimelockFeature) return "no timelock feature";
   if (data.timelockSeconds === 0) return "none";
   if (data.timelockSeconds % 86400 === 0) return `${data.timelockSeconds / 86400} d`;
-  return `${+(data.timelockSeconds / 3600).toFixed(1)} h`;
+  return data.timelockSeconds < 3600 ? `${data.timelockSeconds} s` : `${+(data.timelockSeconds / 3600).toFixed(1)} h`;
 }
 
 export default function ConsoleFallback({ data }: { data: ConsoleData }) {
