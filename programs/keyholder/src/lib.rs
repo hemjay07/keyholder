@@ -35,6 +35,10 @@ pub enum KeyType {
     SquadsV4 = 2,
     OtherMultisig = 3,
     Unknown = 4,
+    /// Squads v3 (squads-mpl): no timelock field. Added 2026-09-27.
+    SquadsV3 = 5,
+    /// coral-xyz/multisig layout (Marinade): no timelock field. Added 2026-09-27.
+    CoralMultisig = 6,
 }
 
 #[repr(u8)]
@@ -336,6 +340,35 @@ pub mod keyholder {
                         reasons |= reason_flags::CONTROLLED_MULTISIG;
                     }
                     (ms_info.threshold, ms_info.time_lock, has_ca, KeyType::SquadsV4)
+                } else if control.key_type == KeyType::SquadsV3 as u8 || control.key_type == KeyType::CoralMultisig as u8 {
+                    // Re-read the multisig live, exactly as for v4: the account
+                    // must be the recorded one, its owner the right program, and
+                    // the upgrade authority must still derive from it.
+                    let ms_account = ctx
+                        .accounts
+                        .multisig
+                        .as_ref()
+                        .ok_or(GuardError::MultisigAccountMissing)?;
+                    require_keys_eq!(ms_account.key(), control.multisig, GuardError::AccountMismatch);
+                    let ms_data = ms_account.try_borrow_data().map_err(|_| GuardError::MultisigAccountMissing)?;
+                    let (threshold, change_index) = if control.key_type == KeyType::SquadsV3 as u8 {
+                        let v3 = parse_squads_v3_ms_checked(ms_account.owner, &ms_data).map_err(|_| GuardError::UnknownAuthority)?;
+                        require!(
+                            find_squads_v3_authority_index(&authority, &control.multisig) == Some(control.vault_index as u32),
+                            GuardError::UnknownAuthority
+                        );
+                        (v3.threshold, v3.ms_change_index as u64)
+                    } else {
+                        let coral = parse_coral_multisig_checked(ms_account.owner, &ms_data).map_err(|_| GuardError::UnknownAuthority)?;
+                        require!(coral_signer(&control.multisig, coral.nonce) == Some(authority), GuardError::UnknownAuthority);
+                        (coral.threshold.min(u16::MAX as u64) as u16, coral.owner_set_seqno as u64)
+                    };
+                    drop(ms_data);
+                    if change_index != control.stale_tx_index {
+                        effective_weakened_slot = effective_weakened_slot.max(now_slot);
+                    }
+                    let kt = if control.key_type == KeyType::SquadsV3 as u8 { KeyType::SquadsV3 } else { KeyType::CoralMultisig };
+                    (threshold, 0u32, false, kt)
                 } else if control.key_type == KeyType::SingleKey as u8 {
                     reasons |= reason_flags::SINGLE_KEY;
                     (0, 0, false, KeyType::SingleKey)
@@ -491,6 +524,29 @@ fn do_refresh<'info>(
                             .filter(|m| m.permissions_mask & 0b010 != 0) // Vote bit
                             .count() as u16;
                         new_members_hash = hash_members(&ms_info.members);
+                    }
+                } else if let Ok(v3) = parse_squads_v3_ms_checked(ms_account.owner, &ms_data) {
+                    // Squads v3: every member votes; no timelock field exists.
+                    if let Some(idx) = find_squads_v3_authority_index(&authority, ms_account.key) {
+                        new_key_type = KeyType::SquadsV3;
+                        new_multisig = *ms_account.key;
+                        new_vault_index = idx as u8;
+                        new_threshold = v3.threshold;
+                        new_time_lock = 0;
+                        new_stale_tx_index = v3.ms_change_index as u64;
+                        new_members_count = v3.member_count;
+                        new_voters = v3.member_count;
+                    }
+                } else if let Ok(coral) = parse_coral_multisig_checked(ms_account.owner, &ms_data) {
+                    // Coral multisig: the authority is its signer PDA; no timelock field.
+                    if coral_signer(ms_account.key, coral.nonce) == Some(authority) {
+                        new_key_type = KeyType::CoralMultisig;
+                        new_multisig = *ms_account.key;
+                        new_threshold = coral.threshold.min(u16::MAX as u64) as u16;
+                        new_time_lock = 0;
+                        new_stale_tx_index = coral.owner_set_seqno as u64;
+                        new_members_count = coral.owner_count;
+                        new_voters = coral.owner_count;
                     }
                 }
             }

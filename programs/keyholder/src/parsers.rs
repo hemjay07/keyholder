@@ -200,6 +200,116 @@ pub fn find_squads_vault_index(authority: &Pubkey, multisig: &Pubkey) -> Option<
     (0u8..=3).find(|&idx| is_squads_vault_authority(authority, multisig, idx))
 }
 
+/// Squads v3 (squads-mpl) program id, mainnet: read from the owner of Jupiter
+/// v6's authority multisig (7ZyDFz…), 2026-09-27.
+pub fn squads_v3_program_id() -> Pubkey {
+    "SMPLecH534NA9acpos4G6x7uf3LWbCAwZQE9e8ZekMu".parse().expect("hardcoded Squads v3 program id is valid base58")
+}
+
+/// Coral multisig (coral-xyz/multisig layout) program id: read from the owner
+/// of Marinade's authority multisig (magrsH…), 2026-09-27.
+pub fn coral_multisig_program_id() -> Pubkey {
+    "msigmtwzgXJHj2ext4XJjCDmpbcMuufFb5cHuwg6Xdt".parse().expect("hardcoded coral multisig program id is valid base58")
+}
+
+fn anchor_discriminator(name: &[u8]) -> [u8; 8] {
+    use sha2::{Digest, Sha256};
+    let mut pre = b"account:".to_vec();
+    pre.extend_from_slice(name);
+    let digest = Sha256::digest(&pre);
+    let mut out = [0u8; 8];
+    out.copy_from_slice(&digest[..8]);
+    out
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub struct SquadsV3Info {
+    pub threshold: u16,
+    pub authority_index: u16,
+    /// Bumps whenever members or threshold change: the v3 analogue of v4's
+    /// stale_transaction_index for "control changed since last refresh".
+    pub ms_change_index: u32,
+    pub member_count: u16,
+}
+
+/// Squads v3 `Ms` (squads-mpl `state.rs`): disc[8] threshold u16 @8,
+/// authority_index u16 @10, transaction_index u32 @12, ms_change_index u32 @16,
+/// bump u8 @20, create_key @21..53, allow_external_execute @53, keys: Vec<Pubkey> @54.
+/// v3 has no timelock field.
+pub fn parse_squads_v3_ms_checked(owner: &Pubkey, data: &[u8]) -> Result<SquadsV3Info, ParseError> {
+    if *owner != squads_v3_program_id() {
+        return Err(ParseError::BadOwner);
+    }
+    if data.len() < 58 {
+        return Err(ParseError::TooShort);
+    }
+    if data[0..8] != anchor_discriminator(b"Ms") {
+        return Err(ParseError::BadDiscriminator);
+    }
+    let member_count = u32::from_le_bytes(data[54..58].try_into().unwrap());
+    if data.len() < 58 + 32 * member_count as usize {
+        return Err(ParseError::TruncatedMembers);
+    }
+    Ok(SquadsV3Info {
+        threshold: u16::from_le_bytes(data[8..10].try_into().unwrap()),
+        authority_index: u16::from_le_bytes(data[10..12].try_into().unwrap()),
+        ms_change_index: u32::from_le_bytes(data[16..20].try_into().unwrap()),
+        member_count: member_count as u16,
+    })
+}
+
+/// v3 authority PDA: seeds ["squad", multisig, index u32 LE, "authority"]; index 0 is
+/// reserved for internal use, so vaults are 1..=4 (a small search, as for v4).
+pub fn find_squads_v3_authority_index(authority: &Pubkey, multisig: &Pubkey) -> Option<u32> {
+    (1u32..=4).find(|idx| {
+        let seeds: &[&[u8]] = &[b"squad", multisig.as_ref(), &idx.to_le_bytes(), b"authority"];
+        Pubkey::find_program_address(seeds, &squads_v3_program_id()).0 == *authority
+    })
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub struct CoralMultisigInfo {
+    pub threshold: u64,
+    pub nonce: u8,
+    pub owner_set_seqno: u32,
+    pub owner_count: u16,
+}
+
+/// Coral multisig `Multisig`: disc[8] (sha256("account:Multisig"), the same as
+/// Squads v4's, so the owner check is what separates them), owners Vec<Pubkey> @8,
+/// then threshold u64, nonce u8, owner_set_seqno u32. No timelock field.
+pub fn parse_coral_multisig(data: &[u8]) -> Result<CoralMultisigInfo, ParseError> {
+    if data.len() < 12 {
+        return Err(ParseError::TooShort);
+    }
+    if data[0..8] != anchor_discriminator(b"Multisig") {
+        return Err(ParseError::BadDiscriminator);
+    }
+    let n = u32::from_le_bytes(data[8..12].try_into().unwrap()) as usize;
+    let tail = 12 + 32 * n;
+    if data.len() < tail + 13 {
+        return Err(ParseError::TruncatedMembers);
+    }
+    Ok(CoralMultisigInfo {
+        threshold: u64::from_le_bytes(data[tail..tail + 8].try_into().unwrap()),
+        nonce: data[tail + 8],
+        owner_set_seqno: u32::from_le_bytes(data[tail + 9..tail + 13].try_into().unwrap()),
+        owner_count: n as u16,
+    })
+}
+
+pub fn parse_coral_multisig_checked(owner: &Pubkey, data: &[u8]) -> Result<CoralMultisigInfo, ParseError> {
+    if *owner != coral_multisig_program_id() {
+        return Err(ParseError::BadOwner);
+    }
+    parse_coral_multisig(data)
+}
+
+/// The coral multisig's signer PDA: create_program_address([multisig, [nonce]]).
+pub fn coral_signer(multisig: &Pubkey, nonce: u8) -> Option<Pubkey> {
+    Pubkey::create_program_address(&[multisig.as_ref(), &[nonce]], &coral_multisig_program_id()).ok()
+}
+
 /// Deterministic Derived score, 0..100. Documented in ONCHAIN.md §5 so
 /// anyone can recompute it off-chain. Monotonic: strictly weaker inputs
 /// (lower threshold, shorter timelock, a controlling config_authority, or a
@@ -408,5 +518,62 @@ mod tests {
         let drift = derived_score(false, false, 4, 7, 3600, false);
         let council = derived_score(false, false, 2, 5, 0, false);
         assert!(drift > council, "drift={drift} council={council}");
+    }
+
+    // ---- Squads v3 (squads-mpl): real Jupiter v6 authority multisig, mainnet 2026-09-27 ----
+    #[test]
+    fn squads_v3_parses_real_jupiter_multisig() {
+        let (owner, data) = fixture_bytes("jupiter-squads-v3-multisig.json");
+        let owner: Pubkey = owner.parse().unwrap();
+        let info = parse_squads_v3_ms_checked(&owner, &data).expect("real v3 Ms parses");
+        assert_eq!(info.threshold, 4);
+        assert_eq!(info.member_count, 7);
+    }
+
+    #[test]
+    fn squads_v3_vault_authority_matches_jupiter_upgrade_authority() {
+        let raw = fs::read_to_string(format!("{}/tests/fixtures/jupiter-squads-v3-multisig.json", env!("CARGO_MANIFEST_DIR"))).unwrap();
+        let json: serde_json::Value = serde_json::from_str(&raw).unwrap();
+        let ms: Pubkey = json["address"].as_str().unwrap().parse().unwrap();
+        let auth: Pubkey = json["vault_authority"].as_str().unwrap().parse().unwrap();
+        assert!(find_squads_v3_authority_index(&auth, &ms).is_some());
+        assert!(find_squads_v3_authority_index(&Pubkey::new_unique(), &ms).is_none());
+    }
+
+    #[test]
+    fn squads_v3_rejects_wrong_owner() {
+        let (_owner, data) = fixture_bytes("jupiter-squads-v3-multisig.json");
+        assert_eq!(parse_squads_v3_ms_checked(&squads_v4_program_id(), &data), Err(ParseError::BadOwner));
+    }
+
+    // ---- Coral multisig (coral-xyz/multisig): real Marinade authority, mainnet 2026-09-27 ----
+    #[test]
+    fn coral_parses_real_marinade_multisig() {
+        let (owner, data) = fixture_bytes("marinade-coral-multisig.json");
+        let owner: Pubkey = owner.parse().unwrap();
+        let info = parse_coral_multisig_checked(&owner, &data).expect("real coral multisig parses");
+        assert_eq!(info.threshold, 6);
+        assert_eq!(info.owner_count, 13);
+        assert_eq!(info.nonce, 253);
+    }
+
+    #[test]
+    fn coral_signer_is_marinade_upgrade_authority() {
+        let raw = fs::read_to_string(format!("{}/tests/fixtures/marinade-coral-multisig.json", env!("CARGO_MANIFEST_DIR"))).unwrap();
+        let json: serde_json::Value = serde_json::from_str(&raw).unwrap();
+        let ms: Pubkey = json["address"].as_str().unwrap().parse().unwrap();
+        let signer: Pubkey = json["signer_pda"].as_str().unwrap().parse().unwrap();
+        let (_o, data) = fixture_bytes("marinade-coral-multisig.json");
+        let info = parse_coral_multisig(&data).unwrap();
+        assert_eq!(coral_signer(&ms, info.nonce), Some(signer));
+    }
+
+    #[test]
+    fn coral_rejects_squads_v4_account_with_same_discriminator() {
+        // Squads v4 and coral both name their account `Multisig`, so the
+        // discriminators collide; the owner check is what tells them apart.
+        let (owner, data) = fixture_bytes("drift-4of7-multisig.json");
+        let owner: Pubkey = owner.parse().unwrap();
+        assert_eq!(parse_coral_multisig_checked(&owner, &data), Err(ParseError::BadOwner));
     }
 }

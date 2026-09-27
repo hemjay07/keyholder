@@ -216,6 +216,22 @@ impl Harness {
         self.send(&[ix])
     }
 
+    /// Points the target at a different real multisig: the multisig account
+    /// is placed at its real address with its real bytes and owner, and the
+    /// ProgramData's upgrade authority (bytes 13..45, Some-tag at 12) is set
+    /// to `authority` (the multisig's real vault / signer PDA).
+    pub fn use_multisig(&mut self, fixture: &str, address: Pubkey, owner: Pubkey, authority: Pubkey) {
+        let bytes = fixture_bytes(fixture);
+        self.svm
+            .set_account(address, Account { lamports: 10_000_000, data: bytes, owner, executable: false, rent_epoch: 0 })
+            .unwrap();
+        self.multisig = address;
+        let mut pd = self.svm.get_account(&self.programdata).unwrap();
+        pd.data[12] = 1;
+        pd.data[13..45].copy_from_slice(authority.as_ref());
+        self.svm.set_account(self.programdata, pd).unwrap();
+    }
+
     pub fn swap_multisig_bytes(&mut self, fixture: &str, owner: Pubkey) {
         let bytes = fixture_bytes(fixture);
         let mut acct = self.svm.get_account(&self.multisig).unwrap();

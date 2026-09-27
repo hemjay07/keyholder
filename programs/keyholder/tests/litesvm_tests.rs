@@ -6,7 +6,8 @@
 
 mod common;
 
-use anchor_lang::prelude::AccountMeta;
+use anchor_lang::prelude::{AccountMeta, Pubkey};
+use std::str::FromStr;
 use common::*;
 use keyholder::{reason_flags, PolicyParams};
 use solana_signer::Signer;
@@ -276,4 +277,81 @@ fn raise_attest_ix(
             AccountMeta::new(control, false),
         ],
     )
+}
+
+// ---- Squads v3 and coral multisigs (added 2026-09-27): real mainnet bytes ----
+
+fn jupiter_v3(h: &mut Harness) {
+    h.use_multisig(
+        "jupiter-squads-v3-multisig.json",
+        Pubkey::from_str("7ZyDFzet6sKgZLN4D89JLfo7chu2n7nYdkFt5RCFk8Sf").unwrap(),
+        Pubkey::from_str("SMPLecH534NA9acpos4G6x7uf3LWbCAwZQE9e8ZekMu").unwrap(),
+        Pubkey::from_str("CvQZZ23qYDWF2RUpxYJ8y9K4skmuvYEEjH7fK58jtipQ").unwrap(),
+    );
+}
+
+fn marinade_coral(h: &mut Harness) {
+    h.use_multisig(
+        "marinade-coral-multisig.json",
+        Pubkey::from_str("magrsHFQxkkioAy45VWnZnFBBdKVdy2ZiRoRGYT9Wed").unwrap(),
+        Pubkey::from_str("msigmtwzgXJHj2ext4XJjCDmpbcMuufFb5cHuwg6Xdt").unwrap(),
+        Pubkey::from_str("551FBXSXdhcRDDkdcb3ThDRg84Mwe5Zs6YjJ1EEoyzBp").unwrap(),
+    );
+}
+
+#[test]
+fn squads_v3_jupiter_is_recorded_as_v3_not_single_key() {
+    let mut h = Harness::new();
+    h.init_config();
+    jupiter_v3(&mut h);
+    h.register_target();
+    let c = h.fetch_control(&h.target_program);
+    assert_eq!(c.key_type, 5, "Squads v3");
+    assert_eq!(c.threshold, 4);
+    assert_eq!(c.time_lock, 0);
+}
+
+#[test]
+fn squads_v3_jupiter_passes_a_3_key_policy() {
+    let mut h = Harness::new();
+    h.init_config();
+    jupiter_v3(&mut h);
+    h.register_target();
+    let owner = payer_kp();
+    let policy = h.create_policy(&owner, 10, PolicyParams { min_threshold: 3, min_time_lock: 0, mode: 1, ..default_policy_params() });
+    let result = h.send(&[h.check_ix(policy, true)]).expect("report mode");
+    let d = decode_check_result(&result.return_data.data);
+    assert!(d.ok, "reasons={:#x}", d.reasons);
+    assert_eq!(d.threshold, 4);
+}
+
+#[test]
+fn squads_v3_jupiter_is_refused_by_a_5_key_policy() {
+    let mut h = Harness::new();
+    h.init_config();
+    jupiter_v3(&mut h);
+    h.register_target();
+    let owner = payer_kp();
+    let policy = h.create_policy(&owner, 11, PolicyParams { min_threshold: 5, min_time_lock: 0, mode: 0, ..default_policy_params() });
+    assert!(h.send(&[h.check_ix(policy, true)]).is_err(), "enforce must revert: 4 < 5");
+}
+
+#[test]
+fn coral_marinade_passes_keys_but_is_refused_for_no_timelock() {
+    let mut h = Harness::new();
+    h.init_config();
+    marinade_coral(&mut h);
+    h.register_target();
+    let c = h.fetch_control(&h.target_program);
+    assert_eq!(c.key_type, 6, "coral multisig");
+    assert_eq!(c.threshold, 6);
+
+    let owner = payer_kp();
+    let pass = h.create_policy(&owner, 12, PolicyParams { min_threshold: 6, min_time_lock: 0, mode: 1, ..default_policy_params() });
+    let d = decode_check_result(&h.send(&[h.check_ix(pass, true)]).expect("report").return_data.data);
+    assert!(d.ok, "reasons={:#x}", d.reasons);
+
+    let owner2 = payer_kp(); // a second policy owner: identical airdrops in one blockhash are rejected as duplicates
+    let refuse = h.create_policy(&owner2, 13, PolicyParams { min_threshold: 6, min_time_lock: 3600, mode: 0, ..default_policy_params() });
+    assert!(h.send(&[h.check_ix(refuse, true)]).is_err(), "enforce must revert: no timelock < 3600 s");
 }
