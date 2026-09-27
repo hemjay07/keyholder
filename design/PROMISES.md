@@ -31,7 +31,7 @@
 | P23 | feed | time brush filters the list; j/k keys; r opens the replay at the current event | CREATIVE §5–6 | dropped | revamp 2026-09-27: ticks jump to their day (built); a drag brush and j/k are controls the founder called overload |
 | P24 | protocol | control map drawn as a plan: program → authority → multisig → keyholders | CREATIVE ref 6 | open | |
 | P25 | protocol | changelog as a dated rail | CREATIVE ref 16 | built | 8b00b5b |
-| P26 | protocol | badge "checked N min ago" | CREATIVE §5 | open | |
+| P26 | protocol | badge "checked N min ago" | CREATIVE §5 | tested | control_checks row per good read + 10-min sweep; state.test.ts asserts check on unchanged read and none on a 429; badge + page read "2 min ago" 2026-09-27 |
 | P27 | event | before → after console side by side | CREATIVE §5 | open | |
 | P28 | event | what we know / what we don't / correction history | CREATIVE §5 | open | |
 | P29 | wallet | each protocol a small live console, weakest first | CREATIVE §5 | dropped | revamp 2026-09-27: one console on the weakest position + a table; N consoles is the overload the founder rejected |
