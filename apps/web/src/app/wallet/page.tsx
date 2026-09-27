@@ -72,7 +72,7 @@ export default async function WalletPage({ searchParams }: { searchParams: Promi
     <main className="wallet-page">
       <section className={wallet ? "wallet-head" : "hero wallet-idle"}>
         <div className={wallet ? undefined : "hero-copy"}>
-        <p className="kicker">Keyholder · Your wallet</p>
+        <p className="kicker">Your wallet</p>
         <h1>Who can move your money?</h1>
         <form className="wallet-form" action="/wallet" method="get">
           <label htmlFor="w" className="mono">Solana wallet address</label>

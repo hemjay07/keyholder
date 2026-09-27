@@ -42,7 +42,7 @@ export default async function EventPage({ params }: { params: Promise<{ uid: str
       <main>
         <Link className="back-link" href="/feed">&larr; Feed</Link>
         <section className="feed-head">
-          <p className="kicker">Keyholder · Alert · {alert.severity}</p>
+          <p className="kicker">Alert · {alert.severity}</p>
           <h1>{protocol?.name ?? alert.protocolId}: {alert.explanation}</h1>
           <p className="lede mono">{alert.createdAt?.slice(0, 16).replace("T", " ")} UTC · rule {alert.ruleId.replace(/_/g, " ")} · {alert.status}</p>
         </section>
@@ -81,7 +81,7 @@ export default async function EventPage({ params }: { params: Promise<{ uid: str
       <Link className="back-link" href="/feed">&larr; Feed</Link>
       <section className="protocol-hero">
         <div className="hero-copy">
-          <p className="kicker">Keyholder · Control change</p>
+          <p className="kicker">Control change</p>
           <h1>{name}: {what.toLowerCase()} on {day(ev.blockTime)}.</h1>
           <p className="lede">
             {authority ? <>Authorised by <span className="mono">{short(authority)}</span>. </> : null}

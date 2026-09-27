@@ -33,7 +33,7 @@ export default async function PolicyPage() {
   return (
     <main className="policy-page">
       <section className="feed-head">
-        <p className="kicker">Keyholder · For vaults</p>
+        <p className="kicker">For vaults</p>
         <h1>Refuse deposits where control just weakened.</h1>
         <p className="lede">
           Your program calls Keyholder&apos;s check before it moves money. You set the policy; the chain answers. Try a policy against the

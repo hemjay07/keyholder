@@ -33,7 +33,7 @@ export default async function AlertsPage() {
     <main className="alerts-page">
       <section className="hero">
         <div className="hero-copy">
-          <p className="kicker">Keyholder · Alerts</p>
+          <p className="kicker">Alerts</p>
           <h1>Get told the moment control weakens.</h1>
           <p className="lede">
             When a protocol&apos;s keys, threshold or timelock change, Keyholder decodes it from chain and posts it to you, signed.

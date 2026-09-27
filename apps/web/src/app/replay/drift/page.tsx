@@ -60,7 +60,7 @@ export default async function DriftReplayPage() {
       <main>
           <section className="protocol-hero">
           <div className="hero-copy">
-            <p className="kicker">Keyholder · Replay</p>
+            <p className="kicker">Replay</p>
             <h1>The Drift replay is unavailable right now.</h1>
             <p className="lede">The replay run could not be read. No figure is shown in its place.</p>
           </div>
@@ -95,7 +95,7 @@ export default async function DriftReplayPage() {
 
       <section className="hero">
         <div className="hero-copy">
-          <p className="kicker">Keyholder · Replay · reconstructed</p>
+          <p className="kicker">Replay · reconstructed</p>
           <h1>{lead} days of warning.</h1>
           <p className="lede mono">Drift lost $285M on 1 April 2026.</p>
           <p className="lede">

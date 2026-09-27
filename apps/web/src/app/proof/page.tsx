@@ -45,7 +45,7 @@ export default function ProofPage() {
 
       <section className="hero">
         <div className="hero-copy">
-          <p className="kicker">Keyholder · Proof · devnet</p>
+          <p className="kicker">Proof · devnet</p>
           <h1>Refused on-chain.</h1>
           <p className="lede">
             A vault asks Keyholder before it takes a deposit. At {fmt(before.time)} the protocol behind it needed 3 of 5 keys and passed.

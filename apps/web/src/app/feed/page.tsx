@@ -85,7 +85,7 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
   return (
     <main className="feed-page">
       <section className="feed-head">
-        <p className="kicker">Keyholder · Feed{protocol ? ` · ${names.get(protocol) ?? protocol}` : ""}</p>
+        <p className="kicker">Feed{protocol ? ` · ${names.get(protocol) ?? protocol}` : ""}</p>
         <h1>Every control change on Solana, as it lands.</h1>
         {data && (
           <p className="feed-finding">

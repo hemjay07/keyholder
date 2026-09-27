@@ -66,7 +66,7 @@ export default async function ProtocolPage({ params }: { params: Promise<{ slug:
 
       <section className="protocol-hero">
         <div className="hero-copy">
-          <p className="kicker">Keyholder · Protocol</p>
+          <p className="kicker">Protocol</p>
           <h1>{headline}</h1>
           <div className="protocol-meta mono">
             <span>read {readDate}</span>
