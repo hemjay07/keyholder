@@ -366,7 +366,7 @@ export default function Console({ data }: { data: ConsoleData }) {
       <group position={[-0.62, Y_TIME, 0]}>
         <TimelockDial seconds={timelockSeconds} hideNeedle={waiting} />
       </group>
-      <Text position={[1.62, Y_TIME, 0.093]} fontSize={0.16} color={INK} font={FONT} letterSpacing={0.01} anchorX="right" anchorY="middle">
+      <Text position={[1.62, Y_TIME, 0.093]} fontSize={waiting || noTimelockFeature ? 0.1 : 0.16} color={INK} font={FONT} letterSpacing={0.01} anchorX="right" anchorY="middle" textAlign="right" maxWidth={1.25} lineHeight={1.15}>
         {waiting ? "not read" : noTimelockFeature ? "no timelock feature" : timelockSeconds === 0 ? "none" : timelockSeconds % 86400 === 0 ? `${timelockSeconds / 86400} d` : timelockSeconds < 3600 ? `${timelockSeconds} s` : `${+(timelockSeconds / 3600).toFixed(1)} h`}
       </Text>
 
