@@ -376,3 +376,22 @@ footer.mono { padding: 20px 40px 40px; font-size: 11px; color: var(--ink-2); bor
 .event-payload li { font-size: 12px; word-break: break-all; }
 @media (max-width: 720px) { .event-compare { grid-template-columns: 1fr; padding-left: 18px; padding-right: 18px; } }
 .ev-line { display: block; margin-top: 6px; }
+
+/* ---- /alerts ---- */
+.alerts-flow { margin-top: 20px; border-top: 3px solid var(--ink); padding-top: 14px; }
+.alerts-steps { list-style: none; margin: 0 0 14px; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+.alerts-steps li.on { color: var(--ink); }
+.alerts-steps li.done { color: var(--verified); }
+.alerts-panel p { margin: 0 0 12px; }
+.alerts-btn { font: inherit; font-size: 13px; padding: 12px 18px; background: var(--ink); color: var(--panel); border: 0; cursor: pointer; }
+.alerts-btn:disabled { opacity: .6; cursor: default; }
+.alerts-wallet { font-size: 12px; color: var(--ink-2); }
+.alerts-protocols { border: 0; padding: 0; margin: 0 0 14px; display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 6px 12px; font-size: 14px; }
+.alerts-protocols legend { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); margin-bottom: 8px; }
+.alerts-field { display: block; margin-bottom: 14px; }
+.alerts-field span { display: block; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); margin-bottom: 6px; }
+.alerts-field input, .alerts-field select { width: 100%; padding: 10px 12px; font-size: 13px; border: 1px solid var(--ink); background: var(--panel); color: var(--ink); border-radius: 0; }
+.alerts-secret { background: #26221A; color: #EAE5D7; padding: 12px 14px; font-size: 12px; word-break: break-all; white-space: pre-wrap; }
+.alerts-verify { font-size: 11px; color: var(--ink-2); }
+.alerts-error { color: var(--signal-text); margin-top: 10px; }
+.alerts-channels { font-size: 11px; color: var(--ink-2); margin-top: 18px; letter-spacing: .04em; }

@@ -30,3 +30,6 @@ surfaces:
   - route: /events/4WRMFG9YnYqbouLzayMGUjJTN3rKdEcApaxdekf5mAxBsx4NdfgKVXTuQZhmWvEa5uLJCVQ9DcSarEmvfQF133kq%3A3.0
     name: event
     headline: "Pump.fun: program upgraded on 23 September 2026."
+  - route: /alerts
+    name: alerts
+    headline: "Get told the moment control weakens."
