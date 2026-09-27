@@ -6,7 +6,7 @@
 
 | id | surface | promise | source | state | evidence / reason |
 |---|---|---|---|---|---|
-| P01 | identity | mark (two key bows crossed, orange notch), SVG | REVAMP-2 §0 | built | design/identity/finals/mark.svg, logo(.dark).svg; wordmark outlined from Geist |
+| P01 | identity | mark: the quorum row (two of five slots turned, lamp lit), SVG; keys/padlock refused as cliché (logo-forge) | REVAMP-2 §0 | built | design/identity/finals/mark.svg, logo(.dark).svg; wordmark outlined from Geist |
 | P02 | identity | favicon + apple icon, readable at 16 px | REVAMP-2 §0 | tested | app/icon.svg + apple-icon.png served; read at 16 px in a tab mock (design/identity/sheet.png) |
 | P03 | identity | 1200×630 share card per page; protocol cards show live console state | REVAMP-2 §0 | built | next/og cards: /, /replay/drift, /proof, /protocols/[slug] (live state); feed/wallet/alerts/policy/events inherit the home card |
 | P04 | identity | X avatar | REVAMP-2 §0 | built | finals/avatar.png 400, x-header.png 1500x500; not uploaded (needs founder's X login) |
