@@ -13,10 +13,10 @@ function timelockText(data: ConsoleData): string {
 export default function ConsoleFallback({ data }: { data: ConsoleData }) {
   const slots = Array.from({ length: Math.max(data.members, 1) }, (_, i) => i < data.threshold);
   return (
-    <div className="console-fallback" role="img" aria-label={data.waiting ? `${data.protocol} console: waiting. ${data.label}` : `${data.protocol} console: ${data.threshold} of ${data.members} keys required, timelock ${timelockText(data)}, ${data.waiting ? "not read" : data.verified ? "verified" : "not verified"}, ${data.weakened ? "weakened" : "nominal"}. ${data.label}`}>
+    <div className="console-fallback" role="img" aria-label={data.waiting ? `${data.protocol} console: waiting. ${data.label}` : `${data.protocol} console: ${data.threshold} of ${data.members} keys required, timelock ${timelockText(data)}, ${data.waiting && !data.codeKnown ? "not read" : data.verified ? "verified" : "not verified"}, ${data.weakened ? "weakened" : "nominal"}. ${data.label}`}>
       <div className="cf-row cf-name">
         <span>{data.protocol}</span>
-        <span className={data.weakened ? "cf-weak" : "cf-nominal"}>{data.waiting ? "WAITING" : data.weakened ? "WEAKENED" : "NOMINAL"}</span>
+        <span className={data.weakened ? "cf-weak" : "cf-nominal"}>{data.waiting ? data.status ?? "WAITING" : data.weakened ? "WEAKENED" : "NOMINAL"}</span>
       </div>
       <div className="cf-row cf-keys">
         <span className="cf-label">KEYS</span>
@@ -33,8 +33,8 @@ export default function ConsoleFallback({ data }: { data: ConsoleData }) {
       </div>
       <div className="cf-row cf-code">
         <span className="cf-label">CODE</span>
-        <span className={data.verified ? "cf-nominal" : "cf-dim"}>{data.waiting ? "not read" : data.verified ? "verified" : "not verified"}</span>
-        <span className={data.codeDrifted ? "cf-weak" : "cf-dim"}>{data.waiting ? "" : data.codeDrifted ? "drifted" : "no drift record"}</span>
+        <span className={data.verified ? "cf-nominal" : "cf-dim"}>{data.waiting && !data.codeKnown ? "not read" : data.verified ? "verified" : "not verified"}</span>
+        <span className={data.codeDrifted ? "cf-weak" : "cf-dim"}>{data.waiting && !data.codeKnown ? "" : data.codeDrifted ? "drifted" : "no drift record"}</span>
       </div>
       <div className="cf-row cf-last">
         <span className="cf-label">LAST</span>

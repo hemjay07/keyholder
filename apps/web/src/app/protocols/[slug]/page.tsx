@@ -5,7 +5,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { headers } from "next/headers";
-import { fetchProtocol, fetchEvents } from "@/lib/api-client";
+import { fetchProtocol, fetchControlChanges } from "@/lib/api-client";
 import { consoleDataFromFacts, timelockLabel } from "@/lib/console-data";
 
 function shortSig(sig: string): string {
@@ -19,7 +19,6 @@ function timelockPhrase(facts: Parameters<typeof timelockLabel>[0]): string {
   return `${label} timelock`;
 }
 import ConsoleDevice from "@/components/console/ConsoleDevice";
-import UnresolvedConsole from "@/components/console/UnresolvedConsole";
 
 export const dynamic = "force-dynamic";
 
@@ -34,9 +33,9 @@ export default async function ProtocolPage({ params }: { params: Promise<{ slug:
 
   if (!protocol) notFound();
 
-  const { events } = await fetchEvents({ protocol: slug, limit: 20 }).catch((err) => {
-    console.error("ProtocolPage: fetchEvents failed", err);
-    return { events: [] as Awaited<ReturnType<typeof fetchEvents>>["events"] };
+  const { changes, before: olderChanges } = await fetchControlChanges({ protocol: slug, limit: 12 }).catch((err) => {
+    console.error("ProtocolPage: fetchControlChanges failed", err instanceof Error ? err.message.slice(0, 200) : "unknown");
+    return { changes: [] as Awaited<ReturnType<typeof fetchControlChanges>>["changes"], before: null };
   });
 
   const facts = protocol.controlFacts;
@@ -80,7 +79,22 @@ export default async function ProtocolPage({ params }: { params: Promise<{ slug:
           {consoleData ? (
             <ConsoleDevice data={consoleData} />
           ) : (
-            <UnresolvedConsole name={protocol.name} note={protocol.evidenceNote ?? "no on-chain evidence of a multisig or governance authority was found for this program."} />
+            <ConsoleDevice
+              data={{
+                protocol: protocol.name.toUpperCase(),
+                threshold: 0,
+                members: 5,
+                timelockSeconds: 0,
+                verified: facts?.verifiedStatus === "verified",
+                codeDrifted: facts?.verifiedStatus === "drifted",
+                codeKnown: facts?.verifiedStatus === "verified" || facts?.verifiedStatus === "drifted" || facts?.verifiedStatus === "unverified",
+                weakened: false,
+                slot: null,
+                label: protocol.evidenceNote ?? "no multisig or governance authority found on chain",
+                waiting: true,
+                status: "UNRESOLVED",
+              }}
+            />
           )}
         </div>
       </section>
@@ -101,18 +115,19 @@ export default async function ProtocolPage({ params }: { params: Promise<{ slug:
 
       <section className="changelog-section">
         <h2>Control changelog</h2>
-        {events.length === 0 ? (
+        {changes.length === 0 ? (
           <p className="rail-empty">No control changes recorded for this protocol yet.</p>
         ) : (
-          events.map((e) => (
-            <div className="changelog-row" key={e.uid}>
-              <span className="cl-date mono">{e.createdAt ? e.createdAt.slice(0, 16).replace("T", " ") : "—"}</span>
-              <span className="cl-sev mono">{e.severity[0]?.toUpperCase()}</span>
-              <span>
-                {e.ruleId.replace(/_/g, " ")} <Link className="evlink" href={`/events/${e.uid}`}>view</Link>
-              </span>
-            </div>
-          ))
+          <>
+            {changes.map((c) => (
+              <div className="changelog-row" key={c.uid}>
+                <span className="cl-date mono">{c.blockTime.slice(0, 16).replace("T", " ")}</span>
+                <span>{c.kind === "upgrade" ? "Program upgraded" : c.kind === "set_authority" ? "Upgrade authority changed" : "Multisig settings changed"}</span>
+                <a className="evlink mono" href={`https://solscan.io/tx/${c.signature}`} target="_blank" rel="noreferrer">{c.signature.slice(0, 6)}…{c.signature.slice(-6)}</a>
+              </div>
+            ))}
+            {olderChanges && <Link className="rail-more mono" href={`/feed?protocol=${protocol.id}`}>Every change &rarr;</Link>}
+          </>
         )}
       </section>
 

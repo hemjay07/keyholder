@@ -1,15 +1,17 @@
-# design/surfaces.yaml -- one entry per route. headline: the one line the surface exists to say;
-# it must be the largest text once allow_larger is set aside.
+# design/surfaces.yaml -- one entry per BUILT route, with a real sample path for dynamic routes.
+# headline: the one line the surface exists to say; it must be the largest text.
+# Routes asked for but not built yet (/events/[uid], /alerts, /proof, /policy) are in SCOPE.md
+# and are added here the turn they are built.
 surfaces:
   - route: /
     name: home
     headline: "Drift needed two keys to lose $285M."
-  - route: /protocols/[slug]
-    name: protocol
-    headline: "<Protocol>: <M> of <N> keys, <timelock>"
-  - route: /events/[uid]
-    name: event
-    headline: "<what changed, in one sentence>"
+  - route: /protocols/drift
+    name: protocol-drift
+    headline: "Drift Protocol: 4 of 7 keys, 1 h timelock"
+  - route: /protocols/marinade
+    name: protocol-marinade
+    headline: "Marinade: control unresolved"
   - route: /feed
     name: feed
     headline: "Every control change on Solana, as it lands."
@@ -19,12 +21,3 @@ surfaces:
   - route: /wallet
     name: wallet
     headline: "Who can move your money?"
-  - route: /alerts
-    name: alerts
-    headline: "Get told the moment control weakens."
-  - route: /proof
-    name: proof
-    headline: "Refused on-chain."
-  - route: /policy
-    name: policy
-    headline: "Refuse deposits where control just weakened."

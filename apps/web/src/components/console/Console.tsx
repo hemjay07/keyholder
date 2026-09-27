@@ -229,10 +229,15 @@ export interface ConsoleData {
   label: string;
   /** No wallet or protocol read yet: every reading is blank, nothing is implied. */
   waiting?: boolean;
+  /** Status plate text while waiting (default WAITING), e.g. UNRESOLVED. */
+  status?: string;
+  /** While waiting, the code row still shows its reading when it was read. */
+  codeKnown?: boolean;
 }
 
 export default function Console({ data }: { data: ConsoleData }) {
-  const { protocol, threshold, members, timelockSeconds, noTimelockFeature, verified, codeDrifted, weakened, label, waiting = false } = data;
+  const { protocol, threshold, members, timelockSeconds, noTimelockFeature, verified, codeDrifted, weakened, label, waiting = false, status, codeKnown = false } = data;
+  const codeBlank = waiting && !codeKnown;
   const { rough, normal } = usePanelTextures();
 
   // Up to 7 keys sit on the left of the row; more run the full width (the
@@ -279,7 +284,7 @@ export default function Console({ data }: { data: ConsoleData }) {
         <Lamp x={0} on={weakened} color={WEAKENED} delay={0.55} />
       </group>
       <Text position={[1.62, Y_NAME, 0.093]} fontSize={0.078} color={weakened ? WEAKENED : INK_SOFT} font={FONT} letterSpacing={0.08} anchorX="right">
-        {waiting ? "WAITING" : weakened ? "WEAKENED" : "NOMINAL"}
+        {waiting ? status ?? "WAITING" : weakened ? "WEAKENED" : "NOMINAL"}
       </Text>
 
       <RowLabel y={Y_KEYS}>KEYS</RowLabel>
@@ -307,13 +312,13 @@ export default function Console({ data }: { data: ConsoleData }) {
         <Lamp x={0} on={verified} color={VERIFIED_ON} delay={0.55} />
       </group>
       <Text position={[-0.82, Y_CODE, 0.093]} fontSize={0.078} color={INK} font={FONT} anchorX="left">
-        {waiting ? "not read" : verified ? "verified" : "not verified"}
+        {codeBlank ? "not read" : verified ? "verified" : "not verified"}
       </Text>
       <group position={[0.55, Y_CODE, 0]}>
         <Lamp x={0} on={codeDrifted} color={WEAKENED} delay={0.55} />
       </group>
       <Text position={[0.68, Y_CODE, 0.093]} fontSize={0.078} color={codeDrifted ? WEAKENED : INK} font={FONT} anchorX="left">
-        {waiting ? "" : codeDrifted ? "drifted" : "no drift record"}
+        {codeBlank ? "" : codeDrifted ? "drifted" : "no drift record"}
       </Text>
 
       <RowLabel y={Y_LAST}>LAST</RowLabel>
