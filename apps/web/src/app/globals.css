@@ -867,3 +867,11 @@ html.lenis, html.lenis body { height: auto; }
 .as-head { display: grid; gap: 4px; font-size: 11.5px; opacity: .7; padding-bottom: 12px; border-bottom: 1px solid rgba(237,232,221,.2); overflow-wrap: anywhere; }
 .alert-sample pre { font-size: 12px; line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere; margin: 12px 0; max-height: 420px; overflow: auto; }
 .as-note { font-size: 11px; opacity: .7; margin: 0; }
+.seismo-hit { fill: transparent; cursor: pointer; }
+.seismo a:hover .seismo-hit { fill: rgba(127, 120, 105, .14); }
+.feed-chips { display: flex; flex-wrap: wrap; gap: 6px; max-width: 1360px; margin: 0 auto 18px; padding: 0 40px; font-size: 11.5px; }
+.feed-chips a { padding: 5px 10px; border: 1px solid color-mix(in srgb, var(--ink) 30%, transparent); border-radius: 999px; color: inherit; text-decoration: none; }
+.feed-chips a:hover { border-color: var(--ink); }
+.feed-chips a.on { background: var(--ink); color: var(--ground, #E6E2D9); border-color: var(--ink); }
+@media (max-width: 900px) { .feed-chips { padding: 0 16px; flex-wrap: nowrap; overflow-x: auto; } .feed-chips a { white-space: nowrap; } }
+.feed-chips { padding: 0; max-width: none; } @media (max-width: 900px) { .feed-chips { padding: 0; } }

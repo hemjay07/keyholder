@@ -9,7 +9,7 @@ export interface SeismoDay {
   other: number;
 }
 
-export default function Seismograph({ days, from, to }: { days: SeismoDay[]; from: string; to: string }) {
+export default function Seismograph({ days, from, to, href }: { days: SeismoDay[]; from: string; to: string; href?: (day: string) => string }) {
   const W = 1000;
   const H = 140;
   const base = H - 4;
@@ -37,12 +37,13 @@ export default function Seismograph({ days, from, to }: { days: SeismoDay[]; fro
             c.d.weak + c.d.other === 0 ? (
               <line key={c.d.day} x1={c.x} x2={c.x} y1={base} y2={base - 2} className="seismo-idle" />
             ) : (
-              <g key={c.d.day}>
+              <a key={c.d.day} href={href ? href(c.d.day) : undefined} aria-label={`${c.d.day}: ${c.d.weak + c.d.other} changes`}>
+                <rect x={c.x - W / n / 2} y={0} width={W / n} height={base} className="seismo-hit" />
                 <line x1={c.x} x2={c.x} y1={base} y2={base - c.d.other * unit} className="seismo-other" />
                 {c.d.weak > 0 && (
                   <line x1={c.x} x2={c.x} y1={base - c.d.other * unit} y2={base - (c.d.other + c.d.weak) * unit} className="seismo-weak" />
                 )}
-              </g>
+              </a>
             )
           )}
         </g>

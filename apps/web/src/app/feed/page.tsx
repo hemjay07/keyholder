@@ -92,11 +92,20 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
           <p className="feed-finding">
             <b><CountUp value={total30} /></b> control changes to the {names.size} tracked protocols in the last 30 days
             {weak30 > 0 && <>; <b className="weak"><CountUp value={weak30} /></b> of them by protocols with no timelock, live the moment they signed</>}.
+            {groups.length > 0 && <> The list below runs from {groups[0]!.day} back to {groups[groups.length - 1]!.day}.</>}
           </p>
         )}
       </section>
 
-      {data && <section className="seismo-section"><Seismograph days={[...seismoMap.values()]} from={seismoFrom} to={seismoTo} /></section>}
+      {data && (
+        <nav className="feed-chips mono" aria-label="Filter by protocol">
+          <Link href="/feed" className={!protocol ? "on" : undefined}>All</Link>
+          {[...names.entries()].filter(([id]) => !id.includes("test")).sort((a, b) => a[1].localeCompare(b[1])).map(([id, n]) => (
+            <Link key={id} href={`/feed?protocol=${id}`} className={protocol === id ? "on" : undefined}>{n}</Link>
+          ))}
+        </nav>
+      )}
+      {data && <section className="seismo-section"><Seismograph days={[...seismoMap.values()]} from={seismoFrom} to={seismoTo} href={(d) => `/feed?before=${new Date(Date.parse(d + "T00:00:00Z") + 86400000).toISOString()}${protocol ? `&protocol=${protocol}` : ""}#d-${d}`} /></section>}
 
       {!data ? (
         <p className="feed-error">The feed could not be read right now. Nothing is shown in its place.</p>
@@ -105,7 +114,7 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
       ) : (
         <section className="feed-list">
           {groups.map((g) => (
-            <div key={g.day} className="feed-day">
+            <div key={g.day} className="feed-day" id={`d-${g.rows[0]!.blockTime.slice(0, 10)}`}>
               <h2 className="mono">{g.day}</h2>
               <ol>
                 {g.rows.map((c, ri) => {
