@@ -5,6 +5,7 @@
 
 import { fetchProtocol } from '@/lib/api-client';
 import type { ControlFacts } from '@/lib/control';
+import { ago } from '@/lib/ago';
 
 function formatSeconds(seconds: number): string {
   if (seconds % 86400 === 0) return `${seconds / 86400} d`;
@@ -20,22 +21,24 @@ function timelockLabel(timelock: ControlFacts['timelock']): { text: string; weak
   return { text: formatSeconds(timelock.seconds), weak: false };
 }
 
-function svg(keys: string, timelock: { text: string; weak: boolean }, status: string): string {
+function svg(keys: string, timelock: { text: string; weak: boolean }, status: string, checked: string): string {
   const verified = status === 'verified';
   const drifted = status === 'drifted';
   const lamp = verified ? '#1F6B4A' : drifted ? '#A32F06' : 'none';
   const lampStroke = verified ? '#1F6B4A' : drifted ? '#A32F06' : '#5A564E';
   const codeText = verified ? 'ok' : drifted ? 'drift' : 'unv.';
   const timeInk = timelock.weak ? '#A32F06' : '#1B1A17';
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="40" viewBox="0 0 300 40" role="img" aria-label="Keyholder: control ${keys}, timelock ${timelock.text}, ${verified ? 'verified' : drifted ? 'code drifted' : 'not verified'}">
-  <rect x="0.5" y="0.5" width="299" height="39" fill="#F4F1EA" stroke="rgba(27,26,23,.14)" rx="4"/>
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="360" height="40" viewBox="0 0 360 40" role="img" aria-label="Keyholder: control ${keys}, timelock ${timelock.text}, ${verified ? 'verified' : drifted ? 'code drifted' : 'not verified'}">
+  <rect x="0.5" y="0.5" width="359" height="39" fill="#F4F1EA" stroke="rgba(27,26,23,.14)" rx="4"/>
   <text x="10" y="16" font-family="Geist Mono, ui-monospace, monospace" font-size="9" letter-spacing=".08em" fill="#5A564E">KEYS</text>
   <text x="10" y="31" font-family="Geist Mono, ui-monospace, monospace" font-size="12" fill="#1B1A17">${keys}</text>
   <text x="84" y="16" font-family="Geist Mono, ui-monospace, monospace" font-size="9" letter-spacing=".08em" fill="#5A564E">TIMELOCK</text>
   <text x="84" y="31" font-family="Geist Mono, ui-monospace, monospace" font-size="12" fill="${timeInk}">${timelock.text}</text>
-  <text x="244" y="16" font-family="Geist Mono, ui-monospace, monospace" font-size="9" letter-spacing=".08em" fill="#5A564E">CODE</text>
-  <circle cx="250" cy="27" r="4.5" fill="${lamp}" stroke="${lampStroke}"/>
-  <text x="259" y="31" font-family="Geist Mono, ui-monospace, monospace" font-size="9" fill="${drifted ? '#A32F06' : '#5A564E'}">${codeText}</text>
+  <text x="232" y="16" font-family="Geist Mono, ui-monospace, monospace" font-size="9" letter-spacing=".08em" fill="#5A564E">CHECKED</text>
+  <text x="232" y="31" font-family="Geist Mono, ui-monospace, monospace" font-size="10" fill="#5A564E">${checked}</text>
+  <text x="304" y="16" font-family="Geist Mono, ui-monospace, monospace" font-size="9" letter-spacing=".08em" fill="#5A564E">CODE</text>
+  <circle cx="310" cy="27" r="4.5" fill="${lamp}" stroke="${lampStroke}"/>
+  <text x="319" y="31" font-family="Geist Mono, ui-monospace, monospace" font-size="9" fill="${drifted ? '#A32F06' : '#5A564E'}">${codeText}</text>
 </svg>`;
 }
 
@@ -54,12 +57,12 @@ export async function GET(_req: Request, { params }: { params: Promise<{ slug: s
       facts.authorityKind === 'immutable' ? 'immutable'
       : facts.authorityKind === 'spl_gov' ? 'DAO vote'
       : facts.threshold != null && facts.members != null ? `${facts.threshold} of ${facts.members}` : 'n/a';
-    const body = svg(keys, facts.authorityKind === 'immutable' ? { text: 'none needed', weak: false } : timelockLabel(facts.timelock), facts.verifiedStatus);
+    const body = svg(keys, facts.authorityKind === 'immutable' ? { text: 'none needed', weak: false } : timelockLabel(facts.timelock), facts.verifiedStatus, protocol.checkedAt ? ago(protocol.checkedAt) : 'not yet');
 
     return new Response(body, {
       headers: {
         'Content-Type': 'image/svg+xml',
-        'Cache-Control': 'public, max-age=300',
+        'Cache-Control': 'public, max-age=60',
       },
     });
   } catch (error) {

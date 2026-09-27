@@ -80,7 +80,7 @@ export async function fetchProtocols(): Promise<ProtocolSummary[]> {
   });
 }
 
-export async function fetchProtocol(id: string): Promise<(ProtocolSummary & { programs: Array<{ programId: string; label: string | null; loader: string | null }> }) | null> {
+export async function fetchProtocol(id: string): Promise<(ProtocolSummary & { programs: Array<{ programId: string; label: string | null; loader: string | null }>; checkedAt: string | null }) | null> {
   const db = getDb();
   const [protocol] = await db.select().from(schema.protocols).where(eq(schema.protocols.id, id));
   if (!protocol) return null;
@@ -94,6 +94,7 @@ export async function fetchProtocol(id: string): Promise<(ProtocolSummary & { pr
     .limit(1);
 
   const facts = latest ? toControlFacts(latest.state as StoredControlState) : null;
+  const [check] = await db.select().from(schema.control_checks).where(eq(schema.control_checks.protocol_id, id)).limit(1);
   const authorityAddress = latest ? (latest.state as StoredControlState).authorityAddress : null;
   const evidence = authorityAddress ? await evidenceForAddresses([authorityAddress]) : new Map();
   const ev = authorityAddress ? evidence.get(authorityAddress) : undefined;
@@ -108,6 +109,7 @@ export async function fetchProtocol(id: string): Promise<(ProtocolSummary & { pr
     evidenceSignature: ev?.signature ?? null,
     evidenceNote: ev?.note ?? null,
     programs: programs.map((p) => ({ programId: p.program_id, label: p.label, loader: p.loader })),
+    checkedAt: check?.checked_at?.toISOString() ?? null,
   };
 }
 

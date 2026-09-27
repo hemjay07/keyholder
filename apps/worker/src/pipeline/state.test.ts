@@ -44,6 +44,7 @@ describe.skipIf(!databaseUrl)('refreshProtocolState (real local Postgres, _test 
 
   afterAll(async () => {
     await db.delete(schema.control_state).where(eq(schema.control_state.protocol_id, protocolId));
+    await db.delete(schema.control_checks).where(eq(schema.control_checks.protocol_id, protocolId));
     await db.delete(schema.programs).where(eq(schema.programs.program_id, programId));
     await db.delete(schema.protocols).where(eq(schema.protocols.id, protocolId));
     await sql.end();
@@ -79,6 +80,10 @@ describe.skipIf(!databaseUrl)('refreshProtocolState (real local Postgres, _test 
 
     const rows = await db.select().from(schema.control_state).where(eq(schema.control_state.protocol_id, protocolId));
     expect(rows).toHaveLength(1); // still just the one from the previous test
+
+    // ...but the check itself is recorded: control was read at slot 200 (P26).
+    const [check] = await db.select().from(schema.control_checks).where(eq(schema.control_checks.protocol_id, protocolId));
+    expect(check?.slot).toBe(200);
   });
 
   it('happy: writes a new row when the authority actually changed', async () => {
@@ -111,6 +116,10 @@ describe.skipIf(!databaseUrl)('refreshProtocolState (real local Postgres, _test 
 
     const rows = await db.select().from(schema.control_state).where(eq(schema.control_state.protocol_id, protocolId));
     expect(rows).toHaveLength(2);
+
+    // A failed read is not a check: the last check stays at the last good read.
+    const [check] = await db.select().from(schema.control_checks).where(eq(schema.control_checks.protocol_id, protocolId));
+    expect(check?.slot).toBe(300);
   });
 
   it('edge: same upgrade authority but multisig not re-resolved keeps the known multisig (no false change)', async () => {

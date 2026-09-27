@@ -25,7 +25,7 @@
 import { desc, eq } from 'drizzle-orm';
 import type { Connection } from '@solana/web3.js';
 import type { Db } from '../db';
-import { control_state, programs, multisigs } from '../schema';
+import { control_state, control_checks, programs, multisigs } from '../schema';
 import { resolveAuthority } from '../state-builder/authority';
 import { getControlStateAtSlot, hashState, type ControlState } from '../state-builder/fold';
 import { withRedaction } from '../ingest/rpc';
@@ -137,6 +137,11 @@ export async function refreshProtocolState(
   const beforeFactsHash = previousState ? hashState(controlFacts(previousState)) : null;
   const afterFactsHash = hashState(controlFacts(after));
   const wrote = !previousRow || !beforeFactsHash || Buffer.compare(beforeFactsHash, afterFactsHash) !== 0;
+
+  await db
+    .insert(control_checks)
+    .values({ protocol_id: protocolId, slot, checked_at: new Date() })
+    .onConflictDoUpdate({ target: control_checks.protocol_id, set: { slot, checked_at: new Date() } });
 
   if (wrote) {
     await db
