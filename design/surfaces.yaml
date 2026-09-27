@@ -21,3 +21,6 @@ surfaces:
   - route: /wallet
     name: wallet
     headline: "Who can move your money?"
+  - route: /proof
+    name: proof
+    headline: "Refused on-chain."
