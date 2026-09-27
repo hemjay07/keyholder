@@ -183,7 +183,9 @@ export default function ConsoleScene({ data, companion }: { data: ConsoleData; c
     return () => cancelAnimationFrame(id);
   }, []);
 
-  if (!webgl) return <ConsoleFallback data={data} />;
+  // Phones get the flat, readable console: the 3D one is too small to read there
+  // and the most expensive thing on the page (founder, 2026-09-27).
+  if (!webgl || mobile) return <ConsoleFallback data={data} />;
   if (!mounted) return <div className="console-canvas" aria-hidden="true" />;
 
   return (

@@ -37,7 +37,7 @@ const MOMENTS: Moment[] = [
   { id: "setup", at: "2026-03-01T00:00:00Z", ground: "bone", date: "Drift · admin council", caption: "Drift's admin council needed 2 of 5 keys, with no timelock. It stayed that way the whole time.", lampOn: false, readout: "2 of 5 · no timelock · standing", window: "none", vault: "hidden", keys: "focus" },
   { id: "routine", at: "2026-03-02T17:09:00Z", ground: "bone", date: "2 March 2026", caption: "A routine settings change through the council. This is what normal looked like.", lampOn: false, readout: "2 Mar · routine change", window: "none", vault: "hidden", keys: "council" },
   { id: "alert", at: T_ALERT, ground: "warm", date: "25 March 2026 · 16:58 UTC", caption: "The council's own signers create a second multisig: 2 of 5, no timelock. Keyholder's first alert.", lampOn: true, readout: "ALERT · new multisig by controller · 25 Mar", window: "open", vault: "refused", keys: "council" },
-  { id: "takeover", at: "2026-03-26T16:08:00Z", ground: "warm", date: "26 March 2026", caption: "Drift's admin role moves to the new address. A market is switched on and its limits raised.", lampOn: true, readout: "admin moved · 3 admin actions · 26 Mar", window: "open", vault: "refused", keys: "council" },
+  { id: "takeover", at: "2026-03-26T16:08:00Z", ground: "warm", date: "26 March 2026", caption: "Drift's admin role moves to that new multisig, now the attacker's. A market is switched on and its limits raised.", lampOn: true, readout: "admin moved · 3 admin actions · 26 Mar", window: "open", vault: "refused", keys: "council" },
   { id: "money", at: T_DRAIN, ground: "ink", date: "31 March 2026 · 07:16 UTC", caption: "A durable nonce is staged; hours later, the first withdrawal from the insurance fund. 5.6 days after the alert.", lampOn: true, readout: "first withdrawal · 31 Mar", window: "closed", vault: "refused", keys: "council" },
   { id: "loss", at: "2026-04-01T20:03:00Z", ground: "ink", date: "1 April 2026", caption: "$285M leaves in minutes. The admin role is taken back, too late.", lampOn: true, readout: "$285M lost · 1 Apr", window: "closed", vault: "refused", keys: "council" },
   { id: "end", at: "2026-04-03T00:00:00Z", ground: "bone", date: "Count the keys.", caption: "5.6 days of warning. Every step was on-chain.", lampOn: true, readout: "5.6 days of warning", window: "closed", vault: "refused", keys: "focus" },
@@ -150,21 +150,6 @@ export default function ReplayFilm({ events, leadDays }: { events: FilmEvent[]; 
     [mo]
   );
 
-  // The attacker's multisig: appears at the alert, holds Drift's admin role from 26 Mar.
-  const after = (iso: string) => new Date(mo.at).getTime() >= new Date(iso).getTime();
-  const companion: ConsoleData | null = after(T_ALERT)
-    ? {
-        protocol: "NEW MULTISIG",
-        threshold: 2,
-        members: 5,
-        timelockSeconds: 0,
-        verified: false,
-        codeDrifted: false,
-        weakened: true,
-        slot: null,
-        label: after("2026-03-26T01:46:35Z") ? "holds Drift's admin role" : "created by council signers",
-      }
-    : null;
   const now = x(mo.at);
   const w0 = warning(mo.at);
   const targetH = w0.d * 24 + w0.h;
@@ -178,15 +163,10 @@ export default function ReplayFilm({ events, leadDays }: { events: FilmEvent[]; 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [targetH]);
   const w = { ...w0, d: Math.floor(shownH / 24), h: shownH % 24 };
-  // Honest vault: the per-step amounts are not recorded; only the first withdrawal
-  // (31 Mar) and the total ($285M by 1 Apr, rekt.news) are.
-  const vaultFill = mo.id === "loss" || mo.id === "end" ? 0 : mo.id === "money" ? 88 : 100;
-  const vaultLabel = mo.id === "loss" || mo.id === "end" ? "$285M gone" : mo.id === "money" ? "first withdrawal; amount not recorded" : "untouched";
   const winL = x(T_ALERT);
   const winR = mo.window === "closed" ? x(T_DRAIN) : mo.window === "open" ? Math.max(winL, now) : winL;
   const lanes: Array<{ key: FilmEvent["lane"]; label: string }> = [
     { key: "keyholder", label: "Keyholder alerts" },
-    { key: "admin", label: "Admin key" },
     { key: "money", label: "Money out" },
   ];
 
@@ -194,14 +174,16 @@ export default function ReplayFilm({ events, leadDays }: { events: FilmEvent[]; 
     <div className={`film g-${mo.ground} cam-${mo.id}`}>
       <div className="film-stage" aria-live="polite">
         <div className="film-scene">
+          <div className="film-mini" aria-hidden="true">
+            <div className={`fm-row${mo.lampOn ? " weak" : ""}`}>
+              <i className="fm-lamp" />
+              <b className="mono">Drift admin council</b>
+              <span className="fm-keys">{[0, 1, 2, 3, 4].map((k) => <em key={k} className={k < 2 ? "on" : ""} />)}</span>
+              <span className="mono">2/5 · no timelock</span>
+            </div>
+          </div>
           <div className="film-console">
-            <ConsoleDevice data={device} companion={companion} />
-            {companion && (
-              <p className="film-tag">
-                <b className="mono">The attacker&apos;s multisig</b>
-                <span>2 of 5, no timelock. Set up by Drift&apos;s own signers{after("2026-03-26T01:46:35Z") ? "; now holds Drift's admin role." : "."}</span>
-              </p>
-            )}
+            <ConsoleDevice data={device} />
           </div>
           <aside className="film-side">
             <div className={`film-count${w.started ? " on" : ""}${w.frozen ? " frozen" : ""}`}>
@@ -209,23 +191,15 @@ export default function ReplayFilm({ events, leadDays }: { events: FilmEvent[]; 
               <b className="mono">{w.started ? <>{w.d}<small>d</small> {String(w.h).padStart(2, "0")}<small>h</small></> : "—"}</b>
               <span className="mono film-side-sub">{w.frozen ? "then the money moved" : w.started ? "since the first alert, nothing has moved yet" : "no alert yet"}</span>
             </div>
-            <div className="film-vault" aria-label={`Drift funds: ${vaultLabel}`}>
-              <span className="mono film-side-label">Drift funds at risk</span>
-              <div className="film-meter">
-                <span className="film-meter-fill" style={{ width: `${vaultFill}%` }} />
-                {[0, 25, 50, 75, 100].map((t) => <i key={t} style={{ left: `${t}%` }} />)}
-              </div>
-              <div className="film-meter-row mono">
-                <b>{vaultFill > 0 ? "$285M" : "$0"}</b>
-                <span>{vaultLabel}</span>
-              </div>
-            </div>
           </aside>
         </div>
 
         <div className="film-note">
           <p className="film-date mono">{mo.date}</p>
           <p className="film-caption">{mo.caption}</p>
+          {mo.id === "end" && (
+            <p className="film-end-link"><a href="/">See today&apos;s weakest protocol →</a> <a href="/proof">Watch a vault refuse on-chain →</a></p>
+          )}
         </div>
 
         <div className="film-lanes" role="group" aria-label="Timeline, 1 March to 3 April 2026">
@@ -247,14 +221,6 @@ export default function ReplayFilm({ events, leadDays }: { events: FilmEvent[]; 
             <div key={l.key} className="film-lane">
               <span className="film-lane-label mono">{l.label}</span>
               <div className="film-lane-track">
-                {l.key === "admin" && (
-                  <>
-                    <span className="film-bar council" style={{ left: 0, width: `${Math.min(now, x("2026-03-26T01:46:35Z"))}%` }} />
-                    {now > x("2026-03-26T01:46:35Z") && (
-                      <span className="film-bar taken" style={{ left: `${x("2026-03-26T01:46:35Z")}%`, width: `${Math.min(now, x("2026-04-01T16:05:19Z")) - x("2026-03-26T01:46:35Z")}%` }} />
-                    )}
-                  </>
-                )}
                 {events
                   .filter((e) => e.lane === l.key && x(e.time) <= now + 0.01)
                   .map((e) => (
@@ -271,31 +237,21 @@ export default function ReplayFilm({ events, leadDays }: { events: FilmEvent[]; 
               </div>
             </div>
           ))}
-          {mo.vault !== "hidden" && (
-            <div className="film-lane vault">
-              <span className="film-lane-label mono">A vault using Keyholder</span>
-              <div className="film-lane-track">
-                <span className="film-bar pass" style={{ left: 0, width: `${winL}%` }}><em className="mono">accepts deposits</em></span>
-                <span className="film-bar refused" style={{ left: `${winL}%`, width: `${now - winL}%` }}><em className="mono">refuses</em></span>
-              </div>
-            </div>
-          )}
           <span className="film-now" style={{ left: `${now}%` }} />
+          {/* The timeline is the progress bar: click a stretch to jump to that moment. */}
+          <div className="film-hits">
+            {MOMENTS.map((x2, i) => {
+              const l0 = i === 0 ? 0 : x(x2.at);
+              const r0 = i === MOMENTS.length - 1 ? 100 : x(MOMENTS[i + 1]!.at);
+              return <button key={x2.id} type="button" tabIndex={-1} aria-label={x2.date} className={i === m ? "on" : ""} style={{ left: `${l0}%`, width: `${Math.max(0, r0 - l0)}%` }} onClick={() => { setPlaying(false); go(i); }} />;
+            })}
+          </div>
+          <button type="button" className="film-play mono" aria-label={playing ? "Pause" : "Play"} onClick={() => { firstRun.current = false; if (playing) { setPlaying(false); return; } if (m >= MOMENTS.length - 1) go(0); else go(m + 1); setPlaying(true); }}>
+            {playing ? "❚❚" : "▶"}
+          </button>
+          {m <= FIRST_VISIT_STOP && !playing && <span className="film-hint mono">Scroll to continue</span>}
         </div>
 
-        <div className="film-controls">
-          <button type="button" className="step-btn mono" onClick={() => { setPlaying(false); go(m - 1); }} disabled={m === 0}>◀ Back</button>
-          <button type="button" className="player-play mono" onClick={() => { firstRun.current = false; if (playing) { setPlaying(false); return; } if (m >= MOMENTS.length - 1) go(0); else go(m + 1); setPlaying(true); }}>
-            {playing ? "Pause" : m >= MOMENTS.length - 1 ? "Watch again" : "Play"}
-          </button>
-          <button type="button" className="step-btn mono" onClick={() => { setPlaying(false); go(m + 1); }} disabled={m === MOMENTS.length - 1}>Next ▶</button>
-          <span className="film-progress" aria-hidden="true">
-            {MOMENTS.map((x, i) => (
-              <button key={x.id} type="button" tabIndex={-1} className={i === m ? "on" : i < m ? "done" : ""} onClick={() => { setPlaying(false); go(i); }} />
-            ))}
-          </span>
-          <span className="film-hint mono">{playing ? "Playing" : m === FIRST_VISIT_STOP ? "Scroll or press → to continue" : "Scroll, or use ← →"}</span>
-        </div>
       </div>
 
       {/* Scroll track: one section per moment. The stage above is sticky. */}

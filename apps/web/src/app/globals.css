@@ -735,11 +735,11 @@ html.lenis, html.lenis body { height: auto; }
 /* constant row heights so the stage never resizes between moments (no re-fit jolt) */
 @media (min-width: 901px) {
   .film-note { height: 108px; min-height: 0; overflow: hidden; }
-  .film-lanes { height: 150px; align-content: start; }
+  .film-lanes { height: 96px; align-content: start; }
 }
 @media (max-width: 900px) {
   .film-note { height: 150px; min-height: 0; overflow: hidden; }
-  .film-lanes { height: 210px; align-content: start; }
+  .film-lanes { height: 92px; align-content: start; }
 }
 @media (max-width: 900px) {
   .film-scene { grid-template-rows: minmax(0, 1fr) 150px; }
@@ -759,3 +759,42 @@ html.lenis, html.lenis body { height: auto; }
 .film-tag b { display: block; font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--signal-text); font-weight: 500; margin-bottom: 3px; }
 .film.g-ink .film-tag b { color: #FF6B33; }
 @media (max-width: 900px) { .film-tag { position: static; width: auto; font-size: 11.5px; margin-top: -8px; } }
+
+/* replay decluttered (founder 2026-09-27): counter is the one number; phones get a 2D status card */
+.film-count b { font-size: 88px; }
+.film-count b small { font-size: 34px; }
+.film-end-link { margin: 10px 0 0; font-size: 14px; }
+.film-mini { display: none; }
+@media (max-width: 900px) {
+  .film-console { display: none; }
+  .film-scene { grid-template-rows: auto auto; }
+  .film-mini { display: grid; gap: 8px; padding: 10px 0; }
+  .fm-row { display: grid; grid-template-columns: 12px 1fr auto; grid-template-rows: auto auto; gap: 4px 10px; align-items: center; padding: 12px 14px; border: 1.5px solid currentColor; border-radius: 6px; font-size: 12px; animation: film-set 320ms var(--ease-1); }
+  .fm-row b { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; font-weight: 500; }
+  .fm-row > span.mono { grid-column: 2 / 4; opacity: .8; }
+  .fm-row.attacker b { color: var(--signal-text); }
+  .film.g-ink .fm-row.attacker b { color: #FF6B33; }
+  .fm-lamp { width: 10px; height: 10px; border-radius: 50%; background: currentColor; opacity: .3; }
+  .fm-row.weak .fm-lamp { background: var(--signal); opacity: 1; box-shadow: 0 0 8px var(--signal); }
+  .fm-keys { display: flex; gap: 4px; }
+  .fm-keys em { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid currentColor; }
+  .fm-keys em.on { background: currentColor; }
+  .film-side { height: auto; grid-template-columns: 1fr; }
+  .film-count b { font-size: 48px; }
+  .film-count b small { font-size: 20px; }
+  .film-tag { display: none; }
+  .film-scene { grid-template-rows: auto auto !important; }
+}
+
+/* replay revamp (design/REVAMP-REPLAY.md): the timeline is the progress bar; one small play */
+.film-hits { position: absolute; inset: 18px 0 0 0; }
+.film-hits button { position: absolute; top: 0; bottom: 0; background: none; border: 0; padding: 0; cursor: pointer; }
+.film-hits button:hover { background: rgba(127, 120, 105, .1); }
+.film-play { position: absolute; right: calc(100% + 14px); top: -6px; width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid currentColor; background: none; color: inherit; font-size: 12px; cursor: pointer; display: grid; place-items: center; }
+.film-play:hover { background: var(--signal); border-color: var(--signal); color: #fff; }
+.film-lanes > .film-hint { position: absolute; right: 0; top: -2px; font-size: 11px; letter-spacing: .06em; opacity: .7; }
+@media (max-width: 900px) { .film-play { right: auto; left: auto; top: -8px; position: absolute; right: 0; } .film-lanes > .film-hint { right: 44px; } }
+.film-play { top: auto; bottom: calc(100% - 44px); right: calc(100% + 150px); }
+.film-lanes { margin-left: 220px; }
+.film-lanes > .film-hint { top: auto; bottom: -22px; }
+@media (max-width: 900px) { .film-lanes { margin-left: 0; } .film-play { right: 0; bottom: auto; top: -8px; } .film-lanes > .film-hint { bottom: auto; top: 2px; right: 48px; } }
