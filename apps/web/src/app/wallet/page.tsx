@@ -8,7 +8,7 @@ import { PublicKey } from "@solana/web3.js";
 import { fetchProtocols } from "@/lib/api-client";
 import { consoleDataFromFacts, timelockLabel } from "@/lib/console-data";
 import ConsoleDevice from "@/components/console/ConsoleDevice";
-import UnresolvedConsole from "@/components/console/UnresolvedConsole";
+import type { ConsoleData } from "@/components/console/Console";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +24,20 @@ const POSITION_TO_PROTOCOL: Record<string, string> = {
 // A public mainnet wallet with open positions in Kamino, marginfi and Drift
 // (from the resolver's own fixtures, read on chain 2026-09-26).
 const EXAMPLE_WALLET = "HHVQnKkXSq3xKYviLpig8Rg4pLQ2J9QFsHNfggHNohuF";
+
+// Before an address is pasted: the real console with every reading blank.
+const WAITING_CONSOLE: ConsoleData = {
+  protocol: "YOUR WALLET",
+  threshold: 0,
+  members: 5,
+  timelockSeconds: 0,
+  verified: false,
+  codeDrifted: false,
+  weakened: false,
+  slot: null,
+  label: "paste an address to count the keys",
+  waiting: true,
+};
 
 interface Position { protocolId: string; kind: string }
 type PositionsResult = { ok: true; positions: Position[] } | { ok: false; reason: "invalid" | "rate_limited" | "error" };
@@ -76,7 +90,7 @@ export default async function WalletPage({ searchParams }: { searchParams: Promi
         </div>
         {!wallet && (
           <div className="device-frame">
-            <UnresolvedConsole name="Your wallet" status="WAITING" note="paste an address to count the keys" />
+            <ConsoleDevice data={WAITING_CONSOLE} />
           </div>
         )}
       </section>

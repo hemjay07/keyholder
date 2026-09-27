@@ -102,7 +102,7 @@ const DIAL_TICKS = [
   { h: 48, label: "48H", hard: false },
 ];
 
-function TimelockDial({ seconds }: { seconds: number }) {
+function TimelockDial({ seconds, hideNeedle = false }: { seconds: number; hideNeedle?: boolean }) {
   const R = 0.38;
   const needle = useRef<THREE.Group>(null);
   const targetAngle = dialAngle(dialFrac(seconds));
@@ -153,7 +153,7 @@ function TimelockDial({ seconds }: { seconds: number }) {
           </group>
         );
       })}
-      <group ref={needle} position={[0, 0, 0.014]}>
+      <group ref={needle} position={[0, 0, 0.014]} visible={!hideNeedle}>
         <mesh position={[0, R * 0.42, 0]}>
           <boxGeometry args={[0.018, R * 0.84, 0.012]} />
           <meshStandardMaterial color={INK} roughness={0.3} metalness={0.5} />
@@ -227,10 +227,12 @@ export interface ConsoleData {
   /** null when reconstructed, not a live read */
   slot: number | string | null;
   label: string;
+  /** No wallet or protocol read yet: every reading is blank, nothing is implied. */
+  waiting?: boolean;
 }
 
 export default function Console({ data }: { data: ConsoleData }) {
-  const { protocol, threshold, members, timelockSeconds, noTimelockFeature, verified, codeDrifted, weakened, label } = data;
+  const { protocol, threshold, members, timelockSeconds, noTimelockFeature, verified, codeDrifted, weakened, label, waiting = false } = data;
   const { rough, normal } = usePanelTextures();
 
   // Up to 7 keys sit on the left of the row; more run the full width (the
@@ -277,7 +279,7 @@ export default function Console({ data }: { data: ConsoleData }) {
         <Lamp x={0} on={weakened} color={WEAKENED} delay={0.55} />
       </group>
       <Text position={[1.62, Y_NAME, 0.093]} fontSize={0.078} color={weakened ? WEAKENED : INK_SOFT} font={FONT} letterSpacing={0.08} anchorX="right">
-        {weakened ? "WEAKENED" : "NOMINAL"}
+        {waiting ? "WAITING" : weakened ? "WEAKENED" : "NOMINAL"}
       </Text>
 
       <RowLabel y={Y_KEYS}>KEYS</RowLabel>
@@ -289,15 +291,15 @@ export default function Console({ data }: { data: ConsoleData }) {
         ))}
       </group>
       <Text position={[1.62, Y_KEYS - 0.28, 0.093]} fontSize={0.16} color={INK} font={FONT} letterSpacing={0.01} anchorX="right">
-        {threshold} of {members} required
+        {waiting ? "? of ? required" : `${threshold} of ${members} required`}
       </Text>
 
       <RowLabel y={Y_TIME}>TIME</RowLabel>
       <group position={[-0.62, Y_TIME, 0]}>
-        <TimelockDial seconds={timelockSeconds} />
+        <TimelockDial seconds={timelockSeconds} hideNeedle={waiting} />
       </group>
       <Text position={[1.62, Y_TIME, 0.093]} fontSize={0.08} color={INK} font={FONT} anchorX="right">
-        {noTimelockFeature ? "no timelock feature" : timelockSeconds === 0 ? "none" : timelockSeconds % 86400 === 0 ? `${timelockSeconds / 86400} d` : `${+(timelockSeconds / 3600).toFixed(1)} h`}
+        {waiting ? "not read" : noTimelockFeature ? "no timelock feature" : timelockSeconds === 0 ? "none" : timelockSeconds % 86400 === 0 ? `${timelockSeconds / 86400} d` : `${+(timelockSeconds / 3600).toFixed(1)} h`}
       </Text>
 
       <RowLabel y={Y_CODE}>CODE</RowLabel>
@@ -305,13 +307,13 @@ export default function Console({ data }: { data: ConsoleData }) {
         <Lamp x={0} on={verified} color={VERIFIED_ON} delay={0.55} />
       </group>
       <Text position={[-0.82, Y_CODE, 0.093]} fontSize={0.078} color={INK} font={FONT} anchorX="left">
-        {verified ? "verified" : "not verified"}
+        {waiting ? "not read" : verified ? "verified" : "not verified"}
       </Text>
       <group position={[0.55, Y_CODE, 0]}>
         <Lamp x={0} on={codeDrifted} color={WEAKENED} delay={0.55} />
       </group>
       <Text position={[0.68, Y_CODE, 0.093]} fontSize={0.078} color={codeDrifted ? WEAKENED : INK} font={FONT} anchorX="left">
-        {codeDrifted ? "drifted" : "no drift record"}
+        {waiting ? "" : codeDrifted ? "drifted" : "no drift record"}
       </Text>
 
       <RowLabel y={Y_LAST}>LAST</RowLabel>
