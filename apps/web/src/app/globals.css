@@ -311,3 +311,4 @@ footer.mono { padding: 20px 40px 40px; font-size: 11px; color: var(--ink-2); bor
 .seismo .sw.weak { background: var(--signal); }
 .seismo .sw.other { background: var(--ink); }
 @media (max-width: 720px) { .seismo-section { padding-left: 18px; padding-right: 18px; } .seismo svg { height: 120px; } }
+.rail-more { display: inline-block; margin-top: 12px; font-size: 12px; }

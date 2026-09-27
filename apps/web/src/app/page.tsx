@@ -3,7 +3,7 @@
 // straight from the DB via apps/web/src/lib/api-client — a failed read shows nothing and
 // says so, never a placeholder number.
 import Link from "next/link";
-import { fetchProtocols, fetchEvents, type ProtocolSummary } from "@/lib/api-client";
+import { fetchControlChanges, fetchProtocols, fetchEvents, type ProtocolSummary } from "@/lib/api-client";
 import { timelockLabel } from "@/lib/console-data";
 import ConsoleDevice from "@/components/console/ConsoleDevice";
 import type { ConsoleData } from "@/components/console/Console";
@@ -75,6 +75,13 @@ export default async function HomePage() {
     return max == null || s > max ? s : max;
   }, null);
 
+  let latest: Awaited<ReturnType<typeof fetchControlChanges>>["changes"] = [];
+  try {
+    latest = (await fetchControlChanges({ limit: 5 })).changes;
+  } catch (err) {
+    console.error("HomePage: fetchControlChanges failed", err instanceof Error ? err.message.slice(0, 200) : "unknown");
+  }
+
   const now = Date.now();
   const changes24h = events.filter((e) => e.createdAt && now - new Date(e.createdAt).getTime() < 86_400_000);
 
@@ -98,7 +105,7 @@ export default async function HomePage() {
           <span>SLOT <b>{liveSlot != null ? liveSlot.toLocaleString("en-US") : "unavailable"}</b></span>
           <span>READ <b>{readDate}</b></span>
           <span><b>{protocols.length}</b> PROTOCOLS TRACKED</span>
-          <span><b>{changes24h.length}</b> CHANGES 24H</span>
+          <span><b>{changes24h.length}</b> ALERTS 24H</span>
           <span className="weak"><b>{noTimelock.length}</b> OF {resolved.length} WITH NO TIMELOCK</span>
           <span>CODE <b>{vCount("verified")}</b> VERIFIED · <b>{vCount("drifted")}</b> DRIFTED · <b>{vCount("unverified")}</b> NEVER REGISTERED</span>
         </header>
@@ -180,7 +187,7 @@ export default async function HomePage() {
 
       <div className="rails">
         <div className="rail">
-          <h2>Weakened in 24h</h2>
+          <h2>Weakened</h2>
           <div className="row weak">
             <span className="who"><span className="dot" />Drift admin council · 2 of 5 · no timelock</span>
             <span className="meta mono">timelock 0 · 1 Apr 2026 · reconstructed</span>
@@ -191,22 +198,21 @@ export default async function HomePage() {
         </div>
         <div className="rail">
           <h2>Latest changes</h2>
-          {events.length === 0 ? (
+          {latest.length === 0 ? (
             <p className="rail-empty">No control changes recorded yet for these protocols.</p>
           ) : (
-            events.slice(0, 6).map((e) => {
-              const p = protocolById.get(e.protocolId);
-              return (
-                <div className="row" key={e.uid}>
-                  <span className="who">{p?.name ?? e.protocolId} · {e.ruleId.replace(/_/g, " ")}</span>
+            <>
+              {latest.map((c) => (
+                <div className="row" key={c.uid}>
+                  <span className="who">{protocolById.get(c.protocolId ?? "")?.name ?? c.protocolId} · {c.kind === "upgrade" ? "program upgraded" : c.kind === "set_authority" ? "upgrade authority changed" : "multisig settings changed"}</span>
                   <span className="meta mono">
-                    {e.severity} · {e.createdAt ? new Date(e.createdAt).toISOString().slice(0, 16).replace("T", " ") : "—"}
-                    {" "}
-                    <Link className="evlink" href={`/events/${e.uid}`}>view</Link>
+                    {c.blockTime.slice(0, 10)} ·{" "}
+                    <a className="evlink" href={`https://solscan.io/tx/${c.signature}`} target="_blank" rel="noreferrer">{c.signature.slice(0, 6)}…</a>
                   </span>
                 </div>
-              );
-            })
+              ))}
+              <Link className="rail-more mono" href="/feed">Every change &rarr;</Link>
+            </>
           )}
         </div>
       </div>
