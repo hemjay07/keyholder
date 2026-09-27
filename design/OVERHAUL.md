@@ -122,20 +122,23 @@ Supersedes REVAMP-2.md. Every promise has a row in design/PROMISES.md (P-ids bel
 8. hackathon-package;
 9. hackathon-verify preflight.
 
-## Schedule
+## Schedule (revised after the gap audit: deploy early so counts and X posts can build up)
 | dates | work |
 |---|---|
-| 27–28 Sep | identity; device model + mini/flat variants |
-| 29 Sep – 1 Oct | replay (centrepiece) |
-| 2 Oct | home (ribbon, loader, inline rows) |
-| 3 Oct | feed + event |
-| 4 Oct | protocol control map + wallet grid + vaults gate + alerts rules |
-| 5 Oct | palette, dark theme, transitions, 404, copy pass |
-| 6 Oct | stress, deploy, livetest, interrogate |
-| 7 Oct | README; fixes from livetest |
-| 8–9 Oct | demo rehearsal + video |
-| 10–11 Oct | package, preflight, buffer |
-| 12 Oct | submit |
+| 27–28 Sep | identity; device model + variants; the grep gate for false facts (P58) |
+| 29–30 Sep | replay (centrepiece), with the chain research for the nonce frame (P57) |
+| 1 Oct | stress + first public deploy + X account posting (P41, P50) |
+| 2 Oct | home (ribbon, loader, inline rows, live weakened rail) |
+| 3 Oct | feed (all glyph types, IDL decoding) + event |
+| 4 Oct | protocol control map, wallet grid, vaults gate, alerts rules |
+| 5 Oct | palette, dark theme, transitions, 404/skeletons, API docs + x402 paid proof, copy pass |
+| 6 Oct | attester (P53) or drop with a reason; redeploy; livetest; interrogate |
+| 7 Oct | **feature freeze**; README; public repo + licence |
+| 8 Oct | demo rehearsal; stage the 24 h flip |
+| 9 Oct | demo video + presentation video script (founder records) |
+| 10 Oct | submission form drafted from measured numbers; package |
+| 11 Oct | preflight; buffer |
+| 12 Oct | founder submits |
 
 ## Needs from the founder
 - Telegram bot token (optional; P32 stays open without it).

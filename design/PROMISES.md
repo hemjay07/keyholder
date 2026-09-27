@@ -26,9 +26,9 @@
 | P18 | replay | the vault's check refusing at the first alert | CREATIVE §5 | open | |
 | P19 | replay | choreography editable (Theatre.js) | CREATIVE §7 | open | |
 | P20 | replay | every frame cites its transaction; rebuilt state labelled reconstructed | CREATIVE §5 | built | b37e40a |
-| P21 | feed | type glyphs + filters (upgrade, authority, multisig settings) | CREATIVE §5 | open | |
+| P21 | feed | type glyphs + filters: upgrade, key change, threshold, timelock, nonce, admin action, verification drift, proposal created | CREATIVE §5, BRIEF 2 | open | |
 | P22 | feed | severity number leads each row | CREATIVE ref 2 | open | |
-| P23 | feed | time brush filters the list; j/k keys | CREATIVE §5–6 | open | |
+| P23 | feed | time brush filters the list; j/k keys; r opens the replay at the current event | CREATIVE §5–6 | open | |
 | P24 | protocol | control map drawn as a plan: program → authority → multisig → keyholders | CREATIVE ref 6 | open | |
 | P25 | protocol | changelog as a dated rail | CREATIVE ref 16 | built | 8b00b5b |
 | P26 | protocol | badge "checked N min ago" | CREATIVE §5 | open | |
@@ -52,3 +52,23 @@
 | P44 | pipeline | README (one fold) | conductor, FOUNDER | open | |
 | P45 | pipeline | demo rehearsal + demo video | conductor | open | |
 | P46 | pipeline | package + preflight | conductor | open | |
+| P47 | pipeline | presentation video 2–3 min, founder to camera | brief §4, §9 | open | founder records; script prepared |
+| P48 | pipeline | submission form drafted: GTM, demand, business model, team, disclosure, tools | brief §4, PRD §8–9 | open | |
+| P49 | pipeline | founder registered on colosseum.com; submission uploaded before 23:59 PT 12 Oct | brief checklist | open | founder-only |
+| P50 | distribution | X account posts each real control change with a link; public counts on the site | BRIEF demand | open | needs founder's X login at setup |
+| P51 | api | /api docs page; x402 paid call proven once with real USDC; firehose endpoint | BRIEF 9, DEV-050 | open | |
+| P52 | protocol | embeddable badge with copyable snippet | PRD §6.3, CREATIVE §5 | built | badge route + embed block (e389520, 774cb85); "checked N min ago" is P26 |
+| P53 | program | attester publishes control state on-chain | BRIEF 8, B-worker 7 | open | |
+| P54 | feed | any Anchor admin instruction decoded from its on-chain IDL; undecoded shown raw with "We do not guess." | BRIEF 3, CREATIVE §3 | open | |
+| P55 | home, feed | "weakened in 24 h" rail (live, not reconstructed) | CREATIVE §5, ref 4 | open | removed from home 50ec8f2 because it was empty; returns as live data |
+| P56 | protocol, home | verified / drifted / never-registered chip per program with its osec source | BRIEF 4, TEN 6 | built | 801d81e, 774cb85 |
+| P57 | replay | durable-nonce frame: date and count as read on chain, cited | CREATIVE §5, DEV-025/026 | open | chain shows one nonce, 31 Mar 02:35; CREATIVE's "four on 23 Mar" unverified |
+| P58 | copy | no "3→2" / "3-of-5" for Drift and no "9 days" / "1.55 days" anywhere shipped (grep gate on apps/, README, scripts, video script) | TEN 5, corrections | open | |
+| P59 | package | every number in the form measured, never copied from PRD (no invented traction, no "Upgrade Watch") | PRD §9 | open | |
+| P60 | feed | only tracked-protocol events are public (test) | BUILD-REPORT known | built | fetchControlChanges requires protocol_id (648fd79); test still to add |
+| P61 | global | one route name for vaults (/policy), /program redirects | CHARTER, OVERHAUL §9 | open | |
+| P62 | data | "15 protocols" stated everywhere; no "30" | CREATIVE §3 | open | |
+| P63 | proof | own program 2-of-3 / 48 h on chain; real 24 h flip staged the day before recording | TEN 8, DEV-067 | built | multisig K3u623… 47a521b; the recording flip is P45's prep |
+| P64 | pipeline | public GitHub repo with LICENSE; contest-window work visible | brief §3–4 | open | |
+| P65 | global | 404 page, loading skeletons, stale state on every route | OVERHAUL §11 | open | |
+| P66 | pipeline | weekly one-minute update videos | brief | open | founder-optional |
