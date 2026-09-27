@@ -1,12 +1,16 @@
 "use client";
 
 // The launch console, mounted client-side after text (LCP must not wait on WebGL).
-// scroll-controls-3d in the "hero" pose: a slow three-quarter turn driven by scroll.
-// Front-on and still at phone width, under reduced motion, or when WebGL is unavailable.
+// REVAMP 1: studio lightformers instead of an HDR download, bloom on the
+// lamps only, a camera fit that accounts for the panel's turn (the right edge
+// was clipped at 1280), and a small turn toward the pointer. Front-on and
+// still under reduced motion or at phone width; static fallback without WebGL.
 import { Suspense, useEffect, useRef, useState } from "react";
-import { Canvas, useFrame, useThree, invalidate } from "@react-three/fiber";
-import { Environment, ContactShadows, ScrollControls, useScroll } from "@react-three/drei";
-import Console, { type ConsoleData } from "./Console";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Environment, Lightformer, ContactShadows } from "@react-three/drei";
+import { EffectComposer, Bloom } from "@react-three/postprocessing";
+import * as THREE from "three";
+import Console, { ConsoleMotion, type ConsoleData } from "./Console";
 import ConsoleFallback from "./ConsoleFallback";
 
 function useReducedMotion() {
@@ -41,95 +45,93 @@ function hasWebGL(): boolean {
   }
 }
 
-function Rig({ reduced, data }: { reduced: boolean; data: ConsoleData }) {
-  const scroll = useScroll();
-  const group = useRef<import("three").Group>(null);
-  useFrame(() => {
-    const offset = reduced ? 0 : scroll.offset;
-    const k = Math.min(1, offset * 1.4);
-    if (group.current) {
-      group.current.rotation.y = -0.4 + 0.4 * k;
-      group.current.position.x = -0.14 + 0.14 * k;
-    }
+const BASE_YAW = -0.32;
+
+/** Holds the three-quarter pose and turns a little toward the pointer. */
+function Rig({ still, children }: { still: boolean; children: React.ReactNode }) {
+  const group = useRef<THREE.Group>(null);
+  const pointer = useRef({ x: 0, y: 0 });
+  const { invalidate } = useThree();
+  useEffect(() => {
+    if (still) return;
+    const onMove = (e: PointerEvent) => {
+      pointer.current = { x: (e.clientX / window.innerWidth) * 2 - 1, y: (e.clientY / window.innerHeight) * 2 - 1 };
+      invalidate();
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    return () => window.removeEventListener("pointermove", onMove);
+  }, [still, invalidate]);
+  useFrame((state, dt) => {
+    const g = group.current;
+    if (!g) return;
+    const yaw = still ? 0 : BASE_YAW + pointer.current.x * 0.08;
+    const pitch = still ? 0 : pointer.current.y * 0.05;
+    g.rotation.y = THREE.MathUtils.damp(g.rotation.y, yaw, 6, dt);
+    g.rotation.x = THREE.MathUtils.damp(g.rotation.x, pitch, 6, dt);
+    if (Math.abs(g.rotation.y - yaw) > 0.0005 || Math.abs(g.rotation.x - pitch) > 0.0005) state.invalidate();
   });
   return (
-    <group ref={group}>
-      <Console data={data} />
+    <group ref={group} rotation-y={still ? 0 : BASE_YAW}>
+      {children}
     </group>
   );
 }
 
-function FitCamera({ mobile }: { mobile: boolean }) {
+function FitCamera({ still }: { still: boolean }) {
   const { camera, size } = useThree();
   useEffect(() => {
-    const persp = camera as import("three").PerspectiveCamera;
+    const persp = camera as THREE.PerspectiveCamera;
     const aspect = size.width / size.height;
     const halfFov = (persp.fov * Math.PI) / 360;
-    if (mobile) {
-      // Same two-axis fit as desktop, looking straight at the panel's centre, so the
-      // nameplate and the LAST row both stay in frame with no empty band.
-      const d = Math.max(1.95 / (Math.tan(halfFov) * Math.max(aspect, 0.001)), 1.72 / Math.tan(halfFov));
-      camera.position.set(0, -0.05, d);
-      camera.lookAt(0, -0.05, 0);
-    } else {
-      // Fit both axes: the panel's full height (nameplate to the LAST readout, whose
-      // label is required by design/CHARTER.md) must stay in frame, not just its width —
-      // a width-only fit crops the LAST row in a wide device-frame aspect ratio.
-      const targetHalfWidth = 1.95;
-      const targetHalfHeight = 1.72;
-      const dWidth = targetHalfWidth / (Math.tan(halfFov) * Math.max(aspect, 0.001));
-      const dHeight = targetHalfHeight / Math.tan(halfFov);
-      const d = Math.max(dWidth, dHeight);
-      camera.position.set(0.5 * Math.min(1, aspect), 0.4, Math.max(4.8, d));
-      camera.lookAt(0, -0.05, 0);
-    }
+    // Panel is 3.9 x 3.28; turned, its near edge grows, so fit with margin.
+    const halfW = still ? 2.02 : 2.2;
+    const halfH = still ? 1.72 : 1.8;
+    const d = Math.max(halfW / (Math.tan(halfFov) * Math.max(aspect, 0.001)), halfH / Math.tan(halfFov));
+    camera.position.set(still ? 0 : 0.35, still ? -0.02 : 0.25, d);
+    camera.lookAt(0, -0.02, 0);
     persp.updateProjectionMatrix();
-  }, [size.width, size.height, camera, mobile]);
+  }, [size.width, size.height, camera, still]);
   return null;
 }
 
-function EntranceClock({ ms = 1700 }: { ms?: number }) {
-  const done = useRef(false);
-  useFrame(() => {
-    if (done.current) return;
-    invalidate();
-  });
-  useEffect(() => {
-    const id = setTimeout(() => { done.current = true; }, ms);
-    return () => clearTimeout(id);
-  }, [ms]);
-  return null;
+function Studio() {
+  // A studio built from lightformers: one broad key from upper left, a rim
+  // strip from the right, a soft fill from below. Warm, token-coloured.
+  return (
+    <Environment resolution={256} frames={1}>
+      <color attach="background" args={["#E6E2D9"]} />
+      <Lightformer form="rect" intensity={1.3} color="#FFF4E6" position={[-3, 3, 4]} scale={[6, 3, 1]} target={[0, 0, 0]} />
+      <Lightformer form="rect" intensity={1.4} color="#FFFFFF" position={[4, 0.5, 2]} scale={[0.5, 5, 1]} target={[0, 0, 0]} />
+      <Lightformer form="rect" intensity={0.6} color="#E9DFCB" position={[0, -3, 3]} scale={[8, 1, 1]} target={[0, 0, 0]} />
+      <Lightformer form="circle" intensity={0.8} color="#FFFFFF" position={[0, 4, -2]} scale={2} target={[0, 0, 0]} />
+    </Environment>
+  );
 }
 
 function Scene({ data, reduced, mobile }: { data: ConsoleData; reduced: boolean; mobile: boolean }) {
-  const frontOn = reduced || mobile;
+  const still = reduced || mobile;
   return (
     <Canvas
-      dpr={[1, 1.5]}
-      shadows
-      gl={{ preserveDrawingBuffer: true, antialias: true }}
-      camera={{ position: [0.55, 0.4, 5.1], fov: 28 }}
-      onCreated={({ camera }) => camera.lookAt(0, -0.05, 0)}
+      dpr={[1, 1.75]}
+      gl={{ preserveDrawingBuffer: true, antialias: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 0.88 }}
+      camera={{ position: [0.35, 0.25, 5.4], fov: 28 }}
       frameloop="demand"
     >
-      <FitCamera mobile={mobile} />
-      {!reduced && <EntranceClock />}
+      <FitCamera still={still} />
       <color attach="background" args={["#E6E2D9"]} />
-      <ambientLight intensity={0.5} color="#FFF6E9" />
-      <directionalLight position={[2.5, 3.5, 2.5]} intensity={1.5} color="#FFF1DE" castShadow />
-      <directionalLight position={[-3, 1.5, -2]} intensity={0.45} color="#FFEBD2" />
+      <ambientLight intensity={0.25} color="#FFF6E9" />
+      <directionalLight position={[-2.5, 3.2, 3]} intensity={0.55} color="#FFF1DE" />
       <Suspense fallback={null}>
-        <Environment files="/hdri/wooden_studio_17_512.hdr" resolution={256} />
-        {frontOn ? (
-          <group scale={1.05}>
+        <Studio />
+        <ConsoleMotion.Provider value={{ reduced }}>
+          <Rig still={still}>
             <Console data={data} />
-          </group>
-        ) : (
-          <ScrollControls pages={1.3} damping={4}>
-            <Rig reduced={reduced} data={data} />
-          </ScrollControls>
-        )}
-        <ContactShadows position={[0, -1.65, 0]} resolution={256} scale={6} blur={1.8} far={1.4} opacity={0.55} color="#2a2620" frames={reduced ? 1 : Infinity} />
+          </Rig>
+        </ConsoleMotion.Provider>
+        <ContactShadows position={[0, -1.75, 0]} resolution={512} scale={12} blur={2.6} far={1.8} opacity={0.45} color="#2a2620" frames={1} />
+        <EffectComposer multisampling={4}>
+          <Bloom mipmapBlur intensity={0.9} luminanceThreshold={1.0} luminanceSmoothing={0.1} radius={0.6} />
+        </EffectComposer>
       </Suspense>
     </Canvas>
   );

@@ -1,45 +1,50 @@
-// Ported from design/devices/console/src/Console.jsx. A real modelled instrument, not an
-// iframe: the launch console for one protocol, driven by the API's control facts.
+// The launch console: one protocol's control, as an instrument. REVAMP 1
+// (design/REVAMP.md): machined materials, keyswitches that insert and turn,
+// a glass-fronted timelock gauge, lamps with a lens, a readout that types in.
+// Every part eases toward its current data, so a page can drive the console
+// through a story (home, replay, proof) by changing its props.
 "use client";
 
-import { useMemo, useRef } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { RoundedBox, Text, useTexture } from "@react-three/drei";
 import * as THREE from "three";
-import { DIAL_START, DIAL_END, dialFrac, dialAngle, needleRotationZ } from "./dialMath.js";
+import { dialFrac, dialAngle, needleRotationZ } from "./dialMath.js";
 
-// MOTION.md durations: tick 90ms (lamp), element 240ms (key turn), data 320ms (needle spring).
-const T_TICK = 0.09;
-const T_ELEMENT = 0.24;
-const T_DATA = 0.32;
+// MOTION.md: element 240 ms (key turn), data 320 ms (needle), tick 90 ms (lamp).
+// Damping rates chosen so each settles within its budget.
+const RATE_KEY = 16;
+const RATE_NEEDLE = 11;
+const RATE_LAMP = 26;
+const EPS = 0.001;
 
-const PANEL_BODY = "#DDD4C0";
-const PANEL_BODY_TRIM = "#BFB49B";
-const PANEL_FACE = "#F1EAD9";
+// Palette: token-derived. Bone enamel face in a deep anodised bezel.
+const BEZEL = "#2B2822";
+const BEZEL_EDGE = "#4A443A";
+const FACE = "#F1EAD9";
 const INK = "#1B1A17";
-const INK_SOFT = "#3A362E";
-const SOCKET_RING = "#948C7B";
-const SOCKET_VOID = "#26221A";
-const KEY_METAL = "#EAE5D7";
-const KEY_METAL_SHADOW = "#B7AF9E";
-const READOUT_BG = "#26221A";
-const READOUT_INK = "#EAE5D7";
+const INK_SOFT = "#4A453C";
+const STEEL = "#D9D4C7";
+const STEEL_DARK = "#8C8575";
+const SOCKET_VOID = "#1A1814";
+const READOUT_BG = "#171512";
+const READOUT_INK = "#F1EAD9";
 const WEAKENED = "#FF5A1F";
-const VERIFIED_ON = "#1F6B4A";
-const LAMP_OFF = "#3A362E";
-const SCREW_METAL = "#9E9581";
+const VERIFIED_ON = "#2FA36F";
+const LAMP_GLASS = "#3A342B";
 
-const easeOutCubic = (x: number) => 1 - Math.pow(1 - x, 3);
-const easeOutBack = (x: number) => {
-  const c1 = 1.4, c3 = c1 + 1;
-  return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
-};
+const FONT = "/fonts/GeistMono-Regular.ttf";
+
+/** Reduced motion: every part snaps to its target. */
+export const ConsoleMotion = createContext({ reduced: false });
+
+function damp(current: number, target: number, rate: number, dt: number, reduced: boolean): number {
+  if (reduced) return target;
+  return THREE.MathUtils.damp(current, target, rate, Math.min(dt, 0.05));
+}
 
 function usePanelTextures() {
-  const [rough, normal] = useTexture([
-    "/textures/panel_roughness_256.jpg",
-    "/textures/panel_normal_256.jpg",
-  ]);
+  const [rough, normal] = useTexture(["/textures/panel_roughness_256.jpg", "/textures/panel_normal_256.jpg"]);
   useMemo(() => {
     for (const t of [rough, normal] as THREE.Texture[]) {
       if (!t) continue;
@@ -50,47 +55,66 @@ function usePanelTextures() {
   return { rough, normal };
 }
 
-function KeySlot({ x, turned, delay }: { x: number; turned: boolean; delay: number }) {
-  const group = useRef<THREE.Group>(null);
-  const start = useRef<number | null>(null);
-  useFrame((_, dt) => {
-    if (start.current === null) start.current = 0;
-    start.current += dt;
-    const t = Math.max(0, Math.min(1, (start.current - delay) / T_ELEMENT));
-    const eased = turned ? easeOutBack(t) : 0;
-    const target = turned ? -Math.PI / 2 + eased * (Math.PI / 2) : -Math.PI / 2;
-    if (group.current) group.current.rotation.z = target;
+/** A keyswitch: bezel ring, recessed socket; the key slides in and turns when counted. */
+function KeySlot({ turned, delay }: { turned: boolean; delay: number }) {
+  const { reduced } = useContext(ConsoleMotion);
+  const key = useRef<THREE.Group>(null);
+  const progress = useRef(turned && reduced ? 1 : 0);
+  const wait = useRef(delay);
+  useEffect(() => {
+    wait.current = delay;
+  }, [turned, delay]);
+  useFrame((state, dt) => {
+    if (wait.current > 0 && !reduced) {
+      wait.current -= dt;
+      state.invalidate();
+      return;
+    }
+    const target = turned ? 1 : 0;
+    progress.current = damp(progress.current, target, RATE_KEY, dt, reduced);
+    const p = progress.current;
+    if (key.current) {
+      key.current.visible = p > 0.01;
+      // Insert over the first 40 %, turn over the rest.
+      const insert = Math.min(1, p / 0.4);
+      const turn = Math.max(0, (p - 0.4) / 0.6);
+      key.current.position.z = 0.09 + (1 - insert) * 0.12;
+      key.current.rotation.z = -Math.PI / 2 + turn * (Math.PI / 2);
+    }
+    if (Math.abs(p - target) > EPS) state.invalidate();
   });
   return (
-    <group position={[x, 0, 0]}>
-      <mesh rotation-x={Math.PI / 2} position={[0, 0, 0.082]}>
-        <cylinderGeometry args={[0.1, 0.1, 0.014, 28]} />
-        <meshStandardMaterial color={SOCKET_RING} roughness={0.32} metalness={0.75} />
+    <group>
+      {/* bezel ring */}
+      <mesh position={[0, 0, 0.082]}>
+        <torusGeometry args={[0.086, 0.014, 12, 40]} />
+        <meshStandardMaterial color={STEEL_DARK} roughness={0.22} metalness={0.95} />
       </mesh>
-      <mesh position={[0, 0, 0.076]}>
-        <torusGeometry args={[0.078, 0.006, 10, 28]} />
-        <meshStandardMaterial color={SOCKET_RING} roughness={0.25} metalness={0.9} emissive={SOCKET_RING} emissiveIntensity={0.08} />
+      {/* socket face and void */}
+      <mesh rotation-x={Math.PI / 2} position={[0, 0, 0.08]}>
+        <cylinderGeometry args={[0.078, 0.078, 0.012, 36]} />
+        <meshStandardMaterial color={STEEL} roughness={0.3} metalness={0.9} />
       </mesh>
-      <mesh rotation-x={Math.PI / 2} position={[0, 0, 0.07]}>
-        <cylinderGeometry args={[0.072, 0.072, 0.02, 24]} />
-        <meshStandardMaterial color={SOCKET_VOID} roughness={0.85} metalness={0.15} />
+      <mesh rotation-x={Math.PI / 2} position={[0, 0, 0.083]}>
+        <cylinderGeometry args={[0.03, 0.03, 0.014, 20]} />
+        <meshStandardMaterial color={SOCKET_VOID} roughness={0.9} metalness={0.1} />
       </mesh>
-      {turned && (
-        <group ref={group} position={[0, 0, 0.09]}>
-          <mesh position={[0, 0.09, 0]}>
-            <cylinderGeometry args={[0.026, 0.026, 0.17, 18]} />
-            <meshStandardMaterial color={KEY_METAL} roughness={0.24} metalness={0.88} />
-          </mesh>
-          <mesh position={[0, 0, 0]}>
-            <torusGeometry args={[0.055, 0.017, 12, 28]} />
-            <meshStandardMaterial color={KEY_METAL} roughness={0.24} metalness={0.88} />
-          </mesh>
-          <mesh position={[0.05, 0.16, 0]} rotation-z={0.15}>
-            <boxGeometry args={[0.05, 0.022, 0.01]} />
-            <meshStandardMaterial color={KEY_METAL_SHADOW} roughness={0.35} metalness={0.8} />
-          </mesh>
-        </group>
-      )}
+      {/* the key */}
+      <group ref={key} position={[0, 0, 0.2]} visible={false}>
+        {/* barrel: many facets read as knurling under the lightformers */}
+        <mesh rotation-x={Math.PI / 2} position={[0, 0, 0.012]}>
+          <cylinderGeometry args={[0.034, 0.038, 0.05, 32]} />
+          <meshStandardMaterial color={STEEL} roughness={0.18} metalness={1} />
+        </mesh>
+        {/* bow */}
+        <RoundedBox args={[0.085, 0.16, 0.024]} radius={0.018} smoothness={3} position={[0, 0.095, 0.03]}>
+          <meshStandardMaterial color={STEEL} roughness={0.16} metalness={1} />
+        </RoundedBox>
+        <mesh position={[0, 0.13, 0.043]}>
+          <torusGeometry args={[0.018, 0.005, 8, 24]} />
+          <meshStandardMaterial color={STEEL_DARK} roughness={0.3} metalness={0.9} />
+        </mesh>
+      </group>
     </group>
   );
 }
@@ -102,89 +126,114 @@ const DIAL_TICKS = [
   { h: 48, label: "48H", hard: false },
 ];
 
+/** Glass-fronted timelock gauge; the needle swings to the timelock. */
 function TimelockDial({ seconds, hideNeedle = false }: { seconds: number; hideNeedle?: boolean }) {
+  const { reduced } = useContext(ConsoleMotion);
   const R = 0.38;
   const needle = useRef<THREE.Group>(null);
-  const targetAngle = dialAngle(dialFrac(seconds));
-  const elapsed = useRef(0);
-  useFrame((_, dt) => {
-    elapsed.current += dt;
-    const t = Math.max(0, Math.min(1, (elapsed.current - 0.12) / T_DATA));
-    const eased = easeOutCubic(t);
-    const start = dialAngle(1);
-    const angle = start + (targetAngle - start) * eased;
-    if (needle.current) needle.current.rotation.z = needleRotationZ(angle);
+  const target = dialAngle(dialFrac(seconds));
+  const angle = useRef(reduced ? target : dialAngle(1));
+  useFrame((state, dt) => {
+    angle.current = damp(angle.current, target, RATE_NEEDLE, dt, reduced);
+    if (needle.current) needle.current.rotation.z = needleRotationZ(angle.current);
+    if (Math.abs(angle.current - target) > EPS) state.invalidate();
   });
   return (
     <group position={[0, 0, 0.082]}>
-      <mesh position={[0, 0, -0.006]} rotation-x={Math.PI / 2}>
-        <cylinderGeometry args={[R, R, 0.016, 40]} />
-        <meshStandardMaterial color={PANEL_FACE} roughness={0.6} metalness={0.15} />
+      {/* bezel */}
+      <mesh position={[0, 0, 0.004]}>
+        <torusGeometry args={[R + 0.018, 0.022, 16, 64]} />
+        <meshStandardMaterial color={STEEL_DARK} roughness={0.2} metalness={0.95} />
       </mesh>
-      <mesh position={[0, 0, -0.01]}>
-        <torusGeometry args={[R + 0.012, 0.014, 12, 48]} />
-        <meshStandardMaterial color={PANEL_BODY_TRIM} roughness={0.4} metalness={0.6} />
+      {/* printed face */}
+      <mesh position={[0, 0, -0.006]} rotation-x={Math.PI / 2}>
+        <cylinderGeometry args={[R, R, 0.012, 64]} />
+        <meshStandardMaterial color="#F4EEDF" roughness={0.6} metalness={0.02} />
+      </mesh>
+      {/* scale arc */}
+      <mesh position={[0, 0, 0.001]}>
+        {/* dialAngle measures clockwise from 12 o'clock; ringGeometry counter-clockwise from 3 o'clock */}
+        <ringGeometry args={[R - 0.022, R - 0.012, 64, 1, Math.PI / 2 - dialAngle(1), dialAngle(1) - dialAngle(0)]} />
+        <meshBasicMaterial color={INK} side={THREE.DoubleSide} />
       </mesh>
       {DIAL_TICKS.map((tk, i) => {
         const a = dialAngle(dialFrac(tk.h * 3600));
-        const rTick = R - 0.045;
-        const rLabel = R - 0.11;
+        const rTick = R - 0.05;
+        const rLabel = R - 0.15;
         return (
           <group key={i}>
-            <mesh position={[Math.sin(a) * rTick, Math.cos(a) * rTick, 0.006]} rotation={[0, 0, -a]}>
-              <boxGeometry args={[0.012, tk.hard ? 0.06 : 0.035, 0.01]} />
-              <meshStandardMaterial
-                color={tk.hard ? WEAKENED : INK}
-                emissive={tk.hard ? WEAKENED : "#000000"}
-                emissiveIntensity={tk.hard ? 0.5 : 0}
-              />
+            <mesh position={[Math.sin(a) * rTick, Math.cos(a) * rTick, 0.004]} rotation={[0, 0, -a]}>
+              <boxGeometry args={[0.014, tk.hard ? 0.07 : 0.04, 0.006]} />
+              <meshStandardMaterial color={tk.hard ? WEAKENED : INK} emissive={tk.hard ? WEAKENED : "#000"} emissiveIntensity={tk.hard ? 0.6 : 0} />
             </mesh>
-            <Text
-              position={[Math.sin(a) * rLabel, Math.cos(a) * rLabel, 0.01]}
-              fontSize={0.045}
-              color={tk.hard ? WEAKENED : INK}
-              font={FONT}
-              letterSpacing={0.04}
-              anchorX="center"
-              anchorY="middle"
-            >
+            <Text position={[Math.sin(a) * rLabel, Math.cos(a) * rLabel, 0.006]} fontSize={0.046} color={tk.hard ? WEAKENED : INK} font={FONT} letterSpacing={0.04} anchorX="center" anchorY="middle">
               {tk.label}
             </Text>
           </group>
         );
       })}
-      <group ref={needle} position={[0, 0, 0.014]} visible={!hideNeedle}>
-        <mesh position={[0, R * 0.42, 0]}>
-          <boxGeometry args={[0.018, R * 0.84, 0.012]} />
-          <meshStandardMaterial color={INK} roughness={0.3} metalness={0.5} />
+      {/* needle with counterweight */}
+      <group ref={needle} position={[0, 0, 0.016]} visible={!hideNeedle}>
+        <mesh position={[0, R * 0.4, 0]}>
+          <boxGeometry args={[0.014, R * 0.8, 0.008]} />
+          <meshStandardMaterial color={INK} roughness={0.3} metalness={0.4} />
+        </mesh>
+        <mesh position={[0, -0.07, 0]}>
+          <boxGeometry args={[0.03, 0.06, 0.008]} />
+          <meshStandardMaterial color={INK} roughness={0.3} metalness={0.4} />
         </mesh>
         <mesh rotation-x={Math.PI / 2}>
-          <cylinderGeometry args={[0.032, 0.032, 0.02, 20]} />
-          <meshStandardMaterial color={SCREW_METAL} roughness={0.25} metalness={0.85} />
-        </mesh>
-        <mesh position={[0, 0, 0.011]} rotation-x={Math.PI / 2}>
-          <cylinderGeometry args={[0.012, 0.012, 0.006, 16]} />
-          <meshStandardMaterial color={INK} roughness={0.4} metalness={0.6} />
+          <cylinderGeometry args={[0.03, 0.03, 0.018, 24]} />
+          <meshStandardMaterial color={STEEL_DARK} roughness={0.2} metalness={0.95} />
         </mesh>
       </group>
+      {/* glass */}
+      <mesh position={[0, 0, 0.03]} rotation-x={Math.PI / 2} renderOrder={2}>
+        <cylinderGeometry args={[R + 0.006, R + 0.006, 0.006, 64]} />
+        <meshPhysicalMaterial color="#ffffff" transparent opacity={0.1} depthWrite={false} roughness={0.04} metalness={0} clearcoat={1} clearcoatRoughness={0.02} />
+      </mesh>
     </group>
   );
 }
 
-function Lamp({ x, on, color, delay }: { x: number; on: boolean; color: string; delay: number }) {
+/** A lamp with a domed lens; pulses once when it lights. */
+function Lamp({ on, color, delay }: { on: boolean; color: string; delay: number }) {
+  const { reduced } = useContext(ConsoleMotion);
   const mat = useRef<THREE.MeshStandardMaterial>(null);
-  const elapsed = useRef(0);
-  useFrame((_, dt) => {
-    elapsed.current += dt;
-    const t = Math.max(0, Math.min(1, (elapsed.current - delay) / T_TICK));
-    const target = on ? 1.6 : 0.05;
-    if (mat.current) mat.current.emissiveIntensity = target * (on ? t : 1);
+  const level = useRef(0);
+  const pulse = useRef(0);
+  const wait = useRef(delay);
+  const wasOn = useRef(false);
+  useEffect(() => {
+    if (on && !wasOn.current) {
+      pulse.current = reduced ? 0 : 1;
+      wait.current = delay;
+    }
+    wasOn.current = on;
+  }, [on, delay, reduced]);
+  useFrame((state, dt) => {
+    if (wait.current > 0 && !reduced) {
+      wait.current -= dt;
+      state.invalidate();
+      return;
+    }
+    const target = on ? 2.2 : 0.04;
+    level.current = damp(level.current, target, RATE_LAMP, dt, reduced);
+    pulse.current = damp(pulse.current, 0, 5, dt, reduced);
+    if (mat.current) mat.current.emissiveIntensity = level.current + pulse.current * 3;
+    if (Math.abs(level.current - target) > EPS || pulse.current > EPS) state.invalidate();
   });
   return (
-    <mesh position={[x, 0, 0.086]} rotation-x={Math.PI / 2}>
-      <cylinderGeometry args={[0.045, 0.045, 0.02, 20]} />
-      <meshStandardMaterial ref={mat} color={LAMP_OFF} emissive={color} emissiveIntensity={0.05} roughness={0.35} metalness={0.2} />
-    </mesh>
+    <group position={[0, 0, 0.082]}>
+      <mesh>
+        <torusGeometry args={[0.05, 0.01, 10, 32]} />
+        <meshStandardMaterial color={STEEL_DARK} roughness={0.2} metalness={0.95} />
+      </mesh>
+      <mesh position={[0, 0, 0.004]} scale={[1, 1, 0.55]}>
+        <sphereGeometry args={[0.044, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2]} />
+        <meshStandardMaterial ref={mat} color={LAMP_GLASS} emissive={color} emissiveIntensity={0.04} roughness={0.15} metalness={0.1} toneMapped={false} />
+      </mesh>
+    </group>
   );
 }
 
@@ -192,23 +241,45 @@ function Screw({ x, y }: { x: number; y: number }) {
   return (
     <group position={[x, y, 0.086]}>
       <mesh rotation-x={Math.PI / 2}>
-        <cylinderGeometry args={[0.032, 0.032, 0.012, 20]} />
-        <meshStandardMaterial color={SCREW_METAL} roughness={0.3} metalness={0.85} />
+        <cylinderGeometry args={[0.034, 0.034, 0.012, 24]} />
+        <meshStandardMaterial color={STEEL} roughness={0.25} metalness={0.95} />
       </mesh>
       <mesh position={[0, 0, 0.008]} rotation-z={0.5}>
-        <boxGeometry args={[0.05, 0.007, 0.004]} />
-        <meshStandardMaterial color="#54503f" roughness={0.6} metalness={0.4} />
+        <boxGeometry args={[0.052, 0.008, 0.004]} />
+        <meshStandardMaterial color={BEZEL} roughness={0.6} metalness={0.4} />
       </mesh>
     </group>
   );
 }
 
-const FONT = "/fonts/GeistMono-Regular.ttf";
-
 function RowLabel({ y, children }: { y: number; children: string }) {
   return (
     <Text position={[-1.62, y, 0.093]} fontSize={0.075} color={INK_SOFT} font={FONT} letterSpacing={0.14} anchorX="left" anchorY="middle">
       {children}
+    </Text>
+  );
+}
+
+/** The LAST readout types in whenever its text changes. */
+function Readout({ text, y }: { text: string; y: number }) {
+  const { reduced } = useContext(ConsoleMotion);
+  const [shown, setShown] = useState(reduced ? text.length : 0);
+  const acc = useRef(0);
+  useEffect(() => {
+    setShown(reduced ? text.length : 0);
+    acc.current = 0;
+  }, [text, reduced]);
+  useFrame((state, dt) => {
+    if (shown >= text.length) return;
+    acc.current += dt;
+    // ~70 characters a second, within the 1.6 s cap for any readout here.
+    const next = Math.min(text.length, Math.floor(acc.current * 70));
+    if (next !== shown) setShown(next);
+    state.invalidate();
+  });
+  return (
+    <Text position={[-0.75, y, 0.092]} fontSize={0.058} color={READOUT_INK} font={FONT} letterSpacing={0.02} anchorX="left" maxWidth={2.0}>
+      {text.slice(0, shown) + (shown < text.length ? "▌" : "")}
     </Text>
   );
 }
@@ -264,26 +335,28 @@ export default function Console({ data }: { data: ConsoleData }) {
 
   return (
     <group>
-      <RoundedBox args={[3.86, PANEL_H + 0.14, 0.15]} radius={0.07} smoothness={4} position={[0, 0, -0.02]}>
-        <meshStandardMaterial color={PANEL_BODY_TRIM} roughness={0.5} metalness={0.5} />
+      {/* anodised bezel: outer edge band + body */}
+      <RoundedBox args={[3.9, PANEL_H + 0.18, 0.16]} radius={0.08} smoothness={5} position={[0, 0, -0.025]}>
+        <meshPhysicalMaterial color={BEZEL_EDGE} roughness={0.32} metalness={0.85} clearcoat={0.4} clearcoatRoughness={0.3} />
       </RoundedBox>
-      <RoundedBox args={[3.7, PANEL_H, 0.16]} radius={0.045} smoothness={4} position={[0, 0, 0]}>
-        <meshStandardMaterial color={PANEL_BODY} roughness={0.5} roughnessMap={rough} normalMap={normal} metalness={0.6} />
+      <RoundedBox args={[3.74, PANEL_H, 0.17]} radius={0.05} smoothness={5} position={[0, 0, 0]}>
+        <meshPhysicalMaterial color={BEZEL} roughness={0.42} roughnessMap={rough} normalMap={normal} normalScale={new THREE.Vector2(0.35, 0.35)} metalness={0.8} clearcoat={0.5} clearcoatRoughness={0.25} />
       </RoundedBox>
-      <RoundedBox args={[3.42, FACE_H, 0.02]} radius={0.03} smoothness={4} position={[0, 0, 0.075]}>
-        <meshStandardMaterial color={PANEL_FACE} roughness={0.65} roughnessMap={rough} metalness={0.1} />
+      {/* bone enamel face */}
+      <RoundedBox args={[3.42, FACE_H, 0.02]} radius={0.03} smoothness={4} position={[0, 0, 0.078]}>
+        <meshPhysicalMaterial color={FACE} roughness={0.62} roughnessMap={rough} metalness={0.02} clearcoat={0.2} clearcoatRoughness={0.5} />
       </RoundedBox>
 
-      <Screw x={-1.72} y={PANEL_H / 2 - 0.18} />
-      <Screw x={1.72} y={PANEL_H / 2 - 0.18} />
-      <Screw x={-1.72} y={-(PANEL_H / 2 - 0.18)} />
-      <Screw x={1.72} y={-(PANEL_H / 2 - 0.18)} />
+      <Screw x={-1.76} y={PANEL_H / 2 - 0.16} />
+      <Screw x={1.76} y={PANEL_H / 2 - 0.16} />
+      <Screw x={-1.76} y={-(PANEL_H / 2 - 0.16)} />
+      <Screw x={1.76} y={-(PANEL_H / 2 - 0.16)} />
 
       <Text position={[-1.62, Y_NAME, 0.093]} fontSize={0.09} color={INK} font={FONT} letterSpacing={0.1} anchorX="left">
         {protocol}
       </Text>
       <group position={[0.92, Y_NAME, 0]}>
-        <Lamp x={0} on={weakened} color={WEAKENED} delay={0.55} />
+        <Lamp on={weakened} color={WEAKENED} delay={0.5} />
       </group>
       <Text position={[1.62, Y_NAME, 0.093]} fontSize={0.078} color={weakened ? WEAKENED : INK_SOFT} font={FONT} letterSpacing={0.08} anchorX="right">
         {waiting ? status ?? "WAITING" : weakened ? "WEAKENED" : "NOMINAL"}
@@ -293,7 +366,7 @@ export default function Console({ data }: { data: ConsoleData }) {
       <group position={[0, Y_KEYS, 0]}>
         {socketXs.map((x, i) => (
           <group key={i} position={[x, 0, 0]} scale={[slotScale, slotScale, 1]}>
-            <KeySlot x={0} turned={i < threshold} delay={0.06 + i * 0.045} />
+            <KeySlot turned={!waiting && i < threshold} delay={0.06 + i * 0.05} />
           </group>
         ))}
       </group>
@@ -305,36 +378,37 @@ export default function Console({ data }: { data: ConsoleData }) {
       <group position={[-0.62, Y_TIME, 0]}>
         <TimelockDial seconds={timelockSeconds} hideNeedle={waiting} />
       </group>
-      <Text position={[1.62, Y_TIME, 0.093]} fontSize={0.08} color={INK} font={FONT} anchorX="right">
+      <Text position={[1.62, Y_TIME, 0.093]} fontSize={0.16} color={INK} font={FONT} letterSpacing={0.01} anchorX="right" anchorY="middle">
         {waiting ? "not read" : noTimelockFeature ? "no timelock feature" : timelockSeconds === 0 ? "none" : timelockSeconds % 86400 === 0 ? `${timelockSeconds / 86400} d` : `${+(timelockSeconds / 3600).toFixed(1)} h`}
       </Text>
 
       <RowLabel y={Y_CODE}>CODE</RowLabel>
       <group position={[-0.95, Y_CODE, 0]}>
-        <Lamp x={0} on={verified} color={VERIFIED_ON} delay={0.55} />
+        <Lamp on={!codeBlank && verified} color={VERIFIED_ON} delay={0.55} />
       </group>
       <Text position={[-0.82, Y_CODE, 0.093]} fontSize={0.078} color={INK} font={FONT} anchorX="left">
         {codeBlank ? "not read" : verified ? "verified" : "not verified"}
       </Text>
-      <group position={[0.55, Y_CODE, 0]}>
-        <Lamp x={0} on={codeDrifted} color={WEAKENED} delay={0.55} />
-      </group>
-      <Text position={[0.68, Y_CODE, 0.093]} fontSize={0.078} color={codeDrifted ? WEAKENED : INK} font={FONT} anchorX="left">
-        {codeBlank ? "" : codeDrifted ? "drifted" : "no drift record"}
-      </Text>
+      {!codeBlank && (
+        <>
+          <group position={[0.55, Y_CODE, 0]}>
+            <Lamp on={codeDrifted} color={WEAKENED} delay={0.55} />
+          </group>
+          <Text position={[0.68, Y_CODE, 0.093]} fontSize={0.078} color={codeDrifted ? WEAKENED : INK} font={FONT} anchorX="left">
+            {codeDrifted ? "drifted" : "no drift record"}
+          </Text>
+        </>
+      )}
 
       <RowLabel y={Y_LAST}>LAST</RowLabel>
-      <mesh position={[0.25, Y_LAST, 0.08]}>
-        <boxGeometry args={[2.16, 0.28, 0.006]} />
-        <meshStandardMaterial color={PANEL_BODY_TRIM} roughness={0.5} metalness={0.5} />
+      <RoundedBox args={[2.18, 0.3, 0.012]} radius={0.02} smoothness={3} position={[0.25, Y_LAST, 0.08]}>
+        <meshStandardMaterial color={STEEL_DARK} roughness={0.25} metalness={0.9} />
+      </RoundedBox>
+      <mesh position={[0.25, Y_LAST, 0.086]}>
+        <boxGeometry args={[2.08, 0.23, 0.01]} />
+        <meshStandardMaterial color={READOUT_BG} roughness={0.8} metalness={0.05} />
       </mesh>
-      <mesh position={[0.25, Y_LAST, 0.084]}>
-        <boxGeometry args={[2.06, 0.22, 0.012]} />
-        <meshStandardMaterial color={READOUT_BG} roughness={0.7} metalness={0.1} />
-      </mesh>
-      <Text position={[-0.75, Y_LAST, 0.092]} fontSize={0.058} color={READOUT_INK} font={FONT} letterSpacing={0.02} anchorX="left" maxWidth={2.0}>
-        {label}
-      </Text>
+      <Readout text={label} y={Y_LAST} />
     </group>
   );
 }
