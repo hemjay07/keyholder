@@ -367,3 +367,12 @@ footer.mono { padding: 20px 40px 40px; font-size: 11px; color: var(--ink-2); bor
 .gate-cell.refuse { background: var(--signal); }
 @keyframes gate-in { from { transform: scaleY(0.2); opacity: .3; } to { transform: none; opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .gate-cell { animation: none; transition: none; } }
+
+/* ---- /events/[uid] ---- */
+.feed-kind { color: var(--ink); text-decoration: none; }
+.feed-kind:hover { text-decoration: underline; }
+.event-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 8px 40px 24px; }
+.event-compare h2 { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); font-weight: 400; }
+.event-payload li { font-size: 12px; word-break: break-all; }
+@media (max-width: 720px) { .event-compare { grid-template-columns: 1fr; padding-left: 18px; padding-right: 18px; } }
+.ev-line { display: block; margin-top: 6px; }

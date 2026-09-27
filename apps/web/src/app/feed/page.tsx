@@ -117,7 +117,7 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
                       <span className="feed-what">
                         <span className="feed-main">
                           <Link href={`/protocols/${c.protocolId}`} className="feed-proto">{names.get(c.protocolId ?? "") ?? c.protocolId}</Link>
-                          {" · "}{KIND_WORDS[c.kind] ?? c.kind}
+                          {" · "}<Link href={`/events/${encodeURIComponent(c.uid)}`} className="feed-kind">{KIND_WORDS[c.kind] ?? c.kind}</Link>
                         </span>
                         {d && <span className="feed-detail mono">{d}</span>}
                         {weak && <span className="feed-weak mono">no timelock</span>}

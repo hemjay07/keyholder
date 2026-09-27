@@ -354,3 +354,22 @@ export async function dailyControlChanges(since: Date) {
     .groupBy(sql`1`, schema.events.protocol_id);
   return rows;
 }
+
+/** One decoded chain event (the /events/[uid] page for a feed row). */
+export async function fetchChainEvent(uid: string) {
+  const db = getDb();
+  const [e] = await db.select().from(schema.events).where(eq(schema.events.event_uid, uid)).limit(1);
+  if (!e) return null;
+  return {
+    uid: e.event_uid,
+    slot: e.slot,
+    blockTime: e.block_time.toISOString(),
+    signature: e.signature,
+    ixPath: e.ix_path,
+    protocolId: e.protocol_id,
+    programId: e.program_id,
+    kind: e.kind,
+    payload: e.payload as Record<string, unknown> | null,
+    finalized: e.finalized ?? false,
+  };
+}
