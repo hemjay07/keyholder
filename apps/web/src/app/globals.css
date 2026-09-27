@@ -409,3 +409,30 @@ footer.mono { padding: 20px 40px 40px; font-size: 11px; color: var(--ink-2); bor
   .site-links a { font-size: 13px; }
 }
 .own-control { font-size: 12px; line-height: 1.8; padding-left: 18px; color: var(--ink-2); }
+
+/* ---- home story (REVAMP 1) ---- */
+.story { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.5fr); gap: 36px; padding: 0 40px; position: relative; }
+.story-beats { padding-bottom: 12vh; }
+.story-beat { min-height: 72vh; display: flex; flex-direction: column; justify-content: center; opacity: .32; transform: translateY(8px); transition: opacity var(--d-data) var(--ease-1), transform var(--d-data) var(--ease-1); }
+.story-beat.first { min-height: calc(100vh - 150px); }
+.story-beat.on { opacity: 1; transform: none; }
+.story-beat h1 { font: 400 clamp(30px,3.6vw,52px)/1.08 var(--font-geist), "Geist", sans-serif; margin: 0 0 14px; letter-spacing: -.01em; }
+.story-date { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--signal-text); margin: 0 0 12px; }
+.story-line { font: 400 clamp(22px,2.3vw,32px)/1.2 var(--font-geist), "Geist", sans-serif; margin: 0 0 12px; letter-spacing: -.005em; }
+.story-line b { font-weight: 500; color: var(--signal-text); }
+.story-note { font-size: 15px; color: var(--ink-2); margin: 0; }
+.story-hint { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-2); margin-top: 28px; }
+.story-device { position: sticky; top: 110px; height: calc(100vh - 140px); display: flex; flex-direction: column; justify-content: center; align-self: start; }
+.story-device .device-frame { background: transparent; box-shadow: none; border-radius: 0; aspect-ratio: 5/4; width: 100%; }
+.story-progress { list-style: none; display: flex; gap: 6px; padding: 0; margin: 10px 0 0; justify-content: center; }
+.story-progress li { width: 22px; height: 3px; background: var(--hair); transition: background var(--d-element) var(--ease-1); }
+.story-progress li.done { background: var(--ink-2); }
+.story-progress li.on { background: var(--signal); }
+@media (prefers-reduced-motion: reduce) { .story-beat { transition: none; transform: none; } }
+@media (max-width: 720px) {
+  .story { display: flex; flex-direction: column-reverse; padding: 0 18px; gap: 0; }
+  .story-device { top: 0; height: auto; z-index: 2; background: var(--bg); margin: 0 -18px; padding: 8px 0 4px; border-bottom: 1px solid var(--hair); }
+  .story-device .device-frame { aspect-ratio: 16/11; }
+  .story-beat { min-height: 62vh; }
+  .story-beat.first { min-height: auto; padding: 24px 0 18vh; }
+}

@@ -4,8 +4,8 @@
 // says so, never a placeholder number.
 import Link from "next/link";
 import { fetchControlChanges, fetchProtocols, fetchEvents, type ProtocolSummary } from "@/lib/api-client";
-import { timelockLabel, controlLabel } from "@/lib/console-data";
-import ConsoleDevice from "@/components/console/ConsoleDevice";
+import { timelockLabel, controlLabel, consoleDataFromFacts } from "@/lib/console-data";
+import HomeStory, { type Beat } from "@/components/HomeStory";
 import type { ConsoleData } from "@/components/console/Console";
 
 export const dynamic = "force-dynamic";
@@ -82,14 +82,102 @@ export default async function HomePage() {
     console.error("HomePage: fetchControlChanges failed", err instanceof Error ? err.message.slice(0, 200) : "unknown");
   }
 
-  const now = Date.now();
-  const changes24h = events.filter((e) => e.createdAt && now - new Date(e.createdAt).getTime() < 86_400_000);
-
   const resolved = protocols.filter((p) => p.controlFacts?.threshold != null);
   const noTimelock = resolved.filter((p) => {
     const tl = p.controlFacts?.timelock;
     return tl && (tl.kind === "none" || tl.kind === "no_timelock_feature");
   });
+
+  // The story's beats: the Drift council as the replay rebuilt it, then the
+  // weakest protocol as read today.
+  const council = (label: string, weakened: boolean): ConsoleData => ({ ...HERO_CONSOLE, protocol: "DRIFT · ADMIN COUNCIL", weakened, label });
+  const weakest = sorted.find((p) => p.controlFacts?.threshold != null);
+  const liveDevice = weakest?.controlFacts
+    ? consoleDataFromFacts({
+        name: weakest.name,
+        rowLabel: `${weakest.name} · read today`,
+        facts: weakest.controlFacts,
+        weakened: weakest.controlFacts.timelock?.kind === "none" || weakest.controlFacts.timelock?.kind === "no_timelock_feature",
+        readDate: new Date().toISOString().slice(0, 10),
+      })
+    : null;
+  const beats: Beat[] = [
+    {
+      id: "hero",
+      device: council("admin council · 2 of 5 · no timelock · read on-chain", false),
+      body: (
+        <>
+          <h1>Drift needed two keys to lose $285M.</h1>
+          <p className="lede-tape mono">Count the keys.</p>
+          <p className="lede">
+            Keyholder shows who can move the money in every Solana protocol (keys, threshold, timelock, verified code), rings when that
+            control weakens, and lets any program refuse to deposit where it just did.
+          </p>
+          <div className="cta">
+            <Link className="primary" href="/wallet">Find your wallet</Link>
+            <Link href="/replay/drift">Watch the Drift replay</Link>
+          </div>
+          <p className="story-hint mono">Scroll: the console replays what the chain showed.</p>
+        </>
+      ),
+    },
+    {
+      id: "multisig",
+      device: council("HIGH · new multisig by a controller · 25 Mar 2026", true),
+      body: (
+        <>
+          <p className="story-date mono">25 March 2026 · 16:58 UTC</p>
+          <p className="story-line">A second multisig appears: 2 of 5 keys, no timelock, set up by the council&apos;s own signers.</p>
+          <p className="story-note">Keyholder&apos;s first alert. Nothing has moved yet.</p>
+        </>
+      ),
+    },
+    {
+      id: "admin",
+      device: council("CRITICAL · admin role moved to a new address · 26 Mar 2026", true),
+      body: (
+        <>
+          <p className="story-date mono">26 March 2026 · 01:46 UTC</p>
+          <p className="story-line">The admin key moves to a new address. The old signers are locked out within minutes.</p>
+          <p className="story-note">Then a new market is switched on and its limits raised.</p>
+        </>
+      ),
+    },
+    {
+      id: "drain",
+      device: council("first withdrawal · 31 Mar 2026 · 5.6 days after the first alert", true),
+      body: (
+        <>
+          <p className="story-date mono">31 March 2026 · 07:16 UTC</p>
+          <p className="story-line">The first withdrawal from the insurance fund. <b>5.6 days</b> after the first alert.</p>
+          <p className="story-note">On 1 April, $285M left in minutes. <Link href="/replay/drift">Every step, with its transaction &rarr;</Link></p>
+        </>
+      ),
+    },
+    ...(liveDevice && weakest
+      ? [
+          {
+            id: "today",
+            device: liveDevice,
+            body: (
+              <>
+                <p className="story-date mono">Today · {new Date().toISOString().slice(0, 10)}</p>
+                <p className="story-line">
+                  Every protocol has keys like these. {noTimelock.length} of {resolved.length} have no timelock at all.
+                </p>
+                <p className="story-note">
+                  Right now: <Link href={`/protocols/${weakest.id}`}>{weakest.name}</Link>. <a href="#protocols">All {protocols.length} protocols &darr;</a>
+                </p>
+              </>
+            ),
+          },
+        ]
+      : []),
+  ];
+
+  const now = Date.now();
+  const changes24h = events.filter((e) => e.createdAt && now - new Date(e.createdAt).getTime() < 86_400_000);
+
 
   const vCount = (status: string) => protocols.filter((p) => p.controlFacts?.verifiedStatus === status).length;
 
@@ -111,24 +199,7 @@ export default async function HomePage() {
         </header>
       )}
 
-      <section className="hero">
-        <div className="hero-copy">
-          <h1>Drift needed two keys to lose $285M.</h1>
-          <p className="lede-tape mono">Count the keys.</p>
-          <p className="lede">
-            Keyholder shows who can move the money in every Solana protocol (keys, threshold,
-            timelock, verified code), rings when that control weakens, and lets any program
-            refuse to deposit where it just did.
-          </p>
-          <div className="cta">
-            <Link className="primary" href="/wallet">Find your wallet</Link>
-            <Link href="/replay/drift">Watch the Drift replay</Link>
-          </div>
-        </div>
-        <div className="device-frame">
-          <ConsoleDevice data={HERO_CONSOLE} />
-        </div>
-      </section>
+      <HomeStory beats={beats} />
 
       <section className="protocols-section" id="protocols">
         <h2>Who holds the keys</h2>
