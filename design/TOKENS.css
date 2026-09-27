@@ -29,3 +29,5 @@
   --d-count: 1400ms;
   --cap: 1600ms;
 }
+
+/* The dark theme (P38) lives in TOKENS-DARK.css; drift.mjs compares this :root only. */

@@ -43,7 +43,7 @@
 | P35 | proof | devnet pass → weaken → refuse, all from chain | pipeline | built | eefaf39, 2652424 |
 | P36 | global | ⌘K / "/" palette (protocol, program id, wallet, signature) | CREATIVE §6 | tested | ⌘K and "/" open it; "mari" → Marinade, a Kamino program id → Kamino, clicked 2026-09-27; hidden on phones |
 | P37 | global | every state a URL (protocol, event, replay frame, policy) | CREATIVE §6 | open | |
-| P38 | global | dark theme, full second theme | CREATIVE §4 | open | |
+| P38 | global | dark theme, full second theme | CREATIVE §4 | built | system dark theme + data-theme override; tokens in design/TOKENS-DARK.css; home, protocol, policy, replay read at 1440 in dark 2026-09-27; phones not read in dark |
 | P39 | global | page transitions | REVAMP 1 | dropped | 3D fallback flash fixed (booted flag); cross-page console morph conflicts with the revamp rule "console only where it reads one state" |
 | P40 | global | LCP < 1.5 s on 4G, 3D after text, static fallback | CREATIVE §6 | open | measured only on localhost |
 | P41 | pipeline | public deploy | conductor | open | |
@@ -70,5 +70,5 @@
 | P62 | data | "15 protocols" stated everywhere; no "30" | CREATIVE §3 | tested | grep 2026-09-27: no "30 protocols" in apps/web/src |
 | P63 | proof | own program 2-of-3 / 48 h on chain; real 24 h flip staged the day before recording | TEN 8, DEV-067 | built | multisig K3u623… 47a521b; the recording flip is P45's prep |
 | P64 | pipeline | public GitHub repo with LICENSE; contest-window work visible | brief §3–4 | open | |
-| P65 | global | 404 page, loading skeletons, stale state on every route | OVERHAUL §11 | open | |
+| P65 | global | 404 page, loading skeletons, stale state on every route | OVERHAUL §11 | built | 404 page + loading state; /nope returns 404; /protocols/nope shows the 404 page but with status 200 (loading streams first) |
 | P66 | pipeline | weekly one-minute update videos | brief | open | founder-optional |

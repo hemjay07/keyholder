@@ -1,0 +1,32 @@
+/* P38 dark theme: the same tokens, night values. Follows the system setting;
+   data-theme="light"|"dark" on <html> overrides it. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141311;
+    --panel: #1F1D1A;
+    --ink: #ECE8DF;
+    --ink-2: #A39D91;
+    --signal: #FF5A1F;
+    --signal-text: #FF7A45;
+    --verified: #46B084;
+    --hair: rgba(236,232,223,.14);
+    --ground: rgb(20, 19, 17);
+    --ink-3: rgb(255, 122, 69);
+    --hairline: rgba(236, 232, 223, 0.14);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141311;
+  --panel: #1F1D1A;
+  --ink: #ECE8DF;
+  --ink-2: #A39D91;
+  --signal: #FF5A1F;
+  --signal-text: #FF7A45;
+  --verified: #46B084;
+  --hair: rgba(236,232,223,.14);
+  --ground: rgb(20, 19, 17);
+  --ink-3: rgb(255, 122, 69);
+  --hairline: rgba(236, 232, 223, 0.14);
+  color-scheme: dark;
+}
