@@ -567,8 +567,8 @@ html.lenis, html.lenis body { height: auto; }
   .replay-head .lede:not(.mono), .replay-head .replay-meta { display: none; }
   .player { min-height: calc(100vh - 150px); display: flex; flex-direction: column; }
   .player-stage { flex: 1; min-height: 0; }
-  .player-device { aspect-ratio: auto; height: calc(100vh - 430px); min-height: 320px; }
-  .player-caption { min-height: 96px; margin-top: 0; }
+  .player-device { aspect-ratio: auto; height: calc(100vh - 560px); min-height: 280px; }
+  .player-caption { min-height: 84px; margin-top: 0; }
   .player-says { font-size: clamp(18px,1.8vw,26px); }
 }
 .brush-window { top: -26px !important; height: 20px !important; background: none !important; border-left: 2px solid var(--signal); border-right: 2px solid var(--signal); overflow: visible !important; }
@@ -584,3 +584,34 @@ html.lenis, html.lenis body { height: auto; }
 }
 @media (max-width: 900px) { .brush-day.labelled:last-of-type em, .brush-day.labelled:nth-last-child(1 of .labelled) em { display: none; } }
 @media (max-width: 900px) { .brush-day.tail em { display: none; } }
+/* replay stepper (founder: "I don't understand how to scroll that timeline", 2026-09-27) */
+.player-controls { display: block !important; }
+.stepper-buttons { display: flex; align-items: center; gap: 8px; justify-content: center; margin-bottom: 52px; }
+.step-btn { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; padding: 12px 16px; background: transparent; color: inherit; border: 1px solid currentColor; cursor: pointer; }
+.step-btn:disabled { opacity: .3; cursor: default; }
+.step-count { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; margin-left: 12px; opacity: .7; }
+.stepper { position: relative; display: grid; grid-template-columns: repeat(16, 1fr); border-top: 3px solid currentColor; outline: none; }
+.stepper-dot { position: relative; height: 52px; border: 0; background: none; padding: 0; cursor: pointer; color: inherit; }
+.stepper-dot i { position: absolute; left: 50%; top: 10px; width: 14px; height: 14px; margin-left: -7px; border-radius: 50%; border: 2px solid currentColor; background: var(--bg); transition: transform var(--d-element) var(--ease-1), background var(--d-element) var(--ease-1); }
+.player.drain .stepper-dot i { background: #151311; }
+.stepper-dot.alert i { border-color: var(--signal); }
+.stepper-dot.drain i { background: currentColor !important; }
+.stepper-dot.past i { background: currentColor; opacity: .5; }
+.stepper-dot.alert.past i { background: var(--signal); opacity: .6; }
+.stepper-dot.on i { transform: scale(1.5); opacity: 1; background: var(--signal) !important; border-color: var(--signal); }
+.stepper-dot:hover i { transform: scale(1.3); }
+.stepper-dot em { position: absolute; top: 32px; left: 50%; transform: translateX(-50%); font-style: normal; font-size: 10px; white-space: nowrap; opacity: .7; }
+.stepper-window { position: absolute; top: -30px; height: 14px; border-left: 2px solid var(--signal); border-right: 2px solid var(--signal); pointer-events: none; }
+.stepper-window::after { content: ""; position: absolute; left: 0; right: 0; top: 6px; height: 2px; background: var(--signal); }
+.stepper-window b { position: absolute; left: 50%; top: -16px; transform: translateX(-50%); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--signal-text); background: var(--bg); padding: 0 6px; white-space: nowrap; font-weight: 500; }
+.player.drain .stepper-window b { background: #151311; color: #FF6B33; }
+.stepper-hint { text-align: center; font-size: 11px; letter-spacing: .04em; opacity: .6; margin: 14px 0 0; }
+.player-steps-h { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; opacity: .7; font-weight: 400; margin: 40px 0 0; }
+@media (max-width: 900px) {
+  .stepper-dot em { display: none; }
+  .stepper-dot.on em { display: block; }
+  .stepper-window b { font-size: 9px; }
+  .stepper-buttons { flex-wrap: wrap; }
+  .step-count { width: 100%; text-align: center; margin: 6px 0 0; }
+}
+@media (max-width: 900px) { .stepper-buttons { margin-bottom: 60px; } }
