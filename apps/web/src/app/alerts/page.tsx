@@ -31,7 +31,6 @@ export default async function AlertsPage() {
   }
   return (
     <main className="alerts-page">
-      <Link className="back-link" href="/">&larr; Keyholder</Link>
       <section className="hero">
         <div className="hero-copy">
           <p className="kicker">Keyholder · Alerts</p>

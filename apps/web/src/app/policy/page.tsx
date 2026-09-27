@@ -32,7 +32,6 @@ export default async function PolicyPage() {
 
   return (
     <main className="policy-page">
-      <Link className="back-link" href="/">&larr; Keyholder</Link>
       <section className="feed-head">
         <p className="kicker">Keyholder · For vaults</p>
         <h1>Refuse deposits where control just weakened.</h1>

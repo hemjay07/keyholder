@@ -12,7 +12,7 @@
 | 7 | b | 15 | 11px | kept | live count |
 | 8 | b | 1 | 11px | changed | live count, see #4 |
 | 9 | iframe | console | 16px | kept | iframe replaced by the R3F console component (ConsoleDevice), same device, data-device=console |
-| 10 | p.kicker | Keyholder | 12px | kept |  |
+| 10 | p.kicker | Keyholder | 12px | dropped | the site nav (2026-09-27) carries the name directly above; a second 'Keyholder' two lines later repeated it |
 | 11 | h1 | Drift needed two keys to lose $285M. | 46.08px | kept | headline, measured largest text |
 | 12 | p.lede.mono | Count the keys. | 14px | kept |  |
 | 13 | p.lede | Keyholder shows who can move the money in every Solana protocol (keys, | 16px | kept |  |

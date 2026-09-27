@@ -395,3 +395,16 @@ footer.mono { padding: 20px 40px 40px; font-size: 11px; color: var(--ink-2); bor
 .alerts-verify { font-size: 11px; color: var(--ink-2); }
 .alerts-error { color: var(--signal-text); margin-top: 10px; }
 .alerts-channels { font-size: 11px; color: var(--ink-2); margin-top: 18px; letter-spacing: .04em; }
+
+/* ---- site nav ---- */
+.site-nav { display: flex; align-items: baseline; justify-content: space-between; gap: 12px 24px; flex-wrap: wrap; padding: 14px 40px; border-bottom: 1px solid var(--hair); }
+.site-home { font-size: 13px; letter-spacing: .14em; text-transform: uppercase; text-decoration: none; color: var(--signal-text); }
+.site-links { display: flex; flex-wrap: wrap; gap: 6px 22px; }
+.site-links a { font-size: 14px; color: var(--ink-2); text-decoration: none; border-bottom: 1px solid transparent; transition: color var(--d-tick) var(--ease-1), border-color var(--d-tick) var(--ease-1); }
+.site-links a:hover { color: var(--ink); }
+.site-links a.on, .site-home.on { color: var(--ink); border-bottom-color: var(--ink); }
+@media (max-width: 720px) {
+  .site-nav { padding: 12px 18px; }
+  .site-links { gap: 6px 16px; }
+  .site-links a { font-size: 13px; }
+}

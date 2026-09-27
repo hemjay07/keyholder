@@ -113,7 +113,6 @@ export default async function HomePage() {
 
       <section className="hero">
         <div className="hero-copy">
-          <p className="kicker">Keyholder</p>
           <h1>Drift needed two keys to lose $285M.</h1>
           <p className="lede-tape mono">Count the keys.</p>
           <p className="lede">
@@ -131,7 +130,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="protocols-section">
+      <section className="protocols-section" id="protocols">
         <h2>Who holds the keys</h2>
         {resolved.length > 0 && (
           <p className="finding">

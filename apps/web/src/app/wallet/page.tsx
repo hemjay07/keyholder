@@ -70,7 +70,6 @@ export default async function WalletPage({ searchParams }: { searchParams: Promi
   const wallet = w?.trim() ?? "";
   return (
     <main className="wallet-page">
-      <Link className="back-link" href="/">&larr; Keyholder</Link>
       <section className={wallet ? "wallet-head" : "hero wallet-idle"}>
         <div className={wallet ? undefined : "hero-copy"}>
         <p className="kicker">Keyholder · Your wallet</p>

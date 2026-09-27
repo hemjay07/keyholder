@@ -42,7 +42,6 @@ export default function ProofPage() {
   const gap = (new Date(after.time).getTime() - new Date(before.time).getTime()) / 1000;
   return (
     <main className="proof-page">
-      <Link className="back-link" href="/">&larr; Keyholder</Link>
 
       <section className="hero">
         <div className="hero-copy">

@@ -62,7 +62,7 @@ export default async function ProtocolPage({ params }: { params: Promise<{ slug:
 
   return (
     <main>
-      <Link className="back-link" href="/">&larr; All protocols</Link>
+      <Link className="back-link" href="/#protocols">&larr; All protocols</Link>
 
       <section className="protocol-hero">
         <div className="hero-copy">

@@ -58,8 +58,7 @@ export default async function DriftReplayPage() {
   if (readError || !replay || replay.leadTimeSeconds == null || steps.length === 0) {
     return (
       <main>
-        <Link className="back-link" href="/">&larr; Keyholder</Link>
-        <section className="protocol-hero">
+          <section className="protocol-hero">
           <div className="hero-copy">
             <p className="kicker">Keyholder · Replay</p>
             <h1>The Drift replay is unavailable right now.</h1>
@@ -93,7 +92,6 @@ export default async function DriftReplayPage() {
 
   return (
     <main className="replay">
-      <Link className="back-link" href="/">&larr; Keyholder</Link>
 
       <section className="hero">
         <div className="hero-copy">
