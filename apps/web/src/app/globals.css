@@ -954,3 +954,4 @@ html.lenis, html.lenis body { height: auto; }
 :root[data-theme="dark"] .console-canvas { filter: drop-shadow(0 30px 40px rgba(0,0,0,.5)); }
 .policy-page .proof-compare { padding: 0; max-width: none; margin-left: 0; }
 .policy-page .proof-compare { padding: 0 40px; } @media (max-width: 900px) { .policy-page .proof-compare { padding: 0 16px; } }
+.kp ul { overscroll-behavior: contain; }

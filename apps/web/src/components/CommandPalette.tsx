@@ -39,6 +39,14 @@ export default function CommandPalette() {
     return () => { window.removeEventListener("keydown", onKey); window.removeEventListener("kh-search", onOpen); };
   }, []);
 
+  // While open the page underneath must not move (smooth scroll skips data-lenis-prevent).
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.documentElement.style.overflow;
+    document.documentElement.style.overflow = "hidden";
+    return () => { document.documentElement.style.overflow = prev; };
+  }, [open]);
+
   useEffect(() => {
     if (!open) return;
     setQ(""); setSel(0);
@@ -72,7 +80,7 @@ export default function CommandPalette() {
 
   if (!open) return null;
   return (
-    <div className="kp-back" onMouseDown={() => setOpen(false)}>
+    <div className="kp-back" data-lenis-prevent onMouseDown={() => setOpen(false)}>
       <div className="kp" role="dialog" aria-label="Search Keyholder" onMouseDown={(e) => e.stopPropagation()}>
         <input
           ref={input}
