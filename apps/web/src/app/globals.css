@@ -436,3 +436,29 @@ footer.mono { padding: 20px 40px 40px; font-size: 11px; color: var(--ink-2); bor
   .story-beat { min-height: 62vh; }
   .story-beat.first { min-height: auto; padding: 24px 0 18vh; }
 }
+
+/* ---- home layout pass (REVAMP 1b): shorter beats, single rail, phone HUD ---- */
+.story-beat { min-height: 52vh; }
+.story-beat.first { min-height: calc(100vh - 110px); }
+.story-beat:not(.on) { opacity: .45; }
+.story-beat.first { opacity: 1; transform: none; }
+.rails.single { grid-template-columns: 1fr; }
+.story-hud { display: none; }
+@media (max-width: 720px) {
+  .strip { flex-wrap: nowrap; white-space: nowrap; gap: 14px; font-size: 10px; }
+  .strip-slot { display: none; }
+  .story { display: flex; flex-direction: column; padding: 0 18px; }
+  .story-device { position: static; order: -2; height: auto; margin: 0 -18px; padding: 0; border: 0; background: none; }
+  .story-device .device-frame { aspect-ratio: auto; height: 80vw; overflow: hidden; }
+  .story-device .console-fallback { height: 100%; overflow: hidden; }
+  .story-progress { display: none; }
+  .story-hud { order: -1; display: flex; align-items: center; gap: 10px; position: sticky; top: 0; z-index: 3; height: 52px; margin: 0 -18px; padding: 0 18px; background: var(--bg); border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); font-size: 12px; }
+  .hud-lamp { width: 10px; height: 10px; border-radius: 50%; background: var(--ink-2); opacity: .35; transition: all var(--d-tick) var(--ease-1); flex: none; }
+  .hud-lamp.on { background: var(--signal); opacity: 1; box-shadow: 0 0 8px var(--signal); }
+  .hud-keys { display: flex; gap: 3px; }
+  .hud-keys i { width: 9px; height: 9px; border-radius: 50%; border: 1px solid var(--ink-2); transition: background var(--d-element) var(--ease-1); }
+  .hud-keys i.on { background: var(--ink); border-color: var(--ink); }
+  .hud-weak { color: var(--signal-text); }
+  .story-beat, .story-beat.first { min-height: 48vh; padding: 24px 0; }
+  .story-beat.first { min-height: auto; }
+}

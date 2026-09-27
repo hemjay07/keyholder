@@ -3,7 +3,7 @@
 // straight from the DB via apps/web/src/lib/api-client — a failed read shows nothing and
 // says so, never a placeholder number.
 import Link from "next/link";
-import { fetchControlChanges, fetchProtocols, fetchEvents, type ProtocolSummary } from "@/lib/api-client";
+import { fetchControlChanges, fetchProtocols, type ProtocolSummary } from "@/lib/api-client";
 import { timelockLabel, controlLabel, consoleDataFromFacts } from "@/lib/console-data";
 import HomeStory, { type Beat } from "@/components/HomeStory";
 import type { ConsoleData } from "@/components/console/Console";
@@ -46,7 +46,6 @@ function keyRatio(p: ProtocolSummary): number {
 
 export default async function HomePage() {
   let protocols: ProtocolSummary[] = [];
-  let events: Awaited<ReturnType<typeof fetchEvents>>["events"] = [];
   let readError: string | null = null;
 
   try {
@@ -56,12 +55,6 @@ export default async function HomePage() {
     readError = "protocols";
   }
 
-  try {
-    const result = await fetchEvents({ limit: 20 });
-    events = result.events.filter((e) => protocols.some((p) => p.id === e.protocolId));
-  } catch (err) {
-    console.error("HomePage: fetchEvents failed", err);
-  }
 
   const sorted = [...protocols].sort((a, b) => {
     const rankDiff = weaknessRank(a) - weaknessRank(b);
@@ -114,7 +107,7 @@ export default async function HomePage() {
             control weakens, and lets any program refuse to deposit where it just did.
           </p>
           <div className="cta">
-            <Link className="primary" href="/wallet">Find your wallet</Link>
+            <Link className="primary" href="/wallet">Check your wallet</Link>
             <Link href="/replay/drift">Watch the Drift replay</Link>
           </div>
           <p className="story-hint mono">Scroll: the console replays what the chain showed.</p>
@@ -128,18 +121,7 @@ export default async function HomePage() {
         <>
           <p className="story-date mono">25 March 2026 · 16:58 UTC</p>
           <p className="story-line">A second multisig appears: 2 of 5 keys, no timelock, set up by the council&apos;s own signers.</p>
-          <p className="story-note">Keyholder&apos;s first alert. Nothing has moved yet.</p>
-        </>
-      ),
-    },
-    {
-      id: "admin",
-      device: council("CRITICAL · admin role moved to a new address · 26 Mar 2026", true),
-      body: (
-        <>
-          <p className="story-date mono">26 March 2026 · 01:46 UTC</p>
-          <p className="story-line">The admin key moves to a new address. The old signers are locked out within minutes.</p>
-          <p className="story-note">Then a new market is switched on and its limits raised.</p>
+          <p className="story-note">Keyholder&apos;s first alert. Hours later the admin key moves through it.</p>
         </>
       ),
     },
@@ -175,11 +157,8 @@ export default async function HomePage() {
       : []),
   ];
 
-  const now = Date.now();
-  const changes24h = events.filter((e) => e.createdAt && now - new Date(e.createdAt).getTime() < 86_400_000);
 
 
-  const vCount = (status: string) => protocols.filter((p) => p.controlFacts?.verifiedStatus === status).length;
 
   const protocolById = new Map(protocols.map((p) => [p.id, p]));
   const readDate = new Date().toISOString().slice(0, 10);
@@ -190,12 +169,9 @@ export default async function HomePage() {
         <p className="strip-error mono">Live protocol read failed — status strip and control map are unavailable right now.</p>
       ) : (
         <header className="strip mono">
-          <span>SLOT <b>{liveSlot != null ? liveSlot.toLocaleString("en-US") : "unavailable"}</b></span>
-          <span>READ <b>{readDate}</b></span>
-          <span><b>{protocols.length}</b> PROTOCOLS TRACKED</span>
-          <span><b>{changes24h.length}</b> ALERTS 24H</span>
+          <span className="strip-slot">SLOT <b>{liveSlot != null ? liveSlot.toLocaleString("en-US") : "unavailable"}</b></span>
+          <span><b>{protocols.length}</b> PROTOCOLS</span>
           <span className="weak"><b>{noTimelock.length}</b> OF {resolved.length} WITH NO TIMELOCK</span>
-          <span>CODE <b>{vCount("verified")}</b> VERIFIED · <b>{vCount("drifted")}</b> DRIFTED · <b>{vCount("unverified")}</b> NEVER REGISTERED</span>
         </header>
       )}
 
@@ -255,17 +231,7 @@ export default async function HomePage() {
         </table>
       </section>
 
-      <div className="rails">
-        <div className="rail">
-          <h2>Weakened</h2>
-          <div className="row weak">
-            <span className="who"><span className="dot" />Drift admin council · 2 of 5 · no timelock</span>
-            <span className="meta mono">timelock 0 · 1 Apr 2026 · reconstructed</span>
-          </div>
-          {changes24h.length === 0 && (
-            <p className="rail-empty">No live weakening events in the last 24 hours.</p>
-          )}
-        </div>
+      <div className="rails single">
         <div className="rail">
           <h2>Latest changes</h2>
           {latest.length === 0 ? (
@@ -288,22 +254,6 @@ export default async function HomePage() {
       </div>
 
 
-      <section className="ten">
-        <h2>What ships</h2>
-        <ol className="mono">
-          <li>Drift needed two keys to lose $285M.</li>
-          <li>Count the keys.</li>
-          <li>Drift&apos;s upgrade key today: 4 of 7 keys, 3,600-second timelock, read at a named slot.</li>
-          <li>Solscan says &quot;MULTISIG&quot; and stops; Keyholder follows the key to the multisig behind it.</li>
-          <li>Drift&apos;s admin council was 2 of 5 keys with no timelock (read on-chain); on 25 March 2026 the attackers created a new multisig, on 26 March they took the admin key through it, and on 31 March the first drain landed: 5.6 days after the first change Keyholder would have flagged.</li>
-          <li>Of {resolved.length} major Solana programs, {resolved.length - noTimelock.length} have a timelock today and {noTimelock.length} do not (read {readDate}).</li>
-          <li>Any program can ask Keyholder before it moves money, and be refused on-chain with the reason.</li>
-          <li>Our own program is controlled by 2 of 3 keys with a 48-hour public timelock (on devnet today).</li>
-          <li>Find your wallet: see who holds the keys to every protocol your money is in.</li>
-          <li>Every number here carries the slot or transaction it was read from; rebuilt history is labelled reconstructed.</li>
-        </ol>
-        <p className="catch">&quot;Count the keys.&quot; · &quot;Who can move your money, and did that just change?&quot;</p>
-      </section>
 
       <footer className="mono">KEYHOLDER · every figure carries its slot, transaction or reconstructed label</footer>
     </main>
