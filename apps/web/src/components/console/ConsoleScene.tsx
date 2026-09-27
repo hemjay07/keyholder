@@ -160,22 +160,31 @@ function Scene({ data, companion, reduced, mobile }: { data: ConsoleData; compan
   );
 }
 
+// After the first console has mounted, later pages mount theirs at once: waiting a
+// frame showed the flat fallback first, and the page transition captured that flash.
+let booted = false;
+let webglOk: boolean | null = null;
+
 export default function ConsoleScene({ data, companion }: { data: ConsoleData; companion?: ConsoleData | null }) {
   const reduced = useReducedMotion();
   const mobile = useMobile();
-  const [mounted, setMounted] = useState(false);
-  const [webgl, setWebgl] = useState(true);
+  const [mounted, setMounted] = useState(booted);
+  const [webgl, setWebgl] = useState(webglOk ?? true);
 
   useEffect(() => {
-    setWebgl(hasWebGL());
-    // Mount the canvas after the first paint so the console never delays LCP.
-    const id = requestAnimationFrame(() => setMounted(true));
+    if (webglOk === null) webglOk = hasWebGL();
+    setWebgl(webglOk);
+    if (booted) return;
+    // First console on the site: mount after the first paint so it never delays LCP.
+    const id = requestAnimationFrame(() => {
+      booted = true;
+      setMounted(true);
+    });
     return () => cancelAnimationFrame(id);
   }, []);
 
-  if (!mounted || !webgl) {
-    return <ConsoleFallback data={data} />;
-  }
+  if (!webgl) return <ConsoleFallback data={data} />;
+  if (!mounted) return <div className="console-canvas" aria-hidden="true" />;
 
   return (
     <div data-device="console" className="console-canvas">

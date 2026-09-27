@@ -14,7 +14,7 @@ export default function ConsoleDevice({ data, companion }: { data: ConsoleData; 
   return (
     <ViewTransition name="kh-console">
       <div className="console-frame">
-        <Suspense fallback={<ConsoleFallback data={data} />}>
+        <Suspense fallback={<div className="console-canvas" aria-hidden="true" />}>
           <ConsoleScene data={data} companion={companion} />
         </Suspense>
       </div>

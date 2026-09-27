@@ -196,6 +196,12 @@ export default function ReplayFilm({ events, leadDays }: { events: FilmEvent[]; 
         <div className="film-scene">
           <div className="film-console">
             <ConsoleDevice data={device} companion={companion} />
+            {companion && (
+              <p className="film-tag">
+                <b className="mono">The attacker&apos;s multisig</b>
+                <span>2 of 5, no timelock. Set up by Drift&apos;s own signers{after("2026-03-26T01:46:35Z") ? "; now holds Drift's admin role." : "."}</span>
+              </p>
+            )}
           </div>
           <aside className="film-side">
             <div className={`film-count${w.started ? " on" : ""}${w.frozen ? " frozen" : ""}`}>
