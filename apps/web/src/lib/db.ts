@@ -15,7 +15,8 @@ let db: PostgresJsDatabase<typeof schema> | null = null;
 export function getDb(): PostgresJsDatabase<typeof schema> {
   if (!db) {
     client = postgres(env.DATABASE_URL, {
-      max: 10,
+      // Serverless: few connections per instance, through Supabase's transaction pooler.
+      max: 3,
       idle_timeout: 30,
       connect_timeout: 10,
       prepare: false,
