@@ -33,4 +33,5 @@ device material/lighting/geometry pass → framing fix + parallax → bloom → 
 
 ## Status
 - designed: this file.
-- built / tested: see PROGRESS.md entries after 2026-09-27 03:00Z.
+- built: device pass 5ae08a6, home story 293ef45 + 50ec8f2, replay/proof 2652424, motion 3a71e33.
+- tested: headed run in founder Chrome 2026-09-27: 8 of 10 surfaces clean; home 390 one 1.9 s load task, marinade 1280 three ~120 ms tasks.
