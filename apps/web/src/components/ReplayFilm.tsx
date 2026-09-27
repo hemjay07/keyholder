@@ -45,9 +45,27 @@ const MOMENTS: Moment[] = [
 const AUTOPLAY_MS = 6500; // per moment: 7 × 6.5 s ≈ 46 s
 const FIRST_VISIT_STOP = 2; // first visit plays itself to the alert, then waits
 
+// Time is compressed to what happened (R9 keeps it honest: the quiet weeks are
+// labelled as compressed). 1–24 Mar take 14 % of the width; 24 Mar–3 Apr take 86 %.
 const AXIS_FROM = Date.UTC(2026, 2, 1);
+const AXIS_KNEE = Date.UTC(2026, 2, 24);
 const AXIS_TO = Date.UTC(2026, 3, 3);
-const x = (iso: string) => ((new Date(iso).getTime() - AXIS_FROM) / (AXIS_TO - AXIS_FROM)) * 100;
+const KNEE = 14;
+const x = (iso: string) => {
+  const t = new Date(iso).getTime();
+  if (t <= AXIS_KNEE) return Math.max(0, ((t - AXIS_FROM) / (AXIS_KNEE - AXIS_FROM)) * KNEE);
+  return KNEE + ((t - AXIS_KNEE) / (AXIS_TO - AXIS_KNEE)) * (100 - KNEE);
+};
+
+/** Elapsed warning time at a moment: 0 before the alert, frozen at the first withdrawal. */
+function warning(atIso: string): { d: number; h: number; frozen: boolean; started: boolean } {
+  const a = new Date(T_ALERT).getTime();
+  const z = new Date(T_DRAIN).getTime();
+  const t = new Date(atIso).getTime();
+  if (t < a) return { d: 0, h: 0, frozen: false, started: false };
+  const ms = Math.min(t, z) - a;
+  return { d: Math.floor(ms / 86400000), h: Math.floor((ms % 86400000) / 3600000), frozen: t >= z, started: true };
+}
 
 export default function ReplayFilm({ events, leadDays }: { events: FilmEvent[]; leadDays: string }) {
   const [m, setM] = useState(0);
@@ -133,6 +151,22 @@ export default function ReplayFilm({ events, leadDays }: { events: FilmEvent[]; 
   );
 
   const now = x(mo.at);
+  const w0 = warning(mo.at);
+  const targetH = w0.d * 24 + w0.h;
+  const [shownH, setShownH] = useState(targetH);
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { setShownH(targetH); return; }
+    const from = shownH; const start = performance.now(); let raf = 0;
+    const tick = (t: number) => { const k = Math.min(1, (t - start) / 1400); setShownH(Math.round(from + (targetH - from) * (1 - Math.pow(1 - k, 3)))); if (k < 1) raf = requestAnimationFrame(tick); };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [targetH]);
+  const w = { ...w0, d: Math.floor(shownH / 24), h: shownH % 24 };
+  // Honest vault: the per-step amounts are not recorded; only the first withdrawal
+  // (31 Mar) and the total ($285M by 1 Apr, rekt.news) are.
+  const vaultFill = mo.id === "loss" || mo.id === "end" ? 0 : mo.id === "money" ? 88 : 100;
+  const vaultLabel = mo.id === "loss" || mo.id === "end" ? "$285M gone" : mo.id === "money" ? "first withdrawal; amount not recorded" : "untouched";
   const winL = x(T_ALERT);
   const winR = mo.window === "closed" ? x(T_DRAIN) : mo.window === "open" ? Math.max(winL, now) : winL;
   const lanes: Array<{ key: FilmEvent["lane"]; label: string }> = [
@@ -144,8 +178,26 @@ export default function ReplayFilm({ events, leadDays }: { events: FilmEvent[]; 
   return (
     <div className={`film g-${mo.ground}`}>
       <div className="film-stage" aria-live="polite">
-        <div className="film-console">
-          <ConsoleDevice data={device} />
+        <div className="film-scene">
+          <div className="film-console">
+            <ConsoleDevice data={device} />
+          </div>
+          <aside className="film-side">
+            <div className={`film-count${w.started ? " on" : ""}${w.frozen ? " frozen" : ""}`}>
+              <span className="mono film-side-label">{w.frozen ? "Warning Keyholder would have given" : w.started ? "Warning so far" : "Warning"}</span>
+              <b className="mono">{w.started ? <>{w.d}<small>d</small> {String(w.h).padStart(2, "0")}<small>h</small></> : "—"}</b>
+              <span className="mono film-side-sub">{w.frozen ? "then the money moved" : w.started ? "since the first alert, nothing has moved yet" : "no alert yet"}</span>
+            </div>
+            <div className="film-vault" aria-label={`Drift funds: ${vaultLabel}`}>
+              <span className="mono film-side-label">Drift funds at risk</span>
+              <div className="film-vault-tank">
+                <span className="film-vault-fill" style={{ height: `${vaultFill}%` }} />
+                <span className="film-vault-amt mono">{vaultFill > 0 ? "$285M" : "$0"}</span>
+                {mo.id === "money" && <span className="film-vault-notch mono">first withdrawal</span>}
+              </div>
+              <span className="mono film-side-sub">{vaultLabel}</span>
+            </div>
+          </aside>
         </div>
 
         <div className="film-note">
@@ -155,10 +207,13 @@ export default function ReplayFilm({ events, leadDays }: { events: FilmEvent[]; 
 
         <div className="film-lanes" role="group" aria-label="Timeline, 1 March to 3 April 2026">
           <div className="film-axis mono">
-            {[1, 8, 15, 22, 29].map((d) => (
-              <span key={d} style={{ left: `${x(`2026-03-${String(d).padStart(2, "0")}T00:00:00Z`)}%` }}>{d} Mar</span>
+            <span className="film-quiet" style={{ left: 0, width: `${KNEE}%` }}>1–24 Mar · quiet, compressed</span>
+            {[25, 26, 27, 28, 29, 30, 31].map((d) => (
+              <span key={d} style={{ left: `${x(`2026-03-${d}T00:00:00Z`)}%` }}>{d} Mar</span>
             ))}
-            <span style={{ left: `${x("2026-04-01T00:00:00Z")}%` }}>1 Apr</span>
+            {[1, 2].map((d) => (
+              <span key={`a${d}`} style={{ left: `${x(`2026-04-0${d}T00:00:00Z`)}%` }}>{d} Apr</span>
+            ))}
           </div>
           {mo.window !== "none" && (
             <div className="film-window" style={{ left: `${winL}%`, width: `${winR - winL}%` }}>
