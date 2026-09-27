@@ -67,7 +67,6 @@ export default async function HomePage() {
     return tl && (tl.kind === "none" || tl.kind === "no_timelock_feature");
   });
 
-  const readDate = new Date().toISOString().slice(0, 10);
   const protocolById = new Map(protocols.map((p) => [p.id, p]));
 
   return (
@@ -96,7 +95,7 @@ export default async function HomePage() {
           </div>
         </div>
         <div className="home-weakest" aria-label="Weakest control today">
-          <p className="hw-label mono">Weakest control today · read {readDate}</p>
+          <p className="hw-label mono">Weakest control on record</p>
           {sorted.filter((p) => p.controlFacts?.threshold != null).slice(0, 5).map((p) => {
             const f = p.controlFacts!;
             const noTl = f.timelock?.kind === "none" || f.timelock?.kind === "no_timelock_feature";

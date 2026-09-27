@@ -18,7 +18,7 @@ export function consoleDataFromFacts(opts: {
   weakened: boolean;
   readDate: string;
 }): ConsoleData | null {
-  const { name, rowLabel, facts, weakened, readDate } = opts;
+  const { name, rowLabel, facts, weakened } = opts;
   if (facts.threshold == null || facts.members == null) return null;
   const { seconds, noTimelockFeature } = timelockSecondsFor(facts);
   const slot = facts.asOfSlot;
@@ -32,7 +32,7 @@ export function consoleDataFromFacts(opts: {
     codeDrifted: facts.verifiedStatus === "drifted",
     weakened,
     slot,
-    label: `${rowLabel} · read ${readDate}${slot != null ? ` · slot ${slot.toLocaleString("en-US")}` : ""}`,
+    label: `${rowLabel}${slot != null ? ` · recorded at slot ${slot.toLocaleString("en-US")}` : ""}`,
   };
 }
 

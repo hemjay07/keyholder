@@ -70,8 +70,7 @@ export default async function ProtocolPage({ params }: { params: Promise<{ slug:
           <p className="kicker">Protocol</p>
           <h1>{headline}</h1>
           <div className="protocol-meta mono">
-            <span>read {readDate}</span>
-            {facts?.asOfSlot != null && <span>slot {facts.asOfSlot.toLocaleString("en-US")}</span>}
+            {facts?.asOfSlot != null && <span>recorded at slot {facts.asOfSlot.toLocaleString("en-US")}</span>}
             {protocol.programs.map((prog) => <span key={prog.programId} title={prog.programId}>program {prog.programId.slice(0, 4)}…{prog.programId.slice(-4)}</span>)}
             <span>{facts?.verifiedStatus === "verified" ? "code verified" : facts?.verifiedStatus === "drifted" ? "code drifted from its verified build" : "code never registered for verification"} (verify.osec.io)</span>
           </div>
