@@ -746,3 +746,12 @@ html.lenis, html.lenis body { height: auto; }
   .film-side { height: 150px; overflow: hidden; align-content: start; }
   .film-side-sub { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 }
+
+/* page-to-page (R6): the console morphs to its new frame; the rest crossfades, text settles after */
+::view-transition-group(kh-console) { animation-duration: 700ms; animation-timing-function: cubic-bezier(.2,.7,.2,1); }
+::view-transition-old(kh-console), ::view-transition-new(kh-console) { height: 100%; object-fit: contain; }
+::view-transition-old(root) { animation: 240ms var(--ease-1) both vt-out; }
+::view-transition-new(root) { animation: 360ms var(--ease-1) 180ms both vt-in; }
+@keyframes vt-out { to { opacity: 0; } }
+@keyframes vt-in { from { opacity: 0; transform: translateY(6px); } }
+@media (prefers-reduced-motion: reduce) { ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; } }

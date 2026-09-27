@@ -4,7 +4,7 @@
 // last two cases once mounted).
 "use client";
 
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, ViewTransition } from "react";
 import type { ConsoleData } from "./Console";
 import ConsoleFallback from "./ConsoleFallback";
 
@@ -12,11 +12,13 @@ const ConsoleScene = lazy(() => import("./ConsoleScene"));
 
 export default function ConsoleDevice({ data, companion }: { data: ConsoleData; companion?: ConsoleData | null }) {
   return (
-    <div className="console-frame">
-      <Suspense fallback={<ConsoleFallback data={data} />}>
-        <ConsoleScene data={data} companion={companion} />
-      </Suspense>
-    </div>
+    <ViewTransition name="kh-console">
+      <div className="console-frame">
+        <Suspense fallback={<ConsoleFallback data={data} />}>
+          <ConsoleScene data={data} companion={companion} />
+        </Suspense>
+      </div>
+    </ViewTransition>
   );
 }
 
