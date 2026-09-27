@@ -195,7 +195,7 @@ export default function ReplayPlayer({ frames, leadDays }: { frames: ReplayFrame
             const dt = new Date(d);
             const label = dt.getUTCDate() === 1 || dt.getUTCDate() % 7 === 1 ? `${dt.getUTCDate()} ${dt.toLocaleString("en-GB", { month: "short", timeZone: "UTC" })}` : null;
             return (
-              <span key={d} className={`brush-day${label ? " labelled" : ""}`} style={{ left: `${((d - t0) / (t1 - t0)) * 100}%` }}>
+              <span key={d} className={`brush-day${label ? " labelled" : ""}${label && d > t1 - 5 * 86400000 && dt.getUTCDate() === 1 ? " tail" : ""}`} style={{ left: `${((d - t0) / (t1 - t0)) * 100}%` }}>
                 {label && <em className="mono">{label}</em>}
               </span>
             );

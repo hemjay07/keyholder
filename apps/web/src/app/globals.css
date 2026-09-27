@@ -556,3 +556,31 @@ html.lenis, html.lenis body { height: auto; }
   .brush-window b span { display: none; }
   .player-steps button { grid-template-columns: 1fr; gap: 2px; }
 }
+
+/* replay: the player is one screen (founder 2026-09-27 "this looks unfinished") */
+@media (min-width: 901px) {
+  .replay-head { padding: 20px 40px 0; display: grid; grid-template-columns: auto 1fr; gap: 0 40px; align-items: end; max-width: none; }
+  .replay-head > div { display: contents; }
+  .replay-head .kicker { grid-column: 1 / -1; }
+  .replay-head h1 { font-size: clamp(38px,4vw,60px); margin: 0; }
+  .replay-head .lede.mono { margin: 0 0 8px; }
+  .replay-head .lede:not(.mono), .replay-head .replay-meta { display: none; }
+  .player { min-height: calc(100vh - 150px); display: flex; flex-direction: column; }
+  .player-stage { flex: 1; min-height: 0; }
+  .player-device { aspect-ratio: auto; height: calc(100vh - 430px); min-height: 320px; }
+  .player-caption { min-height: 96px; margin-top: 0; }
+  .player-says { font-size: clamp(18px,1.8vw,26px); }
+}
+.brush-window { top: -26px !important; height: 20px !important; background: none !important; border-left: 2px solid var(--signal); border-right: 2px solid var(--signal); overflow: visible !important; }
+.brush-window::after { content: ""; position: absolute; left: 0; right: 0; top: 9px; height: 2px; background: var(--signal); }
+.brush-window b { position: absolute !important; left: 50% !important; right: auto !important; top: -16px !important; transform: translateX(-50%); font-size: 10px !important; background: var(--bg); padding: 0 6px; }
+.player.drain .brush-window b { background: #151311; }
+.brush-window b span { display: inline !important; }
+.player-controls { margin-top: 34px; }
+@media (max-width: 900px) {
+  .brush-window b { font-size: 9px !important; }
+  .brush-window b span { display: none !important; }
+  .brush { margin-right: 14px; }
+}
+@media (max-width: 900px) { .brush-day.labelled:last-of-type em, .brush-day.labelled:nth-last-child(1 of .labelled) em { display: none; } }
+@media (max-width: 900px) { .brush-day.tail em { display: none; } }
