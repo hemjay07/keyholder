@@ -233,10 +233,12 @@ export interface ConsoleData {
   status?: string;
   /** While waiting, the code row still shows its reading when it was read. */
   codeKnown?: boolean;
+  /** While waiting, what the keys readout says instead of "? of ? required". */
+  keysText?: string;
 }
 
 export default function Console({ data }: { data: ConsoleData }) {
-  const { protocol, threshold, members, timelockSeconds, noTimelockFeature, verified, codeDrifted, weakened, label, waiting = false, status, codeKnown = false } = data;
+  const { protocol, threshold, members, timelockSeconds, noTimelockFeature, verified, codeDrifted, weakened, label, waiting = false, status, codeKnown = false, keysText } = data;
   const codeBlank = waiting && !codeKnown;
   const { rough, normal } = usePanelTextures();
 
@@ -296,7 +298,7 @@ export default function Console({ data }: { data: ConsoleData }) {
         ))}
       </group>
       <Text position={[1.62, Y_KEYS - 0.28, 0.093]} fontSize={0.16} color={INK} font={FONT} letterSpacing={0.01} anchorX="right">
-        {waiting ? "? of ? required" : `${threshold} of ${members} required`}
+        {waiting ? keysText ?? "? of ? required" : `${threshold} of ${members} required`}
       </Text>
 
       <RowLabel y={Y_TIME}>TIME</RowLabel>

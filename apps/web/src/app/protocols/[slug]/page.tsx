@@ -53,7 +53,11 @@ export default async function ProtocolPage({ params }: { params: Promise<{ slug:
     : null;
 
   const headline = unresolved
-    ? `${protocol.name}: control unresolved`
+    ? facts?.authorityKind === "immutable"
+      ? `${protocol.name}: immutable, no upgrade key`
+      : facts?.authorityKind === "spl_gov"
+        ? `${protocol.name}: controlled by Realms governance`
+        : `${protocol.name}: control unresolved`
     : `${protocol.name}: ${facts!.threshold} of ${facts!.members} keys, ${timelockPhrase(facts)}`;
 
   return (
@@ -90,9 +94,15 @@ export default async function ProtocolPage({ params }: { params: Promise<{ slug:
                 codeKnown: facts?.verifiedStatus === "verified" || facts?.verifiedStatus === "drifted" || facts?.verifiedStatus === "unverified",
                 weakened: false,
                 slot: null,
-                label: protocol.evidenceNote ?? "no multisig or governance authority found on chain",
+                label:
+                  facts?.authorityKind === "immutable"
+                    ? "no upgrade authority: this program cannot be changed"
+                    : facts?.authorityKind === "spl_gov"
+                      ? "upgrades need a Realms governance vote"
+                      : protocol.evidenceNote ?? "no multisig or governance authority found on chain",
                 waiting: true,
-                status: "UNRESOLVED",
+                keysText: facts?.authorityKind === "immutable" ? "no upgrade key" : facts?.authorityKind === "spl_gov" ? "governance vote" : undefined,
+                status: facts?.authorityKind === "immutable" ? "IMMUTABLE" : facts?.authorityKind === "spl_gov" ? "GOVERNANCE" : "UNRESOLVED",
               }}
             />
           )}

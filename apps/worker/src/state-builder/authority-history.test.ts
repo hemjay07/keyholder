@@ -16,6 +16,14 @@ import {
 } from '@keyholder/decoder';
 import { SPL_GOVERNANCE_PROGRAM_ID } from '../ingest/filter';
 import { resolveAuthorityHistorically } from './authority-history';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { CORAL_MULTISIG_PROGRAM_ID } from '@keyholder/decoder';
+
+// Real mainnet account: Marinade's upgrade-authority multisig (captured 2026-09-27).
+const coralFixture = JSON.parse(
+  readFileSync(join(__dirname, '..', '..', '..', '..', 'data', 'fixtures-for-decoder', 'coral-multisig-marinade.json'), 'utf8')
+) as { address: string; signerPda: string; dataBase64: string };
 
 function v4MultisigBuffer(threshold: number, timeLock: number, members: PublicKey[]): Buffer {
   const disc = createHash('sha256').update('account:Multisig').digest().subarray(0, 8);
@@ -209,6 +217,47 @@ describe('resolveAuthorityHistorically', () => {
     } as any;
 
     const result = await resolveAuthorityHistorically(connection, authority.toBase58());
+    expect(result.authorityKind).toBe('single_key_or_vault_unresolved');
+  });
+
+  function coralConnection(authority: string, programInvoked: string) {
+    const multisigPk = new PublicKey(coralFixture.address);
+    return {
+      getAccountInfo: vi.fn(async (pk: PublicKey) => {
+        if (pk.equals(multisigPk)) return { data: Buffer.from(coralFixture.dataBase64, 'base64'), owner: new PublicKey(CORAL_MULTISIG_PROGRAM_ID) } as any;
+        return null;
+      }),
+      getSignaturesForAddress: vi.fn(async () => [{ signature: 'wyCLBN', slot: 1 }]),
+      getParsedTransaction: vi.fn(async () => ({
+        transaction: {
+          message: {
+            accountKeys: [fakeAccount(Keypair.generate().publicKey, true), fakeAccount(multisigPk, false), fakeAccount(new PublicKey(authority), false)],
+            instructions: [{ programId: new PublicKey(programInvoked) }],
+          },
+        },
+        meta: { innerInstructions: [] },
+      })),
+    } as any;
+  }
+
+  it('happy: resolves Marinade\'s authority to its coral multisig (real bytes): 6 of 13, no timelock feature', async () => {
+    const result = await resolveAuthorityHistorically(coralConnection(coralFixture.signerPda, CORAL_MULTISIG_PROGRAM_ID), coralFixture.signerPda);
+    expect(result.authorityKind).toBe('coral_multisig');
+    expect(result.multisig?.address).toBe(coralFixture.address);
+    expect(result.multisig?.threshold).toBe(6);
+    expect(result.multisig?.memberCount).toBe(13);
+    expect(result.multisig?.programVersion).toBe('coral');
+    expect(result.evidenceSignature).toBe('wyCLBN');
+  });
+
+  it('edge: a coral multisig whose signer is NOT the authority does not resolve it', async () => {
+    const stranger = Keypair.generate().publicKey.toBase58();
+    const result = await resolveAuthorityHistorically(coralConnection(stranger, CORAL_MULTISIG_PROGRAM_ID), stranger);
+    expect(result.authorityKind).toBe('single_key_or_vault_unresolved');
+  });
+
+  it('error: the coral account present but the coral program not invoked is not evidence', async () => {
+    const result = await resolveAuthorityHistorically(coralConnection(coralFixture.signerPda, SQUADS_V4_PROGRAM_ID), coralFixture.signerPda);
     expect(result.authorityKind).toBe('single_key_or_vault_unresolved');
   });
 });

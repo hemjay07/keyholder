@@ -25,7 +25,7 @@ export default function ConsoleFallback({ data }: { data: ConsoleData }) {
             <span key={i} className={turned ? "cf-slot on" : "cf-slot"} />
           ))}
         </div>
-        <span className="cf-value">{data.waiting ? "? of ? required" : `${data.threshold} of ${data.members} required`}</span>
+        <span className="cf-value">{data.waiting ? data.keysText ?? "? of ? required" : `${data.threshold} of ${data.members} required`}</span>
       </div>
       <div className="cf-row cf-time">
         <span className="cf-label">TIME</span>

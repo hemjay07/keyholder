@@ -35,6 +35,9 @@ import {
   resolveSquadsV3Vault,
   SQUADS_V3_PROGRAM_ID,
   BPF_LOADER_UPGRADEABLE_PROGRAM_ID,
+  CORAL_MULTISIG_PROGRAM_ID,
+  parseCoralMultisig,
+  coralMultisigSigner,
 } from '@keyholder/decoder';
 import { SPL_GOVERNANCE_PROGRAM_ID } from '../ingest/filter';
 import type { AuthorityKind, ControlState } from '@keyholder/risk';
@@ -87,7 +90,8 @@ async function tryResolveSquadsFromTx(
 ): Promise<HistoricalResolution | null> {
   const v4Present = invokesProgram(tx, SQUADS_V4_PROGRAM_ID);
   const v3Present = invokesProgram(tx, SQUADS_V3_PROGRAM_ID);
-  if (!v4Present && !v3Present) return null;
+  const coralPresent = invokesProgram(tx, CORAL_MULTISIG_PROGRAM_ID);
+  if (!v4Present && !v3Present && !coralPresent) return null;
 
   for (const key of allAccountKeys(tx)) {
     const info = await connection.getAccountInfo(new PublicKey(key));
@@ -140,6 +144,33 @@ async function tryResolveSquadsFromTx(
         }
       } catch {
         // owned by the v3 program but not an Ms-typed account — keep scanning.
+      }
+    }
+
+    // Coral multisig (coral-xyz/multisig layout, msigmtwz…): the authority is
+    // the multisig's signer PDA, seeds [multisig, [nonce]]. Found controlling
+    // Marinade (2026-09-27). No timelock or config-authority field exists.
+    if (coralPresent && info.owner.toBase58() === CORAL_MULTISIG_PROGRAM_ID) {
+      try {
+        const ms = parseCoralMultisig(info.data);
+        if (coralMultisigSigner(key, ms.nonce) === authorityAddress) {
+          return {
+            authorityKind: 'coral_multisig',
+            multisig: {
+              address: key,
+              threshold: ms.threshold,
+              memberCount: ms.owners.length,
+              timeLockS: 0,
+              configAuthority: null,
+              programVersion: 'coral',
+            },
+            evidenceSignature: signature,
+            evidenceNote: `resolved via coral multisig invocation: the authority is the signer PDA of ${key}`,
+            signaturesScanned: 0,
+          };
+        }
+      } catch {
+        // owned by the coral program but not a Multisig account — keep scanning.
       }
     }
   }
@@ -203,7 +234,7 @@ export async function resolveAuthorityHistorically(
 
     // (2) The authority signed a loader Upgrade/SetAuthority(Checked) ix itself, no Squads involved.
     const loaderInvoked = invokesProgram(tx, BPF_LOADER_UPGRADEABLE_PROGRAM_ID);
-    const squadsInvoked = invokesProgram(tx, SQUADS_V4_PROGRAM_ID) || invokesProgram(tx, SQUADS_V3_PROGRAM_ID);
+    const squadsInvoked = invokesProgram(tx, SQUADS_V4_PROGRAM_ID) || invokesProgram(tx, SQUADS_V3_PROGRAM_ID) || invokesProgram(tx, CORAL_MULTISIG_PROGRAM_ID);
     if (loaderInvoked && !squadsInvoked && signerAddresses(tx).includes(authorityAddress)) {
       return {
         authorityKind: 'single_key',

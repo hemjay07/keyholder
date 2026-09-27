@@ -16,6 +16,7 @@ export type AuthorityKind =
   | 'squads_vault'
   | 'squads_v4_direct'
   | 'spl_gov'
+  | 'coral_multisig'
   | 'immutable'
   | 'single_key_or_vault_unresolved'
   | 'unknown';
@@ -42,7 +43,7 @@ export interface ControlState {
     timeLockS: number;
     configAuthority: string | null;
     /** Which Squads program this multisig belongs to. Absent = unknown/untracked (e.g. tests predating this field). */
-    programVersion?: 'v3' | 'v4';
+    programVersion?: 'v3' | 'v4' | 'coral';
   } | null;
   /** The protocol's admin-bearing account, when distinct from the upgrade authority (e.g. Drift's State.admin). */
   admin: string | null;

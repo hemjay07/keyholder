@@ -35,7 +35,7 @@ async function main(): Promise<void> {
 
   const sorted = [...steps].sort((a, b) => a.slot - b.slot);
   for (let i = 1; i < sorted.length; i++) {
-    if (sorted[i].blockTime < sorted[i - 1].blockTime) throw new Error(`chain times not monotonic at step ${sorted[i].step}`);
+    if (sorted[i]!.blockTime < sorted[i - 1]!.blockTime) throw new Error(`chain times not monotonic at step ${sorted[i]!.step}`);
   }
   if (write) {
     writeFileSync(TIMELINE, JSON.stringify(steps, null, 2) + '\n');

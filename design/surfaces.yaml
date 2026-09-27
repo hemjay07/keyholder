@@ -11,7 +11,7 @@ surfaces:
     headline: "Drift Protocol: 4 of 7 keys, 1 h timelock"
   - route: /protocols/marinade
     name: protocol-marinade
-    headline: "Marinade: control unresolved"
+    headline: "Marinade: 6 of 13 keys, no timelock feature"
   - route: /feed
     name: feed
     headline: "Every control change on Solana, as it lands."

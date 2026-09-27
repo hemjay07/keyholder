@@ -45,3 +45,16 @@ export function timelockLabel(facts: ControlFacts | null): string {
   if (s % 3600 === 0) return `${s / 3600} h`;
   return `${s.toLocaleString("en-US")} s`;
 }
+
+/**
+ * What controls a program, in the table's words. Immutable and DAO-governed
+ * programs have no multisig threshold but are not "unresolved": the chain
+ * says exactly who can change them (nobody, or a governance vote).
+ */
+export function controlLabel(facts: ControlFacts | null): string {
+  if (!facts) return "unresolved";
+  if (facts.authorityKind === "immutable") return "immutable";
+  if (facts.authorityKind === "spl_gov") return "Realms governance";
+  if (facts.threshold != null && facts.members != null) return `${facts.threshold} / ${facts.members}`;
+  return "unresolved";
+}

@@ -18,7 +18,7 @@ export interface StoredControlState {
     memberCount: number;
     timeLockS: number;
     configAuthority: string | null;
-    programVersion?: 'v3' | 'v4';
+    programVersion?: 'v3' | 'v4' | 'coral';
   } | null;
   admin: string | null;
   durableNoncesByController: string[];
@@ -40,7 +40,8 @@ export function toControlFacts(state: StoredControlState): ControlFacts {
   const multisig = state.multisig;
   let timelock: ControlFacts['timelock'] = null;
   if (multisig) {
-    if (multisig.programVersion === 'v3') {
+    // Squads v3 and the coral multisig have no timelock field at all.
+    if (multisig.programVersion === 'v3' || multisig.programVersion === 'coral') {
       timelock = { kind: 'no_timelock_feature' };
     } else if (multisig.timeLockS === 0) {
       timelock = { kind: 'none', seconds: 0 };

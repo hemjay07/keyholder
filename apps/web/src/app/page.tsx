@@ -4,7 +4,7 @@
 // says so, never a placeholder number.
 import Link from "next/link";
 import { fetchControlChanges, fetchProtocols, fetchEvents, type ProtocolSummary } from "@/lib/api-client";
-import { timelockLabel } from "@/lib/console-data";
+import { timelockLabel, controlLabel } from "@/lib/console-data";
 import ConsoleDevice from "@/components/console/ConsoleDevice";
 import type { ConsoleData } from "@/components/console/Console";
 
@@ -159,7 +159,7 @@ export default async function HomePage() {
               return (
                 <tr key={p.id} className={noTl ? "pt-weak" : undefined}>
                   <td><Link className="pt-name" href={`/protocols/${p.id}`}>{p.name}</Link></td>
-                  <td>{unresolved ? "unresolved" : `${facts!.threshold} / ${facts!.members}`}</td>
+                  <td>{controlLabel(facts ?? null)}</td>
                   <td className={noTl ? "pt-timelock none" : "pt-timelock"}>
                     {unresolved ? "—" : timelockLabel(facts)}
                   </td>

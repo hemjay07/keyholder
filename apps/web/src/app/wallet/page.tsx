@@ -6,7 +6,7 @@ import { Suspense } from "react";
 import { headers } from "next/headers";
 import { PublicKey } from "@solana/web3.js";
 import { fetchProtocols } from "@/lib/api-client";
-import { consoleDataFromFacts, timelockLabel } from "@/lib/console-data";
+import { consoleDataFromFacts, timelockLabel, controlLabel } from "@/lib/console-data";
 import ConsoleDevice from "@/components/console/ConsoleDevice";
 import type { ConsoleData } from "@/components/console/Console";
 
@@ -168,7 +168,7 @@ async function WalletResults({ wallet }: { wallet: string }) {
                 return (
                   <tr key={r.id} className={weak ? "pt-weak" : undefined}>
                     <td><Link className="pt-name" href={`/protocols/${r.id}`}>{r.name}</Link></td>
-                    <td>{unresolved ? "unresolved" : `${r.facts!.threshold} / ${r.facts!.members}`}</td>
+                    <td>{controlLabel(r.facts)}</td>
                     <td className={weak ? "pt-timelock none" : "pt-timelock"}>{unresolved ? "—" : timelockLabel(r.facts)}</td>
                     <td>
                       <span className={`lamp ${v === "verified" ? "on" : v === "drifted" ? "drift" : "off"}`} />
