@@ -150,6 +150,21 @@ export default function ReplayFilm({ events, leadDays }: { events: FilmEvent[]; 
     [mo]
   );
 
+  // The attacker's multisig: appears at the alert, holds Drift's admin role from 26 Mar.
+  const after = (iso: string) => new Date(mo.at).getTime() >= new Date(iso).getTime();
+  const companion: ConsoleData | null = after(T_ALERT)
+    ? {
+        protocol: "NEW MULTISIG",
+        threshold: 2,
+        members: 5,
+        timelockSeconds: 0,
+        verified: false,
+        codeDrifted: false,
+        weakened: true,
+        slot: null,
+        label: after("2026-03-26T01:46:35Z") ? "holds Drift's admin role" : "created by council signers",
+      }
+    : null;
   const now = x(mo.at);
   const w0 = warning(mo.at);
   const targetH = w0.d * 24 + w0.h;
@@ -180,7 +195,7 @@ export default function ReplayFilm({ events, leadDays }: { events: FilmEvent[]; 
       <div className="film-stage" aria-live="polite">
         <div className="film-scene">
           <div className="film-console">
-            <ConsoleDevice data={device} />
+            <ConsoleDevice data={device} companion={companion} />
           </div>
           <aside className="film-side">
             <div className={`film-count${w.started ? " on" : ""}${w.frozen ? " frozen" : ""}`}>
