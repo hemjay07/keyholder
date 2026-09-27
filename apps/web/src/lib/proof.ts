@@ -60,3 +60,14 @@ export function explorerTx(sig: string): string {
 export function explorerAddr(addr: string): string {
   return `https://explorer.solana.com/address/${addr}?cluster=${CLUSTER}`;
 }
+
+/** Keyholder's own control on devnet (data/own-multisig.json, read back from chain 2026-09-27). */
+export const OWN_CONTROL = {
+  multisig: "K3u623LwUfpiQNuTXgmWW6Q9mgqh94pFm7nEn7W99Xb",
+  vault: "C57XKxbywVVTSvJhskMRKWW8X978yeWhq4ZSJkEsVCGn",
+  threshold: 2,
+  members: 3,
+  timeLockHours: 48,
+  createSignature: "4PourKBRwcCefUVuxArW82eGJBGFLwPoU62DFX59fFh354MW6BUk9754aHxKFcxLJB2Gvt9V1gwhk6Fk7eDqFxnr",
+  setAuthoritySignature: "2UH5Qxs5kEDWArs1qH3tzemsrw45YvTyqkjDGA2YStxUkdRRNyxisUipYwfiBF7528W3tp7umg4osYiUUvd2Syuo",
+} as const;

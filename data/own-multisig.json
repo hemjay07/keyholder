@@ -1,0 +1,19 @@
+{
+  "cluster": "devnet",
+  "program": "3FX57MQmZH8dkpFV5nbA1XWyV6WDeinu7ennZhvx8R8F",
+  "multisig": "K3u623LwUfpiQNuTXgmWW6Q9mgqh94pFm7nEn7W99Xb",
+  "vault": "C57XKxbywVVTSvJhskMRKWW8X978yeWhq4ZSJkEsVCGn",
+  "threshold": 2,
+  "timeLockSeconds": 172800,
+  "configAuthority": null,
+  "members": [
+    "CE2KZgRhHaEJRwVqMWiFfmUkgU9veAhY3VrU8Vqc8xNz",
+    "7FRUMUKVu63e78hw1dNL4dMH1hYYDxASqUqVRpVq7Y1C",
+    "HEZTi6du87sv9jdgzbtFJmfLVtUxqzRPxYvxX7MWcssN"
+  ],
+  "createSignature": "4PourKBRwcCefUVuxArW82eGJBGFLwPoU62DFX59fFh354MW6BUk9754aHxKFcxLJB2Gvt9V1gwhk6Fk7eDqFxnr",
+  "setAuthoritySignature": "2UH5Qxs5kEDWArs1qH3tzemsrw45YvTyqkjDGA2YStxUkdRRNyxisUipYwfiBF7528W3tp7umg4osYiUUvd2Syuo",
+  "setAuthoritySlot": 504611840,
+  "upgradeWithCheckExtension": "4y7S6VNid876pJwN3uZrb6tYGeMF1C1LBRdSnCNSNRA79RFeskRxgJS2vS1bSqYCD9kTRXxobcgVTnmM9SoZ1CxC",
+  "at": "2026-09-27T01:35:01.066Z"
+}

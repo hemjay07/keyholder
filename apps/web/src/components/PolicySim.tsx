@@ -2,16 +2,16 @@
 // The /policy simulator: set a vault's policy and see, for each tracked
 // protocol's control read today, what the deployed check program would answer.
 // Mirrors programs/keyholder/src/lib.rs `check`: immutable programs pass the
-// threshold and timelock tests; Squads v4 multisigs are compared to the
-// policy; any other control type is refused as UNKNOWN_AUTHORITY, because the
-// program reads only Squads v4 accounts today.
+// threshold and timelock tests; Squads v4, Squads v3 and coral multisigs are
+// compared to the policy (v3 and coral have no timelock); any other control
+// type is refused as UNKNOWN_AUTHORITY.
 import { useMemo, useState } from "react";
 import Link from "next/link";
 
 export interface SimProtocol {
   id: string;
   name: string;
-  kind: "immutable" | "squads_v4" | "other";
+  kind: "immutable" | "multisig" | "other";
   otherLabel?: string;
   threshold: number | null;
   members: number | null;

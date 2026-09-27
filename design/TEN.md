@@ -5,7 +5,7 @@
 5. Drift's admin council was 2 of 5 keys with no timelock (read on-chain); on 25 March 2026 the attackers created a new multisig, on 26 March they took the admin key through it, and on 31 March the first drain landed: 5.6 days after the first change Keyholder would have flagged.
 6. Of 15 major Solana programs, 3 are verified today, 6 drifted from their registered source, 6 were never registered (verify.osec.io, 26 Sep 2026).
 7. Any program can ask Keyholder before it moves money, and be refused on-chain with the reason.
-8. Our own program will be controlled by 2 of 3 keys with a 48-hour public timelock on mainnet; today it runs on devnet.
+8. Our own program is controlled by 2 of 3 keys with a 48-hour public timelock (on devnet today).
 9. Find your wallet: see who holds the keys to every protocol your money is in.
 10. Every number here carries the slot or transaction it was read from; rebuilt history is labelled reconstructed.
 

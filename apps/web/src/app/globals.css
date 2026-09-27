@@ -408,3 +408,4 @@ footer.mono { padding: 20px 40px 40px; font-size: 11px; color: var(--ink-2); bor
   .site-links { gap: 6px 16px; }
   .site-links a { font-size: 13px; }
 }
+.own-control { font-size: 12px; line-height: 1.8; padding-left: 18px; color: var(--ink-2); }

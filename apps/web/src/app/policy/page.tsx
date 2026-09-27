@@ -15,15 +15,12 @@ export default async function PolicyPage() {
     protocols = list.map((p) => {
       const f = p.controlFacts;
       if (f?.authorityKind === "immutable") return { id: p.id, name: p.name, kind: "immutable", threshold: null, members: null, timelockS: null };
-      const v4 = (f?.authorityKind === "squads_vault" || f?.authorityKind === "squads_v4_direct") && f.timelock?.kind !== "no_timelock_feature";
-      if (v4 && f.threshold != null) {
-        return { id: p.id, name: p.name, kind: "squads_v4", threshold: f.threshold, members: f.members, timelockS: f.timelock?.kind === "seconds" ? f.timelock.seconds : 0 };
+      // The deployed check reads Squads v4, Squads v3 and coral multisigs (upgrade of 2026-09-27).
+      const readable = f?.authorityKind === "squads_vault" || f?.authorityKind === "squads_v4_direct" || f?.authorityKind === "coral_multisig";
+      if (readable && f.threshold != null) {
+        return { id: p.id, name: p.name, kind: "multisig", threshold: f.threshold, members: f.members, timelockS: f.timelock?.kind === "seconds" ? f.timelock.seconds : 0 };
       }
-      const otherLabel =
-        f?.authorityKind === "spl_gov" ? "Realms governance"
-        : f?.authorityKind === "coral_multisig" ? "coral multisig"
-        : f?.timelock?.kind === "no_timelock_feature" ? "Squads v3"
-        : "this authority";
+      const otherLabel = f?.authorityKind === "spl_gov" ? "Realms governance" : "this authority";
       return { id: p.id, name: p.name, kind: "other", otherLabel, threshold: f?.threshold ?? null, members: f?.members ?? null, timelockS: null };
     });
   } catch {
@@ -43,7 +40,7 @@ export default async function PolicyPage() {
       <section className="sim-section">
         {readError ? <p className="feed-error">Protocol control could not be read right now. Nothing is shown in its place.</p> : <PolicySim protocols={protocols} />}
         <p className="sim-note mono">
-          The deployed check reads Squads v4 multisigs; other control types are refused as unknown authority until the program reads them.
+          The deployed check reads Squads v4, Squads v3 and coral multisigs; other control types (Realms governance) are refused as unknown authority.
           It also enforces cool-downs after a weakening or an upgrade, which this page does not simulate.
         </p>
       </section>

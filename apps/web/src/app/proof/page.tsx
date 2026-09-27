@@ -4,7 +4,7 @@
 import Link from "next/link";
 import ConsoleDevice from "@/components/console/ConsoleDevice";
 import type { ConsoleData } from "@/components/console/Console";
-import { PROGRAMS, STEPS, explorerAddr, explorerTx } from "@/lib/proof";
+import { OWN_CONTROL, PROGRAMS, STEPS, explorerAddr, explorerTx } from "@/lib/proof";
 
 const AT_REFUSAL: ConsoleData = {
   protocol: "WATCHED PROTOCOL · DEVNET",
@@ -96,6 +96,18 @@ export default function ProofPage() {
         <p className="lede">One call. The vault sets its own policy (minimum threshold, minimum timelock, how recently control may have weakened); Keyholder reads the protocol&apos;s control and answers on-chain.</p>
       </section>
 
+      <section className="proof-code">
+        <h2>Who controls Keyholder</h2>
+        <p className="lede">
+          The same rule, applied to ourselves. Keyholder&apos;s program can only be changed by {OWN_CONTROL.threshold} of {OWN_CONTROL.members} keys,
+          and every change waits {OWN_CONTROL.timeLockHours} hours in public first. No single key can change the multisig&apos;s own settings.
+        </p>
+        <ul className="mono own-control">
+          <li>multisig <a href={explorerAddr(OWN_CONTROL.multisig)} target="_blank" rel="noreferrer">{OWN_CONTROL.multisig.slice(0, 6)}…{OWN_CONTROL.multisig.slice(-6)}</a> · Squads v4 · {OWN_CONTROL.threshold} of {OWN_CONTROL.members} · {OWN_CONTROL.timeLockHours} h timelock · no config authority</li>
+          <li>created <a href={explorerTx(OWN_CONTROL.createSignature)} target="_blank" rel="noreferrer">{OWN_CONTROL.createSignature.slice(0, 6)}…</a> · upgrade authority handed to its vault <a href={explorerTx(OWN_CONTROL.setAuthoritySignature)} target="_blank" rel="noreferrer">{OWN_CONTROL.setAuthoritySignature.slice(0, 6)}…</a></li>
+        </ul>
+      </section>
+
       <section className="citations-section">
         <h2>Programs on devnet</h2>
         <ul>
@@ -105,7 +117,7 @@ export default function ProofPage() {
             </li>
           ))}
           <li>Check results are decoded from the program&apos;s return data in each transaction (ok, reasons, score, threshold, timelock, last weakened slot).</li>
-          <li>Mainnet: not deployed yet. It will run under a 2-of-3 multisig with a 48-hour timelock.</li>
+          <li>Mainnet: not deployed yet; it will run under the same 2-of-3, 48-hour rule.</li>
         </ul>
       </section>
     </main>
