@@ -20,6 +20,7 @@ function timelockPhrase(facts: Parameters<typeof timelockLabel>[0]): string {
 }
 import ConsoleDevice from "@/components/console/ConsoleDevice";
 import ProtocolLanes from "@/components/ProtocolLanes";
+import { ago } from "@/lib/ago";
 
 export const dynamic = "force-dynamic";
 
@@ -70,6 +71,7 @@ export default async function ProtocolPage({ params }: { params: Promise<{ slug:
           <p className="kicker">Protocol</p>
           <h1>{headline}</h1>
           <div className="protocol-meta mono">
+            <span className={protocol.checkedAt ? undefined : "stale"}>{protocol.checkedAt ? `checked ${ago(protocol.checkedAt)}` : "no live check recorded yet"}</span>
             {facts?.asOfSlot != null && <span>recorded at slot {facts.asOfSlot.toLocaleString("en-US")}</span>}
             {protocol.programs.map((prog) => <span key={prog.programId} title={prog.programId}>program {prog.programId.slice(0, 4)}…{prog.programId.slice(-4)}</span>)}
             <span>{facts?.verifiedStatus === "verified" ? "code verified" : facts?.verifiedStatus === "drifted" ? "code drifted from its verified build" : "code never registered for verification"} (verify.osec.io)</span>
@@ -136,9 +138,9 @@ export default async function ProtocolPage({ params }: { params: Promise<{ slug:
       <details className="badge-section">
         <summary className="mono">Embed this badge</summary>
         <p className="lede" style={{ margin: "0 0 12px" }}>
-          <img src={`/api/v1/badge/${protocol.id}.svg`} alt={`${protocol.name} control badge`} width={300} height={40} />
+          <img src={`/api/v1/badge/${protocol.id}.svg`} alt={`${protocol.name} control badge`} width={360} height={40} />
         </p>
-        <pre className="badge-embed mono">{`<img src="${origin}/api/v1/badge/${protocol.id}.svg" alt="${protocol.name} control badge" width="300" height="40" />`}</pre>
+        <pre className="badge-embed mono">{`<img src="${origin}/api/v1/badge/${protocol.id}.svg" alt="${protocol.name} control badge" width="360" height="40" />`}</pre>
       </details>
 
     </main>

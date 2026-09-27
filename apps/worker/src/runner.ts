@@ -41,6 +41,11 @@ dotenv.config({ path: join(__dirname, '..', '..', '..', '.env') });
 
 const DECODE_INTERVAL_MS = Number(process.env.DECODE_INTERVAL_MS ?? 5_000);
 const PROTOCOL_INDEX_REFRESH_MS = Number(process.env.PROTOCOL_INDEX_REFRESH_MS ?? 2 * 60_000);
+// Every tracked protocol is re-read on this cadence even when no event touched it,
+// so the site can say when control was last checked (P26). One read at a time,
+// spaced, to stay under the free RPC's rate limit.
+const SWEEP_INTERVAL_MS = Number(process.env.SWEEP_INTERVAL_MS ?? 10 * 60_000);
+const SWEEP_GAP_MS = 4_000;
 const VERIFICATION_POLL_INTERVAL_MS = Number(process.env.VERIFICATION_POLL_INTERVAL_MS ?? 6 * 60 * 60_000);
 
 const pinoLogger = pino({ level: process.env.LOG_LEVEL ?? 'info' });
@@ -132,6 +137,40 @@ export async function startRunner(): Promise<RunnerHandle> {
     });
   }, DECODE_INTERVAL_MS);
 
+  let sweepRunning = false;
+  const sweep = () => {
+    if (sweepRunning) return;
+    sweepRunning = true;
+    void (async () => {
+      let checked = 0;
+      try {
+        const rows = await db.select({ protocol_id: programs.protocol_id }).from(programs).where(eq(programs.tracked, true));
+        const ids = [...new Set(rows.map((r) => r.protocol_id).filter((id): id is string => !!id))];
+        for (const protocolId of ids) {
+          try {
+            const tipSlot = await connection.getSlot('confirmed');
+            const stateResult = await refreshProtocolState(db, connection, protocolId, tipSlot, logger);
+            if (!stateResult.skipped) checked++;
+            if (stateResult.wrote) {
+              const riskResult = await runRiskStage(db, protocolId, tipSlot, stateResult.before, stateResult.after);
+              if (riskResult.deltasInserted > 0) logger.info('risk deltas inserted', { ...riskResult });
+            }
+          } catch (err) {
+            logger.warn('sweep read failed for protocol', { protocolId, error: err instanceof Error ? err.message : String(err) });
+          }
+          await new Promise((r) => setTimeout(r, SWEEP_GAP_MS));
+        }
+        logger.info('control sweep complete', { protocols: ids.length, checked });
+      } catch (err) {
+        logger.error('control sweep failed', { error: err instanceof Error ? err.message : String(err) });
+      }
+    })().finally(() => {
+      sweepRunning = false;
+    });
+  };
+  const sweepInterval = setInterval(sweep, SWEEP_INTERVAL_MS);
+  setTimeout(sweep, 15_000);
+
   const verificationInterval = setInterval(() => {
     void (async () => {
       try {
@@ -167,6 +206,7 @@ export async function startRunner(): Promise<RunnerHandle> {
     logger.info('runner stopping');
     ingest.stop();
     clearInterval(decodeInterval);
+    clearInterval(sweepInterval);
     clearInterval(verificationInterval);
     clearInterval(protocolIndexInterval);
     if (alertListener) await alertListener.stop();

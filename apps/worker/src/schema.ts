@@ -166,6 +166,15 @@ export const events = pgTable(
   })
 );
 
+// The last successful live read of each protocol's control (P26). control_state
+// is written only when the facts change; this row moves on every good read, so
+// the site can say when control was last checked, not only when it last changed.
+export const control_checks = pgTable('control_checks', {
+  protocol_id: text('protocol_id').primaryKey(),
+  slot: bigint('slot', { mode: 'number' }).notNull(),
+  checked_at: timestamp('checked_at').notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
 export const control_state = pgTable(
   'control_state',
   {
