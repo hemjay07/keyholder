@@ -615,3 +615,62 @@ html.lenis, html.lenis body { height: auto; }
   .step-count { width: 100%; text-align: center; margin: 6px 0 0; }
 }
 @media (max-width: 900px) { .stepper-buttons { margin-bottom: 60px; } }
+
+/* ---- replay film (design/EXPERIENCE.md) ---- */
+.film { position: relative; --film-bg: var(--bg); background: var(--film-bg); color: var(--ink); transition: background-color 700ms var(--ease-1), color 700ms var(--ease-1); }
+.film.g-warm { --film-bg: #DCCFBC; }
+.film.g-ink { --film-bg: #151311; color: #ECE8DF; }
+.film-stage { position: sticky; top: 0; height: 100vh; display: grid; grid-template-rows: minmax(0, 1fr) auto auto auto; gap: 10px; padding: 12px 40px 18px; z-index: 1; }
+.film-console { min-height: 0; }
+.film-console .console-frame, .film-console .console-canvas { height: 100%; }
+.film.g-ink .film-console canvas { filter: brightness(.8); transition: filter 700ms; }
+.film-note { text-align: center; max-width: 860px; margin: 0 auto; min-height: 86px; }
+.film-date { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--signal-text); margin: 0 0 6px; }
+.film.g-ink .film-date { color: #FF6B33; }
+.film-caption { font: 400 clamp(19px, 1.9vw, 27px)/1.22 var(--font-geist), "Geist", sans-serif; margin: 0; animation: film-set 320ms var(--ease-1); }
+@keyframes film-set { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.film-lanes { position: relative; display: grid; gap: 6px; padding-top: 20px; margin: 0 0 24px 170px; }
+.film-axis { position: absolute; top: 0; left: 0; right: 0; height: 14px; font-size: 10px; opacity: .6; }
+.film-axis span { position: absolute; transform: translateX(-50%); }
+.film-lane { position: relative; height: 22px; }
+.film-lane.vault { height: 30px; }
+.film-lane-label { position: absolute; right: calc(100% + 14px); top: 4px; font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; opacity: .75; }
+.film-lane-track { position: absolute; inset: 0; border-top: 1px solid currentColor; opacity: .95; }
+.film-lane-track::before { content: ""; position: absolute; inset: 0; border-top: 1px solid currentColor; opacity: .0; }
+.film-tick { position: absolute; top: 3px; width: 12px; height: 12px; margin-left: -6px; border-radius: 50%; background: currentColor; animation: film-pop 240ms var(--ease-1); }
+.film-tick.keyholder { background: var(--signal); }
+.film-tick.money { border-radius: 2px; }
+@keyframes film-pop { from { transform: scale(0); } to { transform: none; } }
+.film-bar { position: absolute; top: 5px; height: 8px; border-radius: 4px; transition: width 700ms var(--ease-1); }
+.film-bar.council { background: currentColor; opacity: .35; }
+.film-bar.taken { background: currentColor; }
+.film-bar.pass { background: var(--verified); opacity: .7; }
+.film-bar.refused { background: var(--signal); }
+.film-bar em { position: absolute; left: 6px; top: 11px; font-style: normal; font-size: 9.5px; letter-spacing: .06em; white-space: nowrap; opacity: .8; }
+.film-window { position: absolute; top: 18px; bottom: -4px; background: rgba(255, 90, 31, .16); border-left: 2px solid var(--signal); transition: width 700ms var(--ease-1); pointer-events: none; }
+.film-window b { position: absolute; top: auto; bottom: -20px; left: 50%; transform: translateX(-50%); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--signal-text); white-space: nowrap; font-weight: 500; }
+.film.g-ink .film-window b { color: #FF6B33; }
+.film-now { position: absolute; top: 14px; bottom: -6px; width: 2px; margin-left: -1px; background: var(--signal); transition: left 700ms var(--ease-1); pointer-events: none; }
+.film-controls { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; padding-top: 6px; }
+.film.g-ink .player-play { background: #ECE8DF; color: #151311; }
+.film-progress { display: flex; gap: 5px; margin: 0 10px; }
+.film-progress button { width: 22px; height: 4px; border: 0; padding: 0; background: currentColor; opacity: .2; cursor: pointer; }
+.film-progress button.done { opacity: .5; }
+.film-progress button.on { background: var(--signal); opacity: 1; }
+.film-hint { font-size: 11px; letter-spacing: .06em; opacity: .65; min-width: 190px; }
+.film-track { margin-top: -100vh; position: relative; z-index: 0; pointer-events: none; }
+.film-section { height: 70vh; }
+.film-section:first-child { height: 100vh; }
+.film-section:last-child { height: 100vh; }
+@media (prefers-reduced-motion: reduce) { .film, .film-now, .film-window, .film-bar { transition: none; } .film-caption, .film-tick { animation: none; } }
+@media (max-width: 900px) {
+  .film-stage { padding: 8px 16px 12px; grid-template-rows: minmax(0, 1fr) auto auto auto; }
+  .film-lanes { margin-left: 0; padding-top: 34px; }
+  .film-lane { height: 30px; }
+  .film-lane-label { position: absolute; right: auto; left: 0; top: -13px; font-size: 9px; }
+  .film-axis span { font-size: 9px; }
+  .film-note { min-height: 104px; }
+  .film-hint { display: none; }
+  .film-progress { order: 5; width: 100%; justify-content: center; margin: 6px 0 0; }
+}
+@media (max-width: 900px) { .film-axis span:nth-child(5) { display: none; } }

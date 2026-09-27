@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { fetchDriftReplay } from "@/lib/api-client";
 import { loadDriftSteps, type DriftStep } from "@/lib/drift-steps";
-import ReplayPlayer from "@/components/ReplayPlayer";
+import ReplayFilm, { type FilmEvent } from "@/components/ReplayFilm";
 import type { ConsoleData } from "@/components/console/Console";
 
 export const dynamic = "force-dynamic";
@@ -98,29 +98,20 @@ export default async function DriftReplayPage() {
           <p className="kicker">Replay · reconstructed</p>
           <h1>{lead} days of warning.</h1>
           <p className="lede mono">Drift lost $285M on 1 April 2026.</p>
-          <p className="lede">
-            Every step before the drain was on-chain. Replayed through Keyholder&apos;s rules, the first alert fires on
-            25 March, when the council&apos;s signers set up a second multisig with no timelock. The first withdrawal
-            lands {lead} days later.
-          </p>
-          <p className="replay-meta mono">
-            {steps.length} transactions · slots {Number(replay.fromSlot).toLocaleString("en-US")}–{Number(replay.toSlot).toLocaleString("en-US")} · {replay.frames.length} alerts
-          </p>
         </div>
       </section>
 
-      <ReplayPlayer
+      <ReplayFilm
         leadDays={lead}
-        frames={steps.map((s) => ({
-          slot: s.slot,
-          time: s.time,
-          signature: /^[1-9A-HJ-NP-Za-km-z]{86,88}$/.test(s.signature) ? s.signature : null,
-          says: s.says,
-          phase: s.phase,
-          alerts: (alertsBySlot.get(s.slot) ?? [])
-            .filter((a) => !(a.ruleId === "no_timelock" && s.phase === "before"))
-            .map((a) => ({ severity: a.severity, rule: RULE_WORDS[a.ruleId] ?? a.ruleId })),
-        }))}
+        events={steps.map((s) => {
+          const alerts = (alertsBySlot.get(s.slot) ?? []).filter((a) => !(a.ruleId === "no_timelock" && s.phase === "before"));
+          const lane: FilmEvent["lane"] =
+            s.phase === "drain" ? "money"
+            : /admin role|admin key|admin role is rotated/i.test(s.says) ? "admin"
+            : alerts.length ? "keyholder"
+            : "context";
+          return { slot: s.slot, time: s.time, signature: /^[1-9A-HJ-NP-Za-km-z]{86,88}$/.test(s.signature) ? s.signature : null, says: s.says, lane };
+        })}
       />
 
       <section className="citations-section">
