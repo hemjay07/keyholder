@@ -272,3 +272,42 @@ footer.mono { padding: 20px 40px 40px; font-size: 11px; color: var(--ink-2); bor
 }
 .wallet-idle .hero-copy h1 { margin-bottom: 14px; }
 .wallet-idle .cf-unresolved .cf-name span:last-child { color: var(--ink-2); }
+
+/* ---- /feed ---- */
+.feed-head { padding: 24px 40px 12px; max-width: 900px; }
+.feed-head h1 { font: 400 clamp(30px,3.6vw,52px)/1.08 var(--font-geist), "Geist", sans-serif; margin: 0 0 14px; letter-spacing: -.01em; }
+.feed-finding { font-size: 17px; }
+.feed-finding b { font-weight: 500; }
+.feed-finding b.weak { color: var(--signal-text); }
+.feed-error { padding: 12px 40px; color: var(--ink-2); }
+.feed-list { padding: 8px 40px 48px; }
+.feed-day h2 { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); font-weight: 400; margin: 28px 0 0; padding-bottom: 8px; border-bottom: 1px solid var(--ink); }
+.feed-day ol { list-style: none; margin: 0; padding: 0; }
+.feed-row { display: grid; grid-template-columns: 90px minmax(0, 1fr) auto; gap: 16px; padding: 11px 0; border-bottom: 1px solid var(--hair); align-items: baseline; font-size: 15px; }
+.feed-row.weak { border-left: 3px solid var(--signal); padding-left: 10px; }
+.feed-time, .feed-sig, .feed-detail { font-size: 12px; color: var(--ink-2); }
+.feed-what { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; }
+.feed-proto { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--hair); }
+.feed-weak { font-size: 12px; color: var(--signal-text); }
+.feed-more { display: inline-block; margin-top: 24px; font-size: 13px; }
+@media (max-width: 720px) {
+  .feed-head, .feed-list, .feed-error { padding-left: 18px; padding-right: 18px; }
+  .feed-row { grid-template-columns: 1fr; gap: 2px; }
+}
+.seismo-section { padding: 8px 40px 8px; }
+.seismo { margin: 0; border-top: 3px solid var(--ink); padding-top: 12px; }
+.seismo svg { width: 100%; height: 160px; display: block; overflow: visible; }
+.seismo-base { stroke: var(--ink); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.seismo-idle { stroke: var(--hair); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.seismo-other { stroke: var(--ink); stroke-width: 3; vector-effect: non-scaling-stroke; }
+.seismo-weak { stroke: var(--signal); stroke-width: 3; vector-effect: non-scaling-stroke; }
+.seismo-months { position: relative; height: 18px; margin-top: 4px; }
+.seismo-months span { position: absolute; transform: translateX(-50%); font-size: 11px; color: var(--ink-2); }
+.seismo-ticks { clip-path: inset(0 100% 0 0); animation: seismo-draw 1400ms var(--ease-1) 120ms forwards; }
+@keyframes seismo-draw { to { clip-path: inset(0 0 0 0); } }
+@media (prefers-reduced-motion: reduce) { .seismo-ticks { animation: none; clip-path: none; } }
+.seismo figcaption { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 8px; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); }
+.seismo .sw { display: inline-block; width: 10px; height: 3px; margin-right: 6px; vertical-align: middle; }
+.seismo .sw.weak { background: var(--signal); }
+.seismo .sw.other { background: var(--ink); }
+@media (max-width: 720px) { .seismo-section { padding-left: 18px; padding-right: 18px; } .seismo svg { height: 120px; } }

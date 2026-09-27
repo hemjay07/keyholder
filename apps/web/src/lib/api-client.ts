@@ -142,7 +142,7 @@ export async function fetchEvents(options: EventFilters = {}) {
 
   const conditions = [];
   if (options.protocol) conditions.push(eq(schema.risk_deltas.protocol_id, options.protocol));
-  if (options.cursor) conditions.push(sql`${schema.risk_deltas.created_at} < ${new Date(options.cursor)}`);
+  if (options.cursor) conditions.push(sql`${schema.risk_deltas.created_at} < ${new Date(options.cursor).toISOString()}`);
 
   let rows = await db
     .select()
@@ -291,4 +291,66 @@ export async function fetchDriftReplay() {
       createdAt: a.created_at?.toISOString() ?? null,
     })),
   };
+}
+
+/** Chain events that change who controls a program (the /feed record). */
+export const CONTROL_CHANGE_KINDS = ['upgrade', 'set_authority', 'config_transaction_execute'] as const;
+
+export async function fetchControlChanges(options: { protocol?: string; before?: string; limit?: number } = {}) {
+  const db = getDb();
+  const limit = Math.min(options.limit ?? 60, 200);
+  const conditions = [
+    inArray(schema.events.kind, [...CONTROL_CHANGE_KINDS]),
+    sql`${schema.events.protocol_id} is not null`,
+    sql`coalesce(${schema.events.tombstoned}, false) = false`,
+  ];
+  if (options.protocol) conditions.push(eq(schema.events.protocol_id, options.protocol));
+  if (options.before) conditions.push(sql`${schema.events.block_time} < ${new Date(options.before).toISOString()}`);
+
+  const rows = await db
+    .select({
+      uid: schema.events.event_uid,
+      slot: schema.events.slot,
+      blockTime: schema.events.block_time,
+      signature: schema.events.signature,
+      protocolId: schema.events.protocol_id,
+      programId: schema.events.program_id,
+      kind: schema.events.kind,
+      payload: schema.events.payload,
+    })
+    .from(schema.events)
+    .where(and(...conditions))
+    .orderBy(desc(schema.events.block_time))
+    .limit(limit + 1);
+
+  const page = rows.slice(0, limit);
+  return {
+    changes: page.map((r) => ({ ...r, blockTime: r.blockTime.toISOString() })),
+    before: rows.length > limit ? page[page.length - 1]?.blockTime.toISOString() ?? null : null,
+  };
+}
+
+export async function countControlChangesSince(since: Date) {
+  const db = getDb();
+  const rows = await db
+    .select({ protocolId: schema.events.protocol_id, n: sql<number>`count(*)::int` })
+    .from(schema.events)
+    .where(and(inArray(schema.events.kind, [...CONTROL_CHANGE_KINDS]), sql`${schema.events.protocol_id} is not null`, sql`${schema.events.block_time} >= ${since.toISOString()}`))
+    .groupBy(schema.events.protocol_id);
+  return rows;
+}
+
+/** Control changes per UTC day per protocol since `since` (the /feed seismograph). */
+export async function dailyControlChanges(since: Date) {
+  const db = getDb();
+  const rows = await db
+    .select({
+      day: sql<string>`to_char(date_trunc('day', ${schema.events.block_time} at time zone 'UTC'), 'YYYY-MM-DD')`,
+      protocolId: schema.events.protocol_id,
+      n: sql<number>`count(*)::int`,
+    })
+    .from(schema.events)
+    .where(and(inArray(schema.events.kind, [...CONTROL_CHANGE_KINDS]), sql`${schema.events.protocol_id} is not null`, sql`${schema.events.block_time} >= ${since.toISOString()}`))
+    .groupBy(sql`1`, schema.events.protocol_id);
+  return rows;
 }
