@@ -732,3 +732,17 @@ html.lenis, html.lenis body { height: auto; }
 @media (max-width: 900px) { .film-meter-row b { font-size: 22px; } }
 .film-console { overflow: hidden; position: relative; z-index: 0; }
 .film-side, .film-note { position: relative; z-index: 1; }
+/* constant row heights so the stage never resizes between moments (no re-fit jolt) */
+@media (min-width: 901px) {
+  .film-note { height: 108px; min-height: 0; overflow: hidden; }
+  .film-lanes { height: 150px; align-content: start; }
+}
+@media (max-width: 900px) {
+  .film-note { height: 150px; min-height: 0; overflow: hidden; }
+  .film-lanes { height: 210px; align-content: start; }
+}
+@media (max-width: 900px) {
+  .film-scene { grid-template-rows: minmax(0, 1fr) 150px; }
+  .film-side { height: 150px; overflow: hidden; align-content: start; }
+  .film-side-sub { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+}

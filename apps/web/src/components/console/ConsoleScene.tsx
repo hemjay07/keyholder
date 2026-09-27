@@ -136,6 +136,7 @@ function Scene({ data, companion, reduced, mobile }: { data: ConsoleData; compan
       gl={{ preserveDrawingBuffer: true, antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 0.88 }}
       camera={{ position: [0.35, 0.25, 5.4], fov: 28 }}
       frameloop="demand"
+      resize={{ offsetSize: true }}
     >
       <FitCamera still={still} wide={companion !== undefined} />
 
