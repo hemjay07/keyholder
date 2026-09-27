@@ -160,6 +160,7 @@ async function WalletResults({ wallet }: { wallet: string }) {
               })}
             </tbody>
           </table>
+          <p className="wallet-alert"><Link href={`/alerts?protocols=${rows.map((r) => r.id).join(",")}`}>Alert me when control of any of these weakens &rarr;</Link></p>
           {tokenAccounts > 0 && (
             <p className="wallet-note">Plus {tokenAccounts} token accounts held directly in the wallet, not deposited in a protocol.</p>
           )}

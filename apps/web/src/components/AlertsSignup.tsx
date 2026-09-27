@@ -22,12 +22,12 @@ function toBase64(bytes: Uint8Array): string {
 
 type Step = "start" | "signed" | "done";
 
-export default function AlertsSignup({ protocols }: { protocols: Array<{ id: string; name: string }> }) {
+export default function AlertsSignup({ protocols, preselect }: { protocols: Array<{ id: string; name: string }>; preselect?: string[] }) {
   const [step, setStep] = useState<Step>("start");
   const [wallet, setWallet] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [chosen, setChosen] = useState<Set<string>>(new Set(protocols.map((p) => p.id)));
+  const [chosen, setChosen] = useState<Set<string>>(new Set(preselect?.length ? protocols.filter((p) => preselect.includes(p.id)).map((p) => p.id) : protocols.map((p) => p.id)));
   const [severity, setSeverity] = useState("high");
   const [url, setUrl] = useState("");
   const [secret, setSecret] = useState<string | null>(null);

@@ -34,6 +34,7 @@ export default function SiteNav() {
             {i.label}
           </Link>
         ))}
+        <button type="button" className="site-search mono" onClick={() => window.dispatchEvent(new Event("kh-search"))} aria-label="Search (⌘K)">⌘K</button>
       </div>
     </nav>
   );
