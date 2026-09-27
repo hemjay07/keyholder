@@ -3,9 +3,9 @@
 // feed's rows) shows the decoded change with the protocol's control today.
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { fetchEventDetail, fetchChainEvent, fetchProtocol } from "@/lib/api-client";
-import { consoleDataFromFacts, controlLabel, timelockLabel } from "@/lib/console-data";
-import ConsoleDevice from "@/components/console/ConsoleDevice";
+import { fetchEventDetail, fetchChainEvent, fetchProtocol, fetchControlChanges } from "@/lib/api-client";
+import { controlLabel, timelockLabel } from "@/lib/console-data";
+import ProtocolLanes from "@/components/ProtocolLanes";
 
 export const dynamic = "force-dynamic";
 
@@ -69,9 +69,7 @@ export default async function EventPage({ params }: { params: Promise<{ uid: str
   const what = KIND_WORDS[ev.kind] ?? ev.kind.replace(/_/g, " ");
   const name = protocol?.name ?? ev.protocolId ?? "Untracked program";
   const weak = facts?.timelock?.kind === "none" || facts?.timelock?.kind === "no_timelock_feature";
-  const device = facts
-    ? consoleDataFromFacts({ name, rowLabel: `${what.toLowerCase()} · ${ev.blockTime.slice(0, 10)}`, facts, weakened: weak, readDate: new Date().toISOString().slice(0, 10) })
-    : null;
+  const history = protocol ? (await fetchControlChanges({ protocol: protocol.id, limit: 200 }).catch(() => ({ changes: [] }))).changes : [];
   const p = ev.payload ?? {};
   const authority = typeof p.upgradeAuthority === "string" ? p.upgradeAuthority : typeof p.currentAuthority === "string" ? p.currentAuthority : null;
   const newAuthority = "newAuthority" in p ? (p.newAuthority as string | null) : undefined;
@@ -79,7 +77,7 @@ export default async function EventPage({ params }: { params: Promise<{ uid: str
   return (
     <main>
       <Link className="back-link" href="/feed">&larr; Feed</Link>
-      <section className="protocol-hero">
+      <section className="protocol-hero event-hero">
         <div className="hero-copy">
           <p className="kicker">Control change</p>
           <h1>{name}: {what.toLowerCase()} on {day(ev.blockTime)}.</h1>
@@ -99,12 +97,13 @@ export default async function EventPage({ params }: { params: Promise<{ uid: str
             {protocol && <span className="ev-line"><Link href={`/protocols/${protocol.id}`}>Every change to {protocol.name} &rarr;</Link></span>}
           </p>
         </div>
-        {device && (
-          <div className="device-frame">
-            <ConsoleDevice data={device} />
-          </div>
-        )}
       </section>
+      {history.length > 0 && (
+        <section className="lanes-section">
+          <h2>Where this sits in {name}&apos;s history</h2>
+          <ProtocolLanes changes={history} highlight={ev.uid ?? uid} now={new Date().toISOString()} />
+        </section>
+      )}
       <section className="citations-section">
         <h2>Decoded from chain</h2>
         <ul className="mono event-payload">

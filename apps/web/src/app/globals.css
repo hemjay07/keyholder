@@ -839,3 +839,24 @@ html.lenis, html.lenis body { height: auto; }
 .pc-gap { margin: 6px 0 0; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; opacity: .7; }
 .sim-section h2 { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; font-weight: 500; margin: 0 0 16px; }
 @media (max-width: 900px) { .policy-page .proof-compare { padding: 0 16px; } }
+
+/* protocol lanes (REVAMP-PAGES) */
+.lanes-section { max-width: 1360px; margin: 0 auto; padding: 32px 40px 8px; }
+.lanes-section h2, .badge-section summary { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; font-weight: 500; margin: 0 0 18px; }
+.plane { position: relative; display: grid; gap: 8px; padding-top: 24px; margin-left: 170px; }
+.plane-axis { position: absolute; top: 0; left: 0; right: 0; height: 16px; font-size: 10.5px; opacity: .7; }
+.plane-axis span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+.plane-axis .plane-today { transform: translateX(-100%); color: var(--signal-text); }
+.plane-lane { position: relative; height: 28px; border-bottom: 1px solid var(--ink); }
+.plane-label { position: absolute; right: calc(100% + 14px); top: 8px; font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; opacity: .75; }
+.plane-track { position: absolute; inset: 0; }
+.plane-tick { position: absolute; top: 7px; width: 4px; height: 16px; margin-left: -2px; background: var(--ink); border-radius: 1px; transition: transform 160ms var(--ease-1); }
+.plane-tick.authority { background: var(--signal); width: 12px; height: 12px; margin-left: -6px; top: 9px; border-radius: 50%; }
+.plane-tick:hover, .plane-tick.on { transform: scale(1.6); }
+.plane-tick.on { background: var(--signal); box-shadow: 0 0 0 4px color-mix(in srgb, var(--signal) 25%, transparent); z-index: 2; }
+.plane-now { position: absolute; right: 0; top: 18px; bottom: 0; width: 2px; background: var(--signal); }
+.badge-section { max-width: 1360px; margin: 0 auto; padding: 24px 40px 48px; }
+.badge-section summary { cursor: pointer; }
+@media (max-width: 900px) { .lanes-section, .badge-section { padding-left: 16px; padding-right: 16px; } .plane { margin-left: 0; padding-top: 22px; } .plane-lane { margin-top: 18px; } .plane-label { right: auto; left: 0; top: -16px; } }
+.event-hero { grid-template-columns: minmax(0, 820px) !important; min-height: 0 !important; padding-bottom: 12px; }
+@media (max-width: 900px) { .plane-axis span:nth-child(even):not(.plane-today) { display: none; } .plane-axis span:first-child { transform: none; } }
