@@ -46,7 +46,7 @@
 | P38 | global | dark theme, full second theme | CREATIVE §4 | built | system dark theme + data-theme override; tokens in design/TOKENS-DARK.css; home, protocol, policy, replay read at 1440 in dark 2026-09-27; phones not read in dark |
 | P39 | global | page transitions | REVAMP 1 | dropped | 3D fallback flash fixed (booted flag); cross-page console morph conflicts with the revamp rule "console only where it reads one state" |
 | P40 | global | LCP < 1.5 s on 4G, 3D after text, static fallback | CREATIVE §6 | open | measured only on localhost |
-| P41 | pipeline | public deploy | conductor | open | |
+| P41 | pipeline | public deploy | conductor | built | web https://keyholder-ashy.vercel.app (Vercel), DB Supabase, worker systemd on the ledge box; 7 pages 200 + 3D console read in Chrome 2026-09-27 |
 | P42 | pipeline | live test in founder's Chrome on the public URL | conductor | open | |
 | P43 | pipeline | interrogate | conductor | open | |
 | P44 | pipeline | README (one fold) | conductor, FOUNDER | open | |
