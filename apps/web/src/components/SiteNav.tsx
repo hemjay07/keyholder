@@ -10,7 +10,6 @@ const ITEMS = [
   { href: "/replay/drift", label: "Drift replay" },
   { href: "/alerts", label: "Alerts" },
   { href: "/policy", label: "For vaults" },
-  { href: "/proof", label: "Proof" },
 ];
 
 export default function SiteNav() {

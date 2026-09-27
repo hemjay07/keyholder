@@ -1,9 +1,9 @@
 // /policy: the vault developer's view. Set the policy your vault would give
 // the check program; see which tracked protocols pass today, from their real
 // control as read on chain.
-import Link from "next/link";
 import { fetchProtocols } from "@/lib/api-client";
 import PolicySim, { type SimProtocol } from "@/components/PolicySim";
+import { ProofSteps, ProofDetails } from "@/components/ProofSections";
 
 export const dynamic = "force-dynamic";
 
@@ -34,16 +34,19 @@ export default async function PolicyPage() {
         <h1>Refuse deposits where control just weakened.</h1>
         <p className="lede">
           Your program calls Keyholder&apos;s check before it moves money. You set the policy; the chain answers. Try a policy against the
-          protocols Keyholder tracks, as their control reads today. <Link href="/proof">See it refuse a real deposit on devnet &rarr;</Link>
+          protocols Keyholder tracks, as their control reads today. First, the check refusing a real deposit on devnet.
         </p>
       </section>
+      <ProofSteps />
       <section className="sim-section">
+        <h2>Try your own policy</h2>
         {readError ? <p className="feed-error">Protocol control could not be read right now. Nothing is shown in its place.</p> : <PolicySim protocols={protocols} />}
         <p className="sim-note mono">
           The deployed check reads Squads v4, Squads v3 and coral multisigs; other control types (Realms governance) are refused as unknown authority.
           It also enforces cool-downs after a weakening or an upgrade, which this page does not simulate.
         </p>
       </section>
+      <ProofDetails />
     </main>
   );
 }

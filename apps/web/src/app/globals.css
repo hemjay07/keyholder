@@ -835,3 +835,7 @@ html.lenis, html.lenis body { height: auto; }
 }
 .home-lede h1 { font-size: clamp(40px, 4.6vw, 68px); line-height: 1.02; letter-spacing: -0.02em; font-weight: 400; }
 .home-lede .lede-tape { margin-top: 14px; }
+.policy-page .proof-compare { max-width: 1360px; margin: 8px auto 0; padding: 0 40px; display: grid; gap: 6px; }
+.pc-gap { margin: 6px 0 0; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; opacity: .7; }
+.sim-section h2 { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; font-weight: 500; margin: 0 0 16px; }
+@media (max-width: 900px) { .policy-page .proof-compare { padding: 0 16px; } }

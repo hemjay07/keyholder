@@ -198,7 +198,7 @@ export default function ReplayFilm({ events, leadDays }: { events: FilmEvent[]; 
           <p className="film-date mono">{mo.date}</p>
           <p className="film-caption">{mo.caption}</p>
           {mo.id === "end" && (
-            <p className="film-end-link"><a href="/">See today&apos;s weakest protocol →</a> <a href="/proof">Watch a vault refuse on-chain →</a></p>
+            <p className="film-end-link"><a href="/">See today&apos;s weakest protocol →</a> <a href="/policy#proof">Watch a vault refuse on-chain →</a></p>
           )}
         </div>
 
