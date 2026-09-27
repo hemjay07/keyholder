@@ -3,6 +3,7 @@
 // chain by the worker; each row carries its transaction.
 import Link from "next/link";
 import { fetchControlChanges, countControlChangesSince, fetchProtocols, dailyControlChanges } from "@/lib/api-client";
+import CountUp from "@/components/CountUp";
 import Seismograph, { type SeismoDay } from "@/components/Seismograph";
 
 export const dynamic = "force-dynamic";
@@ -46,7 +47,7 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
   try {
     const since = new Date(Date.now() - 30 * 86400000);
     const [changes, counts, protocols, perDay] = await Promise.all([
-      fetchControlChanges({ before, protocol }),
+      fetchControlChanges({ before, protocol, limit: 30 }),
       countControlChangesSince(since),
       fetchProtocols(),
       dailyControlChanges(new Date(seismoFrom + "T00:00:00Z")),
@@ -89,8 +90,8 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
         <h1>Every control change on Solana, as it lands.</h1>
         {data && (
           <p className="feed-finding">
-            <b>{total30}</b> control changes to the {names.size} tracked protocols in the last 30 days
-            {weak30 > 0 && <>; <b className="weak">{weak30}</b> of them by protocols with no timelock, live the moment they signed</>}.
+            <b><CountUp value={total30} /></b> control changes to the {names.size} tracked protocols in the last 30 days
+            {weak30 > 0 && <>; <b className="weak"><CountUp value={weak30} /></b> of them by protocols with no timelock, live the moment they signed</>}.
           </p>
         )}
       </section>
@@ -107,11 +108,11 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
             <div key={g.day} className="feed-day">
               <h2 className="mono">{g.day}</h2>
               <ol>
-                {g.rows.map((c) => {
+                {g.rows.map((c, ri) => {
                   const weak = c.protocolId ? weakIds.has(c.protocolId) : false;
                   const d = detail(c.kind, c.payload);
                   return (
-                    <li key={c.uid} className={`feed-row ${weak ? "weak" : ""}`}>
+                    <li key={c.uid} className={`feed-row ${weak ? "weak" : ""}`} style={{ animationDelay: `${Math.min(ri, 12) * 35}ms` }}>
                       <span className="feed-time mono">{c.blockTime.slice(11, 16)} UTC</span>
                       <span className="feed-what">
                         <span className="feed-main">

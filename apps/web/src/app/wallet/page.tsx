@@ -7,6 +7,7 @@ import { headers } from "next/headers";
 import { PublicKey } from "@solana/web3.js";
 import { fetchProtocols } from "@/lib/api-client";
 import { consoleDataFromFacts, timelockLabel, controlLabel } from "@/lib/console-data";
+import CountUp from "@/components/CountUp";
 import ConsoleDevice from "@/components/console/ConsoleDevice";
 import type { ConsoleData } from "@/components/console/Console";
 
@@ -142,7 +143,7 @@ async function WalletResults({ wallet }: { wallet: string }) {
             {rows.length === 0
               ? "No positions in the protocols Keyholder tracks."
               : weakCount > 0
-                ? <><b>{weakCount} of {rows.length}</b> protocols holding this wallet&apos;s money have no timelock: enough keys can move it at once.</>
+                ? <><b><CountUp value={weakCount} /> of {rows.length}</b> protocols holding this wallet&apos;s money have no timelock: enough keys can move it at once.</>
                 : <>All {rows.length} protocols holding this wallet&apos;s money have a timelock.</>}
           </p>
         </div>
@@ -160,12 +161,12 @@ async function WalletResults({ wallet }: { wallet: string }) {
               <tr><th>Protocol</th><th>Keys</th><th>Timelock</th><th>Code</th><th>Positions</th></tr>
             </thead>
             <tbody>
-              {rows.map((r) => {
+              {rows.map((r, ri) => {
                 const weak = isWeak(r.facts?.timelock?.kind);
                 const unresolved = !r.facts || r.facts.threshold == null;
                 const v = r.facts?.verifiedStatus;
                 return (
-                  <tr key={r.id} className={weak ? "pt-weak" : undefined}>
+                  <tr key={r.id} className={`reveal-row${weak ? " pt-weak" : ""}`} style={{ animationDelay: `${ri * 60}ms` }}>
                     <td><Link className="pt-name" href={`/protocols/${r.id}`}>{r.name}</Link></td>
                     <td>{controlLabel(r.facts)}</td>
                     <td className={weak ? "pt-timelock none" : "pt-timelock"}>{unresolved ? "—" : timelockLabel(r.facts)}</td>

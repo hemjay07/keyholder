@@ -5,6 +5,7 @@ import type { ReactNode } from 'react';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import SiteNav from '@/components/SiteNav';
+import SmoothScroll from '@/components/SmoothScroll';
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-geist', weight: ['400'] });
 const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-geist-mono', weight: ['400'] });
@@ -18,6 +19,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={`${geist.variable} ${geistMono.variable}`}>
       <body>
+        <SmoothScroll />
         <SiteNav />
         {children}
       </body>

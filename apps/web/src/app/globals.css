@@ -480,3 +480,14 @@ footer.mono { padding: 20px 40px 40px; font-size: 11px; color: var(--ink-2); bor
 .story.compact .step .step-sig { display: inline-block; margin-top: 6px; }
 @media (max-width: 720px) { .replay-head { padding: 18px 18px 4px; } }
 @media (max-width: 900px) { .story.compact .story-beats { padding-bottom: 12px; } }
+
+/* ---- motion pass (REVAMP 1c) ---- */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.feed-row, .reveal-row { animation: row-in var(--d-data) var(--ease-1) both; }
+@keyframes row-in { from { transform: translateY(8px); } to { transform: none; } }
+.site-links a { position: relative; }
+.site-links a::after { content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 1px; background: var(--ink); transform: scaleX(0); transform-origin: left; transition: transform var(--d-element) var(--ease-1); }
+.site-links a:hover::after, .site-links a.on::after { transform: scaleX(1); }
+.site-links a.on { border-bottom-color: transparent; }
+@media (prefers-reduced-motion: reduce) { .feed-row, .reveal-row { animation: none; } .site-links a::after { transition: none; } }
