@@ -96,8 +96,14 @@ export function startIngestService(config: IngestServiceConfig): IngestService {
 
   const poller: PollerHandle = startPoller({
     connection,
-    watchedProgramIds: BASE_WATCHED_PROGRAMS,
+    // Global logsSubscribe on the loader / Squads / SPL Governance fires on every
+    // such tx on Solana and fetches each one: it spent the Helius free quota on
+    // 2026-10-01. Off by default; the per-account subscriptions on every watched
+    // ProgramData and multisig catch our protocols' changes directly.
+    watchedProgramIds: process.env.INGEST_GLOBAL_LOGS === '1' ? BASE_WATCHED_PROGRAMS : [],
     watchedAccounts: config.watchedAccounts,
+    // Gap reconciliation, not the primary path: every 5 min, not every 30 s.
+    reconcileIntervalMs: Number(process.env.INGEST_RECONCILE_MS ?? 300_000),
     filter: filterConfig,
     onCandidate: async (candidate) => {
       const inserted = await writeCandidate(config.db, candidate);
