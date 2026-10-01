@@ -1,0 +1,233 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face { font-family: G; src: url("Geist-Regular.ttf"); }
+@font-face { font-family: GM; src: url("GeistMono-Regular.ttf"); }
+:root { --bg:#0E0D0C; --ink:#ECE8DF; --ink2:#8F897D; --sig:#FF5A1F; --dark:#0E0D0C; }
+:root.bone { --bg:#E6E2D9; --ink:#1B1A17; --ink2:#5A564E; --dark:#1B1A17; }
+html,body { margin:0; width:1080px; height:1080px; overflow:hidden; background:var(--bg); font-family:G; color:var(--ink); }
+#stage { position:absolute; inset:0; overflow:hidden; background:var(--bg); }
+.abs { position:absolute; left:0; top:0; will-change:transform; }
+#word span { position:absolute; top:0; font-size:150px; line-height:170px; letter-spacing:-.035em; }
+#dot, .key { border-radius:50%; box-sizing:border-box; }
+#pill { background:var(--ink); border-radius:999px; overflow:hidden; }
+.mask { position:absolute; overflow:hidden; }
+.rise { position:absolute; left:0; right:0; text-align:center; white-space:nowrap; }
+.key { border:7px solid var(--ink); }
+.row { width:1000px; height:150px; left:40px; border-bottom:2px solid color-mix(in srgb, var(--ink) 16%, transparent); display:flex; align-items:center; box-sizing:border-box; padding-left:34px; gap:30px; }
+.row .edge { position:absolute; left:0; top:12px; bottom:12px; width:8px; background:var(--sig); transform-origin:50% 0; }
+.row b { font-weight:400; font-size:44px; width:360px; flex:none; white-space:nowrap; }
+.row .dots { display:flex; gap:6px; width:360px; flex:none; }
+.row .dots i { width:18px; height:18px; border-radius:50%; border:3px solid var(--ink); box-sizing:border-box; }
+.row .dots i.on { background:var(--ink); }
+.row .m { font-family:GM; font-size:30px; color:var(--sig); white-space:nowrap; }
+.mono { font-family:GM; }
+#shot { overflow:hidden; background:#141311; }
+#shot img { position:absolute; left:0; top:0; width:1440px; transform-origin:0 0; }
+#axis { height:4px; background:var(--ink); transform-origin:0 50%; }
+#band { background:color-mix(in srgb, var(--sig) 24%, transparent); border-left:5px solid var(--sig); border-right:5px solid var(--sig); box-sizing:border-box; }
+#flood { background:var(--sig); border-radius:999px; }
+#iris { pointer-events:none; }
+</style></head>
+<body>
+<div id="stage">
+  <div id="word" class="abs" style="width:1080px;height:170px;top:455px"></div>
+  <div id="pill" class="abs"><div class="mask" id="pillMask" style="left:0;right:0;top:0;bottom:0"><div class="rise" id="pillText" style="font-size:70px;line-height:170px;color:var(--bg)">Drift needed two keys</div></div></div>
+  <div id="keys"></div>
+  <div class="mask" id="loseMask" style="left:0;width:1080px;top:690px;height:120px"><div class="rise" id="lose" style="font-size:96px;line-height:120px">to lose $285M.</div></div>
+  <div id="rows"></div>
+  <div class="mask" id="capMask" style="left:0;width:1080px;top:880px;height:70px"><div class="rise mono" id="cap" style="font-size:44px;line-height:70px"><span style="color:var(--sig)">10 of 13</span> have no timelock</div></div>
+  <div id="shot" class="abs"><img id="img" src="dark-home.png"></div>
+  <svg id="iris" class="abs" width="1080" height="1080" viewBox="0 0 1080 1080"></svg>
+  <div id="axis" class="abs"></div>
+  <div id="ticks"></div>
+  <div id="band" class="abs"></div>
+  <div class="mask" id="countMask" style="left:0;width:1080px;top:150px;height:230px"><div class="rise mono" id="count" style="font-size:210px;line-height:230px;color:var(--sig)"></div></div>
+  <div class="mask" id="warnMask" style="left:0;width:1080px;top:790px;height:80px"><div class="rise mono" id="warn" style="font-size:52px;line-height:80px;letter-spacing:.06em;color:var(--sig)">5.6 DAYS OF WARNING</div></div>
+  <div class="mask" id="thenMask" style="left:0;width:1080px;top:880px;height:70px"><div class="rise" id="then" style="font-size:44px;line-height:70px;color:var(--ink2)">then $285M left in minutes</div></div>
+  <div id="flood" class="abs"></div>
+  <div class="mask" id="ckMask" style="left:0;width:1080px;top:470px;height:140px"><div class="rise" id="ck" style="font-size:110px;line-height:140px;color:var(--dark)">Count the keys.</div></div>
+  <div id="dot" class="abs"></div>
+  <svg id="cursor" class="abs" width="56" height="56" viewBox="0 0 24 24"><path d="M4 2 L4 19 L8.5 14.8 L11.6 21.5 L14.4 20.2 L11.3 13.6 L17.5 13.6 Z" fill="#fff" stroke="#111" stroke-width="1.3" stroke-linejoin="round"/></svg>
+</div>
+<script>
+// Every style is a pure function of t. Each seek resets every element first.
+const P = new URLSearchParams(location.search);
+if (P.get('theme') === 'bone') document.documentElement.classList.add('bone');
+let BEATS = [];
+const BEAT = 0.5108;
+const B = (i) => { const f = Math.floor(i); return BEATS[Math.max(0, Math.min(BEATS.length - 1, f))] + (i - f) * BEAT; };
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lin = (t, a, b) => clamp((t - a) / (b - a));
+function spr(t, t0, w = 16, z = 0.62) { const x = t - t0; if (x <= 0) return 0; const wd = w * Math.sqrt(1 - z * z); return 1 - Math.exp(-z * w * x) * (Math.cos(wd * x) + (z * w / wd) * Math.sin(wd * x)); }
+const ease = (x) => 1 - Math.pow(1 - clamp(x), 3);
+const inout = (x) => { x = clamp(x); return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const mix = (a, b, k) => a + (b - a) * k;
+const $ = (id) => document.getElementById(id);
+const set = (el, o) => { for (const k in o) el.style[k] = o[k]; };
+
+const WORD = 'keyholder';
+const letters = [...WORD].map((c) => { const s = document.createElement('span'); s.textContent = c; $('word').appendChild(s); return s; });
+const keys = [...Array(5)].map(() => { const k = document.createElement('div'); k.className = 'key abs'; $('keys').appendChild(k); return k; });
+const ROWS = [['Marinade', 6, 13], ['marginfi v2', 7, 15], ['Jupiter v6', 4, 7], ['Meteora DLMM', 4, 7], ['Sanctum router', 4, 7]];
+const rows = ROWS.map(([n, th, m]) => { const r = document.createElement('div'); r.className = 'row abs'; r.innerHTML = `<span class="edge"></span><b>${n}</b><span class="dots">${[...Array(m)].map((_, i) => `<i class="${i < th ? 'on' : ''}"></i>`).join('')}</span><span class="m">${th}/${m}</span>`; $('rows').appendChild(r); return r; });
+const TICKS = ['25 Mar', '27 Mar', '29 Mar', '31 Mar'];
+const ticks = TICKS.map((d) => { const s = document.createElement('div'); s.className = 'abs mono'; s.style.fontSize = '30px'; s.style.color = 'var(--ink2)'; s.textContent = d; $('ticks').appendChild(s); return s; });
+let widths = [];
+const WORD_Y = 455, DOT = 36;
+
+function wordAt(k) {
+  const total = widths.reduce((a, b) => a + b, 0) + 42;
+  const x0 = 540 - total / 2; let x = x0;
+  const dotX = x0 + total - DOT; const n = letters.length;
+  letters.forEach((s, i) => {
+    const wx = x; x += widths[i];
+    const li = ease(clamp((k * (n + 2) - (n - 1 - i)) / 3));
+    set(s, { transform: `translate(${mix(wx, dotX - widths[i] * 0.2, li)}px, ${li * 36}px) scale(${Math.max(0.001, 1 - li)})`, transformOrigin: '50% 75%', opacity: li > 0.96 ? 0 : 1 });
+  });
+  return { dotX, dotY: WORD_Y + 132 };
+}
+function rise(el, maskEl, t0, t1 = null) {
+  const t = window.__t; const k = spr(t, t0, 22, 0.9); const out = t1 == null ? 0 : ease(lin(t, t1, t1 + 0.22));
+  el.style.transform = `translateY(${(1 - k) * 105 - out * 105}%)`;
+  maskEl.style.visibility = t >= t0 && (t1 == null || t < t1 + 0.25) ? 'visible' : 'hidden';
+}
+// iris: 6 blades around a hexagonal aperture of radius r (0 = closed), turned by a
+function iris(r, a) {
+  const R = 900, pts = [];
+  for (let i = 0; i < 6; i++) { const th = a + i * Math.PI / 3; pts.push([540 + r * Math.cos(th), 540 + r * Math.sin(th)]); }
+  let svg = '';
+  for (let i = 0; i < 6; i++) {
+    const p = pts[i], q = pts[(i + 1) % 6];
+    const dx = q[0] - p[0], dy = q[1] - p[1]; const L = Math.hypot(dx, dy) || 1; const ux = dx / L, uy = dy / L;
+    const far = [p[0] - ux * R, p[1] - uy * R]; // extend the edge back past the frame
+    const th = a + (i + 0.5) * Math.PI / 3; const out = [540 + R * 1.6 * Math.cos(th), 540 + R * 1.6 * Math.sin(th)];
+    const shade = i % 2 ? '#1a1916' : '#232120';
+    svg += `<polygon points="${far[0]},${far[1]} ${q[0]},${q[1]} ${out[0]},${out[1]}" fill="${shade}" stroke="#34312d" stroke-width="2"/>`;
+  }
+  $('iris').innerHTML = svg;
+}
+
+const ALL = () => [$('word'), $('pill'), ...keys, $('loseMask'), ...rows, $('capMask'), $('shot'), $('iris'), $('axis'), ...ticks, $('band'), $('countMask'), $('warnMask'), $('thenMask'), $('flood'), $('ckMask'), $('dot'), $('cursor')];
+async function seek(t) {
+  window.__t = t;
+  for (const e of ALL()) { e.style.visibility = 'hidden'; }
+  $('img').style.transform = 'translate(0px, 202px) scale(0.75)';
+  $('pillMask').style.visibility = 'inherit';
+  const show = (...els) => els.forEach((e) => (e.style.visibility = 'visible'));
+  const dot = $('dot');
+  const dotAt = (x, y, s = 1, c = 'var(--sig)') => { show(dot); set(dot, { transform: `translate(${x - DOT / 2}px, ${y - DOT / 2}px) scale(${s})`, width: DOT + 'px', height: DOT + 'px', background: c }); };
+
+  // 0-7 open: the wordmark folds into its dot
+  if (t < B(8.2)) {
+    show($('word'));
+    const { dotX, dotY } = wordAt(ease(lin(t, B(2), B(6))));
+    if (t < B(7)) dotAt(dotX + DOT / 2, dotY - DOT / 2);
+  }
+  // 7-15 the dot becomes the pill, then five keys
+  if (t >= B(7) && t < B(16.3)) {
+    const home = wordAt(1);
+    const g = spr(t, B(7), 12, 0.78), m = inout(lin(t, B(7), B(8.2)));
+    const split = inout(lin(t, B(11.5), B(12.2)));
+    if (split < 1) {
+      show($('pill'));
+      const w = mix(mix(DOT, 980, g), 150, split), h = mix(DOT, 170, g);
+      const cx = mix(home.dotX + DOT / 2, 540, m), cy = mix(home.dotY - DOT / 2, 540, m);
+      set($('pill'), { transform: `translate(${cx - w / 2}px, ${cy - h / 2}px)`, width: w + 'px', height: h + 'px', background: `color-mix(in srgb, var(--sig) ${Math.round((1 - lin(t, B(7.3), B(8.3))) * 100)}%, var(--ink))` });
+      rise($('pillText'), $('pillMask'), B(8.5), B(11.2));
+    }
+    if (t >= B(11.5)) {
+      keys.forEach((kel, i) => {
+        show(kel);
+        const s = spr(t, B(11.6) + i * 0.035, 15, 0.62);
+        const turn = i === 0 ? B(12.5) : i === 1 ? B(13) : 1e9;
+        const on = t >= turn;
+        const pop = on ? 1 + 0.16 * Math.sin(Math.PI * lin(t, turn, turn + 0.22)) : 1;
+        const go = inout(lin(t, B(15.4), B(16.2)));
+        const kx = mix(540 + (i - 2) * 190 * s - 75, 400 + i * 24, go), ky = mix(465, 90, go), ks = mix(pop, 0.16, go);
+        set(kel, { transform: `translate(${kx}px, ${ky}px) scale(${ks})`, opacity: go > 0.97 ? 0 : 1, width: '150px', height: '150px', background: on ? (i === 0 ? 'var(--sig)' : 'var(--ink)') : 'transparent', borderColor: i === 0 && on ? 'var(--sig)' : 'var(--ink)' });
+      });
+      rise($('lose'), $('loseMask'), B(13.5), B(15.2));
+    }
+  }
+  // 16-27 the record, filling the frame; a cursor finds the weakest row; the iris closes
+  if (t >= B(15.6) && t < B(28)) {
+    rows.forEach((r, i) => {
+      show(r);
+      const s = spr(t, B(15.6 + i * 0.45), 13, 0.72);
+      set(r, { transform: `translate(0px, ${mix(-170 - i * 40, 90 + i * 150, s)}px)` });
+      r.querySelector('.edge').style.transform = `scaleY(${ease(lin(t, B(16.4 + i * 0.5), B(17 + i * 0.5)))})`;
+    });
+    rise($('cap'), $('capMask'), B(19.5), B(25.6));
+    if (t >= B(21)) {
+      show($('cursor'));
+      const c = inout(lin(t, B(21), B(23.5)));
+      const press = t >= B(24) && t < B(24.25) ? 0.8 : 1;
+      set($('cursor'), { transform: `translate(${mix(1000, 300, c)}px, ${mix(1040, 150, c)}px) scale(${press})` });
+    }
+    // iris closes over the record (beats 25-27.5), fully shut just before the drop
+    if (t >= B(25)) { show($('iris')); iris(mix(900, 0, inout(lin(t, B(25), B(27.6)))), mix(0, 0.9, lin(t, B(25), B(28)))); }
+  }
+  // 28 (drop) the iris snaps open onto the live site; 28-35 screen-studio zoom
+  if (t >= B(28) && t < B(36.5)) {
+    show($('shot'));
+    set($('shot'), { transform: 'translate(0,0)', width: '1080px', height: '1080px' });
+    const z1 = inout(lin(t, B(29), B(31.5))), z2 = inout(lin(t, B(32), B(35)));
+    // full page (0.75) -> the weakest list fills the frame (1.7) -> the 5.6-day strip (0.82)
+    const s = mix(mix(0.75, 1.7, z1), 1.54, z2);
+    const tx = mix(mix(0, -1255, z1), -989, z2), ty = mix(mix(202, -80, z1), -453, z2);
+    $('img').style.transform = `translate(${tx}px, ${ty}px) scale(${s})`;
+    const open = spr(t, B(28), 13, 0.75);
+    if (open < 0.999) { show($('iris')); iris(mix(0, 1000, open), 0.9 + open * 0.6); }
+  }
+  // 36-51 the warning: axis, the dot on 25 Mar, the band to 31 Mar, the counter to 5d 14h
+  if (t >= B(35.8) && t < B(52.6)) {
+    const X0 = 110, X1 = 970, Y = 700;
+    const lift = inout(lin(t, B(35.8), B(36.6)));
+    if (lift < 1) { show($('shot')); set($('shot'), { transform: `translate(0px, ${-lift * 1080}px)` }); }
+    show($('axis'));
+    set($('axis'), { transform: `translate(${X0}px, ${Y}px) scaleX(${ease(lin(t, B(36.3), B(37.2)))})`, width: (X1 - X0) + 'px' });
+    ticks.forEach((tk, i) => { const k = spr(t, B(36.8 + i * 0.3), 15, 0.85); if (k > 0) { show(tk); set(tk, { transform: `translate(${X0 + i * (X1 - X0) / 3 - 46}px, ${Y + 30 + (1 - k) * 24}px)` }); } });
+    if (t >= B(38)) dotAt(X0, Y + 2, spr(t, B(38), 16, 0.5) * 1.3);
+    const bandK = inout(lin(t, B(39), B(47)));
+    if (t >= B(39)) { show($('band')); set($('band'), { transform: `translate(${X0}px, ${Y - 260}px)`, width: Math.max(10, bandK * (X1 - X0)) + 'px', height: '260px' }); }
+    const h = Math.round(134 * bandK);
+    if (t >= B(39)) { $('count').textContent = `${Math.floor(h / 24)}d ${String(h % 24).padStart(2, '0')}h`; rise($('count'), $('countMask'), B(39)); }
+    if (t >= B(47.5)) rise($('warn'), $('warnMask'), B(47.5));
+    if (t >= B(49.5)) rise($('then'), $('thenMask'), B(49.5));
+  }
+  // 52-57 the band floods the frame in orange, holds a beat, contracts into "Count the keys."
+  if (t >= B(52) && t < B(63)) {
+    show($('flood'));
+    const X0 = 110, X1 = 970, Y = 700;
+    const grow = inout(lin(t, B(52), B(52.7)));
+    const shrink = inout(lin(t, B(54), B(54.8)));
+    const bx = (X0 + X1) / 2, by = Y - 130;
+    const W = mix(mix(X1 - X0, 2600, grow), 900, shrink), H = mix(mix(260, 2600, grow), 170, shrink);
+    const cx = mix(mix(bx, 540, grow), 540, shrink), cy = mix(mix(by, 540, grow), 540, shrink);
+    set($('flood'), { transform: `translate(${cx - W / 2}px, ${cy - H / 2}px)`, width: W + 'px', height: H + 'px', borderRadius: mix(0, 999, shrink) + 'px' });
+    rise($('ck'), $('ckMask'), B(55), B(61.4));
+    // 61.8-63.5 the pill closes into the orange dot
+    const close = inout(lin(t, B(61.8), B(63)));
+    if (close > 0) { const w = mix(900, DOT, close), hh = mix(170, DOT, close); set($('flood'), { transform: `translate(${540 - w / 2}px, ${540 - hh / 2}px)`, width: w + 'px', height: hh + 'px' }); }
+  }
+  // 63-68 the dot travels home; the letters spring back out: last frame = first frame
+  if (t >= B(63)) {
+    show($('word'));
+    const k = 1 - spr(t, B(64.2), 11, 0.72);
+    const { dotX, dotY } = wordAt(clamp(k));
+    const m = inout(lin(t, B(63), B(64)));
+    dotAt(mix(540, dotX + DOT / 2, m), mix(540, dotY - DOT / 2, m));
+  }
+}
+window.seek = seek;
+window.ready = (async () => {
+  BEATS = await (await fetch('beats2.json')).json().then((j) => j.beats);
+  await document.fonts.ready;
+  await new Promise((r) => { const im = $('img'); if (im.complete) r(); else im.onload = r; });
+  widths = letters.map((s) => s.getBoundingClientRect().width);
+  await seek(0);
+  return true;
+})();
+</script>
+</body></html>

@@ -1,0 +1,120 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- Anatomy of one check: the technical demo's core. Every value is read from chain or code (sources in ANATOMY-SOURCES.md). -->
+<style>
+@font-face { font-family: G; src: url("Geist-Regular.ttf"); }
+@font-face { font-family: GM; src: url("GeistMono-Regular.ttf"); }
+:root { --bg:#0E0D0C; --ink:#ECE8DF; --ink2:#8F897D; --sig:#FF5A1F; --line:#3a3631; --card:#151412; }
+html,body { margin:0; width:1920px; height:1080px; overflow:hidden; background:var(--bg); color:var(--ink); font-family:G; }
+.ch { position:absolute; inset:0; }
+[data-t0] { will-change:transform, opacity; }
+h1 { position:absolute; left:110px; top:70px; margin:0; font-weight:400; font-size:54px; }
+h1 i { font-style:normal; color:var(--sig); font-family:GM; font-size:40px; margin-right:18px; }
+.sub { position:absolute; left:112px; top:140px; font-family:GM; font-size:22px; color:var(--ink2); }
+.card { position:absolute; background:var(--card); border:2px solid var(--line); border-radius:14px; padding:22px 24px; box-sizing:border-box; }
+.card.hot { border-color:var(--sig); }
+.card .k { font-family:GM; font-size:17px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink2); }
+.card .n { font-size:30px; margin:6px 0 10px; }
+.card .a { font-family:GM; font-size:21px; color:var(--ink); }
+.card .f { font-family:GM; font-size:19px; color:var(--ink2); margin-top:8px; line-height:1.45; }
+.o { color:var(--sig); }
+.edge { position:absolute; font-family:GM; font-size:17px; color:var(--ink2); text-align:center; line-height:1.35; }
+.arrow { position:absolute; height:2px; background:#5a554d; transform-origin:0 50%; }
+.bytes { position:absolute; display:flex; font-family:GM; font-size:19px; }
+.bytes div { border:1px solid var(--line); padding:12px 16px; background:var(--card); }
+.bytes div small { display:block; font-size:14px; color:var(--ink2); margin-bottom:6px; letter-spacing:.06em; }
+.result { position:absolute; font-size:36px; }
+.row { position:absolute; font-family:GM; font-size:30px; }
+.pill { font-family:GM; font-size:21px; border:1.5px solid var(--sig); color:var(--sig); border-radius:8px; padding:6px 12px; margin-right:10px; display:inline-block; }
+.code { position:absolute; font-family:GM; font-size:22px; line-height:1.6; background:var(--card); border:2px solid var(--line); border-radius:14px; padding:26px 30px; white-space:pre; }
+.step { position:absolute; font-size:27px; line-height:1.35; }
+.step b { font-family:GM; font-weight:400; color:var(--sig); margin-right:14px; }
+.step span { display:block; font-family:GM; font-size:18px; color:var(--ink2); margin-top:4px; }
+.stamp { position:absolute; font-family:GM; font-size:30px; color:var(--sig); border:3px solid var(--sig); border-radius:10px; padding:12px 20px; }
+</style></head>
+<body>
+<!-- 0: title -->
+<div class="ch" data-ch="0,3.4">
+  <h1 data-t0="0.2" style="top:430px;font-size:76px">Anatomy of one check</h1>
+  <div class="sub" data-t0="0.7" style="top:535px;font-size:26px">record → alert → refuse · every value on screen is read from chain</div>
+</div>
+
+<!-- 1: RECORD -->
+<div class="ch" data-ch="3.4,22.6">
+  <h1 data-t0="3.6"><i>1</i>Record · who controls Marinade</h1>
+  <div class="sub" data-t0="4.0">mainnet · read by the worker, re-checked every 10 minutes · slot 451,020,617</div>
+  <div class="card" data-t0="4.6" style="left:110px;top:250px;width:370px"><div class="k">program</div><div class="n">Marinade</div><div class="a">MarBms…Jgjq7aD</div><div class="f">executable · upgradeable loader</div></div>
+  <div class="arrow" data-t0="6.0" data-grow style="left:490px;top:330px;width:60px"></div>
+  <div class="card" data-t0="6.8" style="left:560px;top:250px;width:390px"><div class="k">programdata</div><div class="n">4PQH9Y…cWMSBf</div><div class="f">PDA of the program id<br>deployed at slot 433,290,841<br>bytes 13–45: <span class="o">upgrade_authority</span></div></div>
+  <div class="arrow" data-t0="8.4" data-grow style="left:960px;top:330px;width:60px"></div>
+  <div class="card" data-t0="9.0" style="left:1030px;top:250px;width:360px"><div class="k">upgrade authority</div><div class="n">551FBX…yzBp</div><div class="f">no account of its own:<br>= create_program_address(<br>&nbsp;&nbsp;multisig, 253)</div></div>
+  <div class="arrow" data-t0="10.8" data-grow style="left:1400px;top:330px;width:60px"></div>
+  <div class="card hot" data-t0="11.6" style="left:1470px;top:250px;width:340px"><div class="k">coral multisig</div><div class="n">magrsH…T9Wed</div><div class="f">owner msigmt…g6Xdt</div></div>
+  <div class="bytes" data-t0="13.6" style="left:640px;top:560px">
+    <div><small>discriminator</small>e07479ba44a14fec</div>
+    <div><small>owners (Vec&lt;Pubkey&gt;)</small><span class="o">13</span> × 32 bytes</div>
+    <div><small>threshold u64</small><span class="o">6</span></div>
+    <div><small>nonce u8</small>253</div>
+    <div><small>owner_set_seqno u32</small>1</div>
+  </div>
+  <div class="edge" data-t0="14.4" style="left:640px;top:680px;width:1100px;text-align:left">the multisig account's own bytes, decoded · coral has no timelock field at all</div>
+  <div class="result" data-t0="16.6" style="left:110px;top:800px">Marinade: <span class="o">6 of 13 keys</span>, no timelock feature.</div>
+  <div class="edge" data-t0="18.2" style="left:112px;top:870px;width:1500px;text-align:left;font-size:21px">Why read it this way: control is what the chain says, not an address on a docs page. A failed read writes nothing.</div>
+</div>
+
+<!-- 2: ALERT -->
+<div class="ch" data-ch="22.6,39.4">
+  <h1 data-t0="22.8"><i>2</i>Alert · a change, decoded</h1>
+  <div class="sub" data-t0="23.2">devnet · the watched protocol's own multisig</div>
+  <div class="card hot" data-t0="23.8" style="left:110px;top:240px;width:720px"><div class="k">transaction · slot 504,518,274</div><div class="n">5EXeHq…nhJ1FE</div><div class="f">Squads v4 · ConfigTransactionExecute</div></div>
+  <div class="row" data-t0="25.6" style="left:110px;top:450px">threshold&nbsp;&nbsp;3 → <span class="o">2</span></div>
+  <div class="row" data-t0="26.8" style="left:110px;top:510px">time_lock&nbsp;&nbsp;10 s → <span class="o">0</span></div>
+  <div class="edge" data-t0="28.2" style="left:112px;top:610px;text-align:left;width:900px;font-size:19px">rules on control facts (packages/risk), not price:</div>
+  <div class="row" data-t0="28.8" style="left:110px;top:650px;font-size:0"><span class="pill">threshold_lowered</span><span class="pill">timelock_reduced</span><span class="pill">no_timelock</span></div>
+  <div class="card" data-t0="31.4" style="left:1000px;top:420px;width:800px"><div class="k">signed webhook</div><div class="a" style="margin-top:10px">POST your-endpoint</div><div class="f">X-Keyholder-Signature: t=&lt;unix&gt;, v1=HMAC-SHA256(secret, "t.body")</div></div>
+  <div class="edge" data-t0="34.4" style="left:112px;top:800px;width:1600px;text-align:left;font-size:21px">On Drift this alert came on 25 March. The money moved on 31 March: 5.6 days later.</div>
+</div>
+
+<!-- 3: REFUSE -->
+<div class="ch" data-ch="39.4,66">
+  <h1 data-t0="39.6"><i>3</i>Refuse · the check runs inside the vault's transaction</h1>
+  <div class="sub" data-t0="40.0">programs/keyholder · check() · devnet policy: min 3 keys, min timelock 10 s</div>
+  <div class="code" data-t0="40.8" style="left:110px;top:240px;width:760px">vault.deposit()
+  └ cpi_check(
+      policy, config, control,
+      target_program,
+      <span class="o">programdata</span>,
+      <span class="o">multisig</span> )
+  └ take the deposit</div>
+  <div class="step" data-t0="42.6" style="left:960px;top:240px;width:850px"><b>1</b>Re-read ProgramData, live<span>deploy slot and upgrade authority, inside this transaction</span></div>
+  <div class="step" data-t0="44.8" style="left:960px;top:360px;width:850px"><b>2</b>Re-read the multisig, live<span>the authority must still derive from it (v4 vault · v3 · coral)</span></div>
+  <div class="step" data-t0="47.0" style="left:960px;top:480px;width:850px"><b>3</b>Compare with the vault's own policy<span>threshold · timelock · cooldown after a weakening or an upgrade</span></div>
+  <div class="step" data-t0="49.2" style="left:960px;top:600px;width:850px"><b>4</b>Return {ok, reasons, threshold, time_lock}<span>enforce mode: the first failed reason is the error</span></div>
+  <div class="card hot" data-t0="52.0" style="left:110px;top:720px;width:760px"><div class="k">transaction · slot 504,518,286 · 23 s after the same deposit passed</div><div class="n">2pc4Pr…DJioBF</div><div class="f">threshold 2 &lt; 3 · time_lock 0 &lt; 10</div></div>
+  <div class="stamp" data-t0="54.4" data-stamp style="left:960px;top:760px">ThresholdBelowPolicy · 6001 · deposit reverted</div>
+  <div class="edge" data-t0="57.6" style="left:962px;top:870px;width:850px;text-align:left;font-size:22px;color:var(--ink)">No server in the path. The answer is chain state.</div>
+</div>
+<script>
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+function spr(t, t0, w = 15, z = 0.75) { const x = t - t0; if (x <= 0) return 0; const wd = w * Math.sqrt(1 - z * z); return 1 - Math.exp(-z * w * x) * (Math.cos(wd * x) + (z * w / wd) * Math.sin(wd * x)); }
+const inout = (x) => { x = clamp(x); return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const chs = [...document.querySelectorAll('[data-ch]')];
+const items = [...document.querySelectorAll('[data-t0]')];
+async function seek(t) {
+  for (const c of chs) {
+    const [a, b] = c.dataset.ch.split(',').map(Number);
+    const out = inout((t - (b - 0.5)) / 0.5); // push up and out over the last 0.5 s
+    c.style.visibility = t >= a && t < b ? 'visible' : 'hidden';
+    c.style.transform = `translateY(${-out * 120}px)`; c.style.opacity = 1 - out;
+  }
+  for (const el of items) {
+    const t0 = Number(el.dataset.t0); const k = spr(t, t0);
+    if ('grow' in el.dataset) { el.style.transform = `scaleX(${clamp(inout((t - t0) / 0.5))})`; continue; }
+    if ('stamp' in el.dataset) { const s = spr(t, t0, 16, 0.5); el.style.opacity = t >= t0 ? 1 : 0; el.style.transform = `scale(${1.5 - 0.5 * clamp(s)}) rotate(-2deg)`; continue; }
+    el.style.opacity = clamp(k * 1.4); el.style.transform = `translateY(${(1 - clamp(k)) * 26}px)`;
+  }
+}
+window.seek = seek;
+window.ready = (async () => { await document.fonts.ready; await seek(0); return true; })();
+</script>
+</body></html>

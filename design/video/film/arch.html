@@ -1,0 +1,85 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face { font-family: G; src: url("Geist-Regular.ttf"); }
+@font-face { font-family: GM; src: url("GeistMono-Regular.ttf"); }
+:root { --bg:#0E0D0C; --ink:#ECE8DF; --ink2:#8F897D; --sig:#FF5A1F; --line:#3a3631; }
+html,body { margin:0; width:1920px; height:1080px; overflow:hidden; background:var(--bg); color:var(--ink); font-family:G; }
+.abs { position:absolute; left:0; top:0; }
+.box { border:2px solid var(--ink); border-radius:14px; padding:22px 26px; box-sizing:border-box; background:#141311; transform-origin:50% 50%; }
+.box b { display:block; font-weight:400; font-size:34px; }
+.box span { display:block; font-family:GM; font-size:19px; color:var(--ink2); margin-top:8px; letter-spacing:.02em; }
+.box.hot { border-color:var(--sig); box-shadow:0 0 0 4px rgba(255,90,31,.18); }
+.stage { font-family:GM; font-size:19px; padding:4px 10px; border-radius:6px; margin-right:6px; display:inline-block; color:var(--ink2); border:1px solid var(--line); }
+.stage.on { color:#0E0D0C; background:var(--sig); border-color:var(--sig); }
+svg { position:absolute; left:0; top:0; }
+.label { font-family:GM; font-size:22px; color:var(--sig); white-space:nowrap; }
+.mask { position:absolute; overflow:hidden; }
+.rise { white-space:nowrap; }
+#dot { width:26px; height:26px; border-radius:50%; background:var(--sig); box-shadow:0 0 18px rgba(255,90,31,.7); }
+#stamp { font-family:GM; font-size:30px; color:var(--sig); border:3px solid var(--sig); border-radius:10px; padding:10px 18px; transform-origin:50% 50%; }
+</style></head>
+<body>
+<div class="mask" style="left:120px;top:70px;width:1700px;height:90px"><div id="title" class="rise" style="font-size:64px">How Keyholder works</div></div>
+<div class="mask" style="left:122px;top:160px;width:1700px;height:40px"><div id="sub" class="rise" style="font-family:GM;font-size:22px;color:var(--ink2)">one control change, from chain to alert to refusal</div></div>
+<svg id="wires" width="1920" height="1080"></svg>
+<div id="b0" class="box abs" style="width:290px;height:150px"><b>Solana</b><span>mainnet programs</span></div>
+<div id="b1" class="box abs" style="width:520px;height:190px"><b>Worker</b><span>reads authority + multisig</span><div style="margin-top:14px"><i class="stage" id="s0">decode</i><i class="stage" id="s1">state</i><i class="stage" id="s2">risk</i><i class="stage" id="s3">alerts</i></div></div>
+<div id="b2" class="box abs" style="width:260px;height:150px"><b>Postgres</b><span>the record</span></div>
+<div id="b3" class="box abs" style="width:330px;height:150px"><b>Web + API</b><span>table · replay · wallet</span></div>
+<div id="b4" class="box abs" style="width:330px;height:130px"><b>Signed webhook</b><span>HMAC · X-Keyholder-Signature</span></div>
+<div id="b5" class="box abs" style="width:330px;height:150px"><b>Vault program</b><span>before a deposit</span></div>
+<div id="b6" class="box abs" style="width:420px;height:150px"><b>Keyholder program</b><span>cpi_check · devnet</span></div>
+<div id="b7" class="box abs" style="width:360px;height:150px"><b>Protocol's multisig</b><span>threshold · timelock</span></div>
+<div id="lab1" class="label abs">a multisig changes</div>
+<div id="lab2" class="label abs">alert sent</div>
+<div id="lab3" class="label abs">CPI</div>
+<div id="lab4" class="label abs">reads on-chain state</div>
+<div id="stamp" class="abs">refused · 6001</div>
+<div id="dot" class="abs"></div>
+<script>
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lin = (t, a, b) => clamp((t - a) / (b - a));
+function spr(t, t0, w = 15, z = 0.7) { const x = t - t0; if (x <= 0) return 0; const wd = w * Math.sqrt(1 - z * z); return 1 - Math.exp(-z * w * x) * (Math.cos(wd * x) + (z * w / wd) * Math.sin(wd * x)); }
+const inout = (x) => { x = clamp(x); return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const mix = (a, b, k) => a + (b - a) * k;
+const $ = (id) => document.getElementById(id);
+// layout (top-left of each box)
+const P = { b0: [120, 330], b1: [520, 310], b2: [1150, 330], b3: [1470, 330], b4: [1470, 110 + 470 - 330], b5: [120, 800], b6: [620, 800], b7: [1230, 800] };
+P.b4 = [1470, 560];
+const size = (id) => [$(id).offsetWidth, $(id).offsetHeight];
+const mid = (id, side) => { const [x, y] = P[id], [w, h] = size(id); return side === 'r' ? [x + w, y + h / 2] : side === 'l' ? [x, y + h / 2] : side === 'b' ? [x + w / 2, y + h] : side === 't' ? [x + w / 2, y] : [x + w / 2, y + h / 2]; };
+const WIRES = [['b0', 'r', 'b1', 'l', 2.1], ['b1', 'r', 'b2', 'l', 2.5], ['b2', 'r', 'b3', 'l', 2.9], ['b1', 'b', 'b4', 'l', 7.6], ['b5', 'r', 'b6', 'l', 10.2], ['b6', 'r', 'b7', 'l', 11.0]];
+const BOXIN = { b0: 1.6, b1: 2.0, b2: 2.4, b3: 2.8, b4: 7.4, b5: 9.8, b6: 10.2, b7: 10.8 };
+function path(a, as, b, bs) { const p = mid(a, as), q = mid(b, bs); if (as === 'b') return [p, [p[0], q[1]], q]; return [p, q]; }
+function along(pts, k) { const segs = []; let L = 0; for (let i = 1; i < pts.length; i++) { const d = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); segs.push(d); L += d; } let r = k * L; for (let i = 1; i < pts.length; i++) { if (r <= segs[i - 1]) { const f = r / segs[i - 1]; return [mix(pts[i - 1][0], pts[i][0], f), mix(pts[i - 1][1], pts[i][1], f)]; } r -= segs[i - 1]; } return pts[pts.length - 1]; }
+function rise(el, t0, t) { const k = spr(t, t0, 20, 0.9); el.style.transform = `translateY(${(1 - k) * 110}%)`; }
+async function seek(t) {
+  rise($('title'), 0.2, t); rise($('sub'), 0.6, t);
+  for (const id in BOXIN) { const k = spr(t, BOXIN[id], 14, 0.65); const [x, y] = P[id]; const el = $(id); el.style.transform = `translate(${x}px, ${y + (1 - k) * 40}px) scale(${0.9 + 0.1 * k})`; el.style.opacity = clamp(k * 1.5); el.classList.remove('hot'); }
+  let svg = '';
+  for (const [a, as, b, bs, t0] of WIRES) { const pts = path(a, as, b, bs); const k = inout(lin(t, t0, t0 + 0.5)); if (k <= 0) continue; let L = 0; for (let i = 1; i < pts.length; i++) L += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); svg += `<polyline points="${pts.map((p) => p.join(',')).join(' ')}" fill="none" stroke="#5a554d" stroke-width="3" stroke-dasharray="${L}" stroke-dashoffset="${L * (1 - k)}"/>`; }
+  $('wires').innerHTML = svg;
+  // the change travels: chain -> worker (stages light) -> db -> web; branch to webhook
+  const dot = $('dot'); let dp = null;
+  const hot = (id) => $(id).classList.add('hot');
+  if (t >= 3.6 && t < 4.6) { dp = along(path('b0', 'r', 'b1', 'l'), inout(lin(t, 3.6, 4.6))); }
+  if (t >= 4.6 && t < 7.2) { hot('b1'); dp = mid('b1', 'c'); dp = [dp[0], dp[1] - 120]; }
+  ['s0', 's1', 's2', 's3'].forEach((s, i) => $(s).classList.toggle('on', t >= 4.8 + i * 0.55 && t < 9.6));
+  if (t >= 7.2 && t < 7.9) dp = along(path('b1', 'r', 'b2', 'l'), inout(lin(t, 7.2, 7.9)));
+  if (t >= 7.9 && t < 8.6) { hot('b2'); dp = along(path('b2', 'r', 'b3', 'l'), inout(lin(t, 7.9, 8.6))); }
+  if (t >= 8.6 && t < 9.4) { hot('b3'); dp = along(path('b1', 'b', 'b4', 'l'), inout(lin(t, 8.6, 9.4))); }
+  if (t >= 9.4 && t < 9.9) hot('b4');
+  // on-chain: vault -> CPI -> Keyholder -> reads multisig -> refused 6001
+  if (t >= 11.2 && t < 12.0) dp = along(path('b5', 'r', 'b6', 'l'), inout(lin(t, 11.2, 12.0)));
+  if (t >= 12.0 && t < 12.8) { hot('b6'); dp = along(path('b6', 'r', 'b7', 'l'), inout(lin(t, 12.0, 12.8))); }
+  if (t >= 12.8) { hot('b7'); hot('b6'); }
+  if (dp) { dot.style.opacity = 1; dot.style.transform = `translate(${dp[0] - 13}px, ${dp[1] - 13}px)`; } else dot.style.opacity = 0;
+  const lab = (id, x, y, t0, t1) => { const el = $(id); const k = spr(t, t0, 18, 0.9); el.style.opacity = t >= t0 && t < t1 ? clamp(k) : 0; el.style.transform = `translate(${x}px, ${y + (1 - k) * 14}px)`; };
+  lab('lab1', 120, 505, 3.4, 7.2); lab('lab2', 1060, 572, 8.8, 15.1); lab('lab3', 480, 760, 11.0, 15.1); lab('lab4', 1060, 760, 11.9, 15.1);
+  const s = spr(t, 13.1, 16, 0.5); const st = $('stamp'); st.style.opacity = t >= 13.1 ? 1 : 0; st.style.transform = `translate(${1260}px, ${985}px) scale(${mix(1.6, 1, clamp(s))}) rotate(-3deg)`;
+}
+window.seek = seek;
+window.ready = (async () => { await document.fonts.ready; await seek(0); return true; })();
+</script>
+</body></html>
