@@ -1,0 +1,797 @@
+{
+ "day": "2026-10-01",
+ "slot": 452414477,
+ "programs": 557,
+ "kinds": {
+  "immutable": 105,
+  "single_key_or_vault_unresolved": 216,
+  "single_key": 99,
+  "squads_vault": 131,
+  "error": 6
+ },
+ "sharedSigners": [
+  {
+   "key": "3URRPr96EV2wuNRgQKwQpuZitHHsVyDUen1eRSvEun9G",
+   "multisigs": [
+    {
+     "address": "BhxNKqwmF7MT5pWBterrwv7a5GVHFRCk4Y51y7QGeHV2",
+     "kind": "squads_v4",
+     "threshold": 2,
+     "members": 3,
+     "orgs": [
+      "solana-labs"
+     ],
+     "programs": [
+      "cmtDvXumGCrqC1Age74AVPhSRVXJMd8PJS91L8KbNCK"
+     ]
+    },
+    {
+     "address": "BnD53519LK7QM4ERBGvLedZDe1VoTPgtiBkGPWAACiMZ",
+     "kind": "squads_v3",
+     "threshold": 4,
+     "members": 6,
+     "orgs": [
+      "solana-program"
+     ],
+     "programs": [
+      "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+     ]
+    }
+   ],
+   "distinctOrgs": [
+    "solana-labs",
+    "solana-program"
+   ]
+  },
+  {
+   "key": "FKy9ETj6y1pHHrZG7Wg6ARahLpjMxvWdTN1CNybseiy",
+   "multisigs": [
+    {
+     "address": "9XnbnSvCk33J5Daxc9uJ2MxySTKPuM1KKoFJNmaAk7tN",
+     "kind": "squads_v4",
+     "threshold": 1,
+     "members": 2,
+     "orgs": [
+      "layerzero-labs"
+     ],
+     "programs": [
+      "219m42qCuVirVvWs5GnkuX4aWFx5pX6D9RSTE1vsV5WS"
+     ]
+    },
+    {
+     "address": "HB3boZwyCUmjCo2uPWfVS2WKYmdgGv2XVpRgUaX5CkxC",
+     "kind": "squads_v4",
+     "threshold": 4,
+     "members": 6,
+     "orgs": [
+      "layerzero-labs"
+     ],
+     "programs": [
+      "A8W6AL4JhE4EDDcfXZ1Q8vQpwp83AnPj4UZ6y86gVFKN"
+     ]
+    }
+   ],
+   "distinctOrgs": [
+    "layerzero-labs"
+   ]
+  },
+  {
+   "key": "3GDhxifYcMxrmkNWC7ARD7UfpALf5FF4zZB5NFuMfiSW",
+   "multisigs": [
+    {
+     "address": "Ed13d9rMRXptEmCtRnZfuKX7Jf6gxLJLKpsQZd8uPmJP",
+     "kind": "squads_v3",
+     "threshold": 4,
+     "members": 7,
+     "orgs": [],
+     "programs": [
+      "BGJQtQSPxa2nR9BodnjYb3Pbgft7nX5heQk3dr3uaFUB"
+     ]
+    },
+    {
+     "address": "EfMUASGwCsPBafiPi8rwdZfUJSUt7pxAoxayR39PVpMr",
+     "kind": "squads_v4",
+     "threshold": 4,
+     "members": 7,
+     "orgs": [
+      "ondoprotocol"
+     ],
+     "programs": [
+      "XzTT4XB8m7sLD2xi6snefSasaswsKCxx5Tifjondogm"
+     ]
+    }
+   ],
+   "distinctOrgs": [
+    "ondoprotocol"
+   ]
+  },
+  {
+   "key": "97VPg6E4Ncdy513ncFpdCNvS3uxEDR6rjTUNDdLvHQmz",
+   "multisigs": [
+    {
+     "address": "Ed13d9rMRXptEmCtRnZfuKX7Jf6gxLJLKpsQZd8uPmJP",
+     "kind": "squads_v3",
+     "threshold": 4,
+     "members": 7,
+     "orgs": [],
+     "programs": [
+      "BGJQtQSPxa2nR9BodnjYb3Pbgft7nX5heQk3dr3uaFUB"
+     ]
+    },
+    {
+     "address": "EfMUASGwCsPBafiPi8rwdZfUJSUt7pxAoxayR39PVpMr",
+     "kind": "squads_v4",
+     "threshold": 4,
+     "members": 7,
+     "orgs": [
+      "ondoprotocol"
+     ],
+     "programs": [
+      "XzTT4XB8m7sLD2xi6snefSasaswsKCxx5Tifjondogm"
+     ]
+    }
+   ],
+   "distinctOrgs": [
+    "ondoprotocol"
+   ]
+  },
+  {
+   "key": "9MDbuzJMuYfeSXGxieuuLXbJMBt1YR92Vr3W1oMRHQRB",
+   "multisigs": [
+    {
+     "address": "Ed13d9rMRXptEmCtRnZfuKX7Jf6gxLJLKpsQZd8uPmJP",
+     "kind": "squads_v3",
+     "threshold": 4,
+     "members": 7,
+     "orgs": [],
+     "programs": [
+      "BGJQtQSPxa2nR9BodnjYb3Pbgft7nX5heQk3dr3uaFUB"
+     ]
+    },
+    {
+     "address": "EfMUASGwCsPBafiPi8rwdZfUJSUt7pxAoxayR39PVpMr",
+     "kind": "squads_v4",
+     "threshold": 4,
+     "members": 7,
+     "orgs": [
+      "ondoprotocol"
+     ],
+     "programs": [
+      "XzTT4XB8m7sLD2xi6snefSasaswsKCxx5Tifjondogm"
+     ]
+    }
+   ],
+   "distinctOrgs": [
+    "ondoprotocol"
+   ]
+  },
+  {
+   "key": "h8sSRdquYpYHzAZdhoKcvifg5acuMBUEns2Ya1CQcKk",
+   "multisigs": [
+    {
+     "address": "7YwVDsaBcCwhwzMSUsCrxHSj2eTSVhSXSKmgzEcovk8e",
+     "kind": "squads_v4",
+     "threshold": 2,
+     "members": 3,
+     "orgs": [
+      "corium-solana"
+     ],
+     "programs": [
+      "CoriumcqGZW3cdnAiyWz6jHHveMUmdrw9RC1KXfMsF8S"
+     ]
+    },
+    {
+     "address": "FBzf7zWWdZz1Uv6eeMsdqjZFcgBq1kjzLTHi4tet7aG8",
+     "kind": "squads_v4",
+     "threshold": 2,
+     "members": 3,
+     "orgs": [
+      "corium-solana"
+     ],
+     "programs": [
+      "NovanpiewpH4zvYgtzAQN2zWQ94KcKWrHCTswWdZ1Y1"
+     ]
+    }
+   ],
+   "distinctOrgs": [
+    "corium-solana"
+   ]
+  },
+  {
+   "key": "3bPa61hSLsUUbzjRHW2KDGh8kACjyz7eVbc1TADT6sPy",
+   "multisigs": [
+    {
+     "address": "7YwVDsaBcCwhwzMSUsCrxHSj2eTSVhSXSKmgzEcovk8e",
+     "kind": "squads_v4",
+     "threshold": 2,
+     "members": 3,
+     "orgs": [
+      "corium-solana"
+     ],
+     "programs": [
+      "CoriumcqGZW3cdnAiyWz6jHHveMUmdrw9RC1KXfMsF8S"
+     ]
+    },
+    {
+     "address": "FBzf7zWWdZz1Uv6eeMsdqjZFcgBq1kjzLTHi4tet7aG8",
+     "kind": "squads_v4",
+     "threshold": 2,
+     "members": 3,
+     "orgs": [
+      "corium-solana"
+     ],
+     "programs": [
+      "NovanpiewpH4zvYgtzAQN2zWQ94KcKWrHCTswWdZ1Y1"
+     ]
+    }
+   ],
+   "distinctOrgs": [
+    "corium-solana"
+   ]
+  },
+  {
+   "key": "9bb3No7XeTBkHbpYS9AnxyUhgnwRLWzBzj4tNN3PhMbs",
+   "multisigs": [
+    {
+     "address": "7YwVDsaBcCwhwzMSUsCrxHSj2eTSVhSXSKmgzEcovk8e",
+     "kind": "squads_v4",
+     "threshold": 2,
+     "members": 3,
+     "orgs": [
+      "corium-solana"
+     ],
+     "programs": [
+      "CoriumcqGZW3cdnAiyWz6jHHveMUmdrw9RC1KXfMsF8S"
+     ]
+    },
+    {
+     "address": "FBzf7zWWdZz1Uv6eeMsdqjZFcgBq1kjzLTHi4tet7aG8",
+     "kind": "squads_v4",
+     "threshold": 2,
+     "members": 3,
+     "orgs": [
+      "corium-solana"
+     ],
+     "programs": [
+      "NovanpiewpH4zvYgtzAQN2zWQ94KcKWrHCTswWdZ1Y1"
+     ]
+    }
+   ],
+   "distinctOrgs": [
+    "corium-solana"
+   ]
+  },
+  {
+   "key": "5ggs2vd1csz74YMCzxesmcUEd3ycYFKAW6kfyttVYwBv",
+   "multisigs": [
+    {
+     "address": "5HzXCm7omo3M7sX5nC4XcAxcTXEC22UHegB1hQiRvbfk",
+     "kind": "squads_v4",
+     "threshold": 5,
+     "members": 10,
+     "orgs": [
+      "kamino-finance"
+     ],
+     "programs": [
+      "FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr"
+     ]
+    },
+    {
+     "address": "6hhBGCtmg7tPWUSgp3LG6X2rsmYWAc4tNsA6G4CnfQbM",
+     "kind": "squads_v4",
+     "threshold": 5,
+     "members": 10,
+     "orgs": [
+      "kamino-finance"
+     ],
+     "programs": [
+      "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+      "KvauGMspG5k6rtzrqqn7WNn3oZdyKqLKwK2XWQ8FLjd"
+     ]
+    }
+   ],
+   "distinctOrgs": [
+    "kamino-finance"
+   ]
+  },
+  {
+   "key": "6vkzAQLAERW5RKHX68ZCDxWxW77T8dMqYUYMXCe6ooMC",
+   "multisigs": [
+    {
+     "address": "5HzXCm7omo3M7sX5nC4XcAxcTXEC22UHegB1hQiRvbfk",
+     "kind": "squads_v4",
+     "threshold": 5,
+     "members": 10,
+     "orgs": [
+      "kamino-finance"
+     ],
+     "programs": [
+      "FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr"
+     ]
+    },
+    {
+     "address": "6hhBGCtmg7tPWUSgp3LG6X2rsmYWAc4tNsA6G4CnfQbM",
+     "kind": "squads_v4",
+     "threshold": 5,
+     "members": 10,
+     "orgs": [
+      "kamino-finance"
+     ],
+     "programs": [
+      "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+      "KvauGMspG5k6rtzrqqn7WNn3oZdyKqLKwK2XWQ8FLjd"
+     ]
+    }
+   ],
+   "distinctOrgs": [
+    "kamino-finance"
+   ]
+  },
+  {
+   "key": "7tH1k4PsMu3sNUYJxD5ezxhAmYYXyVVZz5c3dbaxcvUV",
+   "multisigs": [
+    {
+     "address": "5HzXCm7omo3M7sX5nC4XcAxcTXEC22UHegB1hQiRvbfk",
+     "kind": "squads_v4",
+     "threshold": 5,
+     "members": 10,
+     "orgs": [
+      "kamino-finance"
+     ],
+     "programs": [
+      "FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr"
+     ]
+    },
+    {
+     "address": "6hhBGCtmg7tPWUSgp3LG6X2rsmYWAc4tNsA6G4CnfQbM",
+     "kind": "squads_v4",
+     "threshold": 5,
+     "members": 10,
+     "orgs": [
+      "kamino-finance"
+     ],
+     "programs": [
+      "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+      "KvauGMspG5k6rtzrqqn7WNn3oZdyKqLKwK2XWQ8FLjd"
+     ]
+    }
+   ],
+   "distinctOrgs": [
+    "kamino-finance"
+   ]
+  },
+  {
+   "key": "8g2PMddbKrqpPtd74pWM16xnDwtpKtkDJNDsQ9cWJZAC",
+   "multisigs": [
+    {
+     "address": "5HzXCm7omo3M7sX5nC4XcAxcTXEC22UHegB1hQiRvbfk",
+     "kind": "squads_v4",
+     "threshold": 5,
+     "members": 10,
+     "orgs": [
+      "kamino-finance"
+     ],
+     "programs": [
+      "FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr"
+     ]
+    },
+    {
+     "address": "6hhBGCtmg7tPWUSgp3LG6X2rsmYWAc4tNsA6G4CnfQbM",
+     "kind": "squads_v4",
+     "threshold": 5,
+     "members": 10,
+     "orgs": [
+      "kamino-finance"
+     ],
+     "programs": [
+      "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+      "KvauGMspG5k6rtzrqqn7WNn3oZdyKqLKwK2XWQ8FLjd"
+     ]
+    }
+   ],
+   "distinctOrgs": [
+    "kamino-finance"
+   ]
+  },
+  {
+   "key": "BEUTwDjLNoXvT26J9CZD5A1Fsr9WF2UXdcUVZuy4zQ3d",
+   "multisigs": [
+    {
+     "address": "5HzXCm7omo3M7sX5nC4XcAxcTXEC22UHegB1hQiRvbfk",
+     "kind": "squads_v4",
+     "threshold": 5,
+     "members": 10,
+     "orgs": [
+      "kamino-finance"
+     ],
+     "programs": [
+      "FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr"
+     ]
+    },
+    {
+     "address": "6hhBGCtmg7tPWUSgp3LG6X2rsmYWAc4tNsA6G4CnfQbM",
+     "kind": "squads_v4",
+     "threshold": 5,
+     "members": 10,
+     "orgs": [
+      "kamino-finance"
+     ],
+     "programs": [
+      "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+      "KvauGMspG5k6rtzrqqn7WNn3oZdyKqLKwK2XWQ8FLjd"
+     ]
+    }
+   ],
+   "distinctOrgs": [
+    "kamino-finance"
+   ]
+  },
+  {
+   "key": "BMGYmN1hG8evD3pvy1Rk41bFUdGGVP5fYJbh2JHMonqK",
+   "multisigs": [
+    {
+     "address": "5HzXCm7omo3M7sX5nC4XcAxcTXEC22UHegB1hQiRvbfk",
+     "kind": "squads_v4",
+     "threshold": 5,
+     "members": 10,
+     "orgs": [
+      "kamino-finance"
+     ],
+     "programs": [
+      "FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr"
+     ]
+    },
+    {
+     "address": "6hhBGCtmg7tPWUSgp3LG6X2rsmYWAc4tNsA6G4CnfQbM",
+     "kind": "squads_v4",
+     "threshold": 5,
+     "members": 10,
+     "orgs": [
+      "kamino-finance"
+     ],
+     "programs": [
+      "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+      "KvauGMspG5k6rtzrqqn7WNn3oZdyKqLKwK2XWQ8FLjd"
+     ]
+    }
+   ],
+   "distinctOrgs": [
+    "kamino-finance"
+   ]
+  },
+  {
+   "key": "CmJywvWynJAiADsgTkVWu5BJus4ru2SP1PnfBXvThrxZ",
+   "multisigs": [
+    {
+     "address": "5HzXCm7omo3M7sX5nC4XcAxcTXEC22UHegB1hQiRvbfk",
+     "kind": "squads_v4",
+     "threshold": 5,
+     "members": 10,
+     "orgs": [
+      "kamino-finance"
+     ],
+     "programs": [
+      "FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr"
+     ]
+    },
+    {
+     "address": "6hhBGCtmg7tPWUSgp3LG6X2rsmYWAc4tNsA6G4CnfQbM",
+     "kind": "squads_v4",
+     "threshold": 5,
+     "members": 10,
+     "orgs": [
+      "kamino-finance"
+     ],
+     "programs": [
+      "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+      "KvauGMspG5k6rtzrqqn7WNn3oZdyKqLKwK2XWQ8FLjd"
+     ]
+    }
+   ],
+   "distinctOrgs": [
+    "kamino-finance"
+   ]
+  },
+  {
+   "key": "DFheUjWj6BL9CuF8gAYfF6TgrbrruTTCc3vE6Ajn1gyK",
+   "multisigs": [
+    {
+     "address": "5HzXCm7omo3M7sX5nC4XcAxcTXEC22UHegB1hQiRvbfk",
+     "kind": "squads_v4",
+     "threshold": 5,
+     "members": 10,
+     "orgs": [
+      "kamino-finance"
+     ],
+     "programs": [
+      "FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr"
+     ]
+    },
+    {
+     "address": "6hhBGCtmg7tPWUSgp3LG6X2rsmYWAc4tNsA6G4CnfQbM",
+     "kind": "squads_v4",
+     "threshold": 5,
+     "members": 10,
+     "orgs": [
+      "kamino-finance"
+     ],
+     "programs": [
+      "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+      "KvauGMspG5k6rtzrqqn7WNn3oZdyKqLKwK2XWQ8FLjd"
+     ]
+    }
+   ],
+   "distinctOrgs": [
+    "kamino-finance"
+   ]
+  },
+  {
+   "key": "G8fVffcHt3n6DkjSdYj47xWe55QjFsL4P5zhQ9RXFuPa",
+   "multisigs": [
+    {
+     "address": "5HzXCm7omo3M7sX5nC4XcAxcTXEC22UHegB1hQiRvbfk",
+     "kind": "squads_v4",
+     "threshold": 5,
+     "members": 10,
+     "orgs": [
+      "kamino-finance"
+     ],
+     "programs": [
+      "FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr"
+     ]
+    },
+    {
+     "address": "6hhBGCtmg7tPWUSgp3LG6X2rsmYWAc4tNsA6G4CnfQbM",
+     "kind": "squads_v4",
+     "threshold": 5,
+     "members": 10,
+     "orgs": [
+      "kamino-finance"
+     ],
+     "programs": [
+      "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+      "KvauGMspG5k6rtzrqqn7WNn3oZdyKqLKwK2XWQ8FLjd"
+     ]
+    }
+   ],
+   "distinctOrgs": [
+    "kamino-finance"
+   ]
+  },
+  {
+   "key": "HrKa158AuSt2QtDWnvr81qdgBZjJ7MJGkaQ8D7pZeYMj",
+   "multisigs": [
+    {
+     "address": "5HzXCm7omo3M7sX5nC4XcAxcTXEC22UHegB1hQiRvbfk",
+     "kind": "squads_v4",
+     "threshold": 5,
+     "members": 10,
+     "orgs": [
+      "kamino-finance"
+     ],
+     "programs": [
+      "FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr"
+     ]
+    },
+    {
+     "address": "6hhBGCtmg7tPWUSgp3LG6X2rsmYWAc4tNsA6G4CnfQbM",
+     "kind": "squads_v4",
+     "threshold": 5,
+     "members": 10,
+     "orgs": [
+      "kamino-finance"
+     ],
+     "programs": [
+      "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+      "KvauGMspG5k6rtzrqqn7WNn3oZdyKqLKwK2XWQ8FLjd"
+     ]
+    }
+   ],
+   "distinctOrgs": [
+    "kamino-finance"
+   ]
+  },
+  {
+   "key": "9uXcbJU4RCbNKB7zy5VoEUN4JPXwhJM6s7eZUtESGqtD",
+   "multisigs": [
+    {
+     "address": "3h3uJ5a3tKTARVpt9uL1ANcebgyXH7GpRtEEDJUmrjF6",
+     "kind": "squads_v3",
+     "threshold": 1,
+     "members": 7,
+     "orgs": [],
+     "programs": [
+      "FDkEcyM4DBbs3uJiXoPaSuPwXSuMcDTcMGoSiBVsg7jw"
+     ]
+    },
+    {
+     "address": "DK37X6PNtzS4oiJAWgJ364NkUq6us3gf4u7GVRdezqvW",
+     "kind": "squads_v4",
+     "threshold": 1,
+     "members": 12,
+     "orgs": [
+      "ondoprotocol"
+     ],
+     "programs": [
+      "xoVUinQWoi4Bxre6oqEJHp9WrJaHacs74gtYtondogm"
+     ]
+    }
+   ],
+   "distinctOrgs": [
+    "ondoprotocol"
+   ]
+  },
+  {
+   "key": "AQV4t5RpP9RRjy2hd1tAoVUodB8JDq6rY7kBMvfTnGfN",
+   "multisigs": [
+    {
+     "address": "3h3uJ5a3tKTARVpt9uL1ANcebgyXH7GpRtEEDJUmrjF6",
+     "kind": "squads_v3",
+     "threshold": 1,
+     "members": 7,
+     "orgs": [],
+     "programs": [
+      "FDkEcyM4DBbs3uJiXoPaSuPwXSuMcDTcMGoSiBVsg7jw"
+     ]
+    },
+    {
+     "address": "DK37X6PNtzS4oiJAWgJ364NkUq6us3gf4u7GVRdezqvW",
+     "kind": "squads_v4",
+     "threshold": 1,
+     "members": 12,
+     "orgs": [
+      "ondoprotocol"
+     ],
+     "programs": [
+      "xoVUinQWoi4Bxre6oqEJHp9WrJaHacs74gtYtondogm"
+     ]
+    }
+   ],
+   "distinctOrgs": [
+    "ondoprotocol"
+   ]
+  },
+  {
+   "key": "FGb3upaQC5sRuTnEHRMbpmkkUGiqat9wPVDVnKvSeZvb",
+   "multisigs": [
+    {
+     "address": "DK37X6PNtzS4oiJAWgJ364NkUq6us3gf4u7GVRdezqvW",
+     "kind": "squads_v4",
+     "threshold": 1,
+     "members": 12,
+     "orgs": [
+      "ondoprotocol"
+     ],
+     "programs": [
+      "xoVUinQWoi4Bxre6oqEJHp9WrJaHacs74gtYtondogm"
+     ]
+    },
+    {
+     "address": "EfMUASGwCsPBafiPi8rwdZfUJSUt7pxAoxayR39PVpMr",
+     "kind": "squads_v4",
+     "threshold": 4,
+     "members": 7,
+     "orgs": [
+      "ondoprotocol"
+     ],
+     "programs": [
+      "XzTT4XB8m7sLD2xi6snefSasaswsKCxx5Tifjondogm"
+     ]
+    }
+   ],
+   "distinctOrgs": [
+    "ondoprotocol"
+   ]
+  },
+  {
+   "key": "HoiPiUt9ZxPusdkP9yXpSGJFLxU8ZHqW4WPNZbcPrcHt",
+   "multisigs": [
+    {
+     "address": "DK37X6PNtzS4oiJAWgJ364NkUq6us3gf4u7GVRdezqvW",
+     "kind": "squads_v4",
+     "threshold": 1,
+     "members": 12,
+     "orgs": [
+      "ondoprotocol"
+     ],
+     "programs": [
+      "xoVUinQWoi4Bxre6oqEJHp9WrJaHacs74gtYtondogm"
+     ]
+    },
+    {
+     "address": "EfMUASGwCsPBafiPi8rwdZfUJSUt7pxAoxayR39PVpMr",
+     "kind": "squads_v4",
+     "threshold": 4,
+     "members": 7,
+     "orgs": [
+      "ondoprotocol"
+     ],
+     "programs": [
+      "XzTT4XB8m7sLD2xi6snefSasaswsKCxx5Tifjondogm"
+     ]
+    }
+   ],
+   "distinctOrgs": [
+    "ondoprotocol"
+   ]
+  },
+  {
+   "key": "CHRDWWqUs6LyeeoD7pJb3iRfnvYeMfwMUtf2N7zWk7uh",
+   "multisigs": [
+    {
+     "address": "7ZyDFzet6sKgZLN4D89JLfo7chu2n7nYdkFt5RCFk8Sf",
+     "kind": "squads_v3",
+     "threshold": 4,
+     "members": 7,
+     "orgs": [],
+     "programs": [
+      "61DFfeTKM7trxYcPQCM78bJ794ddZprZpAwAnLiwTpYH"
+     ]
+    },
+    {
+     "address": "CoEsykatDegLB7pcMJia79JSriDdi71nPnjgeSfw623k",
+     "kind": "squads_v3",
+     "threshold": 4,
+     "members": 7,
+     "orgs": [],
+     "programs": [
+      "dbcij3LWUppWqq96dh6gJWwBifmcGfLSB5D4DuSMaqN"
+     ]
+    }
+   ],
+   "distinctOrgs": []
+  },
+  {
+   "key": "5dYUzNUMtGT24ZHrpmvZpFT9FKRPc4xpmXKSuxKZdTp1",
+   "multisigs": [
+    {
+     "address": "8xq3APh96gmozUjyVrubF7puKf8upZBbeSAFiP5njxqE",
+     "kind": "squads_v4",
+     "threshold": 1,
+     "members": 2,
+     "orgs": [],
+     "programs": [
+      "6SD3tHMpVk9j9GHRHLifmEPe16YKzeAPsd77Xi2yCExz"
+     ]
+    },
+    {
+     "address": "CNd9VrouBLo6EoPJTvR3mWiz1gKfHAy2URQUoFABHkq1",
+     "kind": "squads_v4",
+     "threshold": 2,
+     "members": 3,
+     "orgs": [],
+     "programs": [
+      "966JxiTW4eagG3jhk4iuJenn4dN2jopkjSHCyT9WGs7T"
+     ]
+    }
+   ],
+   "distinctOrgs": []
+  },
+  {
+   "key": "GTzaBWhq6h4zQSsqVjsD14ABWosjXy5g9xrzrqsLUyar",
+   "multisigs": [
+    {
+     "address": "3ALHTMgonwiyyoexxVZ6X8FnfVPRDrJD28cS1tNWNWrS",
+     "kind": "squads_v4",
+     "threshold": 2,
+     "members": 3,
+     "orgs": [],
+     "programs": [
+      "9MXzxxBeSiTByU8UagAKBS1eyhauFiJgdczKCGrNXi26"
+     ]
+    },
+    {
+     "address": "BiFqKEtVL9iv2ZYBw4oE7qFysftof69G6N5LTpQ7xitp",
+     "kind": "squads_v4",
+     "threshold": 3,
+     "members": 7,
+     "orgs": [],
+     "programs": [
+      "9zWqf5jhauvxMc9RETXD9xbaMBrJpzPzGB6PR34Ksq6Z"
+     ]
+    }
+   ],
+   "distinctOrgs": []
+  }
+ ]
+}

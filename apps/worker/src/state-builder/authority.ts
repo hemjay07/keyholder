@@ -84,6 +84,14 @@ export async function resolveAuthority(connection: Connection, target: Authority
     }
   }
 
+  // (a2) An upgrade authority on the ed25519 curve is a keypair: one key controls
+  // the program. Program-derived addresses (Squads vaults, coral signers) are
+  // off-curve by construction (verified 2026-10-02: 245/245 single-key authorities
+  // on-curve, 131/131 Squads vaults off-curve across 557 verified programs).
+  if (PublicKey.isOnCurve(new PublicKey(upgradeAuthority).toBytes())) {
+    return { programDataAddr, upgradeAuthority, authorityKind: 'single_key', multisig: null };
+  }
+
   // (b) Resolve as a Squads vault PDA against known candidate multisigs.
   const candidates = target.candidateMultisigs ?? [];
   const resolved = candidates.length > 0 ? resolveSquadsVault(upgradeAuthority, candidates) : null;

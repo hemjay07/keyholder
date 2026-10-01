@@ -9,7 +9,7 @@
 // coral, governance); then the multisig account is read and its member keys
 // decoded. Anything not resolved is recorded as unresolved, never guessed.
 
-import { writeFileSync, mkdirSync } from 'node:fs';
+import { writeFileSync, mkdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { parseSquadsV4Multisig, parseSquadsV3Multisig, parseCoralMultisig, SQUADS_V4_PROGRAM_ID, SQUADS_V3_PROGRAM_ID, CORAL_MULTISIG_PROGRAM_ID } from '@keyholder/decoder';
@@ -60,10 +60,13 @@ async function members(connection: Connection, multisig: string): Promise<{ prog
 
 async function main(): Promise<void> {
   const connection = new Connection(RPC, 'confirmed');
-  const ids = (await verifiedProgramIds()).slice(0, LIMIT);
+  // COVERAGE_RESUME=<file>: re-resolve only the unresolved/errored rows of an earlier run, keep the rest.
+  const resume = process.env.COVERAGE_RESUME ? (JSON.parse(readFileSync(process.env.COVERAGE_RESUME, 'utf8')) as { programs: Array<Record<string, unknown>> }) : null;
+  const kept = resume ? resume.programs.filter((r) => !r.error && r.authorityKind !== 'single_key_or_vault_unresolved') : [];
+  const ids = resume ? resume.programs.filter((r) => !kept.includes(r)).map((r) => String(r.programId)) : (await verifiedProgramIds()).slice(0, LIMIT);
   const slot = await withRetry(() => connection.getSlot());
-  console.log(`coverage: ${ids.length} verified programs, slot ${slot}, rpc ${RPC.includes('api-key') ? 'keyed' : RPC}`);
-  const rows: unknown[] = [];
+  console.log(`coverage: ${ids.length} verified programs, slot ${slot}, rpc ${/api-key|\/v2\//.test(RPC) ? 'keyed' : RPC}`);
+  const rows: unknown[] = [...kept];
   let n = 0;
   for (const programId of ids) {
     n++;
@@ -86,7 +89,7 @@ async function main(): Promise<void> {
       row.error = e instanceof Error ? e.message.slice(0, 160) : String(e);
     }
     rows.push(row);
-    if (n % 25 === 0) console.log(`  ${n}/${ids.length}`);
+    if (n % 10 === 0) process.stderr.write(`  ${n}/${ids.length}\n`);
     await sleep(GAP_MS);
   }
   const dir = join(__dirname, '..', '..', '..', '..', 'data', 'coverage');
