@@ -170,7 +170,9 @@ describe('resolveAuthorityHistorically', () => {
       getAccountInfo: vi.fn(async () => null),
       getSignaturesForAddress: vi.fn(async () => [{ signature: 'a', slot: 1 }, { signature: 'b', slot: 2 }]),
       getParsedTransaction: vi.fn(async () => ({
-        transaction: { message: { accountKeys: [fakeAccount(authority, true)], instructions: [{ programId: new PublicKey('11111111111111111111111111111111') }] } },
+        // Spec change 2026-10-02: the authority appears in the txs but is NOT a top-level
+        // signer (a signer would prove it is a keypair, rule 3). Nothing else matches.
+        transaction: { message: { accountKeys: [fakeAccount(authority, false)], instructions: [{ programId: new PublicKey('11111111111111111111111111111111') }] } },
         meta: { innerInstructions: [] },
       })),
     } as any;
@@ -179,6 +181,23 @@ describe('resolveAuthorityHistorically', () => {
     expect(result.authorityKind).toBe('single_key_or_vault_unresolved');
     expect(result.signaturesScanned).toBe(2);
     expect(result.evidenceNote).toContain('2 signatures scanned');
+  });
+
+  it('happy: an authority that is a top-level signer of any tx is a keypair: single_key (rule 3)', async () => {
+    const authority = Keypair.generate().publicKey;
+    const connection = {
+      getAccountInfo: vi.fn(async () => null),
+      getSignaturesForAddress: vi.fn(async () => [{ signature: 'paid', slot: 1 }]),
+      getParsedTransaction: vi.fn(async () => ({
+        transaction: { message: { accountKeys: [fakeAccount(authority, true)], instructions: [{ programId: new PublicKey('11111111111111111111111111111111') }] } },
+        meta: { innerInstructions: [] },
+      })),
+    } as any;
+
+    const result = await resolveAuthorityHistorically(connection, authority.toBase58());
+    expect(result.authorityKind).toBe('single_key');
+    expect(result.evidenceSignature).toBe('paid');
+    expect(result.evidenceNote).toContain('top-level signer');
   });
 
   it('error: getSignaturesForAddress throwing is caught and reported, not fatal', async () => {
@@ -208,7 +227,8 @@ describe('resolveAuthorityHistorically', () => {
       getParsedTransaction: vi.fn(async () => ({
         transaction: {
           message: {
-            accountKeys: [fakeAccount(authority, true), fakeAccount(notAMultisig, false)],
+            // A vault PDA is never a top-level signer on a real tx (spec change 2026-10-02).
+            accountKeys: [fakeAccount(authority, false), fakeAccount(notAMultisig, false)],
             instructions: [{ programId: new PublicKey(SQUADS_V4_PROGRAM_ID) }],
           },
         },

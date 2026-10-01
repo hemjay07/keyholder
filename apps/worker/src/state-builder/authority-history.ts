@@ -244,6 +244,19 @@ export async function resolveAuthorityHistorically(
         signaturesScanned: signatures.length,
       };
     }
+
+    // (3) The authority is a top-level signer of a transaction. Only a keypair can
+    // be one: a program-derived address (a Squads vault, a coral signer) signs only
+    // inside a program call. So one key holds the upgrade authority.
+    if (signerAddresses(tx).includes(authorityAddress)) {
+      return {
+        authorityKind: 'single_key',
+        multisig: null,
+        evidenceSignature: sigInfo.signature,
+        evidenceNote: 'authority signed a transaction as a top-level signer: it is a keypair, not a program-derived address',
+        signaturesScanned: signatures.length,
+      };
+    }
   }
 
   return unresolved(
