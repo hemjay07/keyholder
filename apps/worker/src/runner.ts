@@ -87,6 +87,10 @@ export async function startRunner(): Promise<RunnerHandle> {
   const db = initDb();
   const { httpUrl, wsUrl, usingHelius } = resolveRpcEndpoints();
   const connection = new Connection(httpUrl, { commitment: 'confirmed', wsEndpoint: wsUrl });
+  // The 10-minute control sweep makes ~16 small reads; it runs on its own RPC
+  // (public mainnet by default) so a spent quota on the ingest key never stops
+  // the record from being re-checked (Helius 'max usage reached', 2026-10-01).
+  const sweepConnection = new Connection(process.env.SWEEP_RPC_URL ?? 'https://api.mainnet-beta.solana.com', { commitment: 'confirmed' });
   logger.info('runner starting', { usingHelius });
 
   const { watchedAccounts, trackedProgramIds } = await gatherWatchedAccounts(db);
@@ -148,8 +152,8 @@ export async function startRunner(): Promise<RunnerHandle> {
         const ids = [...new Set(rows.map((r) => r.protocol_id).filter((id): id is string => !!id))];
         for (const protocolId of ids) {
           try {
-            const tipSlot = await connection.getSlot('confirmed');
-            const stateResult = await refreshProtocolState(db, connection, protocolId, tipSlot, logger);
+            const tipSlot = await sweepConnection.getSlot('confirmed');
+            const stateResult = await refreshProtocolState(db, sweepConnection, protocolId, tipSlot, logger);
             if (!stateResult.skipped) checked++;
             if (stateResult.wrote) {
               const riskResult = await runRiskStage(db, protocolId, tipSlot, stateResult.before, stateResult.after);
