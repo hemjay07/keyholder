@@ -45,6 +45,7 @@ describe.skipIf(!databaseUrl)('refreshProtocolState (real local Postgres, _test 
   afterAll(async () => {
     await db.delete(schema.control_state).where(eq(schema.control_state.protocol_id, protocolId));
     await db.delete(schema.control_checks).where(eq(schema.control_checks.protocol_id, protocolId));
+    await db.delete(schema.control_daily).where(eq(schema.control_daily.protocol_id, protocolId));
     await db.delete(schema.programs).where(eq(schema.programs.program_id, programId));
     await db.delete(schema.protocols).where(eq(schema.protocols.id, protocolId));
     await sql.end();
@@ -65,6 +66,11 @@ describe.skipIf(!databaseUrl)('refreshProtocolState (real local Postgres, _test 
 
     const rows = await db.select().from(schema.control_state).where(eq(schema.control_state.protocol_id, protocolId));
     expect(rows).toHaveLength(1);
+
+    // The day's first good read is in the observation log.
+    const daily = await db.select().from(schema.control_daily).where(eq(schema.control_daily.protocol_id, protocolId));
+    expect(daily).toHaveLength(1);
+    expect(daily[0]?.slot).toBe(100);
   });
 
   it('edge: does not write a new row when the resolved state is unchanged', async () => {
@@ -84,6 +90,11 @@ describe.skipIf(!databaseUrl)('refreshProtocolState (real local Postgres, _test 
     // ...but the check itself is recorded: control was read at slot 200 (P26).
     const [check] = await db.select().from(schema.control_checks).where(eq(schema.control_checks.protocol_id, protocolId));
     expect(check?.slot).toBe(200);
+
+    // A second read the same day leaves that day's log row as it was.
+    const daily = await db.select().from(schema.control_daily).where(eq(schema.control_daily.protocol_id, protocolId));
+    expect(daily).toHaveLength(1);
+    expect(daily[0]?.slot).toBe(100);
   });
 
   it('happy: writes a new row when the authority actually changed', async () => {

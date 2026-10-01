@@ -1,0 +1,230 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face { font-family: G; src: url("Geist-Regular.ttf"); }
+@font-face { font-family: GM; src: url("GeistMono-Regular.ttf"); }
+:root { --bg:#E6E2D9; --ink:#1B1A17; --ink2:#5A564E; --sig:#FF5A1F; --panel:#F4F1EA; }
+:root.ink { --bg:#0E0D0C; --ink:#ECE8DF; --ink2:#8F897D; --panel:#1B1A17; }
+html,body { margin:0; width:1080px; height:1080px; overflow:hidden; background:var(--bg); font-family:G; color:var(--ink); }
+#stage { position:absolute; inset:0; overflow:hidden; background:var(--bg); }
+#cam { position:absolute; inset:0; transform-origin:0 0; }
+.abs { position:absolute; left:0; top:0; will-change:transform; }
+#word { top:470px; left:0; width:1080px; height:140px; }
+#word span { position:absolute; top:0; font-size:120px; line-height:140px; letter-spacing:-.03em; transform-origin:0 50%; }
+#dot { width:28px; height:28px; border-radius:14px; background:var(--sig); }
+#pill { background:var(--ink); border-radius:999px; overflow:hidden; }
+.rise { position:absolute; left:0; right:0; text-align:center; white-space:nowrap; }
+.mask { position:absolute; overflow:hidden; }
+.key { width:92px; height:92px; border-radius:46px; border:5px solid var(--ink); box-sizing:border-box; }
+.row { width:860px; height:96px; left:110px; border-bottom:2px solid color-mix(in srgb, var(--ink) 18%, transparent); display:flex; align-items:center; box-sizing:border-box; padding-left:22px; gap:26px; }
+.row .edge { position:absolute; left:0; top:0; bottom:0; width:6px; background:var(--sig); transform-origin:50% 0; }
+.row b { font-weight:400; font-size:32px; width:210px; flex:none; }
+.row .dots { display:flex; gap:5px; width:320px; flex:none; flex-wrap:wrap; }
+.row .dots i { width:16px; height:16px; border-radius:9px; border:2.5px solid var(--ink); box-sizing:border-box; }
+.row .dots i.on { background:var(--ink); }
+.row .m { font-family:GM; font-size:19px; color:var(--sig); white-space:nowrap; }
+.mono { font-family:GM; }
+#shot { overflow:hidden; background:#E6E2D9; }
+#shot img { position:absolute; left:0; top:0; width:1440px; transform-origin:0 0; }
+#axis { height:3px; background:var(--ink); transform-origin:0 50%; }
+#band { background:color-mix(in srgb, var(--sig) 26%, transparent); border-left:4px solid var(--sig); border-right:4px solid var(--sig); box-sizing:border-box; }
+#flood { background:var(--ink); border-radius:999px; }
+#cursor { width:44px; height:44px; }
+</style></head>
+<body>
+<div id="stage"><div id="cam">
+  <div id="word" class="abs"></div>
+  <div id="pill" class="abs"><div class="mask" id="pillMask" style="left:0;right:0;top:0;bottom:0"><div class="rise" id="pillText" style="font-size:52px;line-height:128px;color:var(--bg)">Drift needed two keys</div></div></div>
+  <div id="keys"></div>
+  <div class="mask" id="loseMask" style="left:0;width:1080px;top:640px;height:90px"><div class="rise" id="lose" style="font-size:64px">to lose $285M.</div></div>
+  <div id="rows"></div>
+  <div class="mask" id="capMask" style="left:0;width:1080px;top:820px;height:60px"><div class="rise mono" id="cap" style="font-size:30px"><span style="color:var(--sig)">10 of 13</span> have no timelock</div></div>
+  <div id="shot" class="abs"><img id="img" src="home-fold-1440.png"></div>
+  <div id="axis" class="abs"></div>
+  <div id="ticks"></div>
+  <div id="band" class="abs"></div>
+  <div class="mask" id="countMask" style="left:0;width:1080px;top:250px;height:170px"><div class="rise mono" id="count" style="font-size:140px;color:var(--sig)"></div></div>
+  <div class="mask" id="warnMask" style="left:0;width:1080px;top:780px;height:70px"><div class="rise mono" id="warn" style="font-size:40px;letter-spacing:.06em;color:var(--sig)">5.6 DAYS OF WARNING</div></div>
+  <div id="flood" class="abs"></div>
+  <div class="mask" id="ckMask" style="left:0;width:1080px;top:490px;height:110px"><div class="rise" id="ck" style="font-size:92px;color:var(--bg)">Count the keys.</div></div>
+  <div id="dot" class="abs"></div>
+</div>
+<svg id="cursor" class="abs" viewBox="0 0 24 24"><path d="M4 2 L4 19 L8.5 14.8 L11.6 21.5 L14.4 20.2 L11.3 13.6 L17.5 13.6 Z" fill="#111" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/></svg>
+</div>
+<script>
+// Every style below is a pure function of t (seconds). No transitions, no timers.
+const P = new URLSearchParams(location.search);
+if (P.get('theme') === 'ink') document.documentElement.classList.add('ink');
+let BEATS = [];
+const B = (i) => BEATS[Math.max(0, Math.min(BEATS.length - 1, Math.floor(i)))] + (i % 1) * 0.5108;
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lin = (t, a, b) => clamp((t - a) / (b - a));
+// closed-form spring step response (0 -> 1), zeta .62
+function spr(t, t0, w = 16, z = 0.62) { const x = t - t0; if (x <= 0) return 0; const wd = w * Math.sqrt(1 - z * z); return 1 - Math.exp(-z * w * x) * (Math.cos(wd * x) + (z * w / wd) * Math.sin(wd * x)); }
+const ease = (x) => 1 - Math.pow(1 - clamp(x), 3);
+const mix = (a, b, k) => a + (b - a) * k;
+const $ = (id) => document.getElementById(id);
+const set = (el, o) => { for (const k in o) el.style[k] = o[k]; };
+
+// --- build static nodes ---
+const WORD = 'keyholder';
+const word = $('word');
+const letters = [...WORD].map((c) => { const s = document.createElement('span'); s.textContent = c; word.appendChild(s); return s; });
+const keys = [...Array(5)].map(() => { const k = document.createElement('div'); k.className = 'key abs'; $('keys').appendChild(k); return k; });
+const ROWS = [['Marinade', 6, 13, 'no timelock feature'], ['marginfi v2', 7, 15, 'no timelock'], ['Jupiter v6', 4, 7, 'no timelock feature']];
+const rows = ROWS.map(([n, th, m, tl]) => { const r = document.createElement('div'); r.className = 'row abs'; r.innerHTML = `<span class="edge"></span><b>${n}</b><span class="dots">${[...Array(m)].map((_, i) => `<i class="${i < th ? 'on' : ''}"></i>`).join('')}</span><span class="m">${th}/${m} · ${tl.replace('no timelock feature', 'no timelock')}</span>`; $('rows').appendChild(r); return r; });
+const TICKS = ['25 Mar', '27 Mar', '29 Mar', '31 Mar'];
+const ticks = TICKS.map((d) => { const s = document.createElement('div'); s.className = 'abs mono'; s.style.fontSize = '22px'; s.style.color = 'var(--ink2)'; s.textContent = d; $('ticks').appendChild(s); return s; });
+let widths = [];
+
+function layoutWord() { widths = letters.map((s) => s.getBoundingClientRect().width); }
+
+// wordmark: k=0 -> resting; k=1 -> every letter has dropped into the dot.
+// Letters go one at a time, right to left, each moving to the dot and shrinking
+// evenly (no horizontal squash, which smears).
+function wordAt(k, alpha = 1) {
+  const total = widths.reduce((a, b) => a + b, 0) + 30;
+  const x0 = 540 - total / 2; let x = x0;
+  const dotX = x0 + total - 28;
+  const n = letters.length;
+  letters.forEach((s, i) => {
+    const wx = x; x += widths[i];
+    const order = n - 1 - i;                 // last letter goes first
+    const li = ease(clamp((k * (n + 2) - order) / 3));
+    const tx = mix(wx, dotX - widths[i] * 0.2, li), sc = Math.max(0.001, 1 - li);
+    set(s, { transform: `translate(${tx}px, ${li * 30}px) scale(${sc})`, transformOrigin: '50% 75%', opacity: li > 0.96 ? 0 : alpha });
+  });
+  return { dotX, dotY: 470 + 104 };
+}
+function hide(...els) { els.forEach((e) => (e.style.visibility = 'hidden')); }
+function show(...els) { els.forEach((e) => (e.style.visibility = 'visible')); }
+function rise(el, maskEl, t0, t1 = null) { // text rises from its mask line; t1 = sinks back
+  const k = spr(window.__t, t0, 22, 0.9); const out = t1 == null ? 0 : ease(lin(window.__t, t1, t1 + 0.25));
+  el.style.transform = `translateY(${(1 - k) * 110 + out * -110}%)`; maskEl.style.visibility = window.__t >= t0 && (t1 == null || window.__t < t1 + 0.3) ? 'visible' : 'hidden';
+}
+
+async function seek(t) {
+  window.__t = t;
+  const all = [word, $('pill'), ...keys, $('loseMask'), ...rows, $('capMask'), $('shot'), $('axis'), ...ticks, $('band'), $('countMask'), $('warnMask'), $('flood'), $('ckMask'), $('dot'), $('cursor')];
+  hide(...all);
+  $('cam').style.transform = 'none';
+  $('img').style.transform = 'translate(0px, 90px) scale(0.75)';
+  const dot = $('dot');
+
+  // 0-3 open: squeeze into the dot. 37-39 return: letters spring out.
+  if (t < B(3.2)) {
+    show(word, dot);
+    const k = ease(lin(t, B(1), B(3)));
+    const { dotX, dotY } = wordAt(k);
+    set(dot, { transform: `translate(${dotX}px, ${dotY - 14}px)`, width: '28px', height: '28px', borderRadius: '14px', background: 'var(--sig)' });
+  }
+  // 3-11 the dot becomes a pill, then splits into five keys
+  if (t >= B(3) && t < B(12)) {
+    const g = spr(t, B(3.2), 13, 0.75);
+    const wPill = mix(28, 820, g), hPill = mix(28, 128, g);
+    const split = ease(lin(t, B(8), B(8.6)));
+    if (split < 1) {
+      show($('pill'));
+      const w = mix(wPill, 92, split);
+      // the pill grows out of the wordmark's dot and travels to centre (relay: one object)
+      const home = wordAt(1); const m = ease(lin(t, B(3.2), B(4.2)));
+      const cx = mix(home.dotX + 14, 540, m), cy = mix(home.dotY, 540, m);
+      set($('pill'), { transform: `translate(${cx - w / 2}px, ${cy - hPill / 2}px)`, width: w + 'px', height: hPill + 'px', background: `color-mix(in srgb, var(--sig) ${Math.round((1 - lin(t, B(3.4), B(4))) * 100)}%, var(--ink))` });
+      rise($('pillText'), $('pillMask'), B(5), B(7.6));
+      $('pillMask').style.visibility = 'inherit';
+    }
+    if (t >= B(8)) {
+      keys.forEach((kel, i) => {
+        show(kel);
+        const s = spr(t, B(8) + i * 0.04, 15, 0.6);
+        const x = 540 + (i - 2) * 130 * s - 46;
+        const on = (i === 0 && t >= B(9)) || (i === 1 && t >= B(10));
+        const pop = on ? 1 + 0.18 * Math.sin(Math.PI * lin(t, i === 0 ? B(9) : B(10), (i === 0 ? B(9) : B(10)) + 0.25)) : 1;
+        set(kel, { transform: `translate(${x}px, ${494}px) scale(${pop})`, background: on ? (i === 0 ? 'var(--sig)' : 'var(--ink)') : 'transparent', borderColor: i === 0 && on ? 'var(--sig)' : 'var(--ink)' });
+      });
+      show($('loseMask')); rise($('lose'), $('loseMask'), B(10.5), B(11.6));
+    }
+  }
+  // 12-16 the key row becomes the record
+  if (t >= B(12) && t < B(16.6)) {
+    rows.forEach((r, i) => {
+      show(r);
+      const s = spr(t, B(12 + i * 0.5), 14, 0.7);
+      set(r, { transform: `translate(0px, ${mix(560, 330 + i * 110, s)}px)`, opacity: 1 });
+      r.querySelector('.edge').style.transform = `scaleY(${ease(lin(t, B(12.6 + i * 0.5), B(13.2 + i * 0.5)))})`;
+    });
+    show($('capMask')); rise($('cap'), $('capMask'), B(14));
+    // cursor glides to row 1 and clicks on the drop
+    show($('cursor'));
+    const c = ease(lin(t, B(14), B(15.6)));
+    const press = t >= B(16) && t < B(16.2) ? 0.82 : 1;
+    set($('cursor'), { transform: `translate(${mix(900, 250, c)}px, ${mix(980, 360, c)}px) scale(${press})` });
+    // the click: row 1 pushes open into the real site
+    if (t >= B(16)) {
+      show($('shot'));
+      const o = ease(lin(t, B(16), B(16.6)));
+      const x = mix(110, 0, o), y = mix(330, 0, o), w = mix(860, 1080, o), h = mix(96, 1080, o);
+      set($('shot'), { transform: `translate(${x}px, ${y}px)`, width: w + 'px', height: h + 'px', borderRadius: mix(4, 0, o) + 'px' });
+    }
+  }
+  // 16.6-20 screen-studio zoom over the real home page
+  if (t >= B(16.6) && t < B(20.5)) {
+    show($('shot'));
+    set($('shot'), { transform: 'translate(0,0)', width: '1080px', height: '1080px', borderRadius: '0' });
+    const z = ease(lin(t, B(16.6), B(18))); const z2 = ease(lin(t, B(18.5), B(19.8)));
+    const s = mix(0.75, 1.25, z); const tx = mix(0, -860, z) + mix(0, 200, z2), ty = mix(90, -120, z) + mix(0, 60, z2);
+    $('img').style.transform = `translate(${tx}px, ${ty}px) scale(${s})`;
+  }
+  // 20-28 the warning: axis draws, the dot lands on 25 Mar, the band stretches to 31 Mar
+  if (t >= B(20) && t < B(28.3)) {
+    const X0 = 140, X1 = 940, Y = 600;
+    const cover = ease(lin(t, B(20), B(20.5)));
+    if (cover < 1) { show($('shot')); set($('shot'), { transform: `translate(0px, ${-cover * 1080}px)` }); }
+    show($('axis'));
+    set($('axis'), { transform: `translate(${X0}px, ${Y}px) scaleX(${ease(lin(t, B(20.3), B(21)))})`, width: (X1 - X0) + 'px' });
+    ticks.forEach((tk, i) => { const k = spr(t, B(20.6 + i * 0.25), 14, 0.8); if (k > 0) { show(tk); set(tk, { transform: `translate(${X0 + i * (X1 - X0) / 3 - 34}px, ${Y + 26 + (1 - k) * 20}px)`, opacity: clamp(k) }); } });
+    const d = spr(t, B(21.5), 16, 0.55);
+    if (t >= B(21.5)) { show(dot); set(dot, { transform: `translate(${X0 - 14}px, ${Y - 13}px) scale(${d})`, background: 'var(--sig)' }); }
+    const bandK = ease(lin(t, B(22), B(26)));
+    if (t >= B(22)) { show($('band')); set($('band'), { transform: `translate(${X0}px, ${Y - 150}px)`, width: Math.max(8, bandK * (X1 - X0)) + 'px', height: '150px' }); }
+    // counter: 0d 00h -> 5d 14h (134 h), real lead time
+    const h = Math.round(134 * bandK);
+    if (t >= B(22)) { show($('countMask')); $('count').textContent = `${Math.floor(h / 24)}d ${String(h % 24).padStart(2, '0')}h`; rise($('count'), $('countMask'), B(22)); }
+    if (t >= B(26)) { show($('warnMask')); rise($('warn'), $('warnMask'), B(26)); }
+  }
+  // 28-34 flood: the band floods the frame in ink, holds a beat, contracts into "Count the keys."
+  if (t >= B(28) && t < B(34.6)) {
+    show($('flood'));
+    const grow = ease(lin(t, B(28), B(28.6)));
+    const shrink = ease(lin(t, B(30), B(30.7)));
+    const W = mix(mix(800, 2200, grow), 820, shrink), H = mix(mix(150, 2200, grow), 150, shrink);
+    const cx = mix(540, 540, grow), cy = mix(525, 540, grow);
+    set($('flood'), { transform: `translate(${cx - W / 2}px, ${cy - H / 2}px)`, width: W + 'px', height: H + 'px', borderRadius: mix(0, 999, shrink) + 'px' });
+    if (t >= B(30.5)) { show($('ckMask')); rise($('ck'), $('ckMask'), B(30.7), B(33.6)); }
+    // 34: the pill closes into the orange dot
+    const close = ease(lin(t, B(33.8), B(34.5)));
+    if (close > 0) {
+      const w = mix(820, 28, close), hh = mix(150, 28, close);
+      set($('flood'), { transform: `translate(${540 - w / 2}px, ${540 - hh / 2}px)`, width: w + 'px', height: hh + 'px', background: `color-mix(in srgb, var(--sig) ${Math.round(close * 100)}%, var(--ink))` });
+    }
+  }
+  // 34.5-39 the dot travels home and the letters spring back out: last frame = first frame
+  if (t >= B(34.5)) {
+    show(word, dot);
+    const k = 1 - spr(t, B(36), 12, 0.7);
+    const { dotX, dotY } = wordAt(clamp(k), 1);
+    const m = ease(lin(t, B(34.5), B(35.6)));
+    set(dot, { transform: `translate(${mix(526, dotX, m)}px, ${mix(526, dotY - 14, m)}px)`, background: 'var(--sig)', width: '28px', height: '28px', borderRadius: '14px' });
+  }
+}
+window.seek = seek;
+window.ready = (async () => {
+  BEATS = await (await fetch('beats.json')).json().then((j) => j.beats);
+  await document.fonts.ready;
+  await new Promise((r) => { const im = $('img'); if (im.complete) r(); else im.onload = r; });
+  layoutWord();
+  await seek(0);
+  return true;
+})();
+</script>
+</body></html>

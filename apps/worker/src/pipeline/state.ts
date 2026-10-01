@@ -25,7 +25,7 @@
 import { desc, eq } from 'drizzle-orm';
 import type { Connection } from '@solana/web3.js';
 import type { Db } from '../db';
-import { control_state, control_checks, programs, multisigs } from '../schema';
+import { control_state, control_checks, control_daily, programs, multisigs } from '../schema';
 import { resolveAuthority } from '../state-builder/authority';
 import { getControlStateAtSlot, hashState, type ControlState } from '../state-builder/fold';
 import { withRedaction } from '../ingest/rpc';
@@ -142,6 +142,12 @@ export async function refreshProtocolState(
     .insert(control_checks)
     .values({ protocol_id: protocolId, slot, checked_at: new Date() })
     .onConflictDoUpdate({ target: control_checks.protocol_id, set: { slot, checked_at: new Date() } });
+
+  // The day's first good read goes into the observation log (one row per protocol per UTC day).
+  await db
+    .insert(control_daily)
+    .values({ day: new Date().toISOString().slice(0, 10), protocol_id: protocolId, slot, facts: controlFacts(after), facts_hash: afterFactsHash })
+    .onConflictDoNothing({ target: [control_daily.day, control_daily.protocol_id] });
 
   if (wrote) {
     await db
