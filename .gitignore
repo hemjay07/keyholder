@@ -24,3 +24,8 @@ programs/*/target/
 Cargo.lock
 .vercel
 .env*.local
+
+# rendered films and copied assets (sources are tracked; renders are rebuilt)
+design/video/cuts/
+design/video/film/*.ttf
+design/video/film/*.png

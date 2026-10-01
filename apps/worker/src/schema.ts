@@ -17,6 +17,7 @@ import {
   serial,
   index,
   primaryKey,
+  date,
 } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 
@@ -174,6 +175,22 @@ export const control_checks = pgTable('control_checks', {
   slot: bigint('slot', { mode: 'number' }).notNull(),
   checked_at: timestamp('checked_at').notNull().default(sql`CURRENT_TIMESTAMP`),
 });
+
+// One row per protocol per UTC day: the first successful live read of that day
+// (the data moat's observation log, design/DATA-MOAT.md). Written even when
+// nothing changed, so the history is continuous and dated by slot.
+export const control_daily = pgTable(
+  'control_daily',
+  {
+    day: date('day', { mode: 'string' }).notNull(),
+    protocol_id: text('protocol_id').notNull(),
+    slot: bigint('slot', { mode: 'number' }).notNull(),
+    facts: jsonb('facts').notNull(),
+    facts_hash: bytea('facts_hash').notNull(),
+    checked_at: timestamp('checked_at', { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
+  },
+  (table) => ({ pk: primaryKey({ columns: [table.day, table.protocol_id] }) })
+);
 
 export const control_state = pgTable(
   'control_state',

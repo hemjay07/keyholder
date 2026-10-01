@@ -50,6 +50,13 @@
       "when": 1790506087885,
       "tag": "20260927104807_control_checks",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1790875630891,
+      "tag": "20261001172710_control_daily",
+      "breakpoints": true
     }
   ]
 }
