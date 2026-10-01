@@ -102,8 +102,23 @@ describe('resolveAuthority', () => {
     expect(result.multisig).toBeNull();
   });
 
-  it('edge: no candidate multisigs and authority is a plain system account -> honestly unresolved, not guessed', async () => {
+  it('happy: an on-curve authority is a keypair -> single_key, no history needed (rule a2)', async () => {
     const wallet = Keypair.generate().publicKey;
+    const programDataBuf = buildProgramDataBuffer(wallet);
+    const getAccountInfo = async (pk: PublicKey) => {
+      if (pk.equals(wallet)) return { data: Buffer.alloc(0), owner: SYSTEM_PROGRAM } as any;
+      return { data: programDataBuf, owner: LOADER_PROGRAM } as any;
+    };
+    const result = await resolveAuthority({ getAccountInfo } as any, { programId: DRIFT_PROGRAM_ID });
+    expect(result.authorityKind).toBe('single_key');
+    expect(result.multisig).toBeNull();
+  });
+
+  // Spec change 2026-10-02: a generated keypair is on-curve and now classifies as
+  // single_key (rule a2). "Unresolved" is for an off-curve (program-derived)
+  // authority whose multisig is not known, which is what these two tests mean.
+  it('edge: no candidate multisigs and an off-curve authority -> honestly unresolved, not guessed', async () => {
+    const wallet = PublicKey.findProgramAddressSync([Buffer.from('unknown-vault')], new PublicKey(SQUADS_V4_PROGRAM_ID))[0];
     const programDataBuf = buildProgramDataBuffer(wallet);
     const getAccountInfo = async (pk: PublicKey) => {
       if (pk.equals(wallet)) return { data: Buffer.alloc(0), owner: SYSTEM_PROGRAM } as any;
@@ -114,8 +129,8 @@ describe('resolveAuthority', () => {
     expect(result.multisig).toBeNull();
   });
 
-  it('edge: candidates given but authority does not derive from any of them -> unresolved', async () => {
-    const wallet = Keypair.generate().publicKey;
+  it('edge: candidates given but an off-curve authority does not derive from any of them -> unresolved', async () => {
+    const wallet = PublicKey.findProgramAddressSync([Buffer.from('other-vault')], new PublicKey(SQUADS_V4_PROGRAM_ID))[0];
     const programDataBuf = buildProgramDataBuffer(wallet);
     const getAccountInfo = async (pk: PublicKey) => {
       if (pk.equals(wallet)) return null; // unfunded wallet, no account yet
