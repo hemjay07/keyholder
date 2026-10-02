@@ -1,0 +1,713 @@
+{
+ "day": "2026-10-02",
+ "slot": 452523154,
+ "source": "verify.osec.io verified programs",
+ "programs": [
+  {
+   "programId": "JUPDWNB9G9Hsg8PKynnP6DyWLsXVn4QnqMCqg6n4ZdM",
+   "repo": "",
+   "programData": "Fm6w9wuRXbUykjpHMGMVP3R9uuWugiYfbwWSVzyVHnyQ",
+   "upgradeAuthority": "9u9iZBWqGsp5hXBxkVZtBTuLSGNAG9gEQLgpuVw39ASg",
+   "authorityKind": "single_key",
+   "multisig": null
+  },
+  {
+   "programId": "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
+   "repo": "",
+   "programData": "4Ec7ZxZS6Sbdg5UGSLHbAnM7GQHp2eFd4KYWRexAipQT",
+   "upgradeAuthority": "CvQZZ23qYDWF2RUpxYJ8y9K4skmuvYEEjH7fK58jtipQ",
+   "evidence": "4hmPVRY5WiwrC7m468XwCYHNz7SKYWttKt6V6MQ3JnQ77mk8acvDAJAtAh5A2iGyWLdd7R1xsJRriKTC73pa7xQq",
+   "authorityKind": "squads_vault",
+   "multisig": {
+    "address": "7ZyDFzet6sKgZLN4D89JLfo7chu2n7nYdkFt5RCFk8Sf",
+    "threshold": 4,
+    "memberCount": 7,
+    "timeLockS": 0,
+    "configAuthority": null,
+    "programVersion": "v3"
+   },
+   "signers": {
+    "program": "squads_v3",
+    "members": [
+     "3ZR4gMzciDHZudi5e1evdESKZuCQEE9QNHLkMoRsfDxQ",
+     "89FnbsKH8n6FXCghGUijxh3snqx3e6VXJ7q1fQAHWkQQ",
+     "8orpmxSAiVjHWBL3JDvdQtQUT4yYMDkPA72vW2cTVjiP",
+     "CHRDWWqUs6LyeeoD7pJb3iRfnvYeMfwMUtf2N7zWk7uh",
+     "Dg5NLa5JuwfRMkuwZEguD9RpVrcQD3536GxogUv7pLNV",
+     "EhJqf1p39c8NnH5iuZAJyw778LQua1AhZWxarT5SF8sT",
+     "GGG2JyBtwbPAsYwUQED8GBbj9UMi7NQa3uwN3DmyGNtz"
+    ]
+   }
+  },
+  {
+   "programId": "61DFfeTKM7trxYcPQCM78bJ794ddZprZpAwAnLiwTpYH",
+   "repo": "",
+   "programData": "7rY1cT6RoBRmFqpMotMjVsQERnrLcYmdZyWS31g39tK1",
+   "upgradeAuthority": "CvQZZ23qYDWF2RUpxYJ8y9K4skmuvYEEjH7fK58jtipQ",
+   "evidence": "4hmPVRY5WiwrC7m468XwCYHNz7SKYWttKt6V6MQ3JnQ77mk8acvDAJAtAh5A2iGyWLdd7R1xsJRriKTC73pa7xQq",
+   "authorityKind": "squads_vault",
+   "multisig": {
+    "address": "7ZyDFzet6sKgZLN4D89JLfo7chu2n7nYdkFt5RCFk8Sf",
+    "threshold": 4,
+    "memberCount": 7,
+    "timeLockS": 0,
+    "configAuthority": null,
+    "programVersion": "v3"
+   },
+   "signers": {
+    "program": "squads_v3",
+    "members": [
+     "3ZR4gMzciDHZudi5e1evdESKZuCQEE9QNHLkMoRsfDxQ",
+     "89FnbsKH8n6FXCghGUijxh3snqx3e6VXJ7q1fQAHWkQQ",
+     "8orpmxSAiVjHWBL3JDvdQtQUT4yYMDkPA72vW2cTVjiP",
+     "CHRDWWqUs6LyeeoD7pJb3iRfnvYeMfwMUtf2N7zWk7uh",
+     "Dg5NLa5JuwfRMkuwZEguD9RpVrcQD3536GxogUv7pLNV",
+     "EhJqf1p39c8NnH5iuZAJyw778LQua1AhZWxarT5SF8sT",
+     "GGG2JyBtwbPAsYwUQED8GBbj9UMi7NQa3uwN3DmyGNtz"
+    ]
+   }
+  },
+  {
+   "programId": "24Uqj9JCLxUeoC3hGfh5W3s9FM9uCHDS2SG3LYwBpyTi",
+   "repo": "",
+   "programData": "9DaJrXBFQemCwapdEJkTRCe7S9irpvPHG7gk18sRsdR",
+   "upgradeAuthority": "JADaUV8kvDpDbJr55wxXJHVaBS3VCj8thZZHjfeuCVLd",
+   "evidence": "37LFvk8qAgwAWuvYE8P4QPKcMfG3HHcPgNuodH5376Pvwe27Dokeojnhrpw61TXS6fhGyqaMAFGERnpiePnhwz5E",
+   "authorityKind": "squads_vault",
+   "multisig": {
+    "address": "CoEsykatDegLB7pcMJia79JSriDdi71nPnjgeSfw623k",
+    "threshold": 4,
+    "memberCount": 7,
+    "timeLockS": 0,
+    "configAuthority": null,
+    "programVersion": "v3"
+   },
+   "signers": {
+    "program": "squads_v3",
+    "members": [
+     "3TgZadr6GVAeFAJSpQcYDy4qnwr3ujNFMkJNkLK2VvT5",
+     "5unTfT2kssBuNvHPY6LbJfJpLqEcdMxGYLWHwShaeTLi",
+     "6g4uLg2cG2cajTqeaUVeXnruHDmP7x6k8ggGDczBUYRJ",
+     "CHRDWWqUs6LyeeoD7pJb3iRfnvYeMfwMUtf2N7zWk7uh",
+     "E78rpWqVwE4ZBXtNAj21kqUnPJ5B9QPaRUBThPStWZ9w",
+     "FUopZJvyZtumroCbv6WJ9sr8Uwmdbcm1PPyk8BwHzkBv",
+     "GaQiRh5oWQjcfBj7kYjp1PH5yYgnWnNPwZD9sgdg2JBd"
+    ]
+   }
+  },
+  {
+   "programId": "ammbh4CQztZ6txJ8AaQgPsWjd6o7GhmvopS2JAo5bCB",
+   "repo": "",
+   "programData": "C7AyPc5CwkvsyHRVrDFjneQDmDhqD2YJnxTVo5YKuBzK",
+   "upgradeAuthority": "5unTfT2kssBuNvHPY6LbJfJpLqEcdMxGYLWHwShaeTLi",
+   "authorityKind": "single_key",
+   "multisig": null
+  },
+  {
+   "programId": "Eo7WjKq67rjJQSZxS6z3YkapzY3eMj6Xy8X5EQVn5UaB",
+   "repo": "",
+   "programData": "36CvGf4Db6N8ApGkh1F6PLGXK1SYFFBUiEDkJjPEvDL7",
+   "upgradeAuthority": "JADaUV8kvDpDbJr55wxXJHVaBS3VCj8thZZHjfeuCVLd",
+   "evidence": "37LFvk8qAgwAWuvYE8P4QPKcMfG3HHcPgNuodH5376Pvwe27Dokeojnhrpw61TXS6fhGyqaMAFGERnpiePnhwz5E",
+   "authorityKind": "squads_vault",
+   "multisig": {
+    "address": "CoEsykatDegLB7pcMJia79JSriDdi71nPnjgeSfw623k",
+    "threshold": 4,
+    "memberCount": 7,
+    "timeLockS": 0,
+    "configAuthority": null,
+    "programVersion": "v3"
+   },
+   "signers": {
+    "program": "squads_v3",
+    "members": [
+     "3TgZadr6GVAeFAJSpQcYDy4qnwr3ujNFMkJNkLK2VvT5",
+     "5unTfT2kssBuNvHPY6LbJfJpLqEcdMxGYLWHwShaeTLi",
+     "6g4uLg2cG2cajTqeaUVeXnruHDmP7x6k8ggGDczBUYRJ",
+     "CHRDWWqUs6LyeeoD7pJb3iRfnvYeMfwMUtf2N7zWk7uh",
+     "E78rpWqVwE4ZBXtNAj21kqUnPJ5B9QPaRUBThPStWZ9w",
+     "FUopZJvyZtumroCbv6WJ9sr8Uwmdbcm1PPyk8BwHzkBv",
+     "GaQiRh5oWQjcfBj7kYjp1PH5yYgnWnNPwZD9sgdg2JBd"
+    ]
+   }
+  },
+  {
+   "programId": "6YRZW57XsrT2DxSNLXHHQd4QmiqBode4d6btASkRqcFo",
+   "repo": "",
+   "programData": "MRwSkPCXLKsw1MYycynq3vsKmkdiWaXVi2rY7ne4W2y",
+   "upgradeAuthority": "5unTfT2kssBuNvHPY6LbJfJpLqEcdMxGYLWHwShaeTLi",
+   "authorityKind": "single_key",
+   "multisig": null
+  },
+  {
+   "programId": "cpamdpZCGKUy5JxQXB4dcpGPiikHawvSWAd6mEn1sGG",
+   "repo": "",
+   "programData": "AUh8bm2XsMfex3KjYGcM3G4uBqUNSDw6HEhWaWMYnyPH",
+   "upgradeAuthority": "JADaUV8kvDpDbJr55wxXJHVaBS3VCj8thZZHjfeuCVLd",
+   "evidence": "37LFvk8qAgwAWuvYE8P4QPKcMfG3HHcPgNuodH5376Pvwe27Dokeojnhrpw61TXS6fhGyqaMAFGERnpiePnhwz5E",
+   "authorityKind": "squads_vault",
+   "multisig": {
+    "address": "CoEsykatDegLB7pcMJia79JSriDdi71nPnjgeSfw623k",
+    "threshold": 4,
+    "memberCount": 7,
+    "timeLockS": 0,
+    "configAuthority": null,
+    "programVersion": "v3"
+   },
+   "signers": {
+    "program": "squads_v3",
+    "members": [
+     "3TgZadr6GVAeFAJSpQcYDy4qnwr3ujNFMkJNkLK2VvT5",
+     "5unTfT2kssBuNvHPY6LbJfJpLqEcdMxGYLWHwShaeTLi",
+     "6g4uLg2cG2cajTqeaUVeXnruHDmP7x6k8ggGDczBUYRJ",
+     "CHRDWWqUs6LyeeoD7pJb3iRfnvYeMfwMUtf2N7zWk7uh",
+     "E78rpWqVwE4ZBXtNAj21kqUnPJ5B9QPaRUBThPStWZ9w",
+     "FUopZJvyZtumroCbv6WJ9sr8Uwmdbcm1PPyk8BwHzkBv",
+     "GaQiRh5oWQjcfBj7kYjp1PH5yYgnWnNPwZD9sgdg2JBd"
+    ]
+   }
+  },
+  {
+   "programId": "dbcij3LWUppWqq96dh6gJWwBifmcGfLSB5D4DuSMaqN",
+   "repo": "",
+   "programData": "HUfnSSiJxgspQm6C1rkqv6L3XgVtn7AESApgCQpCXCYh",
+   "upgradeAuthority": "JADaUV8kvDpDbJr55wxXJHVaBS3VCj8thZZHjfeuCVLd",
+   "evidence": "37LFvk8qAgwAWuvYE8P4QPKcMfG3HHcPgNuodH5376Pvwe27Dokeojnhrpw61TXS6fhGyqaMAFGERnpiePnhwz5E",
+   "authorityKind": "squads_vault",
+   "multisig": {
+    "address": "CoEsykatDegLB7pcMJia79JSriDdi71nPnjgeSfw623k",
+    "threshold": 4,
+    "memberCount": 7,
+    "timeLockS": 0,
+    "configAuthority": null,
+    "programVersion": "v3"
+   },
+   "signers": {
+    "program": "squads_v3",
+    "members": [
+     "3TgZadr6GVAeFAJSpQcYDy4qnwr3ujNFMkJNkLK2VvT5",
+     "5unTfT2kssBuNvHPY6LbJfJpLqEcdMxGYLWHwShaeTLi",
+     "6g4uLg2cG2cajTqeaUVeXnruHDmP7x6k8ggGDczBUYRJ",
+     "CHRDWWqUs6LyeeoD7pJb3iRfnvYeMfwMUtf2N7zWk7uh",
+     "E78rpWqVwE4ZBXtNAj21kqUnPJ5B9QPaRUBThPStWZ9w",
+     "FUopZJvyZtumroCbv6WJ9sr8Uwmdbcm1PPyk8BwHzkBv",
+     "GaQiRh5oWQjcfBj7kYjp1PH5yYgnWnNPwZD9sgdg2JBd"
+    ]
+   }
+  },
+  {
+   "programId": "unpXTU2Ndrc7WWNyEhQWe4udTzSibLPi25SXv2xbCHQ",
+   "repo": "",
+   "programData": "9Bs1PKmHfKQ57pTUDJZ9pG22tkRLuaeyfAGp5GxRuZkW",
+   "upgradeAuthority": "47SND7bGKvNXrqfP1bjsLCbwTgZhFBzAgmZ42QSkRScz",
+   "evidence": "5GXksv5Rvq2QbGYZtZnHrZaA8Nw57Jqy9ffFFw35wD4yZp7ZM22xBs6rsE7vD1Qkh9HKFXKDy5xrsMkkY3Sj8GRh",
+   "authorityKind": "squads_vault",
+   "multisig": {
+    "address": "AApfiPZgV5MoPU691GwhdDhq5sKEMMH1Uh8S4Z9xvP6b",
+    "threshold": 6,
+    "memberCount": 11,
+    "timeLockS": 0,
+    "configAuthority": null,
+    "programVersion": "v3"
+   },
+   "signers": {
+    "program": "squads_v3",
+    "members": [
+     "12VMutxG7YEoUA7ZJKtf8MGdRzimR4qGLYTKQ1bT8yki",
+     "nigmAPDCZMVDW4wneBBcc6wjY6Ufjv7iLJc2mRvs8PS",
+     "nix9RErnQYXpuf329ntPgSzThogtfeyUempD7zDrnSH",
+     "2JLq2HWYLws938d3vZwS2r8Qex1FJJeXoF2KViPCZoyv",
+     "3LPh9LN88kxSe3shxLZ2R4jiNmHh2U2F9h9TmVKjc18P",
+     "4vK6sVXQNkiEY1wyqx9Q44JxMGRHS9XJ6NoavaZwzGLE",
+     "64nG4kYQqfhzputDFhTHFHQHiggJwAEGY2L5EfFQreMK",
+     "7zND8YAtCYehNoa1JrfDLQZi44xJkEuPWK5b4CkiuFpo",
+     "8DB8LpzxSyVirKzr1dPr5k653BDu9eaj4zii16uxVixt",
+     "B11qqnAhTUF82Af5HQHR4dhsL4Ae6MKGFTMwZugsintc",
+     "CoxYLqf6zUrkTvWfVSHbxdjswrDEaNnciuGtzWniFzu5"
+    ]
+   }
+  },
+  {
+   "programId": "5ocnV1qiCgaQR8Jb8xWnVbApfaygJ8tNoZfgPwsgx9kx",
+   "repo": "https://github.com/igneous-labs/S/tree/4e35462fb335a24738a57e7ced424a27b3c52f34",
+   "programData": "ALmAxhSP7TDWGMHWBLjD9qS71YjqxjN1ba6JLRdzdVy",
+   "upgradeAuthority": "47SND7bGKvNXrqfP1bjsLCbwTgZhFBzAgmZ42QSkRScz",
+   "evidence": "5GXksv5Rvq2QbGYZtZnHrZaA8Nw57Jqy9ffFFw35wD4yZp7ZM22xBs6rsE7vD1Qkh9HKFXKDy5xrsMkkY3Sj8GRh",
+   "authorityKind": "squads_vault",
+   "multisig": {
+    "address": "AApfiPZgV5MoPU691GwhdDhq5sKEMMH1Uh8S4Z9xvP6b",
+    "threshold": 6,
+    "memberCount": 11,
+    "timeLockS": 0,
+    "configAuthority": null,
+    "programVersion": "v3"
+   },
+   "signers": {
+    "program": "squads_v3",
+    "members": [
+     "12VMutxG7YEoUA7ZJKtf8MGdRzimR4qGLYTKQ1bT8yki",
+     "nigmAPDCZMVDW4wneBBcc6wjY6Ufjv7iLJc2mRvs8PS",
+     "nix9RErnQYXpuf329ntPgSzThogtfeyUempD7zDrnSH",
+     "2JLq2HWYLws938d3vZwS2r8Qex1FJJeXoF2KViPCZoyv",
+     "3LPh9LN88kxSe3shxLZ2R4jiNmHh2U2F9h9TmVKjc18P",
+     "4vK6sVXQNkiEY1wyqx9Q44JxMGRHS9XJ6NoavaZwzGLE",
+     "64nG4kYQqfhzputDFhTHFHQHiggJwAEGY2L5EfFQreMK",
+     "7zND8YAtCYehNoa1JrfDLQZi44xJkEuPWK5b4CkiuFpo",
+     "8DB8LpzxSyVirKzr1dPr5k653BDu9eaj4zii16uxVixt",
+     "B11qqnAhTUF82Af5HQHR4dhsL4Ae6MKGFTMwZugsintc",
+     "CoxYLqf6zUrkTvWfVSHbxdjswrDEaNnciuGtzWniFzu5"
+    ]
+   }
+  },
+  {
+   "programId": "f1tUoNEKrDp1oeGn4zxr7bh41eN6VcfHjfrL3ZqQday",
+   "repo": "https://github.com/igneous-labs/S/tree/658f728dd476ca5f99ba11810e8ad8621caca70b",
+   "programData": "DsrWC93rAjG3jT2YzwuT3MMGp7Jb4bLYGfX8riCBnxGi",
+   "upgradeAuthority": "47SND7bGKvNXrqfP1bjsLCbwTgZhFBzAgmZ42QSkRScz",
+   "evidence": "5GXksv5Rvq2QbGYZtZnHrZaA8Nw57Jqy9ffFFw35wD4yZp7ZM22xBs6rsE7vD1Qkh9HKFXKDy5xrsMkkY3Sj8GRh",
+   "authorityKind": "squads_vault",
+   "multisig": {
+    "address": "AApfiPZgV5MoPU691GwhdDhq5sKEMMH1Uh8S4Z9xvP6b",
+    "threshold": 6,
+    "memberCount": 11,
+    "timeLockS": 0,
+    "configAuthority": null,
+    "programVersion": "v3"
+   },
+   "signers": {
+    "program": "squads_v3",
+    "members": [
+     "12VMutxG7YEoUA7ZJKtf8MGdRzimR4qGLYTKQ1bT8yki",
+     "nigmAPDCZMVDW4wneBBcc6wjY6Ufjv7iLJc2mRvs8PS",
+     "nix9RErnQYXpuf329ntPgSzThogtfeyUempD7zDrnSH",
+     "2JLq2HWYLws938d3vZwS2r8Qex1FJJeXoF2KViPCZoyv",
+     "3LPh9LN88kxSe3shxLZ2R4jiNmHh2U2F9h9TmVKjc18P",
+     "4vK6sVXQNkiEY1wyqx9Q44JxMGRHS9XJ6NoavaZwzGLE",
+     "64nG4kYQqfhzputDFhTHFHQHiggJwAEGY2L5EfFQreMK",
+     "7zND8YAtCYehNoa1JrfDLQZi44xJkEuPWK5b4CkiuFpo",
+     "8DB8LpzxSyVirKzr1dPr5k653BDu9eaj4zii16uxVixt",
+     "B11qqnAhTUF82Af5HQHR4dhsL4Ae6MKGFTMwZugsintc",
+     "CoxYLqf6zUrkTvWfVSHbxdjswrDEaNnciuGtzWniFzu5"
+    ]
+   }
+  },
+  {
+   "programId": "s1umBj7CEUA6djs6V1c6o2Nym3QrqF4ryKDr1Nm1FKt",
+   "repo": "",
+   "programData": "8pVa6h3UsqfYiuTQ9AdTfA8YFyfqZdfuwNXw8YPgJ9WK",
+   "upgradeAuthority": "3etKXcW2fzEJR5YXoSKSmP6UZ633g9uiFv5yuqFUf66k",
+   "authorityKind": "single_key",
+   "multisig": null
+  },
+  {
+   "programId": "22WrapbNKwPSy3HcGQTTJpgv43tszbZdTEfBEWmGYX2V",
+   "repo": "",
+   "programData": "4pSNQXeD22qPFLtpBQYjZDRTgfnA7mqBi26LrKZQVQ4S",
+   "upgradeAuthority": "2Fwvr3MKhHhqakgjjEWcpWZZabbRCetHjukHi1zfKxjk",
+   "authorityKind": "single_key",
+   "multisig": null
+  },
+  {
+   "programId": "iseejmLobW1224pCCMHPhSBdvDjtN6pYXeRfz1gv4zB",
+   "repo": "",
+   "programData": "3EcACwnaCtVGDttD8YQYLaEVRmPAjbKiRf2aedVEeR7T",
+   "upgradeAuthority": "FttfZ1zyvb7xNHeug3y2jVpKWNYR75xjMUUe4PczY5zX",
+   "authorityKind": "single_key",
+   "multisig": null
+  },
+  {
+   "programId": "SPPdCjFYYwH3ca2kCT9baLcgbXz81P5bd5QutHynuRz",
+   "repo": "",
+   "programData": "JEESPem8nCdzrPXbZxu9SS1psPodLkxQw8VyRdtdxtvY",
+   "upgradeAuthority": "23FkCy2W796Josc6goNtqfxW7Ei8qzpdbpZo1HfqgDVW",
+   "authorityKind": "single_key",
+   "multisig": null
+  },
+  {
+   "programId": "675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8",
+   "repo": "https://github.com/raydium-io/raydium-amm",
+   "programData": "A7ZG7ByDi8DpzT9Ab7CiXhvgYTJQmaDPJkMDoPitaCQV",
+   "upgradeAuthority": "FytDrVzDybM1TwFQPGb8qaxZR7dBCzNeqT3vtQsceZQK",
+   "evidence": "5xYj7YGqWSDcMPnE24h6ksH1YZwkoyXdTXbrKy5mtd7hByR27pPLLEdejR21yQRXL7JAYZBjHpChEtFfeJ8tFFei",
+   "authorityKind": "squads_vault",
+   "multisig": {
+    "address": "tr8rgazUrZzgdkfc6Q622nVJHMMzh29trdBE2uBHb4u",
+    "threshold": 3,
+    "memberCount": 4,
+    "timeLockS": 0,
+    "configAuthority": "11111111111111111111111111111111",
+    "programVersion": "v4"
+   },
+   "signers": {
+    "program": "squads_v4",
+    "members": [
+     "4aky1VxQ92ToCKvFtQhj7XbjKH4okmcHHNHDx4RriVgz",
+     "7W4mr6bHDgF1euonrraAF8easT5G6tEiRJdyVqNpu6tn",
+     "AZEvpc6RqVWt5uS1LiAXw9ann6bKKDwFBTCgZVWR2Zna",
+     "AaUu9okTZ9wUBTSYJ3QhXp7ssxGbabsAbyTJ91orVUUq"
+    ]
+   }
+  },
+  {
+   "programId": "srmqPvymJeFKQ4zGQed1GFppgkRHL9kaELCbyksJtPX",
+   "repo": "",
+   "programData": "9K32VSPTg4PHY7Hb2QZq26e5CujwMgt8Bqq4kJrp5zp8",
+   "upgradeAuthority": "8xYs2tGXPayMtgsqs4NuMy7bnWr7DM9tnnkbY2SHVbys",
+   "evidence": null,
+   "authorityKind": "spl_gov",
+   "multisig": null
+  },
+  {
+   "programId": "CBuCnLe26faBpcBP2fktp4rp8abpcAnTWft6ZrP5Q4T",
+   "repo": "",
+   "programData": "996YEhTL8dBCRVeM6n2N98xh7HzoDDjfEFWiQScWTLd2",
+   "upgradeAuthority": "8aSRiwajnkCP3ZhWTqTGJBy82ELo3Rt1CoEk5Hyjiqiy",
+   "authorityKind": "single_key",
+   "multisig": null
+  },
+  {
+   "programId": "EhhTKczWMGQt46ynNeRX1WfeagwwJd7ufHvCDjRxjo5Q",
+   "repo": "",
+   "programData": "68ZYga21EEhp6wcWfCfxxdTfhyYPwKio3SLwf68iuhhR",
+   "upgradeAuthority": "FytDrVzDybM1TwFQPGb8qaxZR7dBCzNeqT3vtQsceZQK",
+   "evidence": "5xYj7YGqWSDcMPnE24h6ksH1YZwkoyXdTXbrKy5mtd7hByR27pPLLEdejR21yQRXL7JAYZBjHpChEtFfeJ8tFFei",
+   "authorityKind": "squads_vault",
+   "multisig": {
+    "address": "tr8rgazUrZzgdkfc6Q622nVJHMMzh29trdBE2uBHb4u",
+    "threshold": 3,
+    "memberCount": 4,
+    "timeLockS": 0,
+    "configAuthority": "11111111111111111111111111111111",
+    "programVersion": "v4"
+   },
+   "signers": {
+    "program": "squads_v4",
+    "members": [
+     "4aky1VxQ92ToCKvFtQhj7XbjKH4okmcHHNHDx4RriVgz",
+     "7W4mr6bHDgF1euonrraAF8easT5G6tEiRJdyVqNpu6tn",
+     "AZEvpc6RqVWt5uS1LiAXw9ann6bKKDwFBTCgZVWR2Zna",
+     "AaUu9okTZ9wUBTSYJ3QhXp7ssxGbabsAbyTJ91orVUUq"
+    ]
+   }
+  },
+  {
+   "programId": "CAMMCzo5YL8w4VFF8KVHrK22GGUsp5VTaW7grrKgrWqK",
+   "repo": "https://github.com/raydium-io/raydium-clmm/tree/119ed36bf9f33",
+   "programData": "HzD2cCXXT3UQNjMMY6kDv9w6gZ9qquSdfoGXrLL3LXx",
+   "upgradeAuthority": "FytDrVzDybM1TwFQPGb8qaxZR7dBCzNeqT3vtQsceZQK",
+   "evidence": "5xYj7YGqWSDcMPnE24h6ksH1YZwkoyXdTXbrKy5mtd7hByR27pPLLEdejR21yQRXL7JAYZBjHpChEtFfeJ8tFFei",
+   "authorityKind": "squads_vault",
+   "multisig": {
+    "address": "tr8rgazUrZzgdkfc6Q622nVJHMMzh29trdBE2uBHb4u",
+    "threshold": 3,
+    "memberCount": 4,
+    "timeLockS": 0,
+    "configAuthority": "11111111111111111111111111111111",
+    "programVersion": "v4"
+   },
+   "signers": {
+    "program": "squads_v4",
+    "members": [
+     "4aky1VxQ92ToCKvFtQhj7XbjKH4okmcHHNHDx4RriVgz",
+     "7W4mr6bHDgF1euonrraAF8easT5G6tEiRJdyVqNpu6tn",
+     "AZEvpc6RqVWt5uS1LiAXw9ann6bKKDwFBTCgZVWR2Zna",
+     "AaUu9okTZ9wUBTSYJ3QhXp7ssxGbabsAbyTJ91orVUUq"
+    ]
+   }
+  },
+  {
+   "programId": "5quBtoiQqxF9Jv6KYKctB59NT3gtJD2Y65kdnB1Uev3h",
+   "repo": "",
+   "programData": "HvVk1rnRQ1pYRXhmmx1xgSqu948GEfnovREjW5KbELVN",
+   "upgradeAuthority": "FytDrVzDybM1TwFQPGb8qaxZR7dBCzNeqT3vtQsceZQK",
+   "evidence": "5xYj7YGqWSDcMPnE24h6ksH1YZwkoyXdTXbrKy5mtd7hByR27pPLLEdejR21yQRXL7JAYZBjHpChEtFfeJ8tFFei",
+   "authorityKind": "squads_vault",
+   "multisig": {
+    "address": "tr8rgazUrZzgdkfc6Q622nVJHMMzh29trdBE2uBHb4u",
+    "threshold": 3,
+    "memberCount": 4,
+    "timeLockS": 0,
+    "configAuthority": "11111111111111111111111111111111",
+    "programVersion": "v4"
+   },
+   "signers": {
+    "program": "squads_v4",
+    "members": [
+     "4aky1VxQ92ToCKvFtQhj7XbjKH4okmcHHNHDx4RriVgz",
+     "7W4mr6bHDgF1euonrraAF8easT5G6tEiRJdyVqNpu6tn",
+     "AZEvpc6RqVWt5uS1LiAXw9ann6bKKDwFBTCgZVWR2Zna",
+     "AaUu9okTZ9wUBTSYJ3QhXp7ssxGbabsAbyTJ91orVUUq"
+    ]
+   }
+  },
+  {
+   "programId": "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc",
+   "repo": "https://github.com/orca-so/whirlpools",
+   "programData": "CtXfPzz36dH5Ws4UYKZvrQ1Xqzn42ecDW6y8NKuiN8nD",
+   "upgradeAuthority": "GwH3Hiv5mACLX3ufTw1pFsrhSPon5tdw252DBs4Rx4PV",
+   "evidence": "2sN92ZTTDi6F5tXJRkjifqb9u9sTm9EGh8XBDnv1krsXt9JubmFe4wSawxXyKH5mpNHAxADTQ5wp5dTP5giVUdWK",
+   "authorityKind": "squads_vault",
+   "multisig": {
+    "address": "BQsDWkL417U4tVE2sDnPks469pKdm6YzFgKH77doiEjF",
+    "threshold": 5,
+    "memberCount": 13,
+    "timeLockS": 86400,
+    "configAuthority": "11111111111111111111111111111111",
+    "programVersion": "v4"
+   },
+   "signers": {
+    "program": "squads_v4",
+    "members": [
+     "2NfC7wE7zwZSeBWqdB5wKJUxgSSNXDxfZAjamVhh7gXb",
+     "2UsxUedKwJuJSTywPcBXKPvg2MeA1eBcBxqbUsi7PShG",
+     "4ZnVFX2c2XYSfBbYq3eegrULkcMtqChkAgshkToQKGqg",
+     "62E2yXt9pyuurzpA74r5RbAP6eswLcWjFwEW8aqoK8mn",
+     "6DWfmaUTtgeUQe5cRQoUgHycQefnCDWVY2xkT9iCkddB",
+     "6JZgVwXjsEDrhGC3Qva12nkZtuFtE27meni36CXLou1X",
+     "6Li1bEptmfD1RT3LaPUde8yMTdn2Fpr9Vf726VdSueL9",
+     "744yfFyAtJrH9FhRNHUFbevVhSBU42G3W4q2Zs2J9Npk",
+     "8xqdLe2KW5YiYbAGNEdeH2KqP4WvXVfFgt1QbKNSEVvt",
+     "9FtDRFy9Vj3QiDSKRhHH88d89Z9a4c4DnqEXqWyJZMn4",
+     "BgV5ocPwmVjVgD999RBVDLUAQQxwPm3fRedhQxxBAjyp",
+     "F1FSHAbRu3YfEjKzyYNHoNGbzPuaoXcmJkEgGyG3gDN9",
+     "HNeMErwpEJFTMSNoK9fjhsedwvHQ7LMKxccDW9r2gumk"
+    ]
+   }
+  },
+  {
+   "programId": "StaKE6XNKVVhG8Qu9hDJBqCW3eRe7MDGLz17nJZetLT",
+   "repo": "",
+   "programData": "7TdF3aLJXvwo24azTD3vBTMzr5ScscQUdHzdfcf41kbD",
+   "upgradeAuthority": "GwH3Hiv5mACLX3ufTw1pFsrhSPon5tdw252DBs4Rx4PV",
+   "evidence": "2sN92ZTTDi6F5tXJRkjifqb9u9sTm9EGh8XBDnv1krsXt9JubmFe4wSawxXyKH5mpNHAxADTQ5wp5dTP5giVUdWK",
+   "authorityKind": "squads_vault",
+   "multisig": {
+    "address": "BQsDWkL417U4tVE2sDnPks469pKdm6YzFgKH77doiEjF",
+    "threshold": 5,
+    "memberCount": 13,
+    "timeLockS": 86400,
+    "configAuthority": "11111111111111111111111111111111",
+    "programVersion": "v4"
+   },
+   "signers": {
+    "program": "squads_v4",
+    "members": [
+     "2NfC7wE7zwZSeBWqdB5wKJUxgSSNXDxfZAjamVhh7gXb",
+     "2UsxUedKwJuJSTywPcBXKPvg2MeA1eBcBxqbUsi7PShG",
+     "4ZnVFX2c2XYSfBbYq3eegrULkcMtqChkAgshkToQKGqg",
+     "62E2yXt9pyuurzpA74r5RbAP6eswLcWjFwEW8aqoK8mn",
+     "6DWfmaUTtgeUQe5cRQoUgHycQefnCDWVY2xkT9iCkddB",
+     "6JZgVwXjsEDrhGC3Qva12nkZtuFtE27meni36CXLou1X",
+     "6Li1bEptmfD1RT3LaPUde8yMTdn2Fpr9Vf726VdSueL9",
+     "744yfFyAtJrH9FhRNHUFbevVhSBU42G3W4q2Zs2J9Npk",
+     "8xqdLe2KW5YiYbAGNEdeH2KqP4WvXVfFgt1QbKNSEVvt",
+     "9FtDRFy9Vj3QiDSKRhHH88d89Z9a4c4DnqEXqWyJZMn4",
+     "BgV5ocPwmVjVgD999RBVDLUAQQxwPm3fRedhQxxBAjyp",
+     "F1FSHAbRu3YfEjKzyYNHoNGbzPuaoXcmJkEgGyG3gDN9",
+     "HNeMErwpEJFTMSNoK9fjhsedwvHQ7LMKxccDW9r2gumk"
+    ]
+   }
+  },
+  {
+   "programId": "SBondMDrcV3K4kxZR1HNVT7osZxAHVHgYXL5Ze1oMUv",
+   "repo": "",
+   "programData": "EW3AZYxoQrYWBvTmrCmiDpm6oBCNpAqN2kekDjuYFmsB",
+   "upgradeAuthority": "DREcTwxxuehtUVgnGwDpTcKT9zTK5uDmdLbnRY7cijEx",
+   "evidence": "4nUhNiudGtRttEH9ekehLzzaFNTENo7NZhS8BZVBbnT7ykNS19RCFYCUmrBP6cVNp5DB8H7po1tQnzCpX3ndQXiD",
+   "authorityKind": "squads_vault",
+   "multisig": {
+    "address": "93RQfY6VHRkqXBCEhMY5u92bCGp428DTzqZUEA2Hjr9h",
+    "threshold": 3,
+    "memberCount": 8,
+    "timeLockS": 0,
+    "configAuthority": "11111111111111111111111111111111",
+    "programVersion": "v4"
+   },
+   "signers": {
+    "program": "squads_v4",
+    "members": [
+     "nrEbij8ZuwEw8GvjJqS5JsFx55Gy1LmvBXe5B1jtjpH",
+     "2r3cVdpCRYNZKyi3r6pquzCEHrBezPdXPSeCaaWWnGMn",
+     "7xAdgHMXqxErMQi5uGPWdCZcDR9E34bLputsbUbA29Rr",
+     "8dvWh4YPejYUs9fS296jZ1XAxcKEPtzi6v1NGv4ZJFw6",
+     "AaGvHGXZHeAPLCU2LwYtxoKy1qopJicFtRsNX26Uu5iP",
+     "E4NGuMwfoTqJKUkzUSWF3rDbMwCR3CCTwFrL4Z3Y7r6X",
+     "EUmRTdzgkZRjBdDsGBnxbgZ14Z7C7WQrJtQzEbR1pLwq",
+     "EoHK5VNgYisSRDcqSkBPoQTGsGroBnNR4xiWWWo8K3g5"
+    ]
+   }
+  },
+  {
+   "programId": "SLendK7ySfcEzyaFqy93gDnD3RtrpXJcnRwb6zFHJSh",
+   "repo": "",
+   "programData": "K6t2A96BFevCoXeHePZ4PpBNLZvNEtZiAFnnpiEUWkz",
+   "upgradeAuthority": "BxdLNhoRXVs45wTVAZBrYQUkxbex5zXFCaJtsuRpoqMj",
+   "evidence": "4Ko7pEoKz2xPXwGkgSLg49J9yi8VHGbWrS7BALpQuouFq4bVh6sESi3G5ZgggZLMutoGbJou438YnWxgHutUFsZ8",
+   "authorityKind": "squads_vault",
+   "multisig": {
+    "address": "CGokZcw3xFw87sR2MmA8NrEor7TyjrVoLJN2ZgFNjhdE",
+    "threshold": 1,
+    "memberCount": 10,
+    "timeLockS": 0,
+    "configAuthority": null,
+    "programVersion": "v3"
+   },
+   "signers": {
+    "program": "squads_v3",
+    "members": [
+     "2RJJ1ZZpeQLm6HEQ1HtcrGJUzQa8hKQgjgDf7ANz9Rd5",
+     "5ggs2vd1csz74YMCzxesmcUEd3ycYFKAW6kfyttVYwBv",
+     "6vkzAQLAERW5RKHX68ZCDxWxW77T8dMqYUYMXCe6ooMC",
+     "7tH1k4PsMu3sNUYJxD5ezxhAmYYXyVVZz5c3dbaxcvUV",
+     "8g2PMddbKrqpPtd74pWM16xnDwtpKtkDJNDsQ9cWJZAC",
+     "BMGYmN1hG8evD3pvy1Rk41bFUdGGVP5fYJbh2JHMonqK",
+     "CmJywvWynJAiADsgTkVWu5BJus4ru2SP1PnfBXvThrxZ",
+     "DFheUjWj6BL9CuF8gAYfF6TgrbrruTTCc3vE6Ajn1gyK",
+     "G8fVffcHt3n6DkjSdYj47xWe55QjFsL4P5zhQ9RXFuPa",
+     "HrKa158AuSt2QtDWnvr81qdgBZjJ7MJGkaQ8D7pZeYMj"
+    ]
+   }
+  },
+  {
+   "programId": "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+   "repo": "https://github.com/Kamino-Finance/klend/tree/a08760976f51a3a58c4a0c6ea27b4a0e565bca79",
+   "programData": "9uSbGW1y9H5Av6H5TKxQ1wnFApSq2t3oEpfF2YfjDQGA",
+   "upgradeAuthority": "GzFgdRJXmawPhGeBsyRCDLx4jAKPsvbUqoqitzppkzkW",
+   "evidence": "55zZkfsvDY4sHMHf18Ts1vPG55781dwZ4NMDs1uUxUPyNMffvxdrhFjjXMuYUCmF3rZaqvGmcpmP8b24QvV5CYZx",
+   "authorityKind": "squads_vault",
+   "multisig": {
+    "address": "6hhBGCtmg7tPWUSgp3LG6X2rsmYWAc4tNsA6G4CnfQbM",
+    "threshold": 5,
+    "memberCount": 10,
+    "timeLockS": 86400,
+    "configAuthority": "11111111111111111111111111111111",
+    "programVersion": "v4"
+   },
+   "signers": {
+    "program": "squads_v4",
+    "members": [
+     "5ggs2vd1csz74YMCzxesmcUEd3ycYFKAW6kfyttVYwBv",
+     "6vkzAQLAERW5RKHX68ZCDxWxW77T8dMqYUYMXCe6ooMC",
+     "7tH1k4PsMu3sNUYJxD5ezxhAmYYXyVVZz5c3dbaxcvUV",
+     "8g2PMddbKrqpPtd74pWM16xnDwtpKtkDJNDsQ9cWJZAC",
+     "BEUTwDjLNoXvT26J9CZD5A1Fsr9WF2UXdcUVZuy4zQ3d",
+     "BMGYmN1hG8evD3pvy1Rk41bFUdGGVP5fYJbh2JHMonqK",
+     "CmJywvWynJAiADsgTkVWu5BJus4ru2SP1PnfBXvThrxZ",
+     "DFheUjWj6BL9CuF8gAYfF6TgrbrruTTCc3vE6Ajn1gyK",
+     "G8fVffcHt3n6DkjSdYj47xWe55QjFsL4P5zhQ9RXFuPa",
+     "HrKa158AuSt2QtDWnvr81qdgBZjJ7MJGkaQ8D7pZeYMj"
+    ]
+   }
+  },
+  {
+   "programId": "sCanpzodQ7MEC7mpi7ehMtYEkbindzjJQE3JQMAo7fR",
+   "repo": "",
+   "programData": "2CLTKG3RDo2vBVT8bxUxypYkvDrqcZJDqnNaZgyyC8bL",
+   "upgradeAuthority": "FJ4rzLUvLjcxZDHtgAdZkFPb2dC3yuCAqvqhMgdNatCK",
+   "authorityKind": "single_key",
+   "multisig": null
+  },
+  {
+   "programId": "CanarFxHDSnbrPmrE79Qq6hL2p7ZMyyV4ZLTKQ6g7tpK",
+   "repo": "",
+   "programData": "C2vT9HDjEbCt4SJhZeEHS2XmPM96kTRuhEEuBMLjemrT",
+   "upgradeAuthority": "4aZXEa8SpUu2YpUobiCVUC2vHiKYtTojeB2RAqhX4EK8",
+   "evidence": "4z3v6BoixKjiMxSVsEMtYKUCirQ5Redroorzot6TgxbzFAviEBwvBSqyZyQ6bxw5KsgJrvBahBGr9nmcBnrFf5DD",
+   "authorityKind": "squads_vault",
+   "multisig": {
+    "address": "HCmFNRNzfW6jnRe5uMFzRSfoZfsQA8FNR3asGbpVjjDm",
+    "threshold": 1,
+    "memberCount": 10,
+    "timeLockS": 14400,
+    "configAuthority": "11111111111111111111111111111111",
+    "programVersion": "v4"
+   },
+   "signers": {
+    "program": "squads_v4",
+    "members": [
+     "5ggs2vd1csz74YMCzxesmcUEd3ycYFKAW6kfyttVYwBv",
+     "6vkzAQLAERW5RKHX68ZCDxWxW77T8dMqYUYMXCe6ooMC",
+     "7tH1k4PsMu3sNUYJxD5ezxhAmYYXyVVZz5c3dbaxcvUV",
+     "8g2PMddbKrqpPtd74pWM16xnDwtpKtkDJNDsQ9cWJZAC",
+     "BEUTwDjLNoXvT26J9CZD5A1Fsr9WF2UXdcUVZuy4zQ3d",
+     "BMGYmN1hG8evD3pvy1Rk41bFUdGGVP5fYJbh2JHMonqK",
+     "CmJywvWynJAiADsgTkVWu5BJus4ru2SP1PnfBXvThrxZ",
+     "DFheUjWj6BL9CuF8gAYfF6TgrbrruTTCc3vE6Ajn1gyK",
+     "G8fVffcHt3n6DkjSdYj47xWe55QjFsL4P5zhQ9RXFuPa",
+     "HrKa158AuSt2QtDWnvr81qdgBZjJ7MJGkaQ8D7pZeYMj"
+    ]
+   }
+  },
+  {
+   "programId": "PERPHjGBqRHArX4DySjwM6UJHiR3sWAatqfdBS2qQJu",
+   "repo": "",
+   "programData": "C258LjtN8Q928yz2nJe5kwQycckGfWBSrhZBP2mTpLQt",
+   "upgradeAuthority": "5myNNmEmPm3UAnJ2ggLEpnTFb9t9Gk8369wKw6n3uAKx",
+   "evidence": "4KxqdGSpEKvrDytFxMWKdCiKhQKqVbBmdXRutbL6MQZzNjoBhsGgGsKW6tLuWwc3fn5NtMBnUe8ejosoNvVtNG6L",
+   "authorityKind": "squads_vault",
+   "multisig": {
+    "address": "AxkJ8oH5aDu4ZRWfsujPtxdb6Vhq4gDehpoReBgrUUSm",
+    "threshold": 4,
+    "memberCount": 8,
+    "timeLockS": 86400,
+    "configAuthority": "11111111111111111111111111111111",
+    "programVersion": "v4"
+   },
+   "signers": {
+    "program": "squads_v4",
+    "members": [
+     "3ZR4gMzciDHZudi5e1evdESKZuCQEE9QNHLkMoRsfDxQ",
+     "89FnbsKH8n6FXCghGUijxh3snqx3e6VXJ7q1fQAHWkQQ",
+     "8orpmxSAiVjHWBL3JDvdQtQUT4yYMDkPA72vW2cTVjiP",
+     "BYidGfUnfoQtqi4nHiuo57Fjreizbej6hawJLnbwJmYr",
+     "CHRDWWqUs6LyeeoD7pJb3iRfnvYeMfwMUtf2N7zWk7uh",
+     "CiMjzccrF3SGZr8EoXMN7k5j6zJhQB1g3ajXmjmLuRoG",
+     "EhJqf1p39c8NnH5iuZAJyw778LQua1AhZWxarT5SF8sT",
+     "GGG2JyBtwbPAsYwUQED8GBbj9UMi7NQa3uwN3DmyGNtz"
+    ]
+   }
+  },
+  {
+   "programId": "REDSTBDUecGjwXd6YGPzHSvEUBHQqVRfCcjUVgPiHsr",
+   "repo": "https://github.com/redstone-finance/redstone-oracles-monorepo/tree/82c08cc4a0889a18828d5d60020168a86cfb2d52",
+   "programData": "5Lt2vT22bhGhcCu5FZ4ft9BX2FNTaBbLxNNbrR91Qr4A",
+   "upgradeAuthority": "4dqCrMWfio5HU2nsNxAhB1MqcJ1grWFbU7juHR4qUpX1",
+   "evidence": null,
+   "authorityKind": "single_key_or_vault_unresolved",
+   "multisig": null
+  },
+  {
+   "programId": "SW1TCH7qEPTdLsDHRgPuMQjbQxKdH2aBStViMFnt64f",
+   "repo": "",
+   "programData": "7nYabs9dUhvxYwdTnrWVBL9MYviKSfrEbdWCUbcnwkpF",
+   "upgradeAuthority": "2NvGRFswVx3GXxURNSfjbsWY4iP1ufj8LvAKJWGXSm4D",
+   "evidence": "2sBw8fAx3voNB9ruWLxahU4wy4oNarfQkf4tVX9Vu94V9tKSUDLUxbw3ZgkmtqfHNyC87HCMcssWBF4sU3QAeMse",
+   "authorityKind": "squads_vault",
+   "multisig": {
+    "address": "6fxK7rUdk7mSibRftp6tQmvB6PGqaNrrCh1XKvi2E8Mq",
+    "threshold": 1,
+    "memberCount": 4,
+    "timeLockS": 0,
+    "configAuthority": null,
+    "programVersion": "v3"
+   },
+   "signers": {
+    "program": "squads_v3",
+    "members": [
+     "4upkSuPTUWJ7uk6TxzmAoqRbW2t1vPrUD7RWkYVNYMWz",
+     "7xAdgHMXqxErMQi5uGPWdCZcDR9E34bLputsbUbA29Rr",
+     "86ozw3TjWBc3f2AckB7PMjWokzi8UsyY8XFVNGx8zZdR",
+     "AaGvHGXZHeAPLCU2LwYtxoKy1qopJicFtRsNX26Uu5iP"
+    ]
+   }
+  },
+  {
+   "programId": "9N3yqarWXmXJ9NQBGgN47JXV82smby8nSMffkwetgYov",
+   "repo": "",
+   "programData": "FZGBxxm8Rn6KYjc3dReoaqrHKiPVHrGggRd5shHy7Zyo",
+   "upgradeAuthority": "8d36iv2YUD8yDChuVZchx1NqE4qkDWCAEgsUEEUqzbB6",
+   "authorityKind": "single_key",
+   "multisig": null
+  }
+ ]
+}

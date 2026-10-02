@@ -57,6 +57,13 @@
       "when": 1790875630891,
       "tag": "20261001172710_control_daily",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1790919504610,
+      "tag": "20261002053824_program_daily",
+      "breakpoints": true
     }
   ]
 }

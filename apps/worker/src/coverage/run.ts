@@ -63,7 +63,8 @@ async function main(): Promise<void> {
   // COVERAGE_RESUME=<file>: re-resolve only the unresolved/errored rows of an earlier run, keep the rest.
   const resume = process.env.COVERAGE_RESUME ? (JSON.parse(readFileSync(process.env.COVERAGE_RESUME, 'utf8')) as { programs: Array<Record<string, unknown>> }) : null;
   const kept = resume ? resume.programs.filter((r) => !r.error && r.authorityKind !== 'single_key_or_vault_unresolved') : [];
-  const ids = resume ? resume.programs.filter((r) => !kept.includes(r)).map((r) => String(r.programId)) : (await verifiedProgramIds()).slice(0, LIMIT);
+  const idsFile = process.env.COVERAGE_IDS_FILE ? readFileSync(process.env.COVERAGE_IDS_FILE, 'utf8').split(/\s+/).filter(Boolean) : null;
+  const ids = idsFile ? idsFile : resume ? resume.programs.filter((r) => !kept.includes(r)).map((r) => String(r.programId)) : (await verifiedProgramIds()).slice(0, LIMIT);
   const slot = await withRetry(() => connection.getSlot());
   console.log(`coverage: ${ids.length} verified programs, slot ${slot}, rpc ${/api-key|\/v2\//.test(RPC) ? 'keyed' : RPC}`);
   const rows: unknown[] = [...kept];
@@ -95,7 +96,7 @@ async function main(): Promise<void> {
   const dir = join(__dirname, '..', '..', '..', '..', 'data', 'coverage');
   mkdirSync(dir, { recursive: true });
   const day = new Date().toISOString().slice(0, 10);
-  const out = join(dir, `coverage-${day}.json`);
+  const out = join(dir, process.env.COVERAGE_OUT ?? `coverage-${day}.json`);
   writeFileSync(out, JSON.stringify({ day, slot, source: 'verify.osec.io verified programs', programs: rows }, null, 1));
   const kinds: Record<string, number> = {};
   for (const r of rows as Array<{ authorityKind?: string; error?: string }>) { const k = r.error ? 'error' : r.authorityKind ?? '?'; kinds[k] = (kinds[k] ?? 0) + 1; }
