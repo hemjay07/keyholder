@@ -192,6 +192,24 @@ export const control_daily = pgTable(
   (table) => ({ pk: primaryKey({ columns: [table.day, table.protocol_id] }) })
 );
 
+// One row per covered program per UTC day (design/DATA-MOAT.md, layer 3 at full
+// coverage): who controlled its upgrade authority that day, read from chain.
+export const program_daily = pgTable(
+  'program_daily',
+  {
+    day: date('day', { mode: 'string' }).notNull(),
+    program_id: text('program_id').notNull(),
+    slot: bigint('slot', { mode: 'number' }).notNull(),
+    upgrade_authority: text('upgrade_authority'),
+    authority_kind: text('authority_kind').notNull(),
+    multisig: text('multisig'),
+    threshold: integer('threshold'),
+    members: jsonb('members'),
+    checked_at: timestamp('checked_at', { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
+  },
+  (table) => ({ pk: primaryKey({ columns: [table.day, table.program_id] }) })
+);
+
 export const control_state = pgTable(
   'control_state',
   {
