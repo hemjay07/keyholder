@@ -31,3 +31,10 @@ Single-key programs (10 in the money layer): no security.txt in any of them; own
   Order of magnitude: about ten thousand dollars (not priced to the dollar). Recent activity is RefreshReserve only (8 of 8 sampled txs).
 - CanarFx: 10 owned accounts.
 Conclusion: a real 1-of-10 path, but over little money. Not a headline finding on its own.
+
+## Single-key program CBuCnLe2… (raydium-contract-instructions farm id): signer link
+- Its upgrade authority 8aSRiwajnkCP3ZhWTqTGJBy82ELo3Rt1CoEk5Hyjiqiy is not a member of Raydium AMM v4's current upgrade
+  multisig (tr8rgazU…, 3 of 4, read 2026-10-03).
+- But 8aSRiw… itself executed Squads v3 ExecuteTransaction calls that upgraded Raydium AMM v4 (e.g. 2022-12-28 13:22:50 UTC
+  slot 238,520,285 sig 5aUrJ5S6…; 2023-03-20 slot 183,639,488) and co-signed the 2022-11-14 SetAuthority (67YRh591…).
+  So it was a Raydium upgrade signer then. CBuCnLe2's owner: Raydium-linked key, not confirmed as Raydium's program.
