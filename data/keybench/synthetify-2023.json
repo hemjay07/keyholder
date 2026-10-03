@@ -1,0 +1,130 @@
+{
+ "id": "synthetify-2023",
+ "name": "Synthetify (Oct 2023)",
+ "class": "governance_upgrade",
+ "sources": [
+  "https://blockworks.co/news/solana-exploit-dao-hacker",
+  "https://neodyme.io/en/blog/how_to_hack_a_dao"
+ ],
+ "program": "5TeGDBaMNPc2uxvx6YLDycsoxFnBuqierPt3a8Bk4xFX",
+ "realm": "7oB84bSuxv9AH1iRdMp5nFLwpQApv8Yo9s1gGmDkHtSP",
+ "realm_name_on_chain": "Synthetify",
+ "governance": "Aijh3RvCTyxcxi3BXaNj9qSQkXXsGnHAmywuQBC2YSv4",
+ "governance_kind": "spl-governance 3.1.1 program governance over 5TeGDBaMNPc2uxvx6YLDycsoxFnBuqierPt3a8Bk4xFX",
+ "community_mint": "4dmKkXNHdgYsXqBHCuMikNQWwVomZURhYvkkX5c4pQ7y",
+ "attack_proposal": "5ma5FMHZHWVrfZMQYsooqS584PtCiXPcuZ1QBbvK93aH",
+ "proposal_name_on_chain": "SNY Airdrop ✅ on Terra 2.0",
+ "proposer": "mBC9a2h2r9Hxtye59vw8tau5WfcVye2SdJsUREZXfki",
+ "voter_executor": "Hfo6NHDUCyz3LcLDkHXqrVdvo3UCYfYTbQkPvw3D8jqp",
+ "drainer": "BvvMMoT8gTiB9DBSa9C2zEQ36wrmAbCxKHP3zr1brHfa",
+ "vault_owner": "4f1XgkC1dSvvovZ9EU85pY8pwNdJRhqy7jjq188b1DjJ",
+ "events": [
+  {
+   "kind": "upgrade_proposal_created",
+   "what": "CreateProposal + InsertInstruction (program upgrade, hold_up 86400 s) + SignOffProposal",
+   "sig": "3rLEAWpHrWvv1oPH4kdLTiGz3mnmDKhfBS7C4QBpiijcCAv4wJUbLnkwYN9dZ3Vy3PrD73J4kowM4KDrU5qmyfjj",
+   "sig2": "3sEizcsoNhiw3UAtjyopk3Qq7EhwxLnZPR6YeP6FXTjeHbNahJw47AVM2zDtYmQoPWqoDeSA7gs1BMgPzuawoZkS",
+   "slot": 222520471,
+   "time": "2023-10-09 08:42:35"
+  },
+  {
+   "kind": "vote_cast",
+   "what": "CastVote Approve",
+   "sig": "4xNzQsFtRzjxrVxx5sFaiR2gWQ5L2u4iub92wXHGz7Jwq8iYR3DMcMYQ1yLMudiiD8jdXZ4FGeyPteNzEa6Kvf2r",
+   "slot": 223906221,
+   "time": "2023-10-15 22:39:19"
+  },
+  {
+   "kind": "vote_finalized",
+   "what": "FinalizeVote",
+   "sig": "RnfUwMz1pXzSjZwQb3ZLSKBqBQ9xoj2kVSHfthHjTXXmADXhFzV6dTDPeugGnLenYc46WGNn3xhxTqeG1o9CJmz",
+   "slot": 224196944,
+   "time": "2023-10-17 07:50:52"
+  },
+  {
+   "kind": "program_upgraded",
+   "what": "ExecuteTransaction -> Upgraded program 5TeGDBaMNPc2uxvx6YLDycsoxFnBuqierPt3a8Bk4xFX",
+   "sig": "35oqavmhfo4QMdbxFSz4hYQXqY9bW1S5Ygj4sXMon2cd6cZCj6w1ovhzKqg2tEszpi3hjV62k8p9xgYXea52H7Z",
+   "slot": 224209718,
+   "time": "2023-10-17 09:19:06"
+  },
+  {
+   "kind": "first_loss",
+   "what": "first transfer out of the program vault to the drainer",
+   "sig": "2PqUTsByr5xgHq96mLxUiytdyApnwdaFXsEdh13ytTc8PqVKd1qSraBw2pnV4J92Lgy6PEmjnBYmK6nEA6ZBX9py",
+   "slot": 224209772,
+   "time": "2023-10-17 09:19:31"
+  }
+ ],
+ "drain_txs": [
+  {
+   "sig": "2PqUTsByr5xgHq96mLxUiytdyApnwdaFXsEdh13ytTc8PqVKd1qSraBw2pnV4J92Lgy6PEmjnBYmK6nEA6ZBX9py",
+   "slot": 224209772,
+   "time": "2023-10-17 09:19:31"
+  },
+  {
+   "sig": "juuzV8Vdb7HZ8hnvzWfnkMvPCoj2hgzqbGQdLHrExZKxKgBa1MEueno4cavGZc5A9Dn7CrLqDQG7wzn7XLPGWNQ",
+   "slot": 224209860,
+   "time": "2023-10-17 09:20:08"
+  },
+  {
+   "sig": "3StCDgWgRJZtrjZBNZ5pFFUrzVQXfkHAYRQq9KQLTBn6ZDJmARVfntKjzymvqDFzspJpc1XKoPe1YFxDLBi6bZL1",
+   "slot": 224210038,
+   "time": "2023-10-17 09:21:21"
+  },
+  {
+   "sig": "59jYjDfbubs4zQHzHEFY2ECmMx3F1P4YgBEs6gbFtwLAXWpv25vwgGaB4kE73vSdmKN6Yum8G79FzVSNw5CB9tzt",
+   "slot": 224210172,
+   "time": "2023-10-17 09:22:22"
+  },
+  {
+   "sig": "3U8bAbA7PBL9rGwEo8P6C3WbvnT7BVqKSTWQ4bhgjqy318RRgwWgjsLKkeAPWc7fCC5xEDQ7W7LuodL2cMgjtPBn",
+   "slot": 224210235,
+   "time": "2023-10-17 09:22:47"
+  },
+  {
+   "sig": "4C7x4PXXskXXe4wXkXSjMUDQjZWqmKQkupVGVY4xAyoN1Wmb3ACsXFKKyus9QPguGTJ8SM1gBVZiV1cJRh3gT63R",
+   "slot": 224210338,
+   "time": "2023-10-17 09:23:33"
+  },
+  {
+   "sig": "3JypzJocbhykodsFwfQpKqwQcR7BEa9AQjvh3XbxMcQ9FjgFptBomuoHMvSUHj3s3CxNmJfeg7c2JRNjhKyatAKd",
+   "slot": 224210377,
+   "time": "2023-10-17 09:23:48"
+  },
+  {
+   "sig": "Tqtrn6JunsgqrEdkjdxuqNQbBnf3T2CVXiwNm2JrsNKQF5WJuZW5ecppKpS4UGbHaBu77Ldj84iQKckF2rSCC2Z",
+   "slot": 224210589,
+   "time": "2023-10-17 09:25:18"
+  },
+  {
+   "sig": "5yYWtA1HVFGh5tUNhmdCX4MhVMwoFbgpe98YDCUmBMmyP6rLoCA7hoPkVfthVq5LpDQRhVDvKQAChXQGNGjPpVT3",
+   "slot": 224210624,
+   "time": "2023-10-17 09:25:33"
+  },
+  {
+   "sig": "5JmMPPftxAcafGt81zer6vuQEmvNYnBeSAdD9bXh9Fb4ZSWFB5bRQj6vgvQ86Do7J8UPxXhrGwoFiPutjs9zWJvD",
+   "slot": 224210653,
+   "time": "2023-10-17 09:25:44"
+  },
+  {
+   "sig": "3La98oaP8ULtjQ1MSSRMks8mJTbDx42SBx5RBFDF8FvnaSmVa27aHhC5b4KFdyog3ZaeDt6fvyJY8qr5qYhjedbY",
+   "slot": 224210780,
+   "time": "2023-10-17 09:26:37"
+  },
+  {
+   "sig": "5pSX2vCao6fQ955TDZgf2voHEFsc34iUJm4sswFLnLDmy1EZY8mbkzXRHFJavfMVsjohHGMwPoUq4Su2YrV4SWCT",
+   "slot": 224210825,
+   "time": "2023-10-17 09:26:55"
+  }
+ ],
+ "drained_by_mint": {
+  "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v": 162938.0,
+  "mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So": 4909.0,
+  "7dHbWXmci3dT8UFYWYZweBLXgycu7Y3iL6trKn1Y7ARj": 864.0,
+  "So11111111111111111111111111111111111111112": 323.0,
+  "83LGLCm7QKpYZbX8q4W2kYWbtt8NJBwbVwEepzkVnJ9y": 4600.0
+ },
+ "read_at": "2026-10-03",
+ "rpc": "https://api.mainnet-beta.solana.com"
+}

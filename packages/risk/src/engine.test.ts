@@ -394,3 +394,22 @@ describe('computeScore', () => {
     expect(score).toBe(0);
   });
 });
+
+describe('control_proposal_pending', () => {
+  const s = state({ authorityKind: 'spl_gov' });
+  const run = (event: Record<string, unknown>) => evaluateDelta(s, s, ctx, event, { ruleIds: ['control_proposal_pending'] });
+  it('happy: a proposal that upgrades the program fires critical', () => {
+    const d = run({ kind: 'governance_proposal', touches: 'program_upgrade', proposal: '5ma5FMHZHWVrfZMQYsooqS584PtCiXPcuZ1QBbvK93aH' });
+    expect(d).toHaveLength(1);
+    expect(d[0]!.severity).toBe('critical');
+    expect(d[0]!.explanation).toContain('upgrade the program');
+  });
+  it('edge: a treasury transfer proposal fires high', () => {
+    expect(run({ kind: 'governance_proposal', touches: 'treasury_transfer', proposal: 'P' })[0]!.severity).toBe('high');
+  });
+  it('error: a proposal with no control or treasury instruction does not fire; nor does a non-proposal event', () => {
+    expect(run({ kind: 'governance_proposal', touches: 'none' })).toHaveLength(0);
+    expect(run({ kind: 'governance_proposal' })).toHaveLength(0);
+    expect(run({ touches: 'program_upgrade' })).toHaveLength(0);
+  });
+});

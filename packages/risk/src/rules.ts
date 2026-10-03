@@ -238,6 +238,28 @@ export const RULES: Rule[] = [
     },
   },
 
+  // ── control_proposal_pending ────────────────────────────────────────────
+  // Added 2026-10-03 after KeyBench (design/MOAT-BUILD.md, A): Synthetify (2023) and
+  // BonkDAO (2026) were both drained by a governance proposal that sat on chain for days.
+  {
+    id: 'control_proposal_pending',
+    version: 1,
+    description: 'A governance proposal that would upgrade a program, change an authority, or move treasury funds was created.',
+    standing: false,
+    evaluate({ event }) {
+      if (event.kind !== 'governance_proposal') return null;
+      const touches = event.touches;
+      if (touches !== 'program_upgrade' && touches !== 'set_authority' && touches !== 'treasury_transfer') return null;
+      const proposal = typeof event.proposal === 'string' ? event.proposal : 'a proposal';
+      const what = touches === 'program_upgrade' ? 'upgrade the program' : touches === 'set_authority' ? 'change an authority' : 'move treasury funds';
+      return {
+        severity: touches === 'treasury_transfer' ? 'high' : 'critical',
+        explanation: `Governance proposal ${proposal} would ${what} once it passes. Review its instructions before voting closes.`,
+        facts: { proposal, touches },
+      };
+    },
+  },
+
   // ── verification_drift ──────────────────────────────────────────────────
   {
     id: 'verification_drift',

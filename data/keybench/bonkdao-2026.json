@@ -1,0 +1,117 @@
+{
+ "id": "bonkdao-2026",
+ "name": "BonkDAO BIP #76 (Jul 2026)",
+ "class": "governance_treasury",
+ "sources": [
+  "https://www.coindesk.com/markets/2026/07/07/bonk-faces-usd20-million-treasury-drain-after-attacker-spends-usd4-million-to-pass-malicious-proposal",
+  "https://news.bitcoin.com/bonkdao-treasury-loses-20m-in-malicious-governance-attack-bonk-slides-8/"
+ ],
+ "realm": "84pGFuy1Y27ApK67ApethaPvexeDWA66zNV8gm38TVeQ",
+ "realm_name_on_chain": "Bonk DAO",
+ "governance": "Uq5BRkVfdBpMknZJHw6huS3dunEgJpUDv3M2DG3BfQg",
+ "proposal": "6wR1jdhhJ31bbdRNXva8MxqsgsNLKTxargcdAyZ7FcRj",
+ "proposal_name_on_chain": "BIP # 76 - Sowellian BonkDAO",
+ "proposer": "8xxRdtzsw1CJWfEahViqNjZwh5dYJAdSbBctWwcbycVo",
+ "events": [
+  {
+   "kind": "treasury_proposal_created",
+   "what": "CreateProposal + 4 InsertInstruction + SignOff",
+   "sig": "3bvjf8Xma3QCbp4PJpKS8w5hsAk8exa2vZ5eoKgHhRcCaj5Cs9UxCZszg1pxtT1mngw3NP5j2JQJjRnBxmyQD2r2",
+   "slot": 429842335,
+   "time": "2026-06-30 08:25:24"
+  },
+  {
+   "kind": "first_loss",
+   "what": "ExecuteTransaction: treasury BONK transfer",
+   "sig": "5tPU1srcRcnmibB7KJi2WQ7cK4zuq5iKTMrSCLjq7hvGjuK4KUTmaHfwicixkJa5jZJmp3y98T7r2qecKV5mWw8P",
+   "slot": 431127240,
+   "time": "2026-07-06 08:26:28"
+  }
+ ],
+ "votes": [
+  {
+   "sig": "2Kpgmkj9ghvssWwa533stum2K827n6VGH27V7LJpjAEC3BwFRrjGyoJoHFeokVA2MAYqd2PooENWe8jKS4gNrZgS",
+   "time": "2026-06-30 08:25:27"
+  },
+  {
+   "sig": "2p42RHHMTvQTWjPeSAvxmcQbSK9LYW7fQnqK63eLpcsdmzhKG4ddCs7RKtoajB3enzJEmqMYQYn7cUpKpqC23wS2",
+   "time": "2026-06-30 08:25:31"
+  },
+  {
+   "sig": "5yVL2XZ77YPwamVCqqFXYH26dTygz28nBJfqYntYyYp2g4CvJ6LZ7FUVbUByZRVaT2egtNBoPH57EDjBSkQLy64F",
+   "time": "2026-06-30 08:25:34"
+  },
+  {
+   "sig": "gGCH3JS7chgj82zqwjeJ3raPQthtStKDW3A5dP6qX3xkM3z7qGvEpCvLGfLmkKQ5QgdMchwhMy7VpMt11d4vjmp",
+   "time": "2026-06-30 08:25:36"
+  },
+  {
+   "sig": "tMcnhQTZ2zrqPs3iaEUGyKiXWhKNzpb2uh5jRhWftr2HLzGoCD3udqCbsNEiGFvm2AUDjQMCz13tKCdK3AMd6dt",
+   "time": "2026-06-30 08:25:39"
+  },
+  {
+   "sig": "2dGiqwLewKwSNKkquzg4pPRKPv5oSfV8tHPqJuktN5jUFwRrCjyFrxUiZCrvTXVP48tvrKy2YRxdCvyPMZfAyr5h",
+   "time": "2026-07-01 00:35:15"
+  },
+  {
+   "sig": "4oB1xHT44KoSYCvzqAFxYnr9LDGcvhZPo9VtJGYydX6KdCiVQ5CZeM8n9hokw7nnRAio4UPFxi7yYjcG3vU1HYJq",
+   "time": "2026-07-03 00:54:32"
+  },
+  {
+   "sig": "619ydEtfH7CYBhVczrprx6HS9tYsCH8gvwq1E98n5CGNj1g5e7ArXZnxQQ5rJS3XVNGaMVGWhYQB5cm7PfKByUmh",
+   "time": "2026-07-03 00:54:33"
+  },
+  {
+   "sig": "2HpzTngPLoELyPX6XbX5jNCb2ymBZyHZcnLhmZydGt8cR3uxw2KusoffdigumzYarBxXjHz8JHmXjzgqob8MpWij",
+   "time": "2026-07-03 08:46:07"
+  },
+  {
+   "sig": "4FFUwZNYtNGL8zXCJTHo4SVHEds8N6MoBJkGWV3mDpkoy8r89tYchbyGJeWyuwmYkQArMDzCCaiPpF1EViR8HY3A",
+   "time": "2026-07-03 12:26:30"
+  },
+  {
+   "sig": "46MtzaiMbb7nuwxeg3xfhFhUYfQGuESRAy2iyqgePRRceS8uDGRhhLr5YB19weYtHeEnxEZfSHTZcEwSZTCBe5fK",
+   "time": "2026-07-04 05:35:11"
+  },
+  {
+   "sig": "iMAeAL2arRiu5qLijs3Wh3AFctPAr7tsENsHgE91ojBGdHuz4f2QQmQiBsK3bqE7eoSgYaqn2UUAiwtpKyY9eae",
+   "time": "2026-07-05 05:53:40"
+  },
+  {
+   "sig": "iw2a4PtBsamsSDQ7xq9drHcjL3mo8CqQXXKAaPxRAShoRZGMW1QJ2PMQUUYUmA3LBaURQWYvHj88esnjmDBRc6P",
+   "time": "2026-07-05 06:56:22"
+  },
+  {
+   "sig": "5p1SU3V93HX4NznapsZpMuJVAkkveYEgVMjR9YK7BdHUR1PBkU36GuXcB2jq6jsQjcU1cDrucP1n93DHn1y2LCc4",
+   "time": "2026-07-06 08:26:03"
+  },
+  {
+   "sig": "571FPdtD8U87UmqjLdgBQp3qEUT9xUnSpJp11krS9WVzfV6JN9QD57cE2njhELnzSUsBtiwqmx2FRLpZJuu1Z4xm",
+   "time": "2026-07-06 08:26:17"
+  },
+  {
+   "sig": "5crds6aWsngqRUhA7APXH39L7w7PCHy5F4yYA8W4k6jArkwbx1Y53jSiYUL1EFWU5CWzqc2XQTRtZJ71sJSawJdP",
+   "time": "2026-07-06 08:26:22"
+  },
+  {
+   "sig": "5jeG3xcnoLBQ4KxLR4cZumCyufeDBjJsM5J59AkRkUGHb8oVaxTB4M9bf18gtT2NnuSP27KfnypNHkfshqKZXheW",
+   "time": "2026-07-06 08:26:24"
+  }
+ ],
+ "moves": [
+  {
+   "owner": "AGkGWK1R669KDT4FCqgDgK7PgahGJPjD4J9xmVjuL9kn",
+   "mint": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+   "raw_delta": -442610445030596600,
+   "decimals": 5
+  },
+  {
+   "owner": "9bxWkNf3BtJ6iehq9KbX9uCWMjem4TFiPZ19T2sYJHvQ",
+   "mint": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+   "raw_delta": 442610445030596600,
+   "decimals": 5
+  }
+ ],
+ "read_at": "2026-10-03",
+ "rpc": "https://api.mainnet-beta.solana.com"
+}
