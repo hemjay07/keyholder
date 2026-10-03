@@ -1,0 +1,132 @@
+{
+ "generated": "2026-10-03T19:08:08.745Z",
+ "shippedRules": [
+  "single_key_authority",
+  "no_timelock",
+  "threshold_lowered",
+  "timelock_reduced",
+  "authority_changed",
+  "admin_changed",
+  "durable_nonce_by_controller",
+  "new_multisig_created_by_controller",
+  "privileged_ix_by_new_admin",
+  "verification_drift"
+ ],
+ "addedAfterKeyBench": [
+  "control_proposal_pending"
+ ],
+ "results": [
+  {
+   "id": "raydium-2022",
+   "name": "Raydium AMM v4 (Dec 2022)",
+   "class": "admin_key",
+   "firstLoss": {
+    "time": "2022-12-16 10:11:58",
+    "sig": "5gjJdnFHzZzv8ar27YHvJYYHZ1ZQkinpd8dEERApm5fseVh2CDYhXJj9jHHNfhQSrtoeDzsmmRemSu7xnjnSbnay",
+    "slot": 167192704
+   },
+   "shipped": {
+    "firstAlert": null,
+    "leadTimeSeconds": null,
+    "posture": []
+   },
+   "current": {
+    "firstAlert": null,
+    "leadTimeSeconds": null,
+    "posture": []
+   },
+   "note": "The stolen key was the AMM admin key compiled into the program, used directly with no prior on-chain control change. Keyholder does not model compiled-in admin keys, so it gives no warning. The upgrade authority was already a multisig."
+  },
+  {
+   "id": "synthetify-2023",
+   "name": "Synthetify (Oct 2023)",
+   "class": "governance_upgrade",
+   "firstLoss": {
+    "time": "2023-10-17 09:19:31",
+    "sig": "2PqUTsByr5xgHq96mLxUiytdyApnwdaFXsEdh13ytTc8PqVKd1qSraBw2pnV4J92Lgy6PEmjnBYmK6nEA6ZBX9py",
+    "slot": 224209772
+   },
+   "shipped": {
+    "firstAlert": null,
+    "leadTimeSeconds": null,
+    "posture": []
+   },
+   "current": {
+    "firstAlert": {
+     "ruleId": "control_proposal_pending",
+     "severity": "critical",
+     "at": "2023-10-09 08:42:35",
+     "slot": 222520471,
+     "sig": "3rLEAWpHrWvv1oPH4kdLTiGz3mnmDKhfBS7C4QBpiijcCAv4wJUbLnkwYN9dZ3Vy3PrD73J4kowM4KDrU5qmyfjj"
+    },
+    "leadTimeSeconds": 693416,
+    "posture": []
+   },
+   "note": "The drain was a program upgrade passed through governance; the upgrade proposal sat on chain from creation to execution."
+  },
+  {
+   "id": "drift-2026",
+   "name": "Drift Protocol (Apr 2026)",
+   "class": "multisig_admin",
+   "firstLoss": {
+    "time": "2026-03-31T07:16:19Z",
+    "sig": "2Ca74VizKGBkmvfJ2K8dk19RTtU1ikZjXYJNb3ihphEcGzq2iKKCEn1iRECtdWjrcKyCSAQ5PKrpTHMbmHBNxwKw",
+    "slot": 410042220
+   },
+   "shipped": {
+    "firstAlert": {
+     "ruleId": "new_multisig_created_by_controller",
+     "severity": "high",
+     "at": "2026-03-25T16:58:31Z",
+     "slot": 408806252,
+     "sig": "3aKRMvoc6JRoZCMrefvioMdZMrCJXJ1hFj3ENvGHhDbJW2AFGWBkLZpWp1A2twbLoLjWivRQACWKbJEJRF8xoQrr"
+    },
+    "leadTimeSeconds": 483468,
+    "posture": [
+     "no_timelock"
+    ]
+   },
+   "current": {
+    "firstAlert": {
+     "ruleId": "new_multisig_created_by_controller",
+     "severity": "high",
+     "at": "2026-03-25T16:58:31Z",
+     "slot": 408806252,
+     "sig": "3aKRMvoc6JRoZCMrefvioMdZMrCJXJ1hFj3ENvGHhDbJW2AFGWBkLZpWp1A2twbLoLjWivRQACWKbJEJRF8xoQrr"
+    },
+    "leadTimeSeconds": 483468,
+    "posture": [
+     "no_timelock"
+    ]
+   },
+   "note": "Replayed by src/replay/drift-replay.ts from data/drift-2026/timeline.json (15 on-chain steps)."
+  },
+  {
+   "id": "bonkdao-2026",
+   "name": "BonkDAO BIP #76 (Jul 2026)",
+   "class": "governance_treasury",
+   "firstLoss": {
+    "time": "2026-07-06 08:26:28",
+    "sig": "5tPU1srcRcnmibB7KJi2WQ7cK4zuq5iKTMrSCLjq7hvGjuK4KUTmaHfwicixkJa5jZJmp3y98T7r2qecKV5mWw8P",
+    "slot": 431127240
+   },
+   "shipped": {
+    "firstAlert": null,
+    "leadTimeSeconds": null,
+    "posture": []
+   },
+   "current": {
+    "firstAlert": {
+     "ruleId": "control_proposal_pending",
+     "severity": "high",
+     "at": "2026-06-30 08:25:24",
+     "slot": 429842335,
+     "sig": "3bvjf8Xma3QCbp4PJpKS8w5hsAk8exa2vZ5eoKgHhRcCaj5Cs9UxCZszg1pxtT1mngw3NP5j2JQJjRnBxmyQD2r2"
+    },
+    "leadTimeSeconds": 518464,
+    "posture": []
+   },
+   "note": "A treasury-transfer proposal (BIP #76) passed by purchased voting power; it sat on chain for days before executing."
+  }
+ ]
+}

@@ -8,6 +8,7 @@ const ITEMS = [
   { href: "/feed", label: "Changes" },
   { href: "/wallet", label: "Your wallet" },
   { href: "/replay/drift", label: "Drift replay" },
+  { href: "/keybench", label: "KeyBench" },
   { href: "/alerts", label: "Alerts" },
   { href: "/policy", label: "For vaults" },
 ];

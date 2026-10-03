@@ -11,3 +11,4 @@ Asked routes:
 - /alerts
 - /proof
 - /policy
+- /keybench  (founder 2026-10-03: "plan the implementeation of all your recommendations and then go ahead to implemeting them"; design/MOAT-BUILD.md step A5)

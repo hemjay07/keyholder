@@ -92,7 +92,10 @@ export function scoreAll(): IncidentResult[] {
 
 if (require.main === module) {
   const results = scoreAll();
-  writeFileSync(join(DIR, 'results.json'), JSON.stringify({ generated: new Date().toISOString(), shippedRules: SHIPPED, addedAfterKeyBench: [...ADDED_AFTER_KEYBENCH], results }, null, 1));
+  const body = JSON.stringify({ generated: new Date().toISOString(), shippedRules: SHIPPED, addedAfterKeyBench: [...ADDED_AFTER_KEYBENCH], results }, null, 1);
+  writeFileSync(join(DIR, 'results.json'), body);
+  // The site renders the same file (apps/web/src/app/keybench).
+  writeFileSync(join(__dirname, '..', '..', '..', 'web', 'src', 'data', 'keybench.json'), body);
   for (const r of results) {
     const fmt = (s: Score) => (s.leadTimeSeconds == null ? 'no warning' : `${(s.leadTimeSeconds / 86400).toFixed(2)} d (${s.firstAlert!.ruleId})`);
     console.log(`${r.name.padEnd(30)} shipped: ${fmt(r.shipped).padEnd(44)} current: ${fmt(r.current)}`);
