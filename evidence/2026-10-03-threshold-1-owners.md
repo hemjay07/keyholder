@@ -23,3 +23,11 @@ Not safe yet: what SLendK7y and CanarFx hold or do for Kamino users (TVL at risk
 and anything naming Switchboard as the controller of SW1TCH7q.
 
 Single-key programs (10 in the money layer): no security.txt in any of them; owners still open.
+
+## What the two Kamino-signer programs hold (2026-10-03)
+- SLendK7y: 3,755 owned accounts; 93 reserves (8624-byte accounts) across 25 lending markets. All 93 supply vaults
+  checked: each is a token account whose mint equals the reserve's mint (offsets 128 mint, 160 supply_vault confirmed).
+  Vault balances, largest: 4,823.77 USDC, 295.1 KMNO, 21.93 JitoSOL, 7.50 SOL, plus small amounts of ~10 other mints.
+  Order of magnitude: about ten thousand dollars (not priced to the dollar). Recent activity is RefreshReserve only (8 of 8 sampled txs).
+- CanarFx: 10 owned accounts.
+Conclusion: a real 1-of-10 path, but over little money. Not a headline finding on its own.
