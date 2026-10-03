@@ -16,10 +16,14 @@ N = int(sys.argv[3]) if len(sys.argv) > 3 else 60
 programs = json.load(open(cov_path))['programs']
 
 def gettx(sig):
-    for _ in range(5):
-        t = tx(sig)
-        if t: return t
-        time.sleep(2)
+    # a transaction that cannot be read after retries is skipped (the floor only gets lower), never fatal
+    for i in range(5):
+        try:
+            t = tx(sig)
+            if t: return t
+        except RuntimeError:
+            pass
+        time.sleep(3 + 3 * i)
     return None
 
 owner_cache = {}
@@ -71,7 +75,7 @@ def vaults_for(pid):
             o = owner_of(auth)
             if o == pid or o is None or (o == '11111111111111111111111111111111' and not on_curve(auth)):
                 found[keys[b['accountIndex']]] = {"mint": b['mint'], "authority": auth, "authority_owner": o, "seen_in": s['signature']}
-        time.sleep(0.2)
+        time.sleep(0.6)
     return found
 
 def klend_reserves(pid):
@@ -107,24 +111,30 @@ def prices(mints):
     return out
 
 result = {"method": __doc__ if False else "lower bound from recent-tx vault discovery; see header", "tx_per_program": N, "liq_floor_usd": LIQ_FLOOR, "programs": []}
+import os
+ckpt_path = out_path + ".partial"
+done = {x["programId"]: x for x in (json.load(open(ckpt_path))["programs"] if os.path.exists(ckpt_path) else [])}
 for p in programs:
+    if p['programId'] in done and not done[p['programId']].get('error'):
+        result["programs"].append(done[p['programId']]); continue
     try:
         v = vaults_for(p['programId'])
         if p['programId'] in LAYOUT_KLEND: v.update(klend_reserves(p['programId']))
         balances(v)
         result["programs"].append({**{k: p.get(k) for k in ("programId", "upgradeAuthority", "authorityKind")}, "multisig": p.get("multisig"), "vaults": v})
         print(p['programId'][:8], p['authorityKind'], 'vaults', len(v), flush=True)
+        json.dump(result, open(ckpt_path, 'w'))
     except Exception as e:
         result["programs"].append({"programId": p['programId'], "authorityKind": p.get('authorityKind'), "error": str(e)})
         print(p['programId'][:8], 'ERROR', e, flush=True)
 mints = {x["mint"] for p in result["programs"] for x in p.get("vaults", {}).values()}
 px = prices(mints)
-result["priced_at"] = utc(time.time()); result["prices"] = {m: {"usd": px[m]["usdPrice"], "liquidity": px[m].get("liquidity")} for m in px}
+result["priced_at"] = utc(time.time()); result["prices"] = {m: {"usd": px[m].get("usdPrice"), "liquidity": px[m].get("liquidity")} for m in px}
 for p in result["programs"]:
     usd = 0.0
     for x in p.get("vaults", {}).values():
         q = px.get(x["mint"])
-        x["usd"] = round(x["amount"] * q["usdPrice"], 2) if q and (q.get("liquidity") or 0) >= LIQ_FLOOR else None
+        x["usd"] = round(x["amount"] * q["usdPrice"], 2) if q and q.get("usdPrice") and (q.get("liquidity") or 0) >= LIQ_FLOOR else None
         usd += x["usd"] or 0
     p["usd_floor"] = round(usd, 2)
 json.dump(result, open(out_path, "w"), indent=1)
