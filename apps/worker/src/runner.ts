@@ -24,16 +24,17 @@ import * as dotenv from 'dotenv';
 import { join } from 'node:path';
 import pino from 'pino';
 import { Connection } from '@solana/web3.js';
-import { eq } from 'drizzle-orm';
+import { eq, desc } from 'drizzle-orm';
 import { initDb, type Db } from './db';
-import { programs, authorities, multisigs } from './schema';
+import { programs, authorities, multisigs, control_state } from './schema';
 import { startIngestService, type IngestService } from './ingest/index';
 import { resolveRpcEndpoints, redact } from './ingest/rpc';
 import { createIdlCache } from './pipeline/idl-cache';
 import { buildProtocolIndex, type ProtocolIndex } from './pipeline/protocol-index';
 import { runDecodeStage } from './pipeline/decode';
 import { refreshProtocolState } from './pipeline/state';
-import { runRiskStage } from './pipeline/risk';
+import { runRiskStage, runEventRiskStage } from './pipeline/risk';
+import type { ControlState } from '@keyholder/risk';
 import { runVerificationPoll } from './pipeline/verification';
 import { startAlertListener, type AlertListenerHandle } from './pipeline/alerts';
 
@@ -118,6 +119,17 @@ export async function startRunner(): Promise<RunnerHandle> {
       try {
         const decodeResult = await runDecodeStage({ db, connection, idlCache, protocolIndex: protocolIndexRef.current, logger });
         if (decodeResult.rawTxProcessed > 0) logger.info('decode tick', decodeResult as unknown as Record<string, unknown>);
+
+        for (const pe of decodeResult.proposalEvents) {
+          try {
+            const [latest] = await db.select({ state: control_state.state }).from(control_state).where(eq(control_state.protocol_id, pe.protocolId)).orderBy(desc(control_state.slot)).limit(1);
+            if (!latest) continue;
+            const r = await runEventRiskStage(db, pe.protocolId, pe.slot, latest.state as ControlState, pe.facts);
+            if (r.deltasInserted > 0) logger.info('proposal risk delta inserted', { ...r, facts: pe.facts });
+          } catch (err) {
+            logger.error('event risk stage failed', { protocolId: pe.protocolId, error: err instanceof Error ? err.message : String(err) });
+          }
+        }
 
         if (decodeResult.protocolIdsTouched.length > 0) {
           const tipSlot = await connection.getSlot('confirmed');

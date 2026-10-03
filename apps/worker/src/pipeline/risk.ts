@@ -56,3 +56,18 @@ export async function runRiskStage(db: Db, protocolId: string, slot: number, bef
 
   return { protocolId, deltasEvaluated: deltas.length, deltasInserted: inserted.length };
 }
+
+/**
+ * Event-only rules (no state change): a decoded event's facts go to the rules that read them,
+ * against the protocol's current state. Used for governance proposals (control_proposal_pending).
+ */
+export async function runEventRiskStage(db: Db, protocolId: string, slot: number, state: ControlState, facts: Record<string, unknown>): Promise<RiskStageResult> {
+  const deltas = evaluateDelta(state, state, { protocolId, slot }, facts, { ruleIds: ['control_proposal_pending'] });
+  if (deltas.length === 0) return { protocolId, deltasEvaluated: 0, deltasInserted: 0 };
+  const inserted = await db
+    .insert(risk_deltas)
+    .values(deltas.map((d) => ({ delta_uid: d.deltaUid, protocol_id: protocolId, rule_id: d.ruleId, rule_version: d.ruleVersion, severity: d.severity, explanation: d.explanation, facts: d.facts, status: d.status, correction_id: null })))
+    .onConflictDoNothing({ target: risk_deltas.delta_uid })
+    .returning({ id: risk_deltas.id });
+  return { protocolId, deltasEvaluated: deltas.length, deltasInserted: inserted.length };
+}

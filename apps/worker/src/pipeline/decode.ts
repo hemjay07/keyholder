@@ -42,6 +42,8 @@ import {
   BPF_LOADER_UPGRADEABLE_PROGRAM_ID,
   SQUADS_V4_PROGRAM_ID,
   SQUADS_V3_PROGRAM_ID,
+  decodeInsertTransaction,
+  classifyProposal,
 } from '@keyholder/decoder';
 import { SPL_GOVERNANCE_PROGRAM_ID, SYSTEM_PROGRAM_ID } from '../ingest/filter';
 
@@ -239,15 +241,35 @@ async function decodeOneInstruction(
     }
   }
 
-  // ── SPL Governance: no decoder in this repo (native Borsh) — DEV-070 ──────
+  // ── SPL Governance: InsertTransaction says what a proposal will do (KeyBench, 2026-10-03) ──
   if (ix.programId === SPL_GOVERNANCE_PROGRAM_ID) {
+    if (ix.data[0] === 9) {
+      try {
+        const ins = decodeInsertTransaction(ix.data);
+        // InsertTransaction accounts: [governance, proposal, token_owner_record, governance_authority, proposal_transaction, payer, ...]
+        const governance = ix.accounts[0]?.pubkey ?? null;
+        const proposal = ix.accounts[1]?.pubkey ?? null;
+        return {
+          ...base,
+          protocol_id: governance ? ctx.protocolIndex.controllerToProtocol.get(governance) ?? null : null,
+          program_id: ix.programId,
+          kind: 'proposal_insert',
+          category: 'governance',
+          payload: sanitizeForJson({ governance, proposal, touches: classifyProposal(ins), holdUpTimeS: ins.holdUpTimeS, targets: ins.instructions.map((i) => i.programId) }),
+          privilege_basis: null,
+          decode_confidence: 'high',
+        };
+      } catch (err) {
+        return { ...base, protocol_id: null, program_id: ix.programId, kind: 'account_changed_undecoded', category: 'governance', payload: { error: String(err), dataHex: ix.data.toString('hex') }, privilege_basis: null, decode_confidence: 'low' };
+      }
+    }
     return {
       ...base,
       protocol_id: null,
       program_id: ix.programId,
       kind: 'account_changed_undecoded',
       category: 'governance',
-      payload: { note: 'spl_governance instruction decoder not implemented (native Borsh, no Anchor IDL) — DEV-070', dataHex: ix.data.toString('hex') },
+      payload: { note: 'spl_governance: only InsertTransaction is decoded', dataHex: ix.data.toString('hex') },
       privilege_basis: null,
       decode_confidence: 'low',
     };
@@ -371,6 +393,8 @@ export interface DecodeStageResult {
   failed: number;
   /** Distinct protocol ids that got at least one new control-relevant event this batch (see isControlRelevant); the runner re-reads state only for these. */
   protocolIdsTouched: string[];
+  /** Proposals on a tracked protocol's governance that would upgrade, re-authorize or move funds; the runner sends these to the event risk path. */
+  proposalEvents: { protocolId: string; slot: number; facts: Record<string, unknown> }[];
 }
 
 export interface DecodeStageOptions {
@@ -402,6 +426,7 @@ export async function runDecodeStage(opts: DecodeStageOptions): Promise<DecodeSt
   const decodedSignatures: string[] = [];
   const failedSignatures: string[] = [];
   const protocolIdsTouched = new Set<string>();
+  const proposalEvents: DecodeStageResult['proposalEvents'] = [];
 
   for (const row of rows) {
     if (!row.tx) {
@@ -434,6 +459,12 @@ export async function runDecodeStage(opts: DecodeStageOptions): Promise<DecodeSt
         for (const row of inserted) {
           if (row.protocol_id && isControlRelevant(row.kind)) protocolIdsTouched.add(row.protocol_id);
         }
+        for (const e of toInsert) {
+          const pl = e.payload as { touches?: string; proposal?: string } | null;
+          if (e.kind === 'proposal_insert' && e.protocol_id && pl?.touches && pl.touches !== 'none') {
+            proposalEvents.push({ protocolId: e.protocol_id, slot: e.slot, facts: { kind: 'governance_proposal', touches: pl.touches, proposal: pl.proposal } });
+          }
+        }
       }
       decodedSignatures.push(row.signature);
     } catch (err) {
@@ -454,5 +485,5 @@ export async function runDecodeStage(opts: DecodeStageOptions): Promise<DecodeSt
     await opts.db.update(raw_tx).set({ status: 'failed' }).where(and(eq(raw_tx.status, 'pending'), inArray(raw_tx.signature, failedSignatures)));
   }
 
-  return { rawTxProcessed: rows.length, eventsInserted, failed, protocolIdsTouched: [...protocolIdsTouched] };
+  return { rawTxProcessed: rows.length, eventsInserted, failed, protocolIdsTouched: [...protocolIdsTouched], proposalEvents };
 }

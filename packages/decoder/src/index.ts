@@ -8,3 +8,4 @@ export * from './squads-decoder';
 export * from './squads-v3-decoder';
 export * from './system-decoder';
 export * from './coral-multisig-decoder';
+export * from './spl-gov-decoder';
