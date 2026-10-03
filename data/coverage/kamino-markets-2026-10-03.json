@@ -1,0 +1,1258 @@
+{
+ "priced_at": "2026-10-03 19:32:45",
+ "program": "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+ "reserves": 593,
+ "reserves_mint_mismatch": 0,
+ "by_owner_kind_usd": {
+  "pda_owned_by:11111111111111111111111111111111": 1469434991.03,
+  "single_key": 9927594.3
+ },
+ "markets": [
+  {
+   "market": "7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF",
+   "owner": "24LjDBukaUSHgPowcF2wY1XscnhChcBUDETN2UhBZMMT",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 694371010.26,
+   "reserves": 58
+  },
+  {
+   "market": "BJnbcRHqvppTyGesLzWASGKnmnF1wq9jZu6ExrjT7wvF",
+   "owner": "24LjDBukaUSHgPowcF2wY1XscnhChcBUDETN2UhBZMMT",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 228380863.45,
+   "reserves": 6
+  },
+  {
+   "market": "47tfyEG9SsdEnUm9cw5kY9BXngQGqu3LBoop9j5uTAv8",
+   "owner": "24LjDBukaUSHgPowcF2wY1XscnhChcBUDETN2UhBZMMT",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 164655434.52,
+   "reserves": 12
+  },
+  {
+   "market": "CqAoLuqWtavaVE8deBjMKe8ZfSt9ghR6Vb8nfsyabyHA",
+   "owner": "24LjDBukaUSHgPowcF2wY1XscnhChcBUDETN2UhBZMMT",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 102931491.85,
+   "reserves": 9
+  },
+  {
+   "market": "6WEGfej9B9wjxRs6t4BYpb9iCXd8CpTpJ8fVSNzHCC5y",
+   "owner": "24LjDBukaUSHgPowcF2wY1XscnhChcBUDETN2UhBZMMT",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 68038731.12,
+   "reserves": 7
+  },
+  {
+   "market": "DxXdAyU3kCjnyggvHmY5nAwg5cRbbmdyX3npfDMjjMek",
+   "owner": "24LjDBukaUSHgPowcF2wY1XscnhChcBUDETN2UhBZMMT",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 49930422.77,
+   "reserves": 7
+  },
+  {
+   "market": "52FSGeeokLpgvgAMdqxyt5Hoc2TbUYj5b8yxrEdZ37Vf",
+   "owner": "CgXyAkezZAoQo8QYdC6R3G4RbdSyw7zR89bTioEQQMs8",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 48578256.05,
+   "reserves": 4
+  },
+  {
+   "market": "H6rHXmXoCQvq8Ue81MqNh7ow5ysPa1dSozwW3PU1dDH6",
+   "owner": "24LjDBukaUSHgPowcF2wY1XscnhChcBUDETN2UhBZMMT",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 24540322.93,
+   "reserves": 4
+  },
+  {
+   "market": "5wJeMrUYECGq41fxRESKALVcHnNX26TAWy4W98yULsua",
+   "owner": "24LjDBukaUSHgPowcF2wY1XscnhChcBUDETN2UhBZMMT",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 23337954.0,
+   "reserves": 13
+  },
+  {
+   "market": "45MBhfB6SNw2rRSWzUwBqG3e9JJnS6UWvDDdQvBsUnds",
+   "owner": "BeDaPY629mC289jxXk3rnDg57QPh3kqnDCBVKPNtqpSk",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 12279873.42,
+   "reserves": 3
+  },
+  {
+   "market": "C7h9YnjPrDvNhe2cWWDhCu4CZEB1XTTH4RzjmsHuengV",
+   "owner": "A11EznxnJM3JrjUvAq16wqoVyPRNz522mdQm6mSmzMeR",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 8870282.92,
+   "reserves": 2
+  },
+  {
+   "market": "BVJ1FvFfYuLbGX4qDNezqU6z2N3p8M2XNeGzabm86BzE",
+   "owner": "A11EznxnJM3JrjUvAq16wqoVyPRNz522mdQm6mSmzMeR",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 7620257.28,
+   "reserves": 2
+  },
+  {
+   "market": "8BNUWRSibVasaAmhYpBCFpGgMisGKfVAf9ho3Cmf6vjr",
+   "owner": "7fLxEftpppneavpueYgP2s7HhSGbWpj2jTCmAEwwqonY",
+   "owner_kind": "single_key",
+   "usd": 7593200.97,
+   "reserves": 4
+  },
+  {
+   "market": "Dwg1aeZFYtsyMEkoyJn2ak8pPqaXMWd1uui6FBkM1872",
+   "owner": "A9rQoX1sictAQkyXxaZA8nz674xutHwoqpK2mwLyexCZ",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 5284852.67,
+   "reserves": 5
+  },
+  {
+   "market": "9Y7uwXgQ68mGqRtZfuFaP4hc4fxeJ7cE9zTtqTxVhfGU",
+   "owner": "24LjDBukaUSHgPowcF2wY1XscnhChcBUDETN2UhBZMMT",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 4727782.38,
+   "reserves": 12
+  },
+  {
+   "market": "2jhQAxCiHhP4kdG5YzgF6m8ZvrXVofTyMaLjzW6MH5WW",
+   "owner": "CgXyAkezZAoQo8QYdC6R3G4RbdSyw7zR89bTioEQQMs8",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 4497977.8,
+   "reserves": 3
+  },
+  {
+   "market": "GVDUXFwS8uvBG35RjZv6Y8S1AkV5uASiMJ9qTUKqb5PL",
+   "owner": "24LjDBukaUSHgPowcF2wY1XscnhChcBUDETN2UhBZMMT",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 3438339.14,
+   "reserves": 2
+  },
+  {
+   "market": "GBJ3bzUiMfwC9ugaF3MM68EXMDyTUb5UryRRAcVjEowd",
+   "owner": "A11EznxnJM3JrjUvAq16wqoVyPRNz522mdQm6mSmzMeR",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 3332734.63,
+   "reserves": 2
+  },
+  {
+   "market": "E6UUxGzgDwL44yHySozsJM1dhdnNgVXK1RtwprdwPcjV",
+   "owner": "CgXyAkezZAoQo8QYdC6R3G4RbdSyw7zR89bTioEQQMs8",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 3199647.5,
+   "reserves": 3
+  },
+  {
+   "market": "ByYiZxp8QrdN9qbdtaAiePN8AAr3qvTPppNJDpf5DVJ5",
+   "owner": "A9rQoX1sictAQkyXxaZA8nz674xutHwoqpK2mwLyexCZ",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 2531086.42,
+   "reserves": 24
+  },
+  {
+   "market": "HMNm3ZrAvG4zKVv5zpMDA6DKduc612156RUsdAAZf4TC",
+   "owner": "De9x4akGAgNJ7YLZBEKgkyvR9aBZ8HkUcVpT4S3at8qG",
+   "owner_kind": "single_key",
+   "usd": 2330047.5,
+   "reserves": 2
+  },
+  {
+   "market": "eNLm5e5KVDX2vEcCkt75PpZ2GMfXcZES3QrFshgpVzp",
+   "owner": "A11EznxnJM3JrjUvAq16wqoVyPRNz522mdQm6mSmzMeR",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 1608092.84,
+   "reserves": 3
+  },
+  {
+   "market": "FteaGMVCLDF4eonrTiQkRQ5kby5ohwCfaMD2mNiPkZL7",
+   "owner": "A11EznxnJM3JrjUvAq16wqoVyPRNz522mdQm6mSmzMeR",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 1463046.3,
+   "reserves": 2
+  },
+  {
+   "market": "GMqmFygF5iSm5nkckYU6tieggFcR42SyjkkhK5rswFRs",
+   "owner": "24LjDBukaUSHgPowcF2wY1XscnhChcBUDETN2UhBZMMT",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 1022271.55,
+   "reserves": 7
+  },
+  {
+   "market": "7G9hUEyKbxLdRmvNwpe5V1D23gXdcXoSuwoFRCBa2c2j",
+   "owner": "BeDaPY629mC289jxXk3rnDg57QPh3kqnDCBVKPNtqpSk",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 925636.69,
+   "reserves": 2
+  },
+  {
+   "market": "B7a2Dmdnfg8zfZX2814d6Xo6ctxs22jnTuCcjTq5KcPD",
+   "owner": "24LjDBukaUSHgPowcF2wY1XscnhChcBUDETN2UhBZMMT",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 708487.07,
+   "reserves": 2
+  },
+  {
+   "market": "Btu8835QDYgdTnMJJBSidbfQhrZzryZbMhCpty6h6Xdk",
+   "owner": "24LjDBukaUSHgPowcF2wY1XscnhChcBUDETN2UhBZMMT",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 605627.94,
+   "reserves": 7
+  },
+  {
+   "market": "3hd61ZpG35tBwrmDvdmYVJoazC2mjJxHb6rEYEWs4QhH",
+   "owner": "CgXyAkezZAoQo8QYdC6R3G4RbdSyw7zR89bTioEQQMs8",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 522105.15,
+   "reserves": 2
+  },
+  {
+   "market": "9wmqLq3n3KdQBbNfwqrF3PwcLgZ9edZ7hW5TsaC3o6uj",
+   "owner": "A9rQoX1sictAQkyXxaZA8nz674xutHwoqpK2mwLyexCZ",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 412058.78,
+   "reserves": 4
+  },
+  {
+   "market": "CF32kn7AY8X1bW7ZkGcHc4X9ZWTxqKGCJk6QwrQkDcdw",
+   "owner": "24LjDBukaUSHgPowcF2wY1XscnhChcBUDETN2UhBZMMT",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 400996.74,
+   "reserves": 7
+  },
+  {
+   "market": "9tN8sAJfHU4FppipfRdByfxH9xtWSjzDBor1nwemM6FZ",
+   "owner": "BeDaPY629mC289jxXk3rnDg57QPh3kqnDCBVKPNtqpSk",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 377308.68,
+   "reserves": 3
+  },
+  {
+   "market": "DmSeodmEWqUEoMwxTHHNs2C7AxKnbgHTsnKfP2trWFCc",
+   "owner": "A9rQoX1sictAQkyXxaZA8nz674xutHwoqpK2mwLyexCZ",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 296101.3,
+   "reserves": 5
+  },
+  {
+   "market": "GZVi6AnNEwRQ4Xh3whTds5DkThp3tEs61ErAca9KLX3W",
+   "owner": "BeDaPY629mC289jxXk3rnDg57QPh3kqnDCBVKPNtqpSk",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 234544.69,
+   "reserves": 4
+  },
+  {
+   "market": "7WQeTuLsFrZsgnHW7ddFdNfhfJAViqH4mvcFZPQ5zuQ9",
+   "owner": "A9rQoX1sictAQkyXxaZA8nz674xutHwoqpK2mwLyexCZ",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 143920.24,
+   "reserves": 6
+  },
+  {
+   "market": "4UwtBqa8DDtcWV6nWFregeMVkGdfWfiYeFxoHaR2hm9c",
+   "owner": "A9rQoX1sictAQkyXxaZA8nz674xutHwoqpK2mwLyexCZ",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 102775.34,
+   "reserves": 3
+  },
+  {
+   "market": "3aUnPBJLWVy62i9jPt8WpVRm6KWuo2qBaWJmEJVdYywS",
+   "owner": "7tgRyh6V4wjYyKPBi56pqcKBgbjym6S9t5ErwVJ8eQ2w",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 35895.03,
+   "reserves": 2
+  },
+  {
+   "market": "J21qWrb66pvEYhk24P98JYNHamxGFDcGZB4pYuSuMCBr",
+   "owner": "A9rQoX1sictAQkyXxaZA8nz674xutHwoqpK2mwLyexCZ",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 16482.9,
+   "reserves": 3
+  },
+  {
+   "market": "3EZEy7vBTJ8Q9PWxKwdLVULRdsvVLT51rpBG3gH1TSJ5",
+   "owner": "A9rQoX1sictAQkyXxaZA8nz674xutHwoqpK2mwLyexCZ",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 11149.7,
+   "reserves": 4
+  },
+  {
+   "market": "BBmb1SYx1MiJjeCFbGtrP8FcV9XJ3uYd4dLHhe1NbwAP",
+   "owner": "Ed3T7tukRawu8atGhwb2QZyA4NzP9kvjVUKo5qJYJaPK",
+   "owner_kind": "single_key",
+   "usd": 1023.5,
+   "reserves": 4
+  },
+  {
+   "market": "3tiR48uv5nEMkPoVQ36TzfXCMk7tkCW5TCAcRvin8ZnZ",
+   "owner": "Ed3T7tukRawu8atGhwb2QZyA4NzP9kvjVUKo5qJYJaPK",
+   "owner_kind": "single_key",
+   "usd": 927.6,
+   "reserves": 6
+  },
+  {
+   "market": "SZ8MbzSojH84K41jYGUvMJDSCTCWgemh3vanWtCx181",
+   "owner": "A9rQoX1sictAQkyXxaZA8nz674xutHwoqpK2mwLyexCZ",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 730.26,
+   "reserves": 3
+  },
+  {
+   "market": "ER9fWfY6jk3RfqsdXrEH9VbF8TECZE6XCZMjauF6yiRz",
+   "owner": "sadmBTQm5HJsyzWHEjV4YwG9CiahZKVDVqAyS4Wx1zH",
+   "owner_kind": "single_key",
+   "usd": 485.98,
+   "reserves": 5
+  },
+  {
+   "market": "GjY9kg9XTSErTqAAy4ikBWBxHrh6xh9GZnpLLTY33dXe",
+   "owner": "ARygwR6WBPvatQ2bBrSyytsyBgqrRDwxEuANWSSydfXW",
+   "owner_kind": "single_key",
+   "usd": 396.31,
+   "reserves": 2
+  },
+  {
+   "market": "ApPhTXdqEBxd3aCGENbJDga11ncAXqGcdgBYU8PdzVoD",
+   "owner": "BnkgH4woGZcgn3vTjEuZ78D4AqSYDRrtdzsWaWPhWDMG",
+   "owner_kind": "single_key",
+   "usd": 295.07,
+   "reserves": 2
+  },
+  {
+   "market": "EyV4jxSMd6vpuRgrxMFem7CKRhcB4Vv6WMRDtxPQNP4",
+   "owner": "A11EznxnJM3JrjUvAq16wqoVyPRNz522mdQm6mSmzMeR",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 253.99,
+   "reserves": 2
+  },
+  {
+   "market": "5o3y37r1VuRXTaG5APnp76re1pWXyV7K7158ppEfqJhn",
+   "owner": "sadmBTQm5HJsyzWHEjV4YwG9CiahZKVDVqAyS4Wx1zH",
+   "owner_kind": "single_key",
+   "usd": 206.82,
+   "reserves": 3
+  },
+  {
+   "market": "5zyaPPU4vMJHMpJfKQfvVCRVpr3ctPNTth66GiQviunX",
+   "owner": "CTWvbW6vihruM84VxNJJmAu2WmoftwF72RshZVGPdPzC",
+   "owner_kind": "single_key",
+   "usd": 196.94,
+   "reserves": 2
+  },
+  {
+   "market": "DLwibRz7UuY1v2DHwxJSTxFaffrZm8WbfYHvJPusdTGC",
+   "owner": "Bq4KMaVvzemx4tyfoyhZ7Kooo494GEv1xq9MLgRkfF6j",
+   "owner_kind": "single_key",
+   "usd": 177.51,
+   "reserves": 6
+  },
+  {
+   "market": "CTthJu49dgPkCgu9TKQProuaQnkHsRPQV33sSJ96vxpG",
+   "owner": "A11EznxnJM3JrjUvAq16wqoVyPRNz522mdQm6mSmzMeR",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 107.2,
+   "reserves": 2
+  },
+  {
+   "market": "CLaP7aQkFWHJnfp6YRjCsX9h74b6neV2gpLeZf5HgiWH",
+   "owner": "FU76ac2Hm2mo4hoyckhAKDrbKTFwxyDPHnrrERfMXusE",
+   "owner_kind": "single_key",
+   "usd": 101.81,
+   "reserves": 5
+  },
+  {
+   "market": "3quHMCzCiitPJDaefha63C8T4v1NeHRzf7pm2Kareu3t",
+   "owner": "75hATNxxbzv5Bx3wXwz5GDttL8qFyiuaj3Jf7ZoQkZLa",
+   "owner_kind": "single_key",
+   "usd": 86.01,
+   "reserves": 4
+  },
+  {
+   "market": "79Um5X1V2hH8MRNgwMoQ4mYpxJyyAqEzytutj33JVFp3",
+   "owner": "Bq4KMaVvzemx4tyfoyhZ7Kooo494GEv1xq9MLgRkfF6j",
+   "owner_kind": "single_key",
+   "usd": 84.82,
+   "reserves": 2
+  },
+  {
+   "market": "3koBPZPPV4Ag4DPWCyTdAVGxzxABWw9vEZ9vX8sjbbM2",
+   "owner": "A9rQoX1sictAQkyXxaZA8nz674xutHwoqpK2mwLyexCZ",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 76.71,
+   "reserves": 3
+  },
+  {
+   "market": "Dq6Jm6fN1ENYQpjo5XaiUdH6XU28KET1RXyfVUVfcxcT",
+   "owner": "2frn6q2bDmfiGDnaiSFWqoJBm77fMHpGVnUV9yKYa7ts",
+   "owner_kind": "single_key",
+   "usd": 68.08,
+   "reserves": 3
+  },
+  {
+   "market": "4iRHKGsTq3e4uut6e4PfyV9AEbNuXaMu9JaSP378p9qy",
+   "owner": "FU76ac2Hm2mo4hoyckhAKDrbKTFwxyDPHnrrERfMXusE",
+   "owner_kind": "single_key",
+   "usd": 62.77,
+   "reserves": 4
+  },
+  {
+   "market": "8gRpXAAW9Acjdafzbpq5yp3f1fEsSwwkWhGyMfwFQPL7",
+   "owner": "sadmBTQm5HJsyzWHEjV4YwG9CiahZKVDVqAyS4Wx1zH",
+   "owner_kind": "single_key",
+   "usd": 41.53,
+   "reserves": 3
+  },
+  {
+   "market": "3ZFAyX7voPpTtuquZWMBpP9KKobkGDsMeFftQ1RpojUU",
+   "owner": "ARygwR6WBPvatQ2bBrSyytsyBgqrRDwxEuANWSSydfXW",
+   "owner_kind": "single_key",
+   "usd": 23.98,
+   "reserves": 2
+  },
+  {
+   "market": "ATa6FB1GPS5cRwPeSxBZiesA5xnF72RNPjheBdV1yTNo",
+   "owner": "Cv4MFCqMqp5AwoEgybC17Qt4EqSQZ9oCf21AVPVuG8jC",
+   "owner_kind": "single_key",
+   "usd": 21.13,
+   "reserves": 2
+  },
+  {
+   "market": "CuSNbDHVEXGfptpnbDRW5VxTRhGsz7BrudK95cJhH8uV",
+   "owner": "FU76ac2Hm2mo4hoyckhAKDrbKTFwxyDPHnrrERfMXusE",
+   "owner_kind": "single_key",
+   "usd": 13.18,
+   "reserves": 2
+  },
+  {
+   "market": "87qirNEvqcz96D2C5pf7zTBQPNaf2zGGhoyoVwAbyJzb",
+   "owner": "4RHjaQ2c6mFVsjyu7nR4o69QTVn8hS6yn4WTspwR2R19",
+   "owner_kind": "single_key",
+   "usd": 12.35,
+   "reserves": 10
+  },
+  {
+   "market": "4YDxzyFhSXVKc1o1u6ywHybwYSNHV7HS934dLBqmtfF7",
+   "owner": "FCWX5ArgU9zvTk1w9avMtuCcNaLL5Tm1M3ufYpeBuryQ",
+   "owner_kind": "single_key",
+   "usd": 12.29,
+   "reserves": 3
+  },
+  {
+   "market": "8BUKjz331boy68nYH3jw3ny9xbzd2hF8MQoJ7dijiWzk",
+   "owner": "FU76ac2Hm2mo4hoyckhAKDrbKTFwxyDPHnrrERfMXusE",
+   "owner_kind": "single_key",
+   "usd": 12.24,
+   "reserves": 2
+  },
+  {
+   "market": "3FgMPrMmtBRzPVsjPdDXYvEJvc3R4pg1c3SmG95Tgznc",
+   "owner": "FCWX5ArgU9zvTk1w9avMtuCcNaLL5Tm1M3ufYpeBuryQ",
+   "owner_kind": "single_key",
+   "usd": 12.19,
+   "reserves": 7
+  },
+  {
+   "market": "QCif94ezBGkSUbEVTQuoxANCBS34yghMxTjDY25bzio",
+   "owner": "8YYFBtrxiNgYHcbcoHEpU8kfpxEpusQxbWMKVXfoXzz4",
+   "owner_kind": "single_key",
+   "usd": 10.92,
+   "reserves": 2
+  },
+  {
+   "market": "5bG6yD8pCDnDcWQ3PAKpYu6wF9EuAqtjxG4ZFg5usYup",
+   "owner": "radixktqpGoNxK6Y8eKBvKkerx6yLgEJUJ2pTwEFajS",
+   "owner_kind": "single_key",
+   "usd": 10.1,
+   "reserves": 2
+  },
+  {
+   "market": "8vR8ZAVz8aYbrTCzzhwa2vHedzSdjn5T3VHoVtW8T6bd",
+   "owner": "radixktqpGoNxK6Y8eKBvKkerx6yLgEJUJ2pTwEFajS",
+   "owner_kind": "single_key",
+   "usd": 10.1,
+   "reserves": 2
+  },
+  {
+   "market": "EdF2tebvCQbtmZABgrMvDuuMSZhUr2nBkJmqw91zq6XD",
+   "owner": "7HCgipH6Wj2i5DeBXnxtWKcuqxXSWsEHKLVTo4mz99xs",
+   "owner_kind": "single_key",
+   "usd": 9.71,
+   "reserves": 2
+  },
+  {
+   "market": "FK3qLdkzKS4TBfQbHmKguNJfaRjMp2hT2u1zqF6raVmD",
+   "owner": "FU76ac2Hm2mo4hoyckhAKDrbKTFwxyDPHnrrERfMXusE",
+   "owner_kind": "single_key",
+   "usd": 7.51,
+   "reserves": 2
+  },
+  {
+   "market": "G3XWrUyeWHkEmLeQTLNXT4FjZ3ihFkvRGAALz1jdycST",
+   "owner": "2frn6q2bDmfiGDnaiSFWqoJBm77fMHpGVnUV9yKYa7ts",
+   "owner_kind": "single_key",
+   "usd": 5.11,
+   "reserves": 2
+  },
+  {
+   "market": "F4uLsGZT4YnHDcemtoYDz2LBZKLmwTB1wzkwS6oqygvy",
+   "owner": "66pW72Fchnr34FGgXrxheGs3BbUsDSwJmGcK7m8Bz1Yv",
+   "owner_kind": "single_key",
+   "usd": 4.73,
+   "reserves": 2
+  },
+  {
+   "market": "6MXWEkaebpJWFd3rEDCG9ej637Ps1U1VjTHwYQctQPgA",
+   "owner": "radixktqpGoNxK6Y8eKBvKkerx6yLgEJUJ2pTwEFajS",
+   "owner_kind": "single_key",
+   "usd": 4.1,
+   "reserves": 2
+  },
+  {
+   "market": "82MBsafZDuhk81wzh5WR5CXin57RoeshmQQ5bjqaJnpD",
+   "owner": "Cv4MFCqMqp5AwoEgybC17Qt4EqSQZ9oCf21AVPVuG8jC",
+   "owner_kind": "single_key",
+   "usd": 3.31,
+   "reserves": 4
+  },
+  {
+   "market": "J9s7wvFPpFbbNGQQXA5Cfv7fytxiFrHrt8nLEVf7RmRh",
+   "owner": "Aj8ggFag9DbvfhNMjQ8mn9Rgju1a5tVhHjGe8QMJH2Hw",
+   "owner_kind": "single_key",
+   "usd": 2.71,
+   "reserves": 3
+  },
+  {
+   "market": "32iFEVAr6EHxYJqDd6zjKygFU82DCwayxByMfvj7H14p",
+   "owner": "2frn6q2bDmfiGDnaiSFWqoJBm77fMHpGVnUV9yKYa7ts",
+   "owner_kind": "single_key",
+   "usd": 1.31,
+   "reserves": 2
+  },
+  {
+   "market": "9HCiPBdadKPeyv8MBFKCCdnhvsWHmRbxiPtUNtPLBQns",
+   "owner": "sadmBTQm5HJsyzWHEjV4YwG9CiahZKVDVqAyS4Wx1zH",
+   "owner_kind": "single_key",
+   "usd": 1.17,
+   "reserves": 3
+  },
+  {
+   "market": "Bmx5w6MVBE7UEXdLnMfVdNCZrhtAQpHSh1PnGu1Wgs4y",
+   "owner": "4m26g6f9CB8XRC3DaDAFwHS4nTQ1qY1t2vPuxGfc93CR",
+   "owner_kind": "single_key",
+   "usd": 0.75,
+   "reserves": 4
+  },
+  {
+   "market": "DvW8rL5Gn1DSJoVUSXuEQngMq4mj5bjMdS4ggqsRq6Bt",
+   "owner": "sadmBTQm5HJsyzWHEjV4YwG9CiahZKVDVqAyS4Wx1zH",
+   "owner_kind": "single_key",
+   "usd": 0.7,
+   "reserves": 7
+  },
+  {
+   "market": "BTdqTuztcy9PBhvRjJ5psprFtaJUP5YP9mXbqvgrMXeg",
+   "owner": "4RHjaQ2c6mFVsjyu7nR4o69QTVn8hS6yn4WTspwR2R19",
+   "owner_kind": "single_key",
+   "usd": 0.59,
+   "reserves": 14
+  },
+  {
+   "market": "bdHq1JFTkjJKGdPEfvVTND1T83wVL8wcTpBy34xFFn4",
+   "owner": "ZtvinkbmQE99A6t42oL6GkENpVjdxHGYnb9kcqnJYsx",
+   "owner_kind": "single_key",
+   "usd": 0.59,
+   "reserves": 2
+  },
+  {
+   "market": "7hzGvUjrPuV4fXw1L6BBRPGAaWtonfwQEcuZ68P2UEqD",
+   "owner": "Cv4MFCqMqp5AwoEgybC17Qt4EqSQZ9oCf21AVPVuG8jC",
+   "owner_kind": "single_key",
+   "usd": 0.59,
+   "reserves": 2
+  },
+  {
+   "market": "CxFxCT3bZg9wq5hsQp6Tt6QzHp3dotccXWeAU2Vdq82P",
+   "owner": "Cv4MFCqMqp5AwoEgybC17Qt4EqSQZ9oCf21AVPVuG8jC",
+   "owner_kind": "single_key",
+   "usd": 0.59,
+   "reserves": 2
+  },
+  {
+   "market": "ByDZEhPFU5tEEqbfusjsZhzibx6VMPWXegV2pV5wRjpu",
+   "owner": "Cv4MFCqMqp5AwoEgybC17Qt4EqSQZ9oCf21AVPVuG8jC",
+   "owner_kind": "single_key",
+   "usd": 0.59,
+   "reserves": 2
+  },
+  {
+   "market": "HVMujrsu1QKnF5uNW9WkUJD2qidsWpwqL6CXE7pQnkRg",
+   "owner": "A11EznxnJM3JrjUvAq16wqoVyPRNz522mdQm6mSmzMeR",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 0.49,
+   "reserves": 2
+  },
+  {
+   "market": "e9X49MS2NSz7uN1RkfZwdViDDVS8gMmxGynB7oCkQET",
+   "owner": "CuEC7JoZtHx9v5MQWrNTsLSGMEixbCEvTX6K6kWZzz7q",
+   "owner_kind": "single_key",
+   "usd": 0.41,
+   "reserves": 5
+  },
+  {
+   "market": "BUJjB7FDHwszy8BRUvNXf1NvrX4ng76yyXMj31KUem7F",
+   "owner": "QQrwkZVmAGmV3LkZJiLyNTJvktPsxeZbTyWLkEfo3vX",
+   "owner_kind": "single_key",
+   "usd": 0.35,
+   "reserves": 7
+  },
+  {
+   "market": "JEHjKcf2JhU6sZTsGSAZ31XCMRcQqDkZ5rTB2cFYz7XZ",
+   "owner": "sadmBTQm5HJsyzWHEjV4YwG9CiahZKVDVqAyS4Wx1zH",
+   "owner_kind": "single_key",
+   "usd": 0.3,
+   "reserves": 4
+  },
+  {
+   "market": "9FSTpEnDNkUTfP9cm5hSTWHKMMC2DMUz6NjaULowXauc",
+   "owner": "84n5nSDg4hQ3coyTxZpPfTb87rHe1SSsrXXxqgdS8mF1",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 0.25,
+   "reserves": 7
+  },
+  {
+   "market": "BP4ktJXJTw7SaQgehV9oYqes2sPVcRq3hy9AVPYXXkC1",
+   "owner": "Ed3T7tukRawu8atGhwb2QZyA4NzP9kvjVUKo5qJYJaPK",
+   "owner_kind": "single_key",
+   "usd": 0.22,
+   "reserves": 2
+  },
+  {
+   "market": "GtHxC8B1yTsokkcku2yFy2M26yUph1FCyGuANGWLNTrz",
+   "owner": "sadmBTQm5HJsyzWHEjV4YwG9CiahZKVDVqAyS4Wx1zH",
+   "owner_kind": "single_key",
+   "usd": 0.21,
+   "reserves": 3
+  },
+  {
+   "market": "H6euL2N9Qk8HY7LwKKgVwYkXE7WVbvdWwPPU18R1qQ9e",
+   "owner": "Cv4MFCqMqp5AwoEgybC17Qt4EqSQZ9oCf21AVPVuG8jC",
+   "owner_kind": "single_key",
+   "usd": 0.2,
+   "reserves": 2
+  },
+  {
+   "market": "3E3w52UW8BmhuUctvLn1XZfth1Gr3w9u7y8ac6gWMcB3",
+   "owner": "9GFKm9dXKxrQ2DwjqPqtS2vYK6yTWFhpJjxL76RSYXXo",
+   "owner_kind": "single_key",
+   "usd": 0.2,
+   "reserves": 2
+  },
+  {
+   "market": "2XqjBVY1hQNqoihSVawnY1iXF57pp9KY9nwuh3FbFf3o",
+   "owner": "CuEC7JoZtHx9v5MQWrNTsLSGMEixbCEvTX6K6kWZzz7q",
+   "owner_kind": "single_key",
+   "usd": 0.2,
+   "reserves": 3
+  },
+  {
+   "market": "6u5iT4CXPkvsTxBcKmqb8PrKtFiS5vFEcZKPserSD4Uy",
+   "owner": "GetxnGXDwWfGwMmNweyCexiY3Z8KRWJjs6qviWv1uqkT",
+   "owner_kind": "single_key",
+   "usd": 0.2,
+   "reserves": 2
+  },
+  {
+   "market": "DTkFbetMoo6WpKxfU4qK7Ly3JCHt6krxq7Yscbd9y1qv",
+   "owner": "8YYFBtrxiNgYHcbcoHEpU8kfpxEpusQxbWMKVXfoXzz4",
+   "owner_kind": "single_key",
+   "usd": 0.2,
+   "reserves": 3
+  },
+  {
+   "market": "DyJESd8ezfgB1JsyaHybM6fUK63D7r7EFe5JAvRw26Tq",
+   "owner": "Cv4MFCqMqp5AwoEgybC17Qt4EqSQZ9oCf21AVPVuG8jC",
+   "owner_kind": "single_key",
+   "usd": 0.2,
+   "reserves": 2
+  },
+  {
+   "market": "8jhQRpCZSQc5yoCMZygQgkcpbiKG4CvHfVM1pgkAkX7k",
+   "owner": "Cv4MFCqMqp5AwoEgybC17Qt4EqSQZ9oCf21AVPVuG8jC",
+   "owner_kind": "single_key",
+   "usd": 0.2,
+   "reserves": 2
+  },
+  {
+   "market": "BmEu1sW2xT4pNHYiNpPHptQa7yQQYHrLjxMocC61kSKn",
+   "owner": "4YcyjFZauri8J9YW6bF2ogYstzpTARsiYLFN495PHvbn",
+   "owner_kind": "single_key",
+   "usd": 0.2,
+   "reserves": 2
+  },
+  {
+   "market": "BmqR4QB8iZdsVhkuMZLnqCQMkZ3VuE1zrsTmJVV3LZXM",
+   "owner": "Cv4MFCqMqp5AwoEgybC17Qt4EqSQZ9oCf21AVPVuG8jC",
+   "owner_kind": "single_key",
+   "usd": 0.2,
+   "reserves": 2
+  },
+  {
+   "market": "3o7NtijcHWfjetiXyJvuifLNgrCPm9NmazVqTTwuAPiB",
+   "owner": "Cv4MFCqMqp5AwoEgybC17Qt4EqSQZ9oCf21AVPVuG8jC",
+   "owner_kind": "single_key",
+   "usd": 0.2,
+   "reserves": 2
+  },
+  {
+   "market": "2k79fZy4QnW4bwj6gziCbjex71BfUSik25PhXgNPiynE",
+   "owner": "7HCgipH6Wj2i5DeBXnxtWKcuqxXSWsEHKLVTo4mz99xs",
+   "owner_kind": "single_key",
+   "usd": 0.12,
+   "reserves": 2
+  },
+  {
+   "market": "BU6d8mMqKoM674XhYEXpNjsf5n3ojhXezgG1K72UMZsB",
+   "owner": "Cv4MFCqMqp5AwoEgybC17Qt4EqSQZ9oCf21AVPVuG8jC",
+   "owner_kind": "single_key",
+   "usd": 0.11,
+   "reserves": 2
+  },
+  {
+   "market": "5Z1KYYDhQXtHobRhXnffVJStezfgjXoT92LeGvMBHyxG",
+   "owner": "sadmBTQm5HJsyzWHEjV4YwG9CiahZKVDVqAyS4Wx1zH",
+   "owner_kind": "single_key",
+   "usd": 0.11,
+   "reserves": 2
+  },
+  {
+   "market": "DuLVJrwornWA71P5uhttFQncvjezfDLT8mFE7QZ2JYkL",
+   "owner": "Cv4MFCqMqp5AwoEgybC17Qt4EqSQZ9oCf21AVPVuG8jC",
+   "owner_kind": "single_key",
+   "usd": 0.11,
+   "reserves": 2
+  },
+  {
+   "market": "Hre6S8qBFvumQZy7KxBuQXqaV95R7gJknAXKwTXRLBAm",
+   "owner": "HDrGYuACYPQVzepU8xW9rCcvX8fkYS94YDNtk7Muv3pH",
+   "owner_kind": "single_key",
+   "usd": 0.11,
+   "reserves": 2
+  },
+  {
+   "market": "71BoAzgL9bYe56twBXUm97427tSQXpxa3MVyCkdrHUU9",
+   "owner": "Cv4MFCqMqp5AwoEgybC17Qt4EqSQZ9oCf21AVPVuG8jC",
+   "owner_kind": "single_key",
+   "usd": 0.11,
+   "reserves": 2
+  },
+  {
+   "market": "CmVGoWS6Gge9qyBcUBihWz7UfBhp54y3eZ7fgKswy13M",
+   "owner": "Cv4MFCqMqp5AwoEgybC17Qt4EqSQZ9oCf21AVPVuG8jC",
+   "owner_kind": "single_key",
+   "usd": 0.11,
+   "reserves": 2
+  },
+  {
+   "market": "4VFM9q7CFgjtKXGq1LTd7mYRndgDMe3X1yXu6VN8FFKg",
+   "owner": "FU76ac2Hm2mo4hoyckhAKDrbKTFwxyDPHnrrERfMXusE",
+   "owner_kind": "single_key",
+   "usd": 0.11,
+   "reserves": 4
+  },
+  {
+   "market": "Co6b4GKsxyE8fs1hTPqPVBp17xaFnLc4r9bpC9SdNzrj",
+   "owner": "Cv4MFCqMqp5AwoEgybC17Qt4EqSQZ9oCf21AVPVuG8jC",
+   "owner_kind": "single_key",
+   "usd": 0.11,
+   "reserves": 2
+  },
+  {
+   "market": "2dfsRv1NZeEEktGKVkjt9b68NrBCELZToC5LHjvPDk8e",
+   "owner": "86s2X3SDrbH5hBbMUTxFCR2XkH85H2cuFAbJnkuhYfeE",
+   "owner_kind": "single_key",
+   "usd": 0.11,
+   "reserves": 2
+  },
+  {
+   "market": "8iz1qJzJc9q7kiqWMz53sW3soMYCFKj1icGxid74cYGW",
+   "owner": "xhnmExjjLmx5gjNLVcfhZ917NihBerTNQLp4MELx3Np",
+   "owner_kind": "single_key",
+   "usd": 0.11,
+   "reserves": 2
+  },
+  {
+   "market": "C1kyTyQDF6XuJXvYEJPt8ALYuDQmk7FpocR7ivfFuHjR",
+   "owner": "Bq4KMaVvzemx4tyfoyhZ7Kooo494GEv1xq9MLgRkfF6j",
+   "owner_kind": "single_key",
+   "usd": 0.11,
+   "reserves": 2
+  },
+  {
+   "market": "Ecj4UjD3PL6tziQs2gyP3izZDPEirR5cihv6SaRZzBv8",
+   "owner": "H6uTZjuh4vXhMBkMz8cBKKiQuETqhmXebrrqR3CDk4Zw",
+   "owner_kind": "single_key",
+   "usd": 0.11,
+   "reserves": 2
+  },
+  {
+   "market": "5UQZbR5geHGuYY1EWQeu2W6iHtX8coR7HE16K7gBZAcA",
+   "owner": "2frn6q2bDmfiGDnaiSFWqoJBm77fMHpGVnUV9yKYa7ts",
+   "owner_kind": "single_key",
+   "usd": 0.11,
+   "reserves": 2
+  },
+  {
+   "market": "BrjE9h3BHo7CCCit4JEDkwXh3RfCHRgt9qwzgLeSGRDR",
+   "owner": "Cv4MFCqMqp5AwoEgybC17Qt4EqSQZ9oCf21AVPVuG8jC",
+   "owner_kind": "single_key",
+   "usd": 0.11,
+   "reserves": 2
+  },
+  {
+   "market": "4w9znTszA9cEWEuuXuEtUmQrtCmwLPw31kjWhzQKydhp",
+   "owner": "Cv4MFCqMqp5AwoEgybC17Qt4EqSQZ9oCf21AVPVuG8jC",
+   "owner_kind": "single_key",
+   "usd": 0.11,
+   "reserves": 2
+  },
+  {
+   "market": "A7x26tdtGNEVMrmpswh1pwfvsK3fsyPp1dr5nxCVwdvW",
+   "owner": "xhnmExjjLmx5gjNLVcfhZ917NihBerTNQLp4MELx3Np",
+   "owner_kind": "single_key",
+   "usd": 0.11,
+   "reserves": 2
+  },
+  {
+   "market": "DB4MaCd6VFX9dgHSHituww8PPHbEUpMAb4LotDpy9iB",
+   "owner": "Cv4MFCqMqp5AwoEgybC17Qt4EqSQZ9oCf21AVPVuG8jC",
+   "owner_kind": "single_key",
+   "usd": 0.11,
+   "reserves": 2
+  },
+  {
+   "market": "5VoUEnRmgGy6zw8WPyJPnsTbTGNfX8H6KYkc5To7F9hS",
+   "owner": "Ed3T7tukRawu8atGhwb2QZyA4NzP9kvjVUKo5qJYJaPK",
+   "owner_kind": "single_key",
+   "usd": 0.11,
+   "reserves": 1
+  },
+  {
+   "market": "768Ds7vefiMEEtYcgFtAG1mcY1mV8kp7yJ8wBXzdF2zK",
+   "owner": "CPpw5U5iwkWYoAVPJ9NfBkDtWFehADZfmbXTFP3idtLD",
+   "owner_kind": "single_key",
+   "usd": 0.11,
+   "reserves": 2
+  },
+  {
+   "market": "B5ZCZmraEAL4angM75axY47ghHtRcQofhVtXir54F1cF",
+   "owner": "Cv4MFCqMqp5AwoEgybC17Qt4EqSQZ9oCf21AVPVuG8jC",
+   "owner_kind": "single_key",
+   "usd": 0.11,
+   "reserves": 2
+  },
+  {
+   "market": "AcaS5k2EpvSbmoj7Kmt4vi5U11dfPTgjLYwNP2pSxkaK",
+   "owner": "Cv4MFCqMqp5AwoEgybC17Qt4EqSQZ9oCf21AVPVuG8jC",
+   "owner_kind": "single_key",
+   "usd": 0.11,
+   "reserves": 2
+  },
+  {
+   "market": "HmBbJzGYmWYjabEPAx4ReoAGHujpfXCT7jSLfeBDXV3d",
+   "owner": "2frn6q2bDmfiGDnaiSFWqoJBm77fMHpGVnUV9yKYa7ts",
+   "owner_kind": "single_key",
+   "usd": 0.11,
+   "reserves": 2
+  },
+  {
+   "market": "AYninZeX272BYiEVZNa7wnebFVN49ncEMfNK1M1rAg4X",
+   "owner": "CuEC7JoZtHx9v5MQWrNTsLSGMEixbCEvTX6K6kWZzz7q",
+   "owner_kind": "single_key",
+   "usd": 0.1,
+   "reserves": 2
+  },
+  {
+   "market": "D4RkHwxpKGXDkWxeqCAZme5e6Hx6cWLnj8z69L4CVNts",
+   "owner": "sadmBTQm5HJsyzWHEjV4YwG9CiahZKVDVqAyS4Wx1zH",
+   "owner_kind": "single_key",
+   "usd": 0.1,
+   "reserves": 1
+  },
+  {
+   "market": "4eZipogVsoGCA91CYz4FKMwtVUFsyBcGczQU2N8PhD2q",
+   "owner": "ARygwR6WBPvatQ2bBrSyytsyBgqrRDwxEuANWSSydfXW",
+   "owner_kind": "single_key",
+   "usd": 0.1,
+   "reserves": 2
+  },
+  {
+   "market": "5wzUM5v4GQzGLc5ZXG4fmGbxJu9UMJRU2nHz6zcE1BxN",
+   "owner": "nHSjCbSd3XD3UwGy5uAAUqEfDf4kBDYaJZ4eF82nCDZ",
+   "owner_kind": "single_key",
+   "usd": 0.1,
+   "reserves": 1
+  },
+  {
+   "market": "9WaNdZHcgxqLgyJsmrL1f5DPkUdaTphvNBeUxXmt5Hx5",
+   "owner": "7Gw3bg3VgZrTREQjWocMGkDuairxHnC95VEv1Zj4ezmv",
+   "owner_kind": "single_key",
+   "usd": 0.1,
+   "reserves": 2
+  },
+  {
+   "market": "Bg2uoQRcsKY3pwxYHPAhMf9Ra1sbuGbhD6oG7uqPKyYN",
+   "owner": "2pHjZLqsSqi35xuYHmZbZBM1xfYV6Ruv57r3eFPvZZaD",
+   "owner_kind": "single_key",
+   "usd": 0.1,
+   "reserves": 3
+  },
+  {
+   "market": "9A6U9yAJTkrENJWqonhtYdipyCNxSDGgGC95B8PDhKZQ",
+   "owner": "BkfR7rREgvDbDQ7TtLSLpmsFAiV4TWxAYwzocPXaLQ2f",
+   "owner_kind": "single_key",
+   "usd": 0.1,
+   "reserves": 2
+  },
+  {
+   "market": "GzTz3G6DV9jmRBf6F3QMH5bSEmEzrLDhgBv5gGo29i1",
+   "owner": "GetxnGXDwWfGwMmNweyCexiY3Z8KRWJjs6qviWv1uqkT",
+   "owner_kind": "single_key",
+   "usd": 0.1,
+   "reserves": 4
+  },
+  {
+   "market": "6Lk6V385WHXJymr85bxxNxhXxt7dpTzHfhr5QMhZ3gFB",
+   "owner": "E86oqpKx1DkuCXDYaBcCha4muC29aidCPvNbcveP9gSG",
+   "owner_kind": "single_key",
+   "usd": 0.1,
+   "reserves": 1
+  },
+  {
+   "market": "4XAxzYvQqUcxN1qdXV6Qsn1tfD19epbkg5Wkmo46L5Dq",
+   "owner": "FU76ac2Hm2mo4hoyckhAKDrbKTFwxyDPHnrrERfMXusE",
+   "owner_kind": "single_key",
+   "usd": 0.1,
+   "reserves": 2
+  },
+  {
+   "market": "AvJVqfm3Ftb4gucEo9XrRk5bd1YtghBgmtBZPYB2TqAS",
+   "owner": "Cv4MFCqMqp5AwoEgybC17Qt4EqSQZ9oCf21AVPVuG8jC",
+   "owner_kind": "single_key",
+   "usd": 0.1,
+   "reserves": 2
+  },
+  {
+   "market": "9qfHPb9ckpbfqeqHpNHM4mf5urHfGwJV6MA1wtEHpFxV",
+   "owner": "Bq4KMaVvzemx4tyfoyhZ7Kooo494GEv1xq9MLgRkfF6j",
+   "owner_kind": "single_key",
+   "usd": 0.1,
+   "reserves": 2
+  },
+  {
+   "market": "4mJoAdrxZELq6ZULr1tKboJD1X2nXiWze4nM4oEvzcwR",
+   "owner": "5yqr7bSthjhzzJ8DXmqqvzvrJRhJeL7pMGnm2hfDR4uw",
+   "owner_kind": "single_key",
+   "usd": 0.1,
+   "reserves": 4
+  },
+  {
+   "market": "fWfo1D8NDxCrZzjDkwesa6ZX9E22vkXaWqwF9rk7yFq",
+   "owner": "FU76ac2Hm2mo4hoyckhAKDrbKTFwxyDPHnrrERfMXusE",
+   "owner_kind": "single_key",
+   "usd": 0.1,
+   "reserves": 2
+  },
+  {
+   "market": "8HSD2nPZnxwZovJ6KQJyJW1dQSo28rWPndJpULriAV3G",
+   "owner": "FU76ac2Hm2mo4hoyckhAKDrbKTFwxyDPHnrrERfMXusE",
+   "owner_kind": "single_key",
+   "usd": 0.1,
+   "reserves": 2
+  },
+  {
+   "market": "GR7qNC65aExUM8CRP7t2EMXjweAVeaYE3qYGcs2LeQXZ",
+   "owner": "radixktqpGoNxK6Y8eKBvKkerx6yLgEJUJ2pTwEFajS",
+   "owner_kind": "single_key",
+   "usd": 0.1,
+   "reserves": 2
+  },
+  {
+   "market": "Dih15HhznM5PR8JRZf9tJQgsC7a9JMBKmw3JTsBJg14L",
+   "owner": "7HCgipH6Wj2i5DeBXnxtWKcuqxXSWsEHKLVTo4mz99xs",
+   "owner_kind": "single_key",
+   "usd": 0.1,
+   "reserves": 1
+  },
+  {
+   "market": "8Lq7qua96W2sWiNq4c6M6wyN2Za2F1mcJSoAhAoHCUDn",
+   "owner": "Cv4MFCqMqp5AwoEgybC17Qt4EqSQZ9oCf21AVPVuG8jC",
+   "owner_kind": "single_key",
+   "usd": 0.1,
+   "reserves": 2
+  },
+  {
+   "market": "4pEmnimmqXkx9dRbQdLCGuYu9ZhhATjhTkC9wu9ezKUc",
+   "owner": "A9rQoX1sictAQkyXxaZA8nz674xutHwoqpK2mwLyexCZ",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 0.1,
+   "reserves": 2
+  },
+  {
+   "market": "8AWS7Lced7CameCeVxEcLwGtVa8wXBrx6FF47uEJwAgR",
+   "owner": "FU76ac2Hm2mo4hoyckhAKDrbKTFwxyDPHnrrERfMXusE",
+   "owner_kind": "single_key",
+   "usd": 0.1,
+   "reserves": 1
+  },
+  {
+   "market": "B8zJcFyc6qH5BeVthzaptq1hZP4BN9XkS16hym4iG7w5",
+   "owner": "CPpw5U5iwkWYoAVPJ9NfBkDtWFehADZfmbXTFP3idtLD",
+   "owner_kind": "single_key",
+   "usd": 0.1,
+   "reserves": 2
+  },
+  {
+   "market": "EPxMi6tavt5oBG55VQ8hVLZLJjcBMyvH827ffZxkQgSj",
+   "owner": "6B6Tv77eVwkoNwj9jyudxQoQF2JMoHbfT7UviBAb41jz",
+   "owner_kind": "single_key",
+   "usd": 0.1,
+   "reserves": 1
+  },
+  {
+   "market": "494ipxXMEJAG9LG8WmgpeJsZpzTkYakgBxso386J6w6p",
+   "owner": "DjJVyYatk63RMctNKhyTQmEJSF6bM8VLv4vkGFRXMmhL",
+   "owner_kind": "single_key",
+   "usd": 0.1,
+   "reserves": 1
+  },
+  {
+   "market": "C2zvgZbVhq4Np9bUuPes51rY4TNkp8TFhG9ZAN2PmLtJ",
+   "owner": "Cv4MFCqMqp5AwoEgybC17Qt4EqSQZ9oCf21AVPVuG8jC",
+   "owner_kind": "single_key",
+   "usd": 0.1,
+   "reserves": 1
+  },
+  {
+   "market": "4cvGzLUXHERzdyZt7inybCFDzooCNLHYEQD6GrmC8Fvf",
+   "owner": "FU76ac2Hm2mo4hoyckhAKDrbKTFwxyDPHnrrERfMXusE",
+   "owner_kind": "single_key",
+   "usd": 0.03,
+   "reserves": 2
+  },
+  {
+   "market": "8yC2dv9CvymRXUgwUp3W72RuoFwPyWHRErvx1XkzCjoH",
+   "owner": "GQNisfe7Rmrbqyb6MGpX7TFq1LVnKTtRCqsSv66nTgiv",
+   "owner_kind": "single_key",
+   "usd": 0.03,
+   "reserves": 2
+  },
+  {
+   "market": "31psccTSNVGQNdp8WS2XgRrR6MWAwq61Nm1nDiydGLtX",
+   "owner": "4RHjaQ2c6mFVsjyu7nR4o69QTVn8hS6yn4WTspwR2R19",
+   "owner_kind": "single_key",
+   "usd": 0.03,
+   "reserves": 2
+  },
+  {
+   "market": "3C2ZWGhE1ZXZBnyhoomGYgDtucc5Gai3quFUJKh6MggK",
+   "owner": "Bq4KMaVvzemx4tyfoyhZ7Kooo494GEv1xq9MLgRkfF6j",
+   "owner_kind": "single_key",
+   "usd": 0.01,
+   "reserves": 2
+  },
+  {
+   "market": "B4yNDb8gHmiTx8UgkmzsBxDGSCQj1XJkPGTQoFbp6ED2",
+   "owner": "Cv4MFCqMqp5AwoEgybC17Qt4EqSQZ9oCf21AVPVuG8jC",
+   "owner_kind": "single_key",
+   "usd": 0.01,
+   "reserves": 1
+  },
+  {
+   "market": "HaDMWn9GcAu4tVARYsLdMHex2KZWredGGj75LKfECtHX",
+   "owner": "2zakuzjWztahAeS1uagCgg5dubd9T7trqWu5FzxxhzBZ",
+   "owner_kind": "single_key",
+   "usd": 0.01,
+   "reserves": 1
+  },
+  {
+   "market": "5pzmx3ZTUF1dYpBNxenvR5UuEtUESRHrzZZZ3UrptwBt",
+   "owner": "SMB6JY59jr4JJCDdSt5uBD6DPEYX7VFKKJbCubvHV91",
+   "owner_kind": "single_key",
+   "usd": 0.01,
+   "reserves": 1
+  },
+  {
+   "market": "3g2iGWhMuJVy6T42RSYPcNjdHXxVuqBUiwU6rpRL56fg",
+   "owner": "4m26g6f9CB8XRC3DaDAFwHS4nTQ1qY1t2vPuxGfc93CR",
+   "owner_kind": "single_key",
+   "usd": 0.01,
+   "reserves": 1
+  },
+  {
+   "market": "HcbrF4YTniFFtTfVcZiEVRi4SNKCNSLhE7bGTNWXL7qw",
+   "owner": "Cv4MFCqMqp5AwoEgybC17Qt4EqSQZ9oCf21AVPVuG8jC",
+   "owner_kind": "single_key",
+   "usd": 0.01,
+   "reserves": 1
+  },
+  {
+   "market": "3gBmyfpqHY8KZcyXXEr54ARTvp9Htqj61kFCTdUfSfdB",
+   "owner": "radixktqpGoNxK6Y8eKBvKkerx6yLgEJUJ2pTwEFajS",
+   "owner_kind": "single_key",
+   "usd": 0.0,
+   "reserves": 1
+  },
+  {
+   "market": "2ES7sLgVt9U2eQcuSfKLTt1sEf5rnHvJTeWHi6YnDf5u",
+   "owner": "3ADA19MFrXiVzeZysfy4jrHfNx3jyfTg3qqJ7yrnwLZ8",
+   "owner_kind": "single_key",
+   "usd": 0.0,
+   "reserves": 2
+  },
+  {
+   "market": "F4Pn9mAvbUazDmWET5yYATTiyLHLaCRTWgGex4tiMXAs",
+   "owner": "A9rQoX1sictAQkyXxaZA8nz674xutHwoqpK2mwLyexCZ",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 0.0,
+   "reserves": 8
+  },
+  {
+   "market": "DuHfFuBuWpdgUseeztziHC7KvVbmzCFcPnoMqGvDZXm9",
+   "owner": "E86oqpKx1DkuCXDYaBcCha4muC29aidCPvNbcveP9gSG",
+   "owner_kind": "single_key",
+   "usd": 0.0,
+   "reserves": 1
+  },
+  {
+   "market": "4b1QxFd4Vsag4ycz7ptz4SUR6m1BDSuk58GoYjrMDJtT",
+   "owner": "radixktqpGoNxK6Y8eKBvKkerx6yLgEJUJ2pTwEFajS",
+   "owner_kind": "single_key",
+   "usd": 0.0,
+   "reserves": 1
+  },
+  {
+   "market": "45N39UKq6DryQJLJ5rgtP21pyJRKZCMSmivXjvr7u5vo",
+   "owner": "radixktqpGoNxK6Y8eKBvKkerx6yLgEJUJ2pTwEFajS",
+   "owner_kind": "single_key",
+   "usd": 0.0,
+   "reserves": 1
+  },
+  {
+   "market": "BNx8GBurdHVpn1hY1yeHBU2dVR53Rxd55cpeAnUDF8jm",
+   "owner": "BYghqfL51ALEWcMA1zU7gGE5u6iH2kZKcjyb6q1bgFuu",
+   "owner_kind": "single_key",
+   "usd": 0.0,
+   "reserves": 2
+  },
+  {
+   "market": "E6Tq3XV4Dgqx1QwEUT1u4goM7794sPmb1cGvr7V4Xf6J",
+   "owner": "A9rQoX1sictAQkyXxaZA8nz674xutHwoqpK2mwLyexCZ",
+   "owner_kind": "pda_owned_by:11111111111111111111111111111111",
+   "usd": 0.0,
+   "reserves": 3
+  },
+  {
+   "market": "5QyQytKZSK3HoVN1U38B2MAVUcrHgywu9rRKJwvp2rQ3",
+   "owner": "GetxnGXDwWfGwMmNweyCexiY3Z8KRWJjs6qviWv1uqkT",
+   "owner_kind": "single_key",
+   "usd": 0.0,
+   "reserves": 2
+  },
+  {
+   "market": "4P4NuGrt1xSTxfgy2wtWLUmssce6AEJnfgp3E6HugyNp",
+   "owner": "GQNisfe7Rmrbqyb6MGpX7TFq1LVnKTtRCqsSv66nTgiv",
+   "owner_kind": "single_key",
+   "usd": 0.0,
+   "reserves": 2
+  },
+  {
+   "market": "Bs49f8XoVWhuecLSVWvZR3UhkdJnKrK4qPCtfv3kJr44",
+   "owner": "9ReC9HeBRfVi9Cj5kdzH2WsSZ8LabRnKWqK4cHHYLAMk",
+   "owner_kind": "single_key",
+   "usd": 0.0,
+   "reserves": 1
+  },
+  {
+   "market": "E2xvbPWnyA85WnaVvj9aZKmeqbyc27FSqhdReGanLzAC",
+   "owner": "radixktqpGoNxK6Y8eKBvKkerx6yLgEJUJ2pTwEFajS",
+   "owner_kind": "single_key",
+   "usd": 0.0,
+   "reserves": 1
+  },
+  {
+   "market": "9qhLhVw1k8vYFiJVmzugpsfK8vtT44V8hj4qmZTqAUDJ",
+   "owner": "BYghqfL51ALEWcMA1zU7gGE5u6iH2kZKcjyb6q1bgFuu",
+   "owner_kind": "single_key",
+   "usd": 0.0,
+   "reserves": 1
+  },
+  {
+   "market": "5f6NyDCtUvkEByNM8fm4dtcrX1CgZuUMxM4fuRe9b3Bs",
+   "owner": "radixktqpGoNxK6Y8eKBvKkerx6yLgEJUJ2pTwEFajS",
+   "owner_kind": "single_key",
+   "usd": 0.0,
+   "reserves": 1
+  },
+  {
+   "market": "FgTJG43cQCBKTgffjZzybGTzjDWsBfPhk4uYF6eSmMY8",
+   "owner": "radixktqpGoNxK6Y8eKBvKkerx6yLgEJUJ2pTwEFajS",
+   "owner_kind": "single_key",
+   "usd": 0.0,
+   "reserves": 1
+  },
+  {
+   "market": "9mXeMbtYRYWjtHaxtKYQjF7kXcemqwB5tZNNDkYiWx8S",
+   "owner": "radixktqpGoNxK6Y8eKBvKkerx6yLgEJUJ2pTwEFajS",
+   "owner_kind": "single_key",
+   "usd": 0.0,
+   "reserves": 1
+  },
+  {
+   "market": "FPRzfcyLEx8XFmUfTaYZcf4HG2SDmxdybQgm7uoHtJ4z",
+   "owner": "radixktqpGoNxK6Y8eKBvKkerx6yLgEJUJ2pTwEFajS",
+   "owner_kind": "single_key",
+   "usd": 0.0,
+   "reserves": 1
+  },
+  {
+   "market": "83uY5PTT8WJx14nekM3YU7giDRsW35WSdCN9zaouiY3J",
+   "owner": "radixktqpGoNxK6Y8eKBvKkerx6yLgEJUJ2pTwEFajS",
+   "owner_kind": "single_key",
+   "usd": 0.0,
+   "reserves": 1
+  },
+  {
+   "market": "5zLhTfoB8REn7pwvxpwtSi3VTrmQxYByyE4mRyyjViDc",
+   "owner": "HqUaqynhR5SDzooYx6kH6c3BwZ3ad7W6PTjs4pPtHgAA",
+   "owner_kind": "single_key",
+   "usd": 0.0,
+   "reserves": 1
+  },
+  {
+   "market": "EfMfHJBLqugwxaJepfVMKm9YZxecmpXmosNZkUAMUyZM",
+   "owner": "radixktqpGoNxK6Y8eKBvKkerx6yLgEJUJ2pTwEFajS",
+   "owner_kind": "single_key",
+   "usd": 0.0,
+   "reserves": 1
+  },
+  {
+   "market": "BvDexdqLtFEaTftxsAp2p3nZ8irkkGWfbEus92KrD9ac",
+   "owner": "radixktqpGoNxK6Y8eKBvKkerx6yLgEJUJ2pTwEFajS",
+   "owner_kind": "single_key",
+   "usd": 0.0,
+   "reserves": 1
+  },
+  {
+   "market": "7ib6nm5Rkfk8JYrURjhSuc3Tv72YaVhB9sqR2EUK2B6j",
+   "owner": "radixktqpGoNxK6Y8eKBvKkerx6yLgEJUJ2pTwEFajS",
+   "owner_kind": "single_key",
+   "usd": 0.0,
+   "reserves": 1
+  },
+  {
+   "market": "13iJ9S8qW8VGG94qUapfe3zbjvfig8PPgbDyfgHY6UHL",
+   "owner": "GetxnGXDwWfGwMmNweyCexiY3Z8KRWJjs6qviWv1uqkT",
+   "owner_kind": "single_key",
+   "usd": 0.0,
+   "reserves": 1
+  }
+ ]
+}

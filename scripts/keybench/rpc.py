@@ -53,3 +53,13 @@ def on_curve(addr):
     x = pow(x2, (_P + 3) // 8, _P)
     if (x * x - x2) % _P != 0: x = x * pow(2, (_P - 1) // 4, _P) % _P
     return (x * x - x2) % _P == 0
+
+def find_pda(seeds, program):
+    import hashlib
+    for bump in range(255, -1, -1):
+        h = hashlib.sha256(b''.join(seeds) + bytes([bump]) + b58d(program) + b'ProgramDerivedAddress').digest()
+        a = b58(h)
+        if not on_curve(a): return a, bump
+    return None, None
+def squads_v4_vault(multisig, index=0):
+    return find_pda([b'multisig', b58d(multisig), b'vault', bytes([index])], 'SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf')[0]
