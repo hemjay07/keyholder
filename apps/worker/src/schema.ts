@@ -450,3 +450,14 @@ export const positions = pgTable(
     idx_wallet: index('positions_wallet_protocol').on(table.wallet, table.protocol_id),
   })
 );
+
+// One row per day the observation log was anchored on chain (design/MOAT-BUILD.md, C).
+export const daily_anchor = pgTable('daily_anchor', {
+  day: date('day', { mode: 'string' }).primaryKey(),
+  row_count: integer('row_count').notNull(),
+  sha256: text('sha256').notNull(),
+  cluster: text('cluster').notNull(),
+  signature: text('signature').notNull(),
+  slot: bigint('slot', { mode: 'number' }).notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
+});

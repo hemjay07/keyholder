@@ -64,6 +64,13 @@
       "when": 1790919504610,
       "tag": "20261002053824_program_daily",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1791048165859,
+      "tag": "20261003172245_daily_anchor",
+      "breakpoints": true
     }
   ]
 }

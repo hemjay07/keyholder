@@ -13,7 +13,10 @@ import postgres from 'postgres';
 import * as dotenv from 'dotenv';
 import { parseProgramData, parseSquadsV4Multisig, parseSquadsV3Multisig, parseCoralMultisig, SQUADS_V4_PROGRAM_ID, SQUADS_V3_PROGRAM_ID, CORAL_MULTISIG_PROGRAM_ID, BPF_LOADER_UPGRADEABLE_PROGRAM_ID } from '@keyholder/decoder';
 import { resolveAuthority } from '../state-builder/authority';
-import { program_daily } from '../schema';
+import { program_daily, daily_anchor } from '../schema';
+import { eq } from 'drizzle-orm';
+import { Keypair } from '@solana/web3.js';
+import { digest, memoText, anchor, type DailyRow } from './anchor';
 
 dotenv.config({ path: join(__dirname, '..', '..', '..', '..', '.env') });
 
@@ -37,6 +40,21 @@ function decodeMembers(owner: string, data: Buffer): { threshold: number; member
 }
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+/** Hash the day's rows and write the memo, once per day. Off unless ANCHOR_KEYPAIR_PATH is set. */
+export async function anchorDay(db: ReturnType<typeof drizzle>, day: string): Promise<unknown> {
+  const keyPath = process.env.ANCHOR_KEYPAIR_PATH;
+  if (!keyPath) return 'off';
+  const done = await db.select().from(daily_anchor).where(eq(daily_anchor.day, day));
+  if (done.length) return { already: done[0]!.signature };
+  const rows = (await db.select().from(program_daily).where(eq(program_daily.day, day))) as unknown as DailyRow[];
+  const hash = digest(rows);
+  const cluster = process.env.ANCHOR_RPC_URL ?? 'https://api.devnet.solana.com';
+  const payer = Keypair.fromSecretKey(Uint8Array.from(JSON.parse(readFileSync(keyPath, 'utf8'))));
+  const { signature, slot } = await anchor(new Connection(cluster, 'confirmed'), payer, memoText(day, rows.length, hash));
+  await db.insert(daily_anchor).values({ day, row_count: rows.length, sha256: hash, cluster, signature, slot });
+  return { rows: rows.length, hash, signature, slot };
+}
 
 async function main(): Promise<void> {
   const dir = join(__dirname, '..', '..', '..', '..', 'data', 'coverage');
@@ -76,7 +94,8 @@ async function main(): Promise<void> {
     }
     await sleep(Number(process.env.DAILY_GAP_MS ?? 120));
   }
-  console.log(JSON.stringify({ day, slot, programs: rows.length, counts, authorityChangedSinceCoverage: changed }));
+  const anchored = await anchorDay(db, day).catch((e) => ({ error: e instanceof Error ? e.message : String(e) }));
+  console.log(JSON.stringify({ day, slot, programs: rows.length, counts, authorityChangedSinceCoverage: changed, anchored }));
   await sql.end();
 }
 
