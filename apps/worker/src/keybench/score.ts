@@ -76,6 +76,7 @@ function driftResult(): IncidentResult {
 const NOTES: Record<string, string> = {
   'raydium-2022': "The stolen key was the AMM admin key compiled into the program, used directly with no prior on-chain control change. Keyholder does not model compiled-in admin keys, so it gives no warning. The upgrade authority was already a multisig.",
   'synthetify-2023': 'The drain was a program upgrade passed through governance; the upgrade proposal sat on chain from creation to execution.',
+  'rain-2026': 'A flaw in an outdated card contract let the attacker grant itself collateral-admin rights (AddCollateralAdmin), then withdraw. The grant came 4 min 59 s before the first withdrawal; no shipped rule reads that instruction, and the program was not tracked.',
   'bonkdao-2026': 'A treasury-transfer proposal (BIP #76) passed by purchased voting power; it sat on chain for days before executing.',
 };
 

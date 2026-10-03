@@ -22,6 +22,7 @@ const CLASS_LABEL: Record<string, string> = {
   governance_upgrade: "Governance → program upgrade",
   governance_treasury: "Governance → treasury transfer",
   multisig_admin: "Multisig → admin takeover",
+  admin_grant_flaw: "Program flaw → self-granted admin",
 };
 
 function days(s: number | null): string {

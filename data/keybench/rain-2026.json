@@ -1,0 +1,55 @@
+{
+ "id": "rain-2026",
+ "name": "Rain card contract (Aug 2026)",
+ "class": "admin_grant_flaw",
+ "sources": [
+  "https://blockaid.io/blog/11m-rain-ecosystem-exploit-how-onchain-monitoring-gives-stablecoin-card-issuers-fleet-level-coverage",
+  "https://www.coindesk.com/web3/2026/08/29/a-usd1-1-million-crypto-card-hack-crashed-a-neobank-s-token-49"
+ ],
+ "attacker": "FVNFzqAny8spWdPmYw6RQ9TkYa29ueFFiqCFD1gQnCEj",
+ "programs_per_blockaid": [
+  "26DkA98jjctzPkBEteUsN935CR4dsKx3XvjrtE7MeL4a",
+  "CWgkFB7ngUc9cGD1LryyhP7h6xYWtwrAjhSKKCoR1gkz",
+  "3zVB27Gap6fbxpAcV2hsBBUcV3vRjkCikBXREiyBzDuc",
+  "8r2jms1vAnHhtCWxDNSgiHvQNSzzJvGa9oBRCbBPCBNN"
+ ],
+ "attacker_first_tx": {
+  "sig": "3W2x5igVBrBzNzgLyJ6hN6Xdy3JE54gqqdZSvz8CHm75jbrEW1GsN1EAoBA6SaDEWTUK6Ey6hoXwVddvk6q2USVe",
+  "time": "2026-08-28 13:40:41",
+  "note": "FulfillOrder; attacker has 21,405 signatures in total"
+ },
+ "events": [
+  {
+   "kind": "first_exploit_call",
+   "what": "SubmitSignatures (first)",
+   "sig": "2j5y2oK3mUhUUkgVquYTu2nXa8iWytyySCWvGvzQGVUnR5pBAZ7s9KvCBJXj1X2hhMQBQgxWS9wof8dFiW8ju48i",
+   "slot": 442383827,
+   "time": "2026-08-28 16:49:49",
+   "programs": [
+    "CWgkFB7ngUc9cGD1LryyhP7h6xYWtwrAjhSKKCoR1gkz"
+   ]
+  },
+  {
+   "kind": "admin_granted",
+   "what": "AddCollateralAdmin (first): attacker grants itself withdrawal rights",
+   "sig": "2gUKwke19T9LxRNhgynkzkSFosSpgMsJFMta6RX49ztKeXK8cKKA8CTdvnXuB5cuyrz1v5tf7xcQKUdBo6K1Qu3q",
+   "slot": 442383830,
+   "time": "2026-08-28 16:49:50",
+   "programs": [
+    "CWgkFB7ngUc9cGD1LryyhP7h6xYWtwrAjhSKKCoR1gkz"
+   ]
+  },
+  {
+   "kind": "first_loss",
+   "what": "WithdrawCollateralAsset (first)",
+   "sig": "2oE6hQ7nFYpx9k1EUZuy93DsPqDUoo6MvSzMG8b8zGMZ7hUbzAzuYubicvRPK7Pcyvsxb1Hk35yB22dsC9jt3M5L",
+   "slot": 442384762,
+   "time": "2026-08-28 16:54:49",
+   "programs": [
+    "CWgkFB7ngUc9cGD1LryyhP7h6xYWtwrAjhSKKCoR1gkz"
+   ]
+  }
+ ],
+ "read_at": "2026-10-03",
+ "rpc": "https://api.mainnet-beta.solana.com"
+}

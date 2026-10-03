@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-03T18:55:51.410Z",
+ "generated": "2026-10-03T19:34:59.037Z",
  "shippedRules": [
   "single_key_authority",
   "no_timelock",
@@ -127,6 +127,27 @@
     "posture": []
    },
    "note": "A treasury-transfer proposal (BIP #76) passed by purchased voting power; it sat on chain for days before executing."
+  },
+  {
+   "id": "rain-2026",
+   "name": "Rain card contract (Aug 2026)",
+   "class": "admin_grant_flaw",
+   "firstLoss": {
+    "time": "2026-08-28 16:54:49",
+    "sig": "2oE6hQ7nFYpx9k1EUZuy93DsPqDUoo6MvSzMG8b8zGMZ7hUbzAzuYubicvRPK7Pcyvsxb1Hk35yB22dsC9jt3M5L",
+    "slot": 442384762
+   },
+   "shipped": {
+    "firstAlert": null,
+    "leadTimeSeconds": null,
+    "posture": []
+   },
+   "current": {
+    "firstAlert": null,
+    "leadTimeSeconds": null,
+    "posture": []
+   },
+   "note": "A flaw in an outdated card contract let the attacker grant itself collateral-admin rights (AddCollateralAdmin), then withdraw. The grant came 4 min 59 s before the first withdrawal; no shipped rule reads that instruction, and the program was not tracked."
   }
  ]
 }
