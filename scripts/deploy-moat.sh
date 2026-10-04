@@ -15,12 +15,13 @@ FILES=(
   apps/worker/src/coverage/daily.ts apps/worker/src/coverage/anchor.ts apps/worker/src/coverage/verify-anchor.ts apps/worker/src/coverage/admin-keys.ts
 )
 tar czf - "${FILES[@]}" apps/worker/drizzle | $SSH "cd $APP && tar xzf - && chown -R keyholder:keyholder $APP/packages $APP/apps/worker/src $APP/apps/worker/drizzle"
-scp -q -i $KEY ~/.keyholder/anchor-devnet.json $BOX:/etc/keyholder/anchor-devnet.json
+# /etc/keyholder is root-only (no traverse for keyholder), so the key lives in keyholder's home
+scp -q -i $KEY ~/.keyholder/anchor-devnet.json $BOX:/home/keyholder/anchor-devnet.json
 $SSH "set -eo pipefail
 # /etc/keyholder/env is root-only: run as keyholder with systemd loading it, like the services do
 RUN='systemd-run --quiet --wait --pipe --collect -p User=keyholder -p EnvironmentFile=/etc/keyholder/env -p WorkingDirectory=$APP/apps/worker'
-chown keyholder:keyholder /etc/keyholder/anchor-devnet.json && chmod 600 /etc/keyholder/anchor-devnet.json
-grep -q '^ANCHOR_KEYPAIR_PATH=' /etc/keyholder/env || echo 'ANCHOR_KEYPAIR_PATH=/etc/keyholder/anchor-devnet.json' >> /etc/keyholder/env
+chown keyholder:keyholder /home/keyholder/anchor-devnet.json && chmod 600 /home/keyholder/anchor-devnet.json && rm -f /etc/keyholder/anchor-devnet.json
+sed -i '/^ANCHOR_KEYPAIR_PATH=/d' /etc/keyholder/env && echo 'ANCHOR_KEYPAIR_PATH=/home/keyholder/anchor-devnet.json' >> /etc/keyholder/env
 cd $APP/packages/risk && sudo -u keyholder npx tsc
 cd $APP/packages/decoder && sudo -u keyholder npx tsc
 \$RUN $APP/apps/worker/node_modules/.bin/tsx src/migrate.ts
