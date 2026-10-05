@@ -3,6 +3,7 @@
 // Data: src/data/keybench.json, written by apps/worker/src/keybench/score.ts from data/keybench/*.json.
 import type { Metadata } from "next";
 import data from "@/data/keybench.json";
+import dollars from "@/data/dollars.json";
 
 export const metadata: Metadata = {
   title: "KeyBench · Keyholder",
@@ -33,6 +34,7 @@ function days(s: number | null): string {
 
 /** Incident files use "YYYY-MM-DD HH:MM:SS"; the Drift replay uses ISO. Show both the same way. */
 const utc = (t: string) => t.replace("T", " ").replace(/Z$/, "").slice(0, 19);
+const usd = (n: number) => (n >= 1e9 ? `$${(n / 1e9).toFixed(2)}B` : n >= 1e6 ? `$${Math.round(n / 1e6)}M` : `$${Math.round(n / 1e3)}k`);
 const short = (sig: string) => `${sig.slice(0, 8)}…${sig.slice(-6)}`;
 const tx = (sig: string) => `https://solscan.io/tx/${sig}`;
 
@@ -69,6 +71,22 @@ export default function KeyBenchPage() {
         <p className="kb-tally mono">
           {RESULTS.length} incidents · rules shipped before this study warned on {shippedHits} · with the rule added after it, {currentHits}
         </p>
+      </section>
+      <section className="kb-dollars" aria-labelledby="kb-dollars-h">
+        <h2 id="kb-dollars-h">Today: {usd(dollars.by_class.multisig_no_timelock)} can move with no delay</h2>
+        <p className="kb-note">
+          Of {usd(dollars.total)} traced to the vaults of Solana&apos;s largest programs, {usd(dollars.by_class.multisig_no_timelock)} sits behind
+          multisigs that can upgrade the program with no timelock, {usd(dollars.by_class.multisig_timelock)} behind multisigs with one, and{" "}
+          {usd(dollars.by_class.one_signer)} behind a single key. Counted vault by vault from chain, liquid tokens only, so these are floors.
+        </p>
+        <ul className="kb-dollar-list mono">
+          {dollars.no_timelock_top.map((p) => (
+            <li key={p.programId}>
+              <a href={`https://solscan.io/account/${p.programId}`}>{p.programId.slice(0, 8)}…</a> · {p.threshold} of {p.members}, no timelock · {usd(p.usd_floor)}
+            </li>
+          ))}
+        </ul>
+        <p className="kb-loss mono">Priced {dollars.priced_at} UTC · source: data/coverage/dollars-by-class-2026-10-04.json</p>
       </section>
       <ol className="kb-list">
         {RESULTS.map((r) => (
