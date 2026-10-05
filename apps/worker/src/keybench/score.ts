@@ -85,6 +85,7 @@ export function scoreAll(): IncidentResult[] {
   const out: IncidentResult[] = [driftResult()];
   for (const f of files) {
     const inc = JSON.parse(readFileSync(join(DIR, f), 'utf8')) as Incident;
+    if (!Array.isArray(inc.events)) continue; // not an incident record (e.g. proposal-scan results)
     const loss = inc.events.find((e) => e.kind === 'first_loss')!;
     out.push({ id: inc.id, name: inc.name, class: inc.class, firstLoss: { time: loss.time, sig: loss.sig, slot: loss.slot }, shipped: scoreIncident(inc, SHIPPED), current: scoreIncident(inc, CURRENT), note: NOTES[inc.id] ?? '' });
   }

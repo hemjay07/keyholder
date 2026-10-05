@@ -11,7 +11,7 @@ FILES=(
   packages/risk/src/rules.ts
   packages/decoder/src/spl-gov-decoder.ts packages/decoder/src/index.ts
   apps/worker/src/schema.ts apps/worker/src/runner.ts
-  apps/worker/src/pipeline/decode.ts apps/worker/src/pipeline/risk.ts
+  apps/worker/src/pipeline/decode.ts apps/worker/src/pipeline/risk.ts apps/worker/src/ingest/filter.ts
   apps/worker/src/coverage/daily.ts apps/worker/src/coverage/anchor.ts apps/worker/src/coverage/verify-anchor.ts apps/worker/src/coverage/admin-keys.ts
 )
 tar czf - "${FILES[@]}" apps/worker/drizzle | $SSH "cd $APP && tar xzf - && chown -R keyholder:keyholder $APP/packages $APP/apps/worker/src $APP/apps/worker/drizzle"
