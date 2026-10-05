@@ -1,0 +1,351 @@
+{
+ "priced_at": "2026-10-05 02:20:28",
+ "method": "lower bound: vaults seen moving in each program's recent transactions, current balances, Jupiter prices, mints with >= $100k liquidity only",
+ "total_usd_floor": 2645184620.68,
+ "by_class": {
+  "multisig_timelock": 1888353833.54,
+  "multisig_no_timelock": 756332962.18,
+  "one_signer": 497824.96,
+  "unresolved": 0.0,
+  "governance": 0.0
+ },
+ "share": {
+  "one_signer": 0.0002,
+  "multisig_no_timelock": 0.2859,
+  "multisig_timelock": 0.7139,
+  "unresolved": 0.0,
+  "governance": 0.0
+ },
+ "programs": [
+  {
+   "programId": "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+   "class": "multisig_timelock",
+   "threshold": 5,
+   "members": 10,
+   "timeLockS": 86400,
+   "usd_floor": 1484429235.93,
+   "vaults": 648,
+   "error": null
+  },
+  {
+   "programId": "675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8",
+   "class": "multisig_no_timelock",
+   "threshold": 3,
+   "members": 4,
+   "timeLockS": 0,
+   "usd_floor": 572645252.22,
+   "vaults": 705562,
+   "error": null
+  },
+  {
+   "programId": "PERPHjGBqRHArX4DySjwM6UJHiR3sWAatqfdBS2qQJu",
+   "class": "multisig_timelock",
+   "threshold": 4,
+   "members": 8,
+   "timeLockS": 86400,
+   "usd_floor": 378450039.68,
+   "vaults": 4,
+   "error": null
+  },
+  {
+   "programId": "EhhTKczWMGQt46ynNeRX1WfeagwwJd7ufHvCDjRxjo5Q",
+   "class": "multisig_no_timelock",
+   "threshold": 3,
+   "members": 4,
+   "timeLockS": 0,
+   "usd_floor": 78487946.1,
+   "vaults": 2,
+   "error": null
+  },
+  {
+   "programId": "cpamdpZCGKUy5JxQXB4dcpGPiikHawvSWAd6mEn1sGG",
+   "class": "multisig_no_timelock",
+   "threshold": 4,
+   "members": 7,
+   "timeLockS": 0,
+   "usd_floor": 43930360.3,
+   "vaults": 1564599,
+   "error": null
+  },
+  {
+   "programId": "24Uqj9JCLxUeoC3hGfh5W3s9FM9uCHDS2SG3LYwBpyTi",
+   "class": "multisig_no_timelock",
+   "threshold": 4,
+   "members": 7,
+   "timeLockS": 0,
+   "usd_floor": 35922733.75,
+   "vaults": 22,
+   "error": null
+  },
+  {
+   "programId": "StaKE6XNKVVhG8Qu9hDJBqCW3eRe7MDGLz17nJZetLT",
+   "class": "multisig_timelock",
+   "threshold": 5,
+   "members": 13,
+   "timeLockS": 86400,
+   "usd_floor": 19366537.42,
+   "vaults": 1,
+   "error": null
+  },
+  {
+   "programId": "5ocnV1qiCgaQR8Jb8xWnVbApfaygJ8tNoZfgPwsgx9kx",
+   "class": "multisig_no_timelock",
+   "threshold": 6,
+   "members": 11,
+   "timeLockS": 0,
+   "usd_floor": 15749464.23,
+   "vaults": 23,
+   "error": null
+  },
+  {
+   "programId": "CAMMCzo5YL8w4VFF8KVHrK22GGUsp5VTaW7grrKgrWqK",
+   "class": "multisig_no_timelock",
+   "threshold": 3,
+   "members": 4,
+   "timeLockS": 0,
+   "usd_floor": 9086960.16,
+   "vaults": 31,
+   "error": null
+  },
+  {
+   "programId": "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc",
+   "class": "multisig_timelock",
+   "threshold": 5,
+   "members": 13,
+   "timeLockS": 86400,
+   "usd_floor": 6108020.51,
+   "vaults": 27,
+   "error": null
+  },
+  {
+   "programId": "5quBtoiQqxF9Jv6KYKctB59NT3gtJD2Y65kdnB1Uev3h",
+   "class": "multisig_no_timelock",
+   "threshold": 3,
+   "members": 4,
+   "timeLockS": 0,
+   "usd_floor": 494640.32,
+   "vaults": 7,
+   "error": null
+  },
+  {
+   "programId": "CBuCnLe26faBpcBP2fktp4rp8abpcAnTWft6ZrP5Q4T",
+   "class": "one_signer",
+   "threshold": null,
+   "members": null,
+   "timeLockS": null,
+   "usd_floor": 487002.52,
+   "vaults": 9,
+   "error": null
+  },
+  {
+   "programId": "dbcij3LWUppWqq96dh6gJWwBifmcGfLSB5D4DuSMaqN",
+   "class": "multisig_no_timelock",
+   "threshold": 4,
+   "members": 7,
+   "timeLockS": 0,
+   "usd_floor": 15605.1,
+   "vaults": 8,
+   "error": null
+  },
+  {
+   "programId": "SLendK7ySfcEzyaFqy93gDnD3RtrpXJcnRwb6zFHJSh",
+   "class": "one_signer",
+   "threshold": 1,
+   "members": 10,
+   "timeLockS": 0,
+   "usd_floor": 10822.44,
+   "vaults": 93,
+   "error": null
+  },
+  {
+   "programId": "JUPDWNB9G9Hsg8PKynnP6DyWLsXVn4QnqMCqg6n4ZdM",
+   "class": "one_signer",
+   "threshold": null,
+   "members": null,
+   "timeLockS": null,
+   "usd_floor": 0.0,
+   "vaults": 0,
+   "error": null
+  },
+  {
+   "programId": "61DFfeTKM7trxYcPQCM78bJ794ddZprZpAwAnLiwTpYH",
+   "class": "multisig_no_timelock",
+   "threshold": 4,
+   "members": 7,
+   "timeLockS": 0,
+   "usd_floor": 0.0,
+   "vaults": 0,
+   "error": null
+  },
+  {
+   "programId": "ammbh4CQztZ6txJ8AaQgPsWjd6o7GhmvopS2JAo5bCB",
+   "class": "one_signer",
+   "threshold": null,
+   "members": null,
+   "timeLockS": null,
+   "usd_floor": 0.0,
+   "vaults": 2,
+   "error": null
+  },
+  {
+   "programId": "6YRZW57XsrT2DxSNLXHHQd4QmiqBode4d6btASkRqcFo",
+   "class": "one_signer",
+   "threshold": null,
+   "members": null,
+   "timeLockS": null,
+   "usd_floor": 0.0,
+   "vaults": 0,
+   "error": null
+  },
+  {
+   "programId": "s1umBj7CEUA6djs6V1c6o2Nym3QrqF4ryKDr1Nm1FKt",
+   "class": "one_signer",
+   "threshold": null,
+   "members": null,
+   "timeLockS": null,
+   "usd_floor": 0.0,
+   "vaults": 0,
+   "error": null
+  },
+  {
+   "programId": "iseejmLobW1224pCCMHPhSBdvDjtN6pYXeRfz1gv4zB",
+   "class": "one_signer",
+   "threshold": null,
+   "members": null,
+   "timeLockS": null,
+   "usd_floor": 0.0,
+   "vaults": 0,
+   "error": null
+  },
+  {
+   "programId": "SBondMDrcV3K4kxZR1HNVT7osZxAHVHgYXL5Ze1oMUv",
+   "class": "multisig_no_timelock",
+   "threshold": 3,
+   "members": 8,
+   "timeLockS": 0,
+   "usd_floor": 0.0,
+   "vaults": 0,
+   "error": null
+  },
+  {
+   "programId": "CanarFxHDSnbrPmrE79Qq6hL2p7ZMyyV4ZLTKQ6g7tpK",
+   "class": "one_signer",
+   "threshold": 1,
+   "members": 10,
+   "timeLockS": 14400,
+   "usd_floor": 0.0,
+   "vaults": 0,
+   "error": null
+  },
+  {
+   "programId": "REDSTBDUecGjwXd6YGPzHSvEUBHQqVRfCcjUVgPiHsr",
+   "class": "unresolved",
+   "threshold": null,
+   "members": null,
+   "timeLockS": null,
+   "usd_floor": 0.0,
+   "vaults": 0,
+   "error": null
+  },
+  {
+   "programId": "9N3yqarWXmXJ9NQBGgN47JXV82smby8nSMffkwetgYov",
+   "class": "one_signer",
+   "threshold": null,
+   "members": null,
+   "timeLockS": null,
+   "usd_floor": 0.0,
+   "vaults": 1,
+   "error": null
+  },
+  {
+   "programId": "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
+   "class": "multisig_no_timelock",
+   "threshold": 4,
+   "members": 7,
+   "timeLockS": 0,
+   "usd_floor": 0.0,
+   "vaults": 0,
+   "error": null
+  },
+  {
+   "programId": "Eo7WjKq67rjJQSZxS6z3YkapzY3eMj6Xy8X5EQVn5UaB",
+   "class": "multisig_no_timelock",
+   "threshold": 4,
+   "members": 7,
+   "timeLockS": 0,
+   "usd_floor": 0.0,
+   "vaults": 0,
+   "error": null
+  },
+  {
+   "programId": "unpXTU2Ndrc7WWNyEhQWe4udTzSibLPi25SXv2xbCHQ",
+   "class": "multisig_no_timelock",
+   "threshold": 6,
+   "members": 11,
+   "timeLockS": 0,
+   "usd_floor": 0.0,
+   "vaults": 0,
+   "error": null
+  },
+  {
+   "programId": "f1tUoNEKrDp1oeGn4zxr7bh41eN6VcfHjfrL3ZqQday",
+   "class": "multisig_no_timelock",
+   "threshold": 6,
+   "members": 11,
+   "timeLockS": 0,
+   "usd_floor": 0.0,
+   "vaults": 0,
+   "error": null
+  },
+  {
+   "programId": "22WrapbNKwPSy3HcGQTTJpgv43tszbZdTEfBEWmGYX2V",
+   "class": "one_signer",
+   "threshold": null,
+   "members": null,
+   "timeLockS": null,
+   "usd_floor": 0.0,
+   "vaults": 1,
+   "error": null
+  },
+  {
+   "programId": "SPPdCjFYYwH3ca2kCT9baLcgbXz81P5bd5QutHynuRz",
+   "class": "one_signer",
+   "threshold": null,
+   "members": null,
+   "timeLockS": null,
+   "usd_floor": 0.0,
+   "vaults": 0,
+   "error": null
+  },
+  {
+   "programId": "srmqPvymJeFKQ4zGQed1GFppgkRHL9kaELCbyksJtPX",
+   "class": "governance",
+   "threshold": null,
+   "members": null,
+   "timeLockS": null,
+   "usd_floor": 0.0,
+   "vaults": 0,
+   "error": null
+  },
+  {
+   "programId": "sCanpzodQ7MEC7mpi7ehMtYEkbindzjJQE3JQMAo7fR",
+   "class": "one_signer",
+   "threshold": null,
+   "members": null,
+   "timeLockS": null,
+   "usd_floor": 0.0,
+   "vaults": 0,
+   "error": null
+  },
+  {
+   "programId": "SW1TCH7qEPTdLsDHRgPuMQjbQxKdH2aBStViMFnt64f",
+   "class": "one_signer",
+   "threshold": 1,
+   "members": 4,
+   "timeLockS": 0,
+   "usd_floor": 0.0,
+   "vaults": 0,
+   "error": null
+  }
+ ]
+}
