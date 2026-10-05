@@ -1,18 +1,18 @@
 {
  "priced_at": "2026-10-05 02:20:28",
  "method": "lower bound: vaults seen moving in each program's recent transactions, current balances, Jupiter prices, mints with >= $100k liquidity only",
- "total_usd_floor": 2645184620.68,
+ "total_usd_floor": 2657972458.62,
  "by_class": {
   "multisig_timelock": 1888353833.54,
-  "multisig_no_timelock": 756332962.18,
+  "multisig_no_timelock": 769120800.12,
   "one_signer": 497824.96,
   "unresolved": 0.0,
   "governance": 0.0
  },
  "share": {
+  "multisig_timelock": 0.7104,
+  "multisig_no_timelock": 0.2894,
   "one_signer": 0.0002,
-  "multisig_no_timelock": 0.2859,
-  "multisig_timelock": 0.7139,
   "unresolved": 0.0,
   "governance": 0.0
  },
@@ -93,9 +93,21 @@
    "threshold": 6,
    "members": 11,
    "timeLockS": 0,
-   "usd_floor": 15749464.23,
+   "usd_floor": 15737066.47,
    "vaults": 23,
-   "error": null
+   "error": null,
+   "filled_after_network_drop": true
+  },
+  {
+   "programId": "dbcij3LWUppWqq96dh6gJWwBifmcGfLSB5D4DuSMaqN",
+   "class": "multisig_no_timelock",
+   "threshold": 4,
+   "members": 7,
+   "timeLockS": 0,
+   "usd_floor": 12815840.8,
+   "vaults": 8,
+   "error": null,
+   "filled_after_network_drop": true
   },
   {
    "programId": "CAMMCzo5YL8w4VFF8KVHrK22GGUsp5VTaW7grrKgrWqK",
@@ -135,16 +147,6 @@
    "timeLockS": null,
    "usd_floor": 487002.52,
    "vaults": 9,
-   "error": null
-  },
-  {
-   "programId": "dbcij3LWUppWqq96dh6gJWwBifmcGfLSB5D4DuSMaqN",
-   "class": "multisig_no_timelock",
-   "threshold": 4,
-   "members": 7,
-   "timeLockS": 0,
-   "usd_floor": 15605.1,
-   "vaults": 8,
    "error": null
   },
   {

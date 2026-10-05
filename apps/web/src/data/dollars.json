@@ -1,9 +1,9 @@
 {
  "priced_at": "2026-10-05 02:20:28",
- "total": 2645184620.68,
+ "total": 2657972458.62,
  "by_class": {
   "multisig_timelock": 1888353833.54,
-  "multisig_no_timelock": 756332962.18,
+  "multisig_no_timelock": 769120800.12,
   "one_signer": 497824.96,
   "unresolved": 0.0,
   "governance": 0.0
@@ -37,7 +37,13 @@
    "programId": "5ocnV1qiCgaQR8Jb8xWnVbApfaygJ8tNoZfgPwsgx9kx",
    "threshold": 6,
    "members": 11,
-   "usd_floor": 15749464.23
+   "usd_floor": 15737066.47
+  },
+  {
+   "programId": "dbcij3LWUppWqq96dh6gJWwBifmcGfLSB5D4DuSMaqN",
+   "threshold": 4,
+   "members": 7,
+   "usd_floor": 12815840.8
   },
   {
    "programId": "CAMMCzo5YL8w4VFF8KVHrK22GGUsp5VTaW7grrKgrWqK",
