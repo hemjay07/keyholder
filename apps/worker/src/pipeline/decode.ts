@@ -45,7 +45,7 @@ import {
   decodeInsertTransaction,
   classifyProposal,
 } from '@keyholder/decoder';
-import { SPL_GOVERNANCE_PROGRAM_ID, SYSTEM_PROGRAM_ID } from '../ingest/filter';
+import { GOVERNANCE_PROGRAM_IDS, SYSTEM_PROGRAM_ID } from '../ingest/filter';
 
 export interface DecodeLogger {
   info: (msg: string, meta?: Record<string, unknown>) => void;
@@ -242,7 +242,7 @@ async function decodeOneInstruction(
   }
 
   // ── SPL Governance: InsertTransaction says what a proposal will do (KeyBench, 2026-10-03) ──
-  if (ix.programId === SPL_GOVERNANCE_PROGRAM_ID) {
+  if (GOVERNANCE_PROGRAM_IDS.has(ix.programId)) {
     if (ix.data[0] === 9) {
       try {
         const ins = decodeInsertTransaction(ix.data);

@@ -1,0 +1,65 @@
+{
+ "since": "2025-10-05",
+ "realms": [
+  {
+   "realm": "6JFaFouiN4ssPc38ey1hXKSxyFWZzZy9w5Xt5xLzeozm",
+   "name": "Mango Game Master",
+   "proposals": 0,
+   "would_fire": 0,
+   "by_kind": {
+    "program_upgrade": 0,
+    "set_authority": 0,
+    "treasury_transfer": 0
+   },
+   "list": []
+  },
+  {
+   "realm": "7CWXhWsMXbfx8caHcpCbSQKDpsaLNu65YoBLoGfogzk6",
+   "name": "Mango Treasury Council",
+   "proposals": 0,
+   "would_fire": 0,
+   "by_kind": {
+    "program_upgrade": 0,
+    "set_authority": 0,
+    "treasury_transfer": 0
+   },
+   "list": []
+  },
+  {
+   "realm": "AQbsV8b3Yv3UHUmd62hw9vFmNTHgBTdiLfaWzwmVfXB2",
+   "name": "Mango security council",
+   "proposals": 0,
+   "would_fire": 0,
+   "by_kind": {
+    "program_upgrade": 0,
+    "set_authority": 0,
+    "treasury_transfer": 0
+   },
+   "list": []
+  },
+  {
+   "realm": "C556EiXyMWU62Ed7rrGipZrRHWnUm3hPvufUzcdXsj2V",
+   "name": "Mango Security Council",
+   "proposals": 0,
+   "would_fire": 0,
+   "by_kind": {
+    "program_upgrade": 0,
+    "set_authority": 0,
+    "treasury_transfer": 0
+   },
+   "list": []
+  },
+  {
+   "realm": "Eb69t8zTkNbBViLRykbgBofr8PbwvZoAX4KicVcNNwkj",
+   "name": "Mangolana Council",
+   "proposals": 0,
+   "would_fire": 0,
+   "by_kind": {
+    "program_upgrade": 0,
+    "set_authority": 0,
+    "treasury_transfer": 0
+   },
+   "list": []
+  }
+ ]
+}

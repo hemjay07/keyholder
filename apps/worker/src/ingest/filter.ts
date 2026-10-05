@@ -25,6 +25,8 @@ import type { IngestCandidate, RawInstruction } from './types';
 
 export const SYSTEM_PROGRAM_ID = '11111111111111111111111111111111111111';
 export const SPL_GOVERNANCE_PROGRAM_ID = 'GovER5Lthms3bLBqWub97yVrMmEogzX7xNjdXpPPCVZw';
+/** spl-governance deployments with their own program id; GqTPL6qR is Mango's (its realms on chain are all Mango councils, read 2026-10-05). */
+export const GOVERNANCE_PROGRAM_IDS: ReadonlySet<string> = new Set([SPL_GOVERNANCE_PROGRAM_ID, 'GqTPL6qRf5aUuqscLh8Rg2HTxPUXfhhAXDptTLhp1t2J']);
 
 /** Loader tags to keep. Tag 1 (Write) and tag 0 (InitializeBuffer) are dropped. */
 const KEPT_LOADER_TAGS = new Set([2, 3, 4, 5, 6, 7]);
@@ -104,7 +106,7 @@ export function filterInstruction(ix: RawInstruction, config: FilterConfig): Fil
     return { keep: true, reason: 'squads ix (unclassified, kept conservatively)' };
   }
 
-  const govIds = config.governanceProgramIds ?? new Set([SPL_GOVERNANCE_PROGRAM_ID]);
+  const govIds = config.governanceProgramIds ?? GOVERNANCE_PROGRAM_IDS;
   if (govIds.has(ix.programId)) {
     return { keep: true, reason: 'spl governance ix' };
   }

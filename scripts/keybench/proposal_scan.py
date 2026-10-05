@@ -8,6 +8,7 @@ import sys, json, time, struct, re, datetime
 from rpc import call, sigs, utc, b58, base64
 
 G = "GovER5Lthms3bLBqWub97yVrMmEogzX7xNjdXpPPCVZw"
+if len(sys.argv) > 2 and sys.argv[1] == "--program": G = sys.argv[2]; del sys.argv[1:3]
 LOADER = "BPFLoaderUpgradeab1e11111111111111111111111"
 TOKENS = {"TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA", "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"}
 SINCE = (datetime.datetime.utcnow() - datetime.timedelta(days=365)).strftime('%Y-%m-%d')

@@ -45,3 +45,8 @@ Zeta Markets, Parcl, Squads, Pyth dao, Bonk DAO) and classified each stored tran
 - Bonk DAO: 2 proposals, the rule fires on both: BIP #76 (the attack) and "The Orange Project" (2025-11-22, a
   treasury proposal). On this sample: 1 true warning, 1 alert on routine governance.
 Result: the sample is too small to state an alert rate. Next: add the other spl-governance program ids to ingest and rerun.
+- Mango's own deployment (GqTPL6qR…, 5 realms, all Mango councils) added to ingest and decode; its realms show 0
+  proposals in 12 months (Mango Treasury Council: 193 proposals all time, latest activity 2024-12-12). Raydium DAO on the
+  shared program: 2 proposals all time. The scan is not broken; on-chain governance is quiet at these protocols. Their
+  upgrades and treasuries move through Squads multisigs (see the dollar census: $769M behind no-timelock multisigs), so the
+  multisig rules carry most of the protection and control_proposal_pending covers the DAO-governed minority (Bonk-type).

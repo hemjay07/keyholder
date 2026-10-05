@@ -114,3 +114,14 @@ describe('shouldKeepCandidate', () => {
     expect(shouldKeepCandidate(candidate, baseConfig)).toBe(false);
   });
 });
+
+describe('filterInstruction: governance deployments', () => {
+  it("keeps Mango's own spl-governance deployment (GqTPL6qR…)", () => {
+    const ix: RawInstruction = { programId: 'GqTPL6qRf5aUuqscLh8Rg2HTxPUXfhhAXDptTLhp1t2J', data: Buffer.from([9]), accounts: [] };
+    expect(filterInstruction(ix, baseConfig).keep).toBe(true);
+  });
+  it('still drops an unrelated program', () => {
+    const ix: RawInstruction = { programId: 'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo', data: Buffer.from([9]), accounts: [] };
+    expect(filterInstruction(ix, baseConfig).keep).toBe(false);
+  });
+});
