@@ -34,3 +34,14 @@ An incident enters this file only when its transactions have been read on chain 
 Pump.fun (May 2024; post-mortem names the withdraw authority; 2024 key address not yet found on chain), Rain/Avici (Aug 2026; attacker
 FVNFzqAn… per Blockaid, chain walk running), Dominion (Sep 2026), Cypher (2023), Saga DAO (2024, multisig never online: treasury key),
 OptiFi (2022, no program id in coverage). Dropped as not a control path: Aquifer (2026, forged account), Wormhole (2022, signature verification bug).
+
+## Out-of-sample check of control_proposal_pending (2026-10-05)
+`scripts/keybench/proposal_scan.py` read every proposal of the last 12 months in 14 realms on the shared spl-governance
+program (Raydium DAO, Jupiter Aggregator, Kamino DAO, Drift Protocol, Solend, Meteora, Tensor DAO, Helium, marginfi,
+Zeta Markets, Parcl, Squads, Pyth dao, Bonk DAO) and classified each stored transaction as the live decoder does
+(classifier checked first on the Synthetify and BonkDAO proposals: program_upgrade, treasury_transfer).
+- 13 realms had **no proposals** in 12 months on this program. Most large DAOs run their own governance deployments
+  (a different program id), which this scan, and the live decoder, do not read yet.
+- Bonk DAO: 2 proposals, the rule fires on both: BIP #76 (the attack) and "The Orange Project" (2025-11-22, a
+  treasury proposal). On this sample: 1 true warning, 1 alert on routine governance.
+Result: the sample is too small to state an alert rate. Next: add the other spl-governance program ids to ingest and rerun.
