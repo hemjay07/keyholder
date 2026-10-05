@@ -1,0 +1,10 @@
+data/
+.pgdata/
+target/
+programs/
+evidence/
+research/
+design/shots/
+apps/web/.next/cache/
+apps/worker/
+**/*.sst
