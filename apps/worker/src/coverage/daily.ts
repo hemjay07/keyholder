@@ -72,7 +72,12 @@ async function main(): Promise<void> {
     try {
       const [pd] = PublicKey.findProgramAddressSync([new PublicKey(row.programId).toBuffer()], loader);
       const info = await connection.getAccountInfo(pd);
-      if (!info) { counts.missing = (counts.missing ?? 0) + 1; continue; }
+      if (!info) {
+        // program data account gone: the program was closed by its authority (loader Close). Record it, never drop the row.
+        await db.insert(program_daily).values({ day, program_id: row.programId, slot, upgrade_authority: null, authority_kind: 'closed', multisig: null, threshold: null, members: null }).onConflictDoNothing();
+        counts.closed = (counts.closed ?? 0) + 1;
+        continue;
+      }
       const live = parseProgramData(info.data).upgradeAuthority;
       const step = plan(row, live);
       let kind = row.authorityKind!; let multisig = row.multisig?.address ?? null; let threshold: number | null = null; let members: string[] | null = null;
