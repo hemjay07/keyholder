@@ -6,7 +6,7 @@ import data from "@/data/keybench.json";
 import dollars from "@/data/dollars.json";
 
 export const metadata: Metadata = {
-  title: "KeyBench · Keyholder",
+  title: "KeyBench",
   description: "Solana losses through control keys, replayed from chain: how early Keyholder would have warned.",
 };
 
