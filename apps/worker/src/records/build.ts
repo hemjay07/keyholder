@@ -144,6 +144,22 @@ export function summarize(records: ProgramRecord[]): Record<string, unknown> {
   return { programs: records.length, byStage, closed: records.filter((r) => r.stage.modifiers.includes('closed')).length, adminRead: records.filter((r) => r.admin.status === 'read').length };
 }
 
+/** For each program_closed event: the loader Close transaction (last signature on the program-data account), its signer and time. */
+export async function attachClosures(events: ReturnType<typeof diffRecords>, conn: Connection): Promise<void> {
+  const loader = new PublicKey('BPFLoaderUpgradeab1e11111111111111111111111');
+  for (const e of events) {
+    if (e.kind !== 'program_closed') continue;
+    try {
+      const [pd] = PublicKey.findProgramAddressSync([new PublicKey(e.programId).toBuffer()], loader);
+      const [last] = await conn.getSignaturesForAddress(pd, { limit: 1 });
+      if (!last) continue;
+      const tx = await conn.getTransaction(last.signature, { maxSupportedTransactionVersion: 1 });
+      const signer = tx?.transaction.message.getAccountKeys().staticAccountKeys[0]?.toBase58() ?? null;
+      Object.assign(e, { closeSignature: last.signature, closedBy: signer, closedAt: last.blockTime ? new Date(last.blockTime * 1000).toISOString() : null });
+    } catch { /* leave the event without close details rather than guess */ }
+  }
+}
+
 /** Write a built day to the database (idempotent: a rebuilt day replaces its rows). */
 export async function writeDay(
   sql: import('postgres').Sql,
@@ -195,6 +211,7 @@ export async function runDay(sql: import('postgres').Sql, day: string, outDir: s
   // the feed: changes since the latest earlier record in the same directory
   const prior = readdirSync(outDir).filter((f) => /^\d{4}-\d{2}-\d{2}\.json$/.test(f) && f < `${day}.json`).sort().pop();
   const changes: ReturnType<typeof diffRecords> = prior ? diffRecords(day, (JSON.parse(readFileSync(join(outDir, prior), 'utf8')) as { programs: ProgramRecord[] }).programs, records) : [];
+  await attachClosures(changes, new Connection(process.env.DAILY_RPC_URL ?? 'https://api.mainnet-beta.solana.com', 'confirmed'));
   // Proof of Control: every signed claim in data/claims, checked against today's record; breaks join the feed.
   const claimsDir = join(DATA, 'claims');
   const byId = new Map(records.map((r) => [r.programId, r]));

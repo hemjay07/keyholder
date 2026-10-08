@@ -15,6 +15,8 @@ export interface ControlEvent {
   from: unknown; to: unknown;
   /** members_changed only */
   added?: string[]; removed?: string[];
+  /** program_closed only: the loader Close transaction, read from chain */
+  closeSignature?: string; closedBy?: string | null; closedAt?: string | null;
 }
 
 const ORDER: EventKind[] = ['program_added', 'program_dropped', 'program_closed', 'program_reopened', 'authority_changed', 'multisig_replaced', 'threshold_changed', 'timelock_changed', 'members_changed', 'admin_changed', 'stage_changed', 'claim_broken'];
