@@ -4,6 +4,7 @@
 // record reads, then a structured answer: verdict, control cards, facts, sources, follow-ups. Answers drive the Stage
 // map (kh-pick event). Follow-ups keep the thread; ?ask= in the URL replays a question.
 import React, { useEffect, useRef, useState, type FormEvent } from 'react';
+import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import type { ProgramCard, Resolved, SignerCard } from '@/lib/ask-resolve';
 import { formatUsd } from './stagemap/format';
@@ -79,10 +80,31 @@ function SignerResult({ k }: { k: SignerCard }) {
   );
 }
 
+function factsFor(r: Resolved): Fact[] {
+  if (r.program) {
+    const p = r.program, weakest = p.paths.find((x) => x.binding);
+    return [
+      { label: 'Money traced', value: p.usd ? `at least ${formatUsd(p.usd)}` : 'none traced' },
+      { label: 'Control paths', value: `${p.paths.length} (${p.paths.map((x) => x.label.replace('Admin · ', 'admin ')).join(', ')})` },
+      { label: 'Sets the stage', value: weakest ? weakest.label.replace('Admin · ', 'admin key ') : 'unresolved', tone: p.stage === 0 ? 'weak' : p.stage >= 2 ? 'holds' : 'plain' },
+      { label: 'Shares signers with', value: `${p.sharedWith} other program${p.sharedWith === 1 ? '' : 's'}` },
+    ];
+  }
+  const k = r.signer!;
+  return [
+    { label: 'Multisigs', value: String(k.multisigs) },
+    { label: 'Acts alone on', value: String(k.aloneOn), tone: k.aloneOn ? 'weak' : 'plain' },
+    { label: 'Programs', value: String(k.programs.length) },
+    { label: 'Money behind it', value: k.usd ? formatUsd(k.usd) : 'none traced' },
+  ];
+}
+
 function verdictFor(r: Resolved): string {
   if (r.program) {
     const p = r.program, b = p.paths.find((x) => x.binding);
-    return `${p.name} is Stage ${p.stage}: ${b ? `its ${b.label.toLowerCase()} path needs ${b.threshold != null ? `${b.threshold} of ${b.members} keys with ${delay(b.timelockS)}` : 'one key'}` : 'see its control paths'}.`;
+    const path = !b ? '' : b.label === 'Upgrade' ? 'Its upgrade' : `Its admin key (${b.label.replace('Admin · ', '')})`;
+    const need = !b ? '' : b.threshold != null ? `needs ${b.threshold} of ${b.members} signers${b.timelockS ? ` and waits ${delay(b.timelockS)}` : ', with no waiting period'}` : 'needs one key, with no waiting period';
+    return b ? `${p.name} is Stage ${p.stage}. ${path} ${need}.` : `${p.name} is Stage ${p.stage}.`;
   }
   const k = r.signer!;
   return `This key sits on ${k.multisigs} multisig${k.multisigs === 1 ? '' : 's'} that can help change ${k.programs.length} program${k.programs.length === 1 ? '' : 's'}${k.usd ? ` holding ${formatUsd(k.usd)}` : ''}.`;
@@ -118,9 +140,9 @@ export default function AskBox() {
           if (!c.startsWith('data: ')) continue;
           const e = JSON.parse(c.slice(6)) as { type: string; [k: string]: unknown };
           if (e.type === 'step') update(i, (t) => ({ steps: [...t.steps, String(e.label)] }));
-          else if (e.type === 'instant') { const res = e.resolved as Resolved; update(i, { resolved: res }); if (res.program) dispatchEvent(new CustomEvent('kh-pick', { detail: res.program.id })); }
+          else if (e.type === 'instant') { update(i, { resolved: e.resolved as Resolved }); }
           else if (e.type === 'answer') update(i, { answer: e.answer as Answer });
-          else if (e.type === 'cards') { const cards = e.cards as ProgramCard[]; update(i, { cards }); if (cards[0]) dispatchEvent(new CustomEvent('kh-pick', { detail: cards[0].id })); }
+          else if (e.type === 'cards') { update(i, { cards: e.cards as ProgramCard[] }); }
           else if (e.type === 'text') update(i, { text: String(e.text) });
           else if (e.type === 'error') update(i, { error: ERRORS[String(e.code)] ?? ERRORS.SERVER_ERROR });
         }
@@ -137,6 +159,10 @@ export default function AskBox() {
   useEffect(() => { end.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }, [turns.length]);
 
   const submit = (e: FormEvent) => { e.preventDefault(); void ask(q); };
+  const reset = () => { setTurns([]); const u = new URL(location.href); u.searchParams.delete('ask'); replaceState(u); };
+  // Answers render full width in the page's #ask-answers band (below the hero), not inside this box.
+  const [target, setTarget] = useState<HTMLElement | null>(null);
+  useEffect(() => { setTarget(document.getElementById('ask-answers')); }, []);
   return (
     <div className={s.ask}>
       <form onSubmit={submit} aria-busy={busy}>
@@ -147,6 +173,7 @@ export default function AskBox() {
         </div>
       </form>
       {!turns.length && <div className={s.eg}>{EXAMPLES.map((x) => <button key={x} type="button" onClick={() => void ask(x, true)}>{x}</button>)}</div>}
+      {(() => { const thread = (
       <div className={s.thread} aria-live="polite">
         {turns.map((t, i) => {
           const ids = new Set([...(t.cards ?? []).map((c) => c.id), ...(t.answer?.programIds ?? [])]);
@@ -156,13 +183,15 @@ export default function AskBox() {
               {!t.done && !t.answer && !t.resolved && (
                 <ol className={s.steps}>{(t.steps.length ? t.steps : ['Reading the record']).map((st, j, a) => <li key={j} className={j === a.length - 1 ? s.live : ''}>{st}</li>)}</ol>
               )}
-              {t.resolved && (<><p className={s.verdict}>{verdictFor(t.resolved)}</p>{t.resolved.program && <Card c={t.resolved.program} />}{t.resolved.signer && <SignerResult k={t.resolved.signer} />}</>)}
+              {t.resolved && (<div className={s.grid}><div className={s.lead}><p className={s.verdict}>{verdictFor(t.resolved)}</p><dl className={s.facts}>{factsFor(t.resolved).map((f) => <div key={f.label}><dt>{f.label}</dt><dd className={f.tone === 'weak' ? s.weak : f.tone === 'holds' ? s.holds : ''}>{f.value}</dd></div>)}</dl></div><div className={s.cards}>{t.resolved.program && <Card c={t.resolved.program} />}{t.resolved.signer && <SignerResult k={t.resolved.signer} />}</div></div>)}
               {t.answer && (
-                <>
-                  <p className={s.verdict}><Linked text={t.answer.verdict} programs={ids} /></p>
-                  {t.answer.facts.length > 0 && <dl className={s.facts}>{t.answer.facts.map((f, j) => <div key={j}><dt>{f.label}</dt><dd className={f.tone === 'weak' ? s.weak : f.tone === 'holds' ? s.holds : ''}><Linked text={f.value} programs={ids} /></dd></div>)}</dl>}
-                  {(t.cards ?? []).map((c) => <Card key={c.id} c={c} />)}
-                </>
+                <div className={s.grid}>
+                  <div className={s.lead}>
+                    <p className={s.verdict}><Linked text={t.answer.verdict} programs={ids} /></p>
+                    {t.answer.facts.length > 0 && <dl className={s.facts}>{t.answer.facts.map((f, j) => <div key={j}><dt>{f.label}</dt><dd className={f.tone === 'weak' ? s.weak : f.tone === 'holds' ? s.holds : ''}><Linked text={f.value} programs={ids} /></dd></div>)}</dl>}
+                  </div>
+                  <div className={s.cards}>{(t.cards ?? []).map((c) => <Card key={c.id} c={c} />)}</div>
+                </div>
               )}
               {t.text && <p className={s.verdict}><Linked text={t.text} programs={ids} /></p>}
               {t.error && <p className={s.err}>{t.error}</p>}
@@ -172,8 +201,10 @@ export default function AskBox() {
           );
         })}
         <div ref={end} />
-      </div>
-      {turns.length > 0 && !busy && <button type="button" className={s.clear} onClick={() => { setTurns([]); const u = new URL(location.href); u.searchParams.delete('ask'); replaceState(u); }}>New question</button>}
+      </div>);
+        return target && turns.length ? createPortal(<div className={s.band}><div className={s.bandIn}>{thread}{!busy && <button type="button" className={s.clear} onClick={reset}>New question</button>}</div></div>, target) : turns.length ? thread : null;
+      })()}
+
       {!turns.length && <p className={s.note}>Names and addresses answer instantly. Every answer cites the program, key or transaction it came from.</p>}
     </div>
   );

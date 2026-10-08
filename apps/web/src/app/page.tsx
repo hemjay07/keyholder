@@ -42,6 +42,7 @@ export default async function HomePage() {
         </div>
         <AskBox />
       </section>
+      <div id="ask-answers" />
 
       <section className={s.device} aria-label={`Stage map: ${live} programs on four stages of who can move their money`}>
         {data.programs.length > 0 ? <StageMapLazy programs={data.programs} pending={data.pending} story /> : <p className={s.missing}>{readError ? 'The record could not be read just now.' : 'No record day has been built yet.'}</p>}
