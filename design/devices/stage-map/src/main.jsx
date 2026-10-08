@@ -14,7 +14,10 @@ const PENDING = new THREE.Color("#A32F06");
 const STEP_H = 0.55, STEP_D = 1.6;
 const reduced = typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches;
 const usd = (v) => v >= 1e9 ? `$${(v / 1e9).toFixed(1)}B` : v >= 1e6 ? `$${Math.round(v / 1e6)}M` : `$${Math.round(v / 1e3)}K`;
-let NAMES = {};
+let NAMES = {}, CONTROL = {};
+const keysOf = (id) => { const c = CONTROL[id]; return c?.ms?.memberKeys ?? (c?.auth && c.kind === "single_key" ? [c.auth] : []); };
+const short = (k) => k.slice(0, 4) + "…" + k.slice(-4);
+const PAPER = new THREE.Color("#D6D1C6");
 const name = (p) => NAMES[p.id] ?? p.id.slice(0, 4) + "…" + p.id.slice(-4);
 
 function layout(programs, width) {
@@ -48,13 +51,14 @@ function Steps({ width }) {
   )));
 }
 
-function Columns({ marks, pending, onHover }) {
+function Columns({ marks, pending, onHover, onPick, related }) {
   const ref = useRef();
   const { invalidate } = useThree();
   const t0 = useRef(performance.now());
   const m = useMemo(() => new THREE.Object3D(), []);
   const c = useMemo(() => new THREE.Color(), []);
   useEffect(() => { t0.current = performance.now(); invalidate(); }, [marks, invalidate]);
+  useEffect(() => { invalidate(); }, [related, invalidate]);
   useFrame(() => {
     if (!ref.current) return;
     const t = (performance.now() - t0.current) / 1000;
@@ -73,6 +77,7 @@ function Columns({ marks, pending, onHover }) {
       m.updateMatrix();
       ref.current.setMatrixAt(i, m.matrix);
       ref.current.setColorAt(i, isP ? c.copy(PENDING).multiplyScalar(glow) : c.set(RUNG[p.stage]));
+      if (related && !related.has(p.id)) ref.current.setColorAt(i, c.lerp(PAPER, 0.82));
     });
     ref.current.instanceMatrix.needsUpdate = true;
     if (ref.current.instanceColor) ref.current.instanceColor.needsUpdate = true;
@@ -80,7 +85,7 @@ function Columns({ marks, pending, onHover }) {
   });
   return (
     <instancedMesh ref={ref} args={[null, null, marks.length]} castShadow
-      onPointerMove={(e) => { e.stopPropagation(); onHover(marks[e.instanceId] ?? null); }} onPointerOut={() => onHover(null)}>
+      onPointerMove={(e) => { e.stopPropagation(); onHover(marks[e.instanceId] ?? null); }} onPointerOut={() => onHover(null)} onClick={(e) => { e.stopPropagation(); onPick(marks[e.instanceId] ?? null); }}>
       <boxGeometry args={[1, 1, 1]} />
       <meshStandardMaterial roughness={0.6} metalness={0} />
     </instancedMesh>
@@ -115,12 +120,48 @@ function Beacons({ marks, pending }) {
   );
 }
 
-function Scene({ data, onHover }) {
+// Signer keys of the picked program fan out above it; each key draws a line to the picked column and to every other
+// column whose controlling multisig it also signs for.
+function SignerFan({ picked, marks }) {
+  const geo = useMemo(() => {
+    if (!picked) return null;
+    const keys = keysOf(picked.id);
+    const byId = new Map(marks.map((p) => [p.id, p]));
+    const pts = [], nodes = [];
+    keys.forEach((k, i) => {
+      const a = keys.length === 1 ? 0 : (i / (keys.length - 1) - 0.5) * Math.min(4, keys.length * 0.5);
+      const cx = THREE.MathUtils.clamp(picked.x, -3.5, 3.5);
+      const node = new THREE.Vector3(cx + a, 3.2, picked.z - 0.6);
+      nodes.push(node);
+      pts.push(node, new THREE.Vector3(picked.x, picked.base + picked.h, picked.z));
+      for (const [id, c] of Object.entries(CONTROL)) {
+        if (id === picked.id || !byId.has(id)) continue;
+        if ((c.ms?.memberKeys ?? (c.kind === "single_key" ? [c.auth] : [])).includes(k)) { const q = byId.get(id); pts.push(node, new THREE.Vector3(q.x, q.base + q.h, q.z)); }
+      }
+    });
+    return { lines: new THREE.BufferGeometry().setFromPoints(pts), nodes };
+  }, [picked, marks]);
+  if (!geo) return null;
+  return (
+    <group>
+      <lineSegments geometry={geo.lines}><lineBasicMaterial color={INK} transparent opacity={0.45} /></lineSegments>
+      {geo.nodes.map((v, i) => <mesh key={i} position={v}><sphereGeometry args={[0.06, 16, 16]} /><meshStandardMaterial color={INK} /></mesh>)}
+    </group>
+  );
+}
+
+function Scene({ data, onHover, picked, onPick }) {
   const { viewport, camera, size } = useThree();
   const narrow = size.width < 600;
   const width = narrow ? 5 : 11;
   const marks = useMemo(() => layout(data.programs, width), [data, width]);
   const pending = useMemo(() => new Set(data.pending ?? []), [data]);
+  const related = useMemo(() => {
+    if (!picked) return null;
+    const keys = new Set(keysOf(picked.id));
+    return new Set(Object.entries(CONTROL).filter(([, c]) => (c.ms?.memberKeys ?? (c.kind === "single_key" ? [c.auth] : [])).some((k) => keys.has(k))).map(([id]) => id).concat(picked.id));
+  }, [picked]);
+  const pickedMark = picked && marks.find((p) => p.id === picked.id);
   useEffect(() => {
     // Fit the whole width: distance from the horizontal half-angle, then lift for the terrace view.
     const half = Math.atan(Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * (size.width / size.height));
@@ -135,7 +176,8 @@ function Scene({ data, onHover }) {
       <directionalLight position={[-5, 9, 6]} intensity={1.6} color="#fffaf0" castShadow shadow-mapSize={[1024, 1024]} shadow-camera-left={-8} shadow-camera-right={8} shadow-camera-top={8} shadow-camera-bottom={-8} />
       
       <Steps width={width} />
-      <Columns marks={marks} pending={pending} onHover={onHover} />
+      <Columns marks={marks} pending={pending} onHover={onHover} onPick={onPick} related={related} />
+      <SignerFan picked={pickedMark} marks={marks} />
       <Beacons marks={marks} pending={pending} />
     </>
   );
@@ -144,8 +186,10 @@ function Scene({ data, onHover }) {
 function App() {
   const [data, setData] = useState(null);
   const [hover, setHover] = useState(null);
+  const [picked, setPicked] = useState(null);
   useEffect(() => {
-    Promise.all([fetch("/map.json").then((r) => r.json()), fetch("/names.json").then((r) => r.json())]).then(([m, n]) => { NAMES = n; setData(m); });
+    Promise.all(["/map.json", "/names.json", "/control.json"].map((u) => fetch(u).then((r) => r.json()))).then(([m, n, c]) => { NAMES = n; CONTROL = c; setData(m);
+      const h = location.hash.match(/pick=(\w+)/); const p = h && m.programs.find((x) => x.id === h[1]); if (p) setPicked(p); });
   }, []);
   if (!data) return null;
   const live = data.programs.filter((p) => !p.closed);
@@ -159,8 +203,8 @@ function App() {
         <p className="sub">{live.length} programs on four stages of who can move their money. Record of {data.day}, anchored on chain.</p>
       </header>
       <div className="map">
-        <Canvas frameloop="demand" shadows dpr={[1, 2]} camera={{ fov: 20, near: 0.1, far: 200 }} gl={{ antialias: true }}>
-          <Scene data={data} onHover={setHover} />
+        <Canvas onPointerMissed={() => setPicked(null)} frameloop="demand" shadows dpr={[1, 2]} camera={{ fov: 20, near: 0.1, far: 200 }} gl={{ antialias: true }}>
+          <Scene data={data} onHover={setHover} picked={picked} onPick={setPicked} />
         </Canvas>
       </div>
       <dl className="legend">
@@ -169,8 +213,31 @@ function App() {
         ))}
         <div><dt><i className="pulse" />Open proposal<b>{(data.pending ?? []).length}</b></dt><dd>a pending vote on a multisig that controls the program</dd></div>
       </dl>
-      {hover && <div className="card"><div className="nm">{name(hover)}</div><div>Stage {hover.stage} · {hover.usd ? usd(hover.usd) + " traced" : "no dollars traced"}</div><div className="id">{hover.id}</div>{(data.pending ?? []).includes(hover.id) && <div className="warn">open proposal on its controlling multisig</div>}</div>}
+      {picked && <Picked p={picked} onClose={() => setPicked(null)} />}
+      {!picked && hover && <div className="card"><div className="nm">{name(hover)}</div><div>Stage {hover.stage} · {hover.usd ? usd(hover.usd) + " traced" : "no dollars traced"}</div><div className="id">{hover.id}</div>{(data.pending ?? []).includes(hover.id) && <div className="warn">open proposal on its controlling multisig</div>}</div>}
     </div>
+  );
+}
+
+function Picked({ p, onClose }) {
+  const c = CONTROL[p.id] ?? {};
+  const keys = keysOf(p.id);
+  const shared = Object.entries(CONTROL).filter(([id, x]) => id !== p.id && (x.ms?.memberKeys ?? (x.kind === "single_key" ? [x.auth] : [])).some((k) => keys.includes(k))).length;
+  const hrs = c.ms?.timelockS != null ? (c.ms.timelockS / 3600).toFixed(c.ms.timelockS % 3600 ? 1 : 0) + " h" : "none";
+  return (
+    <aside className="card picked">
+      <button onClick={onClose} aria-label="Close">×</button>
+      <div className="nm">{name(p)}</div>
+      <div>Stage {p.stage} · {p.usd ? usd(p.usd) + " traced" : "no dollars traced"}</div>
+      <p className="why"><span>Set by its {p.binding === "upgrade" ? "upgrade path" : p.binding?.startsWith("admin") ? "admin key" : p.binding ?? "weakest path"}:</span> {c.reason ?? c.cap ?? ""}</p>
+      <dl>
+        <dt className="h">Upgrade path</dt><dt>Authority</dt><dd>{c.kind === "squads_vault" ? `Squads ${c.ms?.version} multisig` : c.kind?.replace(/_/g, " ") ?? "unknown"}</dd>
+        {c.ms && <><dt>Threshold</dt><dd>{c.ms.threshold} of {c.ms.members}</dd><dt>Delay</dt><dd>{hrs}</dd></>}
+        <dt>Keys</dt><dd className="keys">{keys.map(short).join(" ") || "none"}</dd>
+        <dt>Shares a key with</dt><dd>{shared} other program{shared === 1 ? "" : "s"}</dd>
+      </dl>
+      <div className="id">{p.id}</div>
+    </aside>
   );
 }
 
