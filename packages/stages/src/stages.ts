@@ -98,3 +98,11 @@ export function computeStage(f: ProgramFacts): StageResult {
 
   return { programId: f.programId, rulesVersion: RULES_VERSION, stage, bindingPath, paths: verdicts, modifiers, cap };
 }
+
+/** The rules as published on /stages and served by /api/v1/stages. Same version as the engine above. */
+export const STAGE_RULES: { stage: Stage; name: string; rule: string; moveUp: string | null }[] = [
+  { stage: 0, name: 'One key', rule: 'Any control path is a single key, a 1-of-n multisig, or a controller we could not resolve.', moveUp: 'Move every path behind a multisig with at least 2 required signers.' },
+  { stage: 1, name: 'No delay', rule: 'Every path needs at least 2 signers, but at least one path can act with no timelock of 24 h, or admin fields are not read.', moveUp: 'Add a timelock of at least 24 h on every path, and publish an IDL so admin fields can be read.' },
+  { stage: 2, name: 'Delayed', rule: 'Every path needs at least 2 signers and waits at least 24 h, or is governance with a hold-up of at least 24 h.', moveUp: 'Lengthen every delay to 7 days or more, or make the program immutable.' },
+  { stage: 3, name: 'Exit window', rule: 'The program is immutable, or every path waits 7 days or more: users can leave before any change lands.', moveUp: null },
+];

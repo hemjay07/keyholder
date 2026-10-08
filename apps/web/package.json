@@ -29,7 +29,8 @@
     "react-dom": "19.3.0",
     "three": "^0.186.1",
     "tweetnacl": "^1.0.3",
-    "zod": "^3.25.76"
+    "zod": "^3.25.76",
+    "@keyholder/stages": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.15.0",
