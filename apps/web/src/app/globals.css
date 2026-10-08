@@ -595,8 +595,8 @@ html.lenis, html.lenis body { height: auto; }
 
 /* replay: the player is one screen (founder 2026-09-27 "this looks unfinished") */
 @media (min-width: 901px) {
-  .replay-head { padding: 20px 40px 0; display: grid; grid-template-columns: auto 1fr; gap: 0 40px; align-items: end; max-width: none; }
-  .replay-head > div { display: contents; }
+  .replay-head { padding: 20px 40px 0; max-width: none; }
+  .replay-head > div { display: grid; grid-template-columns: auto 1fr; gap: 0 40px; align-items: end; }
   .replay-head .kicker { grid-column: 1 / -1; }
   .replay-head h1 { font-size: clamp(38px,4vw,60px); margin: 0; }
   .replay-head .lede.mono { margin: 0 0 8px; }
