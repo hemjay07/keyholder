@@ -1,0 +1,14 @@
+{
+ "upgrade": {
+  "buffer": "D9jmt96Jpo7mi5iSnNbpWJ7RTRekz9aCPTXqngkjqaZC",
+  "transactionIndex": "1",
+  "created": "21EnkcKqAdA16Nhmu9QLdneTnyf3DQzdrtVjAT8Szq7NRG3CFzPVEPKJxepNfuW1iAQDApojXT1nNYWzGAUiaj4Q",
+  "proposed": "PPvsGTuQqFqKPoHmrQovwpytC8tspw7dfuxXq7AfBKfNwatbXFvnZcEQByvYTqC6KJKnR3GbkYpqy9eCGhmx9Ff",
+  "approvals": [
+   "iHMcqRPmxU2p53gkBaw1mhwawJM9xY6M9u64kKyEUVHD4uRzJ5zGudjoVLbEeukZtBcqjqD9RkyDhioCvCbMo8a",
+   "65mDvWwbXqVQWWYUjek445GRZhBhCuSexSSm6fWMzzSPTZXKd91Cxy6EJcTBbCurCiBXif9vQHYXug71Srdm99an"
+  ],
+  "approvedAt": "2026-10-08T17:27:39.540Z",
+  "executableAfter": "2026-10-10T17:27:39.542Z"
+ }
+}
