@@ -17,7 +17,9 @@ const STEP = DARK ? "#1F1D1A" : "#F4F1EA";
 if (DARK && typeof document !== "undefined") document.documentElement.dataset.theme = "dark";
 const RUNG = [SIGNAL, INK, HOLDS, HOLDS];
 const PENDING = new THREE.Color("#A32F06");
-const STEP_H = 0.55, STEP_D = 1.6;
+// Step depth grows on phones so each rung can hold more, shorter rows and still read at 390 px.
+const STEP_H = 0.55;
+let STEP_D = 1.6;
 const reduced = typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches;
 const usd = (v) => v >= 1e9 ? `$${(v / 1e9).toFixed(1)}B` : v >= 1e6 ? `$${Math.round(v / 1e6)}M` : `$${Math.round(v / 1e3)}K`;
 let NAMES = {}, CONTROL = {};
@@ -30,14 +32,14 @@ const short = (k) => k.slice(0, 4) + "…" + k.slice(-4);
 const PAPER = new THREE.Color("#D6D1C6");
 const name = (p) => NAMES[p.id] ?? p.id.slice(0, 4) + "…" + p.id.slice(-4);
 
-function layout(programs, width) {
+function layout(programs, width, perCap = 40) {
   const rows = [[], [], [], []];
   programs.filter((p) => !p.closed).sort((a, b) => b.usd - a.usd).forEach((p) => rows[p.stage].push(p));
   const out = [];
   rows.forEach((row, s) => {
-    const lines = Math.max(1, Math.ceil(row.length / 40));
+    const lines = Math.max(1, Math.ceil(row.length / perCap));
     const perLine = Math.ceil(row.length / lines) || 1;
-    const pitchX = width / Math.max(perLine, 20), pitchZ = (STEP_D * 0.8) / Math.max(lines, 3);
+    const pitchX = width / Math.max(perLine, Math.min(20, perCap)), pitchZ = (STEP_D * 0.8) / Math.max(lines, 3);
     row.forEach((p, i) => {
       const line = Math.floor(i / perLine), col = i % perLine;
       const h = 0.04 + (p.usd > 0 ? Math.log10(1 + p.usd) / 9.3 : 0) * 1.4;
@@ -216,7 +218,8 @@ function Scene({ data, onHover, picked, onPick, onKey }) {
   useEffect(() => { WAKE = invalidate; }, [invalidate]);
   const narrow = size.width < 600;
   const width = narrow ? 5 : 11;
-  const marks = useMemo(() => layout(data.programs, width), [data, width]);
+  STEP_D = narrow ? 2.6 : 1.6;
+  const marks = useMemo(() => layout(data.programs, width, narrow ? 18 : 40), [data, width, narrow]);
   const pending = useMemo(() => new Set(data.pending ?? []), [data]);
   const related = useMemo(() => {
     if (!picked) return null;
@@ -247,8 +250,10 @@ function Scene({ data, onHover, picked, onPick, onKey }) {
   }, [fan, pickedMark, size.width, size.height, camera.fov, narrow]);
   const shots = useMemo(() => {
     const half = Math.atan(Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * (size.width / size.height));
-    const d = (width / 2 + (narrow ? 0.3 : 0.8)) / Math.tan(half);
-    const whole = { pos: new THREE.Vector3(0, narrow ? d * 0.95 : 0.6 + d * 0.5, narrow ? d * 0.55 - 1.6 : d * 0.88 - 2.4), look: new THREE.Vector3(0, 0.6, -2.4) };
+    // Fit width and depth: the four steps run 4 x STEP_D deep and must fit the frame's height too.
+    const vf = THREE.MathUtils.degToRad(camera.fov / 2);
+    const d = Math.max((width / 2 + (narrow ? 0.4 : 1.3)) / Math.tan(half), (STEP_D * 4 * 0.5 + 1.4) / Math.tan(vf) * (narrow ? 0.85 : 0.5));
+    const whole = { pos: new THREE.Vector3(0, narrow ? d * 0.95 : 0.6 + d * 0.5, narrow ? d * 0.55 - 1.6 : d * 0.88 - 2.4), look: new THREE.Vector3(0, BARE ? 0.75 : 0.95, (BARE ? -1.75 : -1.95) * STEP_D) };
     const close = (s) => {
       // Aim at the stage's biggest program, kept inside the frame's width.
       const top = marks.filter((p) => p.stage === s).sort((a, b) => b.usd - a.usd)[0];
@@ -285,7 +290,7 @@ function Scene({ data, onHover, picked, onPick, onKey }) {
       <hemisphereLight args={DARK ? ["#ffffff", "#2a2723", 1.1] : ["#ffffff", "#d9d3c6", 1.4]} />
       <directionalLight position={[-5, 9, 6]} intensity={1.6} color="#fffaf0" castShadow shadow-mapSize={[1024, 1024]} shadow-camera-left={-8} shadow-camera-right={8} shadow-camera-top={8} shadow-camera-bottom={-8} />
       
-      <Steps width={width} />
+      <Steps width={width} key={narrow ? "n" : "w"} />
       <Columns marks={marks} pending={pending} onHover={onHover} onPick={onPick} related={related} />
       <SignerFan fan={fan} picked={pickedMark} onKey={onKey} />
       <Beacons marks={marks} pending={pending} />
