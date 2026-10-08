@@ -1,0 +1,92 @@
+{
+ "readAt": "2026-10-08",
+ "note": "decoded by apps/worker/src/records/pending.ts from mainnet",
+ "pending": [
+  {
+   "multisig": "Fx4UThUQHcEQgkw7sy9YmUHLLiXJ7DRRjScqVvhiidDN",
+   "index": "5",
+   "address": "Hc1ssL5KBPDwm4XhNd681M6geF9hYHPqUeaji9xD6cY2",
+   "kind": "vault",
+   "status": "Approved",
+   "statusAt": 1751410113,
+   "approvals": [
+    "4Br9LgP146uJwb4XTLtPnzmNRDgQjxGxc8DYUBf6ZrRH",
+    "ELg5GDPLMKmyo7vTfnYE5aiDEovcCxqhedxp71tQGrFe"
+   ],
+   "rejections": [],
+   "creator": "ELg5GDPLMKmyo7vTfnYE5aiDEovcCxqhedxp71tQGrFe",
+   "actions": [
+    {
+     "type": "program_upgrade",
+     "program": "MPSoLoEnfNRFReRZSVH2V8AffSmWSR4dVoBLFm1YpAW",
+     "buffer": "Ar36Symi37Pykbp4triQej4tNRErMuZuVQFtvG95giJG"
+    }
+   ],
+   "controls": [
+    {
+     "programId": "MPSoLoEnfNRFReRZSVH2V8AffSmWSR4dVoBLFm1YpAW",
+     "path": "upgrade"
+    }
+   ]
+  },
+  {
+   "multisig": "GiPjD7Gp2uwSxwUj7sTwre6SuLRFTxKoyfjdxynTZkwq",
+   "index": "7",
+   "address": "9HvcKffgn1maRR7sHBsWMauRUYQECV6aX46Hz3xfBGis",
+   "kind": "vault",
+   "status": "Active",
+   "statusAt": 1790699655,
+   "approvals": [
+    "4LK7BBfXw6jvGhRtHUN8kpbvbcuaxQPcisqyW4vaXH9E"
+   ],
+   "rejections": [],
+   "creator": "4LK7BBfXw6jvGhRtHUN8kpbvbcuaxQPcisqyW4vaXH9E",
+   "actions": [
+    {
+     "type": "set_upgrade_authority",
+     "programData": "FCRzaCnVNhVoJ8mnqHNHsu2tPU7K5xy1dh3QUE82aiS",
+     "newAuthority": "fdi76AJ6bdLSqt3PbVvVcQ8hw9xYAvsXwYLGRLgGtgs"
+    }
+   ],
+   "controls": [
+    {
+     "programId": "6kdiEFuiuGqQ4cRThwhQkspHraygd3LKzqzLuLMiZZMA",
+     "path": "upgrade"
+    },
+    {
+     "programId": "BAVbwU5n3cgRuutnqYkZ6SV1qzjmpDdnHKamE8fohWkb",
+     "path": "upgrade"
+    },
+    {
+     "programId": "BnwCWeH8zjtwNUbCaFPpku4AwRvb28xaaC9F8px7WMEu",
+     "path": "upgrade"
+    }
+   ]
+  },
+  {
+   "multisig": "HCmFNRNzfW6jnRe5uMFzRSfoZfsQA8FNR3asGbpVjjDm",
+   "index": "2",
+   "address": "GBQ5soEnEafoJBDRqRHj1pUnfo3GRYo6eFUjJG4GNxAV",
+   "kind": "config",
+   "status": "Approved",
+   "statusAt": 1790164779,
+   "approvals": [
+    "CmJywvWynJAiADsgTkVWu5BJus4ru2SP1PnfBXvThrxZ"
+   ],
+   "rejections": [],
+   "creator": "CmJywvWynJAiADsgTkVWu5BJus4ru2SP1PnfBXvThrxZ",
+   "actions": [
+    {
+     "type": "change_threshold",
+     "to": 3
+    }
+   ],
+   "controls": [
+    {
+     "programId": "CanarFxHDSnbrPmrE79Qq6hL2p7ZMyyV4ZLTKQ6g7tpK",
+     "path": "upgrade"
+    }
+   ]
+  }
+ ]
+}

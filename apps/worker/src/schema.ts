@@ -514,3 +514,24 @@ export const claim_check = pgTable('claim_check', {
   status: text('status').notNull(),
   check: jsonb('check').notNull(),
 }, (t) => ({ pk: primaryKey({ columns: [t.day, t.file] }) }));
+
+// Pending control actions on multisigs that control covered programs (records/pending.ts, LLM explained).
+export const pending_action = pgTable('pending_action', {
+  address: text('address').primaryKey(),
+  multisig: text('multisig').notNull(),
+  tx_index: text('tx_index').notNull(),
+  kind: text('kind').notNull(),
+  status: text('status').notNull(),
+  status_at: timestamp('status_at', { withTimezone: true }),
+  approvals: integer('approvals').notNull(),
+  threshold: integer('threshold'),
+  timelock_s: integer('timelock_s'),
+  actions: jsonb('actions').notNull(),
+  controls: jsonb('controls').notNull(),
+  control_relevant: boolean('control_relevant').notNull(),
+  explanation: text('explanation'),
+  explained_by: text('explained_by'),
+  first_seen: timestamp('first_seen', { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
+  last_seen: timestamp('last_seen', { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
+  resolved_at: timestamp('resolved_at', { withTimezone: true }),
+}, (t) => ({ byMultisig: index('pending_action_multisig').on(t.multisig) }));
