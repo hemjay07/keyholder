@@ -1,0 +1,54 @@
+/* File: apps/web/src/app/programs/[id]/program.module.css */
+.wrap { max-width: 1280px; margin: 0 auto; padding: 32px 40px 96px; }
+.crumb { font-size: 11px; color: var(--ink-2); letter-spacing: 0.04em; margin: 0 0 18px; }
+.crumb a { color: inherit; }
+.h1 { font: 500 46px/1.08 var(--font-display); letter-spacing: -0.02em; margin: 0; max-width: 24ch; }
+.lede { color: var(--ink-2); margin: 16px 0 6px; max-width: 70ch; line-height: 1.5; }
+.lede b { color: var(--ink); font-weight: 500; }
+.lede a { white-space: nowrap; }
+.addr { font: 11px var(--font-body); color: var(--ink-2); word-break: break-all; }
+.sec { margin-top: 64px; }
+.sec h2 { font: 500 24px/1.2 var(--font-display); margin: 0 0 6px; }
+.sub { color: var(--ink-2); margin: 0 0 20px; font-size: 13px; }
+.muted { color: var(--ink-2); }
+.weakText { color: var(--signal-text); }
+.holdsText { color: var(--signal-verified-on); }
+.chains { display: flex; flex-direction: column; gap: 14px; }
+.chain { display: flex; align-items: stretch; flex-wrap: wrap; gap: 0; border: 1px solid var(--hair); background: var(--panel); padding: 16px; position: relative; }
+.binding { border-color: var(--ink); }
+.node { display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; border: 1px solid var(--hair); background: var(--bg); min-width: 150px; animation: rise var(--d-element) var(--ease-1) both; animation-delay: calc(var(--row) * 120ms + var(--i) * 140ms); }
+.node b { font: 500 16px var(--font-display); }
+.node code { font: 12px var(--font-body); }
+.k { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-2); }
+.weak { color: var(--signal-text); }
+.holds { color: var(--signal-verified-on); }
+.link { align-self: center; width: 36px; height: 1px; background: var(--ink); transform-origin: left; animation: draw var(--d-element) var(--ease-1) both; animation-delay: calc(var(--row) * 120ms + var(--i) * 140ms - 80ms); }
+.keys { flex-basis: 100%; margin-top: 10px; }
+.keys div { display: flex; flex-wrap: wrap; gap: 4px; }
+.keys a { font: 11px var(--font-body); border: 1px solid var(--hair); padding: 1px 6px; text-decoration: none; }
+.keys a:hover, .keys a:focus-visible { border-color: var(--ink); }
+.reason { flex-basis: 100%; margin: 12px 0 0; font-size: 12px; color: var(--ink-2); animation: rise var(--d-element) var(--ease-1) both; animation-delay: calc(var(--row) * 120ms + var(--i) * 140ms); }
+.note { font-size: 12px; color: var(--ink-2); margin: 0; }
+@keyframes rise { from { transform: translateY(8px); } to { transform: none; } }
+@keyframes draw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.days { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; padding: 0; margin: 0; }
+.days li { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 10px; border: 1px solid var(--hair); background: var(--panel); min-width: 52px; }
+.days li span { font: 500 20px var(--font-display); }
+.days li time { font-size: 10px; color: var(--ink-2); }
+.vote { border-top: 1px solid var(--hair); padding: 14px 0; }
+.voteHead { display: flex; flex-wrap: wrap; gap: 16px; align-items: baseline; font-size: 12px; }
+.voteHead code { color: var(--ink-2); font: 11px var(--font-body); margin-left: auto; }
+.vote p { margin: 8px 0 0; font: 16px/1.45 var(--font-display); max-width: 80ch; }
+.list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); }
+.list li { display: grid; grid-template-columns: 1fr auto auto; gap: 24px; padding: 10px 0; border-bottom: 1px solid var(--hair); font-size: 13px; }
+.list li time { font-size: 12px; color: var(--ink-2); }
+.pre { background: var(--ink); color: var(--bg); padding: 14px; font: 12px/1.6 var(--font-body); overflow: auto; margin: 0; }
+@media (prefers-reduced-motion: reduce) { .node, .link, .reason { animation: none; } }
+@media (max-width: 900px) {
+  .wrap { padding: 24px 16px 72px; }
+  .h1 { font-size: 30px; }
+  .chain { flex-direction: column; }
+  .link { width: 1px; height: 18px; margin-left: 20px; transform-origin: top; animation-name: drawV; }
+  @keyframes drawV { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+  .list li { grid-template-columns: 1fr; gap: 2px; }
+}
