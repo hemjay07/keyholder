@@ -1,0 +1,66 @@
+/* File: apps/web/src/components/stagesstory.module.css */
+.story { position: relative; border-top: 1px solid var(--hair); }
+.pin { position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; max-width: 1280px; margin: 0 auto; padding: 36px 40px; box-sizing: border-box; }
+.head { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; border-bottom: 1px solid var(--ink); padding-bottom: 14px; }
+.head h2 { margin: 0; font: 500 28px/1.15 var(--font-display); letter-spacing: -0.01em; }
+.steps { list-style: none; margin: 0; padding: 0; display: flex; gap: 8px; }
+.steps li { width: 92px; font-size: 11px; color: var(--ink-2); display: flex; flex-direction: column; gap: 6px; text-transform: uppercase; letter-spacing: 0.06em; }
+.steps li i { display: block; height: 2px; background: var(--ink); transform-origin: left; }
+.steps li::after { content: ''; display: block; height: 2px; background: var(--hair); margin-top: -8px; }
+.steps .cur, .steps .done { color: var(--ink); }
+.frame { flex: 1; display: grid; align-items: center; min-height: 0; }
+.stack { max-width: 1280px; margin: 0 auto; padding: 36px 40px; display: flex; flex-direction: column; gap: 48px; }
+.scene { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 56px; align-items: center; animation: in var(--d-data) var(--ease-1) both; }
+@keyframes in { from { transform: translateY(10px); } to { transform: none; } }
+.kicker { margin: 0; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); }
+.title { margin: 8px 0 0; font: 500 76px/0.96 var(--font-display); letter-spacing: -0.035em; }
+.line { margin: 20px 0 0; font: 400 22px/1.35 var(--font-display); max-width: 28ch; }
+.example { margin: 18px 0 0; font-size: 14px; color: var(--ink-2); }
+.example a { color: var(--ink); }
+.count { margin: 28px 0 0; font-size: 15px; }
+.count b { font: 500 34px var(--font-display); font-variant-numeric: tabular-nums; }
+.instrument { background: var(--panel); border: 1px solid var(--ink); padding: 40px; display: flex; flex-direction: column; gap: 44px; box-shadow: 0 24px 60px -30px rgba(27,26,23,.35); }
+.row { display: grid; grid-template-columns: 1fr auto; grid-template-areas: 'l l' 'm v'; gap: 14px 24px; align-items: center; }
+.row > .label { grid-area: l; }
+.row > .value { grid-area: v; }
+.row > :nth-child(2) { grid-area: m; }
+.label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-2); }
+.value { font: 500 36px var(--font-display); letter-spacing: -0.02em; text-align: right; font-variant-numeric: tabular-nums; }
+.keys { display: flex; flex-wrap: wrap; gap: 10px; }
+.key { width: 26px; height: 52px; fill: var(--hair); transition: fill var(--d-element) var(--ease-1), transform var(--d-element) var(--ease-1); }
+.key .hole { fill: var(--panel); }
+.needed { fill: var(--ink-2); opacity: 0.35; }
+.on { fill: var(--ink); opacity: 1; transform: translateY(-6px); }
+.lock { display: flex; align-items: center; gap: 12px; font-size: 13px; }
+.lock { font-size: 16px; }
+.lock svg { width: 44px; height: 52px; fill: none; stroke: var(--signal-verified-on); stroke-width: 3; transform: translateY(calc((1 - var(--k)) * -4px)); }
+.track { position: relative; height: 64px; }
+.track::before { content: ''; position: absolute; left: 0; right: 0; top: 30px; height: 4px; background: var(--hair); }
+.fill { position: absolute; left: 0; right: 0; top: 30px; height: 4px; transform-origin: left; background: currentColor; }
+.mark { position: absolute; top: 0; display: flex; flex-direction: column; gap: 2px; font-size: 11px; color: var(--ink-2); white-space: nowrap; }
+.mark b { font-weight: 400; }
+.mark::after { content: ''; position: absolute; left: 0; top: 24px; width: 2px; height: 16px; background: var(--ink); }
+.end { transform: translateX(-100%); text-align: right; align-items: flex-end; }
+.end::after { left: auto; right: 0; }
+.flash { position: absolute; left: -9px; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: currentColor; }
+.noexit { position: absolute; left: 28px; top: 44px; font: 500 14px var(--font-display); }
+.exit { position: absolute; top: 44px; transform: translateX(-50%); font: 500 13px var(--font-display); color: var(--signal-verified-on); white-space: nowrap; }
+.exit::before { content: '↑ '; }
+.verdict { margin: 0; font: 500 30px/1.2 var(--font-display); letter-spacing: -0.01em; border-top: 1px solid var(--hair); padding-top: 24px; }
+.weak { color: var(--signal-text); }
+.holds { color: var(--signal-verified-on); }
+@media (prefers-reduced-motion: reduce) { .scene { animation: none; } .key { transition: none; } }
+@media (max-width: 900px) {
+  .pin, .stack { padding: 20px 16px; }
+  .head h2 { font-size: 20px; }
+  .steps li { width: 64px; font-size: 9px; }
+  .scene { grid-template-columns: 1fr; gap: 20px; }
+  .title { font-size: 40px; }
+  .value { font-size: 24px; }
+  .verdict { font-size: 20px; padding-top: 14px; }
+  .line { font-size: 16px; margin-top: 10px; }
+  .count { margin-top: 12px; }
+  .instrument { padding: 16px; gap: 22px; }
+  .key { width: 16px; height: 32px; }
+  .keys { gap: 5px; }
+}

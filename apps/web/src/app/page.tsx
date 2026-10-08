@@ -2,7 +2,9 @@
 // Home (design/proto/A.html, the founder's survivor 2026-10-08): the one figure, Ask, the Stage map, today's record
 // as dated rows with their sources, and three ways to use the record. Sentences are design/TEN.md verbatim.
 import Link from 'next/link';
-import { latestDay, registry, pendingProgramIds } from '@/lib/records';
+import { latestDay, registry, pendingProgramIds, programRecord } from '@/lib/records';
+import { toCard } from '@/lib/ask-resolve';
+import StagesStory, { type StageScene } from '@/components/StagesStory';
 import StageMapLazy from '@/components/stagemap/StageMapLazy';
 import AskBox from '@/components/AskBox';
 import CountUp from '@/components/CountUp';
@@ -11,12 +13,26 @@ import s from './home.module.css';
 
 export const dynamic = 'force-dynamic';
 
-async function mapData(): Promise<{ day: string | null; programs: MapProgram[]; pending: string[] }> {
+async function mapData(): Promise<{ day: string | null; programs: MapProgram[]; pending: string[]; scenes: StageScene[] }> {
   const day = await latestDay();
-  if (!day) return { day: null, programs: [], pending: [] };
+  if (!day) return { day: null, programs: [], pending: [], scenes: [] };
   const [rows, pending] = await Promise.all([registry(day), pendingProgramIds()]);
   const programs = rows.map((r) => ({ id: r.programId, stage: r.stage as MapProgram['stage'], usd: r.usdFloor ?? 0, binding: r.binding, closed: r.modifiers.includes('closed') }));
-  return { day, programs, pending };
+  return { day, programs, pending, scenes: await stageScenes(day, programs) };
+}
+
+/** One scene per stage: count and dollars, plus the program with the most money on it, told by the path that sets its stage. */
+async function stageScenes(day: string, programs: MapProgram[]): Promise<StageScene[]> {
+  const live = programs.filter((p) => !p.closed);
+  return Promise.all(([0, 1, 2, 3] as const).map(async (stage) => {
+    const on = live.filter((p) => p.stage === stage).sort((a, b) => b.usd - a.usd);
+    const top = on[0], rec = top ? await programRecord(top.id, day) : null;
+    const card = rec ? toCard(rec) : null, bind = card?.paths.find((x) => x.binding) ?? card?.paths[0];
+    return {
+      stage, count: on.length, usd: on.reduce((t, p) => t + p.usd, 0),
+      example: card && bind ? { id: card.id, name: card.name, usd: card.usd, threshold: bind.threshold, members: bind.members, timelockS: bind.timelockS, immutable: bind.kind === 'immutable' } : null,
+    };
+  }));
 }
 
 const RECORD: { when: string; text: React.ReactNode; src: string; href: string }[] = [
@@ -29,7 +45,7 @@ const RECORD: { when: string; text: React.ReactNode; src: string; href: string }
 ];
 
 export default async function HomePage() {
-  let data: Awaited<ReturnType<typeof mapData>> = { day: null, programs: [], pending: [] };
+  let data: Awaited<ReturnType<typeof mapData>> = { day: null, programs: [], pending: [], scenes: [] };
   let readError = false;
   try { data = await mapData(); } catch (err) { console.error('HomePage: record read failed', err); readError = true; }
   const live = data.programs.filter((p) => !p.closed).length;
@@ -43,9 +59,10 @@ export default async function HomePage() {
         <AskBox />
       </section>
       <div id="ask-answers" />
+      {data.scenes.length > 0 && <StagesStory scenes={data.scenes} />}
 
       <section className={s.device} aria-label={`Stage map: ${live} programs on four stages of who can move their money`}>
-        {data.programs.length > 0 ? <StageMapLazy programs={data.programs} pending={data.pending} story /> : <p className={s.missing}>{readError ? 'The record could not be read just now.' : 'No record day has been built yet.'}</p>}
+        {data.programs.length > 0 ? <StageMapLazy programs={data.programs} pending={data.pending} /> : <p className={s.missing}>{readError ? 'The record could not be read just now.' : 'No record day has been built yet.'}</p>}
       </section>
       <div className={`${s.wrap} ${s.cap}`}>
         <span>Each column is one program on its stage; height is the dollars traced to it. Click one for its keys.{data.day ? ` Record of ${data.day}.` : ''}</span>
