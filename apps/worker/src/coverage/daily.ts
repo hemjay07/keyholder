@@ -60,7 +60,13 @@ export async function anchorDay(db: ReturnType<typeof drizzle>, day: string): Pr
 async function main(): Promise<void> {
   const dir = join(__dirname, '..', '..', '..', '..', 'data', 'coverage');
   const file = process.env.COVERAGE_FILE ?? join(dir, readdirSync(dir).filter((f) => /^coverage-\d{4}-\d{2}-\d{2}\.json$/.test(f)).sort().pop()!);
-  const rows = (JSON.parse(readFileSync(file, 'utf8')) as { programs: CoverageRow[] }).programs.filter((r) => r.authorityKind && r.authorityKind !== 'immutable');
+  // Universe (record v2, 2026-10-08): every verified program, immutable ones included (closure and
+  // re-deploy are still events), plus the money layer (the largest programs, most not OtterSec-verified).
+  const tvlFile = readdirSync(dir).filter((f) => /^coverage-tvl-\d{4}-\d{2}-\d{2}\.json$/.test(f)).sort().pop();
+  const seen = new Set<string>();
+  const rows = [file, ...(tvlFile && !process.env.COVERAGE_FILE ? [join(dir, tvlFile)] : [])]
+    .flatMap((f) => (JSON.parse(readFileSync(f, 'utf8')) as { programs: CoverageRow[] }).programs)
+    .filter((r) => r.authorityKind && !seen.has(r.programId) && seen.add(r.programId));
   const connection = new Connection(process.env.DAILY_RPC_URL ?? 'https://api.mainnet-beta.solana.com', 'confirmed');
   const sql = postgres(process.env.DATABASE_URL!, { max: 2 });
   const db = drizzle(sql);

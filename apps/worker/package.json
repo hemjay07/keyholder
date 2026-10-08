@@ -22,7 +22,8 @@
     "@keyholder/decoder": "workspace:*",
     "@keyholder/risk": "workspace:*",
     "@keyholder/sdk": "workspace:*",
-    "@keyholder/db": "workspace:*"
+    "@keyholder/db": "workspace:*",
+    "@keyholder/stages": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.15.0",

@@ -124,6 +124,9 @@ importers:
       '@keyholder/sdk':
         specifier: workspace:*
         version: link:../../packages/sdk
+      '@keyholder/stages':
+        specifier: workspace:*
+        version: link:../../packages/stages
       '@solana/web3.js':
         specifier: ^1.99.0
         version: 1.99.0(bufferutil@4.1.0)(typescript@7.0.2)(utf-8-validate@6.0.6)
