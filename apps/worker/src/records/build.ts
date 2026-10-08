@@ -13,6 +13,8 @@ import { computeStage, RULES_VERSION, type ControlPath, type ProgramFacts, type 
 import { vaultIndex, resolveFromHistory, type VaultMatch } from './admin-resolve';
 import { decodeMembers } from '../coverage/daily';
 import { buildSignerIndex } from './signers';
+import { diffRecords } from './diff';
+import { existsSync } from 'node:fs';
 
 const DATA = join(__dirname, '..', '..', '..', '..', 'data');
 
@@ -158,6 +160,10 @@ if (require.main === module) {
     writeFileSync(join(outDir, `${day}.json`), JSON.stringify(doc));
     const signers = buildSignerIndex(records);
     writeFileSync(join(outDir, `signers-${day}.json`), JSON.stringify({ day, ...signers }));
-    console.log(JSON.stringify({ day, ...doc.summary, signers: signers.signers.length, multisigs: signers.multisigs.length, overlaps: signers.overlaps.length }));
+    // the feed: changes since the latest earlier record in the same directory
+    const prior = readdirSync(outDir).filter((f) => /^\d{4}-\d{2}-\d{2}\.json$/.test(f) && f < `${day}.json`).sort().pop();
+    const changes = prior && existsSync(join(outDir, prior)) ? diffRecords(day!, (JSON.parse(readFileSync(join(outDir, prior), 'utf8')) as { programs: ProgramRecord[] }).programs, records) : [];
+    writeFileSync(join(outDir, `changes-${day}.json`), JSON.stringify({ day, since: prior?.slice(0, 10) ?? null, events: changes }));
+    console.log(JSON.stringify({ day, ...doc.summary, signers: signers.signers.length, multisigs: signers.multisigs.length, overlaps: signers.overlaps.length, changes: changes.length }));
   })().catch((e) => { console.error(e); process.exit(1); });
 }
