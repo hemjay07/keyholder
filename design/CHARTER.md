@@ -42,9 +42,9 @@ bans:
 byte_budget_kb: 300
 surfaces:
   - route: "/"
-    headline: "$769M on Solana can move with no delay."
-    moment: "583 marks fall onto four rungs as the record loads; the odometer counts the no-delay rung; one orange mark pulses"
-    primary_action: "Find a program"
+    headline: "$769M on Solana sits behind programs that can be upgraded with no waiting period."
+    moment: "583 marks fall onto four rungs as the record loads; the odometer counts the no-delay rung, its largest mark (Raydium AMM v4, $573M) labelled first; one orange mark pulses"
+    primary_action: "Ask Keyholder (one box: a program id, a key, or a question)"
   - route: "/programs"
     headline: "Every program, by who can move its money"
     moment: "rows re-sort as a filter is chosen; each row's stage glyph fills to its rung"
@@ -86,10 +86,12 @@ surfaces:
     moment: "the browser recomputes today's hash and the match lamp lights"
     primary_action: "Verify a day"
 ---
-Keyholder is the control standard for Solana. On 2026-10-08 it read 583 programs to their signer keys: 360 sit at Stage 0 (one key can act), 185 at Stage 1 (no 24 h delay somewhere), 2 at Stage 2, 36 at Stage 3. Of $2.66B traced vault by vault, $769M sits behind multisigs that can act with no delay. Kamino's main program waits 24 h to upgrade; its global admin, a 4-of-10 Squads v3 multisig, waits for nothing. 50 open votes right now would change control or move funds; two upgrades were approved 630 days ago and can still run.
+Keyholder is the control standard for Solana. On 2026-10-08 it read 583 programs to their signer keys: 360 sit at Stage 0 (one key can act), 185 at Stage 1 (no 24 h delay somewhere), 2 at Stage 2, 36 at Stage 3. Of $2.66B traced vault by vault, $769M sits behind multisigs that can act with no delay. The program built from Kamino's klend repo waits 24 h to upgrade; its global admin, a 4-of-10 Squads v3 multisig, waits for nothing. 50 open votes right now would change control or move funds; two upgrades were approved 630 days ago and can still run.
 
 The world: cordon's warm-paper console (ground L 0.943, one easing) and linear-changelog's restraint (0 accent hues across a dense dated list). Stolen: from cordon the paper operator console; from owid-grapher the rule that every number carries its source.
 
 The convention it breaks: every Solana tool is black and scores protocols with an opinion; this one is light by default, places each program by rules anyone can check, and its only loud colour means one thing.
+
+Who uses it: vaults and lenders gate deposits with require_stage; wallets, exchanges and funds read the API and alerts; security teams watch pending votes and signer keys; protocols file a claim to earn the badge. Demo priority: home (map and Ask), program page, pending votes and KeyBench carry the full motion; the other surfaces share the system at rest.
 
 What it refuses to be: a security dashboard with a risk score, a token scanner, an upgrade monitor.
