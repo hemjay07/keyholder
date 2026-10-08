@@ -18,6 +18,7 @@ let NAMES = {}, CONTROL = {};
 // Scroll progress through the pinned map section, 0..1, written by App and read by the camera each frame.
 const SCROLL = { p: 0 };
 let CONTROL_READY = null;
+let WAKE = () => {};
 const keysOf = (id) => { const c = CONTROL[id]; return c?.ms?.memberKeys ?? (c?.auth && c.kind === "single_key" ? [c.auth] : []); };
 const short = (k) => k.slice(0, 4) + "…" + k.slice(-4);
 const PAPER = new THREE.Color("#D6D1C6");
@@ -88,7 +89,7 @@ function Columns({ marks, pending, onHover, onPick, related }) {
   });
   return (
     <instancedMesh ref={ref} args={[null, null, marks.length]} castShadow
-      onPointerMove={(e) => { e.stopPropagation(); onHover(marks[e.instanceId] ?? null); }} onPointerOut={() => onHover(null)} onClick={(e) => { e.stopPropagation(); onPick(marks[e.instanceId] ?? null); }}>
+      onPointerMove={(e) => { e.stopPropagation(); onHover(marks[e.instanceId] ?? null); document.body.style.cursor = "pointer"; }} onPointerOut={() => { onHover(null); document.body.style.cursor = ""; }} onClick={(e) => { e.stopPropagation(); onPick(marks[e.instanceId] ?? null); }}>
       <boxGeometry args={[1, 1, 1]} />
       <meshStandardMaterial roughness={0.6} metalness={0} />
     </instancedMesh>
@@ -125,16 +126,16 @@ function Beacons({ marks, pending }) {
 
 // Signer keys of the picked program fan out above it; each key draws a line to the picked column and to every other
 // column whose controlling multisig it also signs for.
-function SignerFan({ picked, marks, width }) {
+function SignerFan({ picked, marks, width, onKey }) {
   const geo = useMemo(() => {
     if (!picked) return null;
     const keys = keysOf(picked.id);
     const byId = new Map(marks.map((p) => [p.id, p]));
     const pts = [], nodes = [];
     keys.forEach((k, i) => {
-      const a = keys.length === 1 ? 0 : (i / (keys.length - 1) - 0.5) * Math.min(width * 0.7, keys.length * 0.5);
-      const cx = THREE.MathUtils.clamp(picked.x, -width * 0.15, width * 0.15);
-      const node = new THREE.Vector3(cx + a, 3.2, picked.z - 0.6);
+      const a = keys.length === 1 ? 0 : (i / (keys.length - 1) - 0.5) * Math.min(width < 6 ? 1.9 : 3, keys.length * 0.3);
+      const cx = THREE.MathUtils.clamp(picked.x, -width / 2 + 1, width / 2 - 1);
+      const node = new THREE.Vector3(cx + a, picked.base + picked.h + 1.1, picked.z - 0.3);
       nodes.push(node);
       pts.push(node, new THREE.Vector3(picked.x, picked.base + picked.h, picked.z));
       for (const [id, c] of Object.entries(CONTROL)) {
@@ -142,19 +143,20 @@ function SignerFan({ picked, marks, width }) {
         if ((c.ms?.memberKeys ?? (c.kind === "single_key" ? [c.auth] : [])).includes(k)) { const q = byId.get(id); pts.push(node, new THREE.Vector3(q.x, q.base + q.h, q.z)); }
       }
     });
-    return { lines: new THREE.BufferGeometry().setFromPoints(pts), nodes };
+    return { lines: new THREE.BufferGeometry().setFromPoints(pts), nodes, keys };
   }, [picked, marks]);
   if (!geo) return null;
   return (
     <group>
       <lineSegments geometry={geo.lines}><lineBasicMaterial color={INK} transparent opacity={0.45} /></lineSegments>
-      {geo.nodes.map((v, i) => <mesh key={i} position={v}><sphereGeometry args={[0.06, 16, 16]} /><meshStandardMaterial color={INK} /></mesh>)}
+      {geo.nodes.map((v, i) => <mesh key={i} position={v} onPointerOver={(e) => { e.stopPropagation(); onKey(geo.keys[i]); document.body.style.cursor = "pointer"; }} onPointerOut={() => { onKey(null); document.body.style.cursor = ""; }} onClick={(e) => { e.stopPropagation(); navigator.clipboard?.writeText(geo.keys[i]); }}><sphereGeometry args={[0.06, 16, 16]} /><meshStandardMaterial color={INK} /></mesh>)}
     </group>
   );
 }
 
-function Scene({ data, onHover, picked, onPick }) {
-  const { viewport, camera, size } = useThree();
+function Scene({ data, onHover, picked, onPick, onKey }) {
+  const { viewport, camera, size, invalidate } = useThree();
+  useEffect(() => { WAKE = invalidate; }, [invalidate]);
   const narrow = size.width < 600;
   const width = narrow ? 5 : 11;
   const marks = useMemo(() => layout(data.programs, width), [data, width]);
@@ -164,8 +166,9 @@ function Scene({ data, onHover, picked, onPick }) {
     const keys = new Set(keysOf(picked.id));
     return new Set(Object.entries(CONTROL).filter(([, c]) => (c.ms?.memberKeys ?? (c.kind === "single_key" ? [c.auth] : [])).some((k) => keys.has(k))).map(([id]) => id).concat(picked.id));
   }, [picked]);
-  const pickedMark = picked && marks.find((p) => p.id === picked.id);
   // Camera shots along the scroll: the whole map, then each step close (Stage 0 up to 3), then the whole map again.
+  const pickedMark = picked && marks.find((p) => p.id === picked.id);
+  useEffect(() => { invalidate(); }, [pickedMark, invalidate]);
   const shots = useMemo(() => {
     const half = Math.atan(Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * (size.width / size.height));
     const d = (width / 2 + (narrow ? 0.3 : 0.8)) / Math.tan(half);
@@ -179,22 +182,29 @@ function Scene({ data, onHover, picked, onPick }) {
     };
     return [whole, close(0), close(1), close(2), close(3), whole];
   }, [camera.fov, size.width, size.height, width, narrow, marks]);
-  const look = useMemo(() => new THREE.Vector3(), []);
-  const last = useRef(-1);
+  const look = useMemo(() => new THREE.Vector3(0, 0.6, -2.4), []);
+  const goal = useMemo(() => ({ pos: new THREE.Vector3(), look: new THREE.Vector3() }), []);
+  const first = useRef(true);
+  // Every frame the camera eases toward one goal: the picked program (its column and the keys above it) when one is
+  // picked, otherwise the shot for the current scroll position. Closing a pick glides back to the scroll shot.
   useFrame(({ invalidate }) => {
-    const p = reduced ? 0 : SCROLL.p;
-    if (Math.abs(p - last.current) < 1e-4) return;
-    // Ease toward the scroll position so a wheel step glides instead of jumping.
-    const q = last.current < 0 ? p : last.current + (p - last.current) * 0.18;
-    last.current = Math.abs(q - p) < 1e-3 ? p : q;
-    const f = last.current * (shots.length - 1), i = Math.min(shots.length - 2, Math.floor(f)), k = f - i;
-    const e = k * k * (3 - 2 * k);
-    camera.position.lerpVectors(shots[i].pos, shots[i + 1].pos, e);
-    look.lerpVectors(shots[i].look, shots[i + 1].look, e);
+    if (pickedMark) {
+      goal.look.set(THREE.MathUtils.clamp(pickedMark.x, -width / 2 + 1, width / 2 - 1), pickedMark.base + pickedMark.h + (narrow ? -0.6 : 0.6), pickedMark.z);
+      goal.pos.copy(goal.look).add(new THREE.Vector3(narrow ? 0 : 0.8, narrow ? 4.5 : 2.6, narrow ? 15 : 9));
+    } else {
+      const p = reduced ? 0 : SCROLL.p;
+      const f = p * (shots.length - 1), i = Math.min(shots.length - 2, Math.floor(f)), k = f - i, e = k * k * (3 - 2 * k);
+      goal.pos.lerpVectors(shots[i].pos, shots[i + 1].pos, e);
+      goal.look.lerpVectors(shots[i].look, shots[i + 1].look, e);
+    }
+    const t = first.current || reduced ? 1 : 0.14;
+    first.current = false;
+    camera.position.lerp(goal.pos, t);
+    look.lerp(goal.look, t);
     camera.lookAt(look);
-    invalidate();
+    if (camera.position.distanceToSquared(goal.pos) > 1e-6 || look.distanceToSquared(goal.look) > 1e-6) invalidate();
   });
-  useEffect(() => { last.current = -1; }, [shots]);
+  useEffect(() => { first.current = true; }, [shots]);
   return (
     <>
       <hemisphereLight args={["#ffffff", "#d9d3c6", 1.4]} />
@@ -202,7 +212,7 @@ function Scene({ data, onHover, picked, onPick }) {
       
       <Steps width={width} />
       <Columns marks={marks} pending={pending} onHover={onHover} onPick={onPick} related={related} />
-      <SignerFan picked={pickedMark} marks={marks} width={width} />
+      <SignerFan picked={pickedMark} marks={marks} width={width} onKey={onKey} />
       <Beacons marks={marks} pending={pending} />
     </>
   );
@@ -213,6 +223,8 @@ function App() {
   const [hover, setHover] = useState(null);
   const [picked, setPicked] = useState(null);
   const [progress, setProgress] = useState(0);
+  const [keyHover, setKeyHover] = useState(null);
+  useEffect(() => { const k = (e) => e.key === "Escape" && setPicked(null); addEventListener("keydown", k); return () => removeEventListener("keydown", k); }, []);
   // Signer facts (171 KB) load on the first pick, not with the page.
   const pick = (p) => { if (!p) return setPicked(null); (CONTROL_READY ??= fetch("/control.json").then((r) => r.json()).then((c) => { CONTROL = c; })).then(() => setPicked(p)); };
   const scrolly = useRef(null);
@@ -220,14 +232,15 @@ function App() {
     const on = () => {
       const el = scrolly.current; if (!el) return;
       const r = el.getBoundingClientRect(), span = el.offsetHeight - innerHeight;
-      SCROLL.p = Math.min(1, Math.max(0, -r.top / span)); setProgress(SCROLL.p);
+      SCROLL.p = Math.min(1, Math.max(0, -r.top / span)); setProgress(SCROLL.p); WAKE();
     };
     addEventListener("scroll", on, { passive: true }); on();
     return () => removeEventListener("scroll", on);
   }, [data]);
   useEffect(() => {
     Promise.all(["/map.json", "/names.json"].map((u) => fetch(u).then((r) => r.json()))).then(([m, n]) => { NAMES = n; setData(m);
-      const h = location.hash.match(/pick=(\w+)/); const p = h && m.programs.find((x) => x.id === h[1]); if (p) pick(p); });
+      const h = location.hash.match(/pick=(\w+)/); const p = h && m.programs.find((x) => x.id === h[1]); if (p) pick(p);
+      addEventListener("hashchange", () => { const h2 = location.hash.match(/pick=(\w+)/); const q = h2 && m.programs.find((x) => x.id === h2[1]); if (q) pick(q); }); });
   }, []);
   if (!data) return null;
   const live = data.programs.filter((p) => !p.closed);
@@ -243,9 +256,10 @@ function App() {
       <section className="scrolly" ref={scrolly}>
       <div className="map">
         <Canvas onPointerMissed={() => setPicked(null)} frameloop="demand" shadows dpr={[1, 2]} camera={{ fov: 20, near: 0.1, far: 200 }} gl={{ antialias: true }}>
-          <Scene data={data} onHover={setHover} picked={picked} onPick={pick} />
+          <Scene data={data} onHover={setHover} picked={picked} onPick={pick} onKey={setKeyHover} />
         </Canvas>
-        {!reduced && <Captions live={live} p={progress} />}
+        {!reduced && !picked && <Captions live={live} p={progress} />}
+        {keyHover && <div className="keytip">{keyHover}<span>click to copy</span></div>}
       </div>
       </section>
       <dl className="legend">
@@ -254,29 +268,45 @@ function App() {
         ))}
         <div><dt><i className="pulse" />Open proposal<b>{(data.pending ?? []).length}</b></dt><dd>a pending vote on a multisig that controls the program</dd></div>
       </dl>
-      {picked && <Picked p={picked} onClose={() => setPicked(null)} />}
+      {picked && <Picked p={picked} live={live} onPick={pick} onClose={() => setPicked(null)} />}
       {!picked && hover && <div className="card"><div className="nm">{name(hover)}</div><div>Stage {hover.stage} · {hover.usd ? usd(hover.usd) + " traced" : "no dollars traced"}</div><div className="id">{hover.id}</div>{(data.pending ?? []).includes(hover.id) && <div className="warn">open proposal on its controlling multisig</div>}</div>}
     </div>
   );
 }
 
-function Picked({ p, onClose }) {
+// Plain words for the rule that sets a program's stage (record stage.bindingPath).
+function bindingText(b) {
+  if (!b || b === "upgrade") return "Set by its upgrade path";
+  if (b === "cap:admin_unknown") return "Capped at Stage 1 because its admin settings could not be read";
+  if (b.startsWith("admin:")) return `Set by its admin key (${b.slice(6).replace(".", " · ")})`;
+  if (b.startsWith("cap:")) return "Capped";
+  return b;
+}
+
+const keysOfRec = (x) => x.ms?.memberKeys ?? (x.kind === "single_key" ? [x.auth] : []);
+
+function Picked({ p, live, onPick, onClose }) {
   const c = CONTROL[p.id] ?? {};
   const keys = keysOf(p.id);
-  const shared = Object.entries(CONTROL).filter(([id, x]) => id !== p.id && (x.ms?.memberKeys ?? (x.kind === "single_key" ? [x.auth] : [])).some((k) => keys.includes(k))).length;
-  const hrs = c.ms?.timelockS != null ? (c.ms.timelockS / 3600).toFixed(c.ms.timelockS % 3600 ? 1 : 0) + " h" : "none";
+  const [copied, setCopied] = useState(null);
+  const shared = live.filter((x) => x.id !== p.id && CONTROL[x.id] && keysOfRec(CONTROL[x.id]).some((k) => keys.includes(k))).sort((a, b) => b.usd - a.usd);
+  const hrs = c.ms?.timelockS != null ? (c.ms.timelockS ? (c.ms.timelockS / 3600).toFixed(c.ms.timelockS % 3600 ? 1 : 0) + " h" : "none") : "none";
+  const copy = (k) => { navigator.clipboard?.writeText(k); setCopied(k); setTimeout(() => setCopied(null), 1200); };
   return (
     <aside className="card picked">
-      <button onClick={onClose} aria-label="Close">×</button>
+      <button className="x" onClick={onClose} aria-label="Close (Esc)">×</button>
       <div className="nm">{name(p)}</div>
       <div>Stage {p.stage} · {p.usd ? usd(p.usd) + " traced" : "no dollars traced"}</div>
-      <p className="why"><span>Set by its {p.binding === "upgrade" ? "upgrade path" : p.binding?.startsWith("admin") ? "admin key" : p.binding ?? "weakest path"}:</span> {c.reason ?? c.cap ?? ""}</p>
+      <p className="why">{p.binding === "cap:admin_unknown" ? "Capped at Stage 1: its admin settings could not be read, so it cannot reach Stage 2 until they are." : <><span>{bindingText(p.binding)}:</span> {c.reason ?? c.cap ?? ""}</>}</p>
       <dl>
-        <dt className="h">Upgrade path</dt><dt>Authority</dt><dd>{c.kind === "squads_vault" ? `Squads ${c.ms?.version} multisig` : c.kind?.replace(/_/g, " ") ?? "unknown"}</dd>
+        <dt className="h">Upgrade path</dt>
+        <dt>Authority</dt><dd>{c.kind === "squads_vault" ? `Squads ${c.ms?.version} multisig` : c.kind?.replace(/_/g, " ") ?? "unknown"}</dd>
         {c.ms && <><dt>Threshold</dt><dd>{c.ms.threshold} of {c.ms.members}</dd><dt>Delay</dt><dd>{hrs}</dd></>}
-        <dt>Keys</dt><dd className="keys">{keys.map(short).join(" ") || "none"}</dd>
-        <dt>Shares a key with</dt><dd>{shared} other program{shared === 1 ? "" : "s"}</dd>
       </dl>
+      <div className="h">Keys · {keys.length}</div>
+      <div className="chips">{keys.map((k) => <button key={k} className="chip" title={k} onClick={() => copy(k)}>{copied === k ? "copied" : short(k)}</button>)}{!keys.length && <span>none read</span>}</div>
+      <div className="h">Shares a key with · {shared.length}</div>
+      <ul className="shared">{shared.slice(0, 8).map((x) => <li key={x.id}><button onClick={() => onPick(x)}>{name(x)}</button><span>Stage {x.stage}{x.usd ? " · " + usd(x.usd) : ""}</span></li>)}{!shared.length && <li><span>no other covered program</span></li>}</ul>
       <div className="id">{p.id}</div>
     </aside>
   );
