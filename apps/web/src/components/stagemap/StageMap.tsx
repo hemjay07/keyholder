@@ -49,6 +49,19 @@ export default function StageMap({ programs, pending, story = false }: StageMapP
     loadControl().then((c) => { setControl(c); setFailed(false); setPicked(p); }).catch(() => setFailed(true));
   }, []);
 
+  // Ask answers name programs; the map picks the first one and comes into view (AskBox dispatches kh-pick).
+  const rootRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const on = (e: Event) => {
+      const id = (e as CustomEvent<string>).detail, p = programs.find((x) => x.id === id);
+      if (!p) return;
+      pick(p);
+      rootRef.current?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+    };
+    addEventListener('kh-pick', on);
+    return () => removeEventListener('kh-pick', on);
+  }, [programs, pick]);
+
   useEffect(() => {
     const k = (e: KeyboardEvent) => { if (e.key === 'Escape') setPicked(null); };
     addEventListener('keydown', k);
@@ -75,7 +88,7 @@ export default function StageMap({ programs, pending, story = false }: StageMapP
 
   const canHover = typeof matchMedia !== 'undefined' && matchMedia('(hover: hover)').matches;
   const map = (
-    <div className={s.map} data-device="stage-map"
+    <div ref={rootRef} className={s.map} data-device="stage-map"
       onPointerMove={(e) => { const r = e.currentTarget.getBoundingClientRect(); setPtr({ x: e.clientX - r.left, y: e.clientY - r.top, w: r.width }); }}>
       <Canvas onPointerMissed={() => setPicked(null)} frameloop="demand" shadows="percentage" dpr={[1, 1.5]} camera={{ fov: 20, near: 0.1, far: 200 }} gl={{ antialias: true }}>
         <Scene pal={PALETTES[theme]} programs={programs} pending={pendingSet} control={control} picked={picked} onHover={setHover} onPick={pick} onKey={setKeyTip} scroll={story ? scroll : undefined} />

@@ -10,7 +10,10 @@ import { z } from 'zod/v4';
 import { STAGE_RULES, RULES_VERSION } from '@keyholder/stages';
 import { latestDay, registry, programRecord, stageHistory, signer, topSigners, changes } from './records';
 
-export const ASK_MODEL = 'claude-opus-5-5';
+// Ask is interactive (design/ASK-PLAN.md §3): Sonnet 5.5 at low effort. Haiku 4.5 was tried on 2026-10-08 and misread
+// signer rows (called 10-of-10 multisig keys "single-key"), so it is not used. Opus stays for the offline pending-vote
+// explanations (apps/worker/src/records/explain.ts).
+export const ASK_MODEL = 'claude-sonnet-5-5';
 export const MAX_QUESTION_CHARS = 600;
 const MAX_TOOL_ROUNDS = 6;
 
@@ -21,7 +24,7 @@ Rules:
 - Programs are named by id. A repo is "built from", never "owned by"; do not name a protocol as the owner unless a tool result says so.
 - Stages are Control Stages ${RULES_VERSION}: 0 one key; 1 multisig with no 24 h delay somewhere (or admin fields not read); 2 every path a 2+ multisig with a 24 h+ delay; 3 immutable or 7 d+ delays.
 - Dollar figures are floors from a vault census (liquid tokens only); say "at least".
-- Be brief: a direct answer first, then the supporting rows.`;
+- Finish by calling the answer tool exactly once, then stop. The verdict is one plain sentence a depositor understands. facts (at most 4, often none) are short label/value rows from tool results that the program cards do not already show (mark weak control with tone "weak", a 24 h+ delay or immutability with "holds"). programIds lists the covered programs the answer is about, most important first. followups are three short next questions.`;
 
 const day = async () => {
   const d = await latestDay();
@@ -53,7 +56,9 @@ const tools = [
         .filter((r) => q.minUsd == null || (r.usdFloor ?? 0) >= q.minUsd)
         .filter((r) => !q.closed || r.modifiers.includes('closed'))
         .sort((a, b) => (b.usdFloor ?? 0) - (a.usdFloor ?? 0));
-      return JSON.stringify({ day: d, matched: rows.length, rows: rows.slice(0, q.limit ?? 20) });
+      // Compact rows: only what an answer cites (smaller input, faster rounds).
+      const out = rows.slice(0, q.limit ?? 10).map((r) => ({ programId: r.programId, name: r.name, stage: r.stage, usdFloor: r.usdFloor, setBy: r.binding, threshold: r.threshold, members: r.members, timelockS: r.timelockS }));
+      return JSON.stringify({ day: d, matched: rows.length, rows: out });
     },
   }),
   betaZodTool({
@@ -96,6 +101,68 @@ const tools = [
     run: async () => JSON.stringify({ version: RULES_VERSION, rules: STAGE_RULES }),
   }),
 ];
+
+/** The structured answer the model files at the end (design/ASK-PLAN.md §4). */
+export const AnswerSchema = z.object({
+  verdict: z.string().min(1).max(260).describe('one plain sentence, under 35 words'),
+  facts: z.array(z.object({ label: z.string().max(40), value: z.string().max(80), tone: z.enum(['weak', 'holds', 'plain']).optional() })).max(4).describe('only facts the program cards do not already show (cards render each program\'s stage, paths, thresholds and delays from the record)'),
+  programIds: z.array(z.string().min(32).max(44)).max(4),
+  signerKeys: z.array(z.string().min(32).max(44)).max(4).optional(),
+  followups: z.array(z.string().max(60)).max(3),
+});
+export type Answer = z.infer<typeof AnswerSchema>;
+
+export type AskEvent =
+  | { type: 'step'; tool: string; label: string }
+  | { type: 'answer'; answer: Answer; model: string }
+  | { type: 'text'; text: string }
+  | { type: 'error'; code: string };
+
+const STEP_LABEL: Record<string, (i: Record<string, unknown>) => string> = {
+  search_programs: (i) => `Searching programs${i.name ? ` named “${i.name}”` : i.maxStage != null ? ` at Stage ${i.maxStage} or below` : ''}`,
+  get_program: (i) => `Reading the record of ${PROGRAM_NAMES[String(i.programId)] ?? `${String(i.programId).slice(0, 4)}…${String(i.programId).slice(-4)}`}`,
+  get_signer: (i) => (i.key ? `Reading signer ${String(i.key).slice(0, 4)}…${String(i.key).slice(-4)}` : 'Ranking signers by money behind them'),
+  get_changes: () => 'Reading control changes',
+  get_stage_rules: () => 'Reading the stage rules',
+};
+
+/** Streamed Ask: emits a step for each record read, then the structured answer. history = earlier turns, oldest first. */
+export async function askStream(question: string, history: { q: string; a: string }[], emit: (e: AskEvent) => void): Promise<void> {
+  let filed: Answer | null = null;
+  const answerTool = betaZodTool({
+    name: 'answer',
+    description: 'File the final answer. Call exactly once, after reading the record.',
+    inputSchema: AnswerSchema,
+    run: async (a) => { filed = a; return 'filed'; },
+  });
+  const messages: Anthropic.Beta.BetaMessageParam[] = [];
+  for (const h of history.slice(-3)) messages.push({ role: 'user', content: h.q }, { role: 'assistant', content: h.a });
+  messages.push({ role: 'user', content: question });
+  const client = new Anthropic();
+  const runner = client.beta.messages.toolRunner({
+    model: ASK_MODEL, max_tokens: 4000, max_iterations: MAX_TOOL_ROUNDS + 1, stream: true,
+    output_config: { effort: 'low' },
+    betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default',
+    system: SYSTEM, tools: [...tools, answerTool], messages,
+  });
+  let last: Anthropic.Beta.BetaMessage | null = null;
+  for await (const stream of runner) {
+    const message = await stream.finalMessage();
+    last = message;
+    for (const b of message.content) {
+      if (b.type !== 'tool_use') continue;
+      // Take the answer the moment the model files it: waiting for the runner to execute the tool costs a full
+      // extra model round (measured: 10-35 s per answer before this).
+      if (b.name === 'answer') { const p = AnswerSchema.safeParse(b.input); if (p.success) filed = p.data; continue; }
+      emit({ type: 'step', tool: b.name, label: (STEP_LABEL[b.name] ?? (() => b.name))(b.input as Record<string, unknown>) });
+    }
+    if (filed) break;
+  }
+  if (filed) return emit({ type: 'answer', answer: filed, model: last?.model ?? ASK_MODEL });
+  if (last?.stop_reason === 'refusal') return emit({ type: 'error', code: 'DECLINED' });
+  const text = last?.content.filter((b): b is Anthropic.Beta.BetaTextBlock => b.type === 'text').map((b) => b.text).join('\n').trim();
+  emit(text ? { type: 'text', text } : { type: 'error', code: 'NO_ANSWER' });
+}
 
 export interface AskResult { answer: string; toolCalls: { name: string; input: unknown }[]; stopReason: string | null; model: string }
 
