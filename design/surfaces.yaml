@@ -14,7 +14,7 @@ surfaces:
     headline: "Marinade: 6 of 13 keys, no timelock feature"
   - route: /feed
     name: feed
-    headline: "Every control change on Solana, as it lands."
+    headline: "Every change to who controls the money, as it lands"
   - route: /replay/drift
     name: replay
     headline: "5.6 days of warning."
@@ -23,7 +23,7 @@ surfaces:
     headline: "Who can move your money?"
   - route: /policy
     name: policy
-    headline: "Refuse deposits where control just weakened."
+    headline: "Refuse money where control is weak, with one line."
   - route: /events/4WRMFG9YnYqbouLzayMGUjJTN3rKdEcApaxdekf5mAxBsx4NdfgKVXTuQZhmWvEa5uLJCVQ9DcSarEmvfQF133kq%3A3.0
     name: event
     headline: "Pump.fun: program upgraded on 23 September 2026."
