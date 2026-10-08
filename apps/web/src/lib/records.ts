@@ -65,3 +65,12 @@ export interface ProgramRecordJson {
   stage: { programId: string; rulesVersion: string; stage: 0 | 1 | 2 | 3; bindingPath: string; paths: { path: string; stage: number; reason: string }[]; modifiers: string[]; cap: { stage: number; reason: string } | null };
   contagion?: { programId: string; sharedSigners: number; via: [string, string] }[];
 }
+
+/** Open proposals on multisigs that control covered programs (records/pending-run.ts). */
+export async function pendingActions(opts: { relevantOnly?: boolean; programId?: string; limit?: number }) {
+  const { pending_action } = schema;
+  const rows = await getDb().select().from(pending_action)
+    .where(and(sql`${pending_action.resolved_at} is null`, opts.relevantOnly ? eq(pending_action.control_relevant, true) : undefined, opts.programId ? sql`${pending_action.controls} @> ${JSON.stringify([{ programId: opts.programId }])}::jsonb` : undefined))
+    .orderBy(desc(pending_action.status_at)).limit(Math.min(opts.limit ?? 100, 500));
+  return rows;
+}
