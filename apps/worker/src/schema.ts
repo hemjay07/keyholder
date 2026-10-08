@@ -205,6 +205,9 @@ export const program_daily = pgTable(
     multisig: text('multisig'),
     threshold: integer('threshold'),
     members: jsonb('members'),
+    // Added 2026-10-08 (record v2): null for single keys, immutable, and multisigs without a timelock field (Squads v3, coral).
+    timelock_s: integer('timelock_s'),
+    ms_version: text('ms_version'),
     checked_at: timestamp('checked_at', { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
   },
   (table) => ({ pk: primaryKey({ columns: [table.day, table.program_id] }) })

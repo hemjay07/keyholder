@@ -30,11 +30,12 @@ export function plan(row: CoverageRow, liveAuthority: string | null): 'immutable
   return 'keep';
 }
 
-function decodeMembers(owner: string, data: Buffer): { threshold: number; members: string[] } | null {
+/** Threshold, members, timelock and version of a multisig account. Squads v3 and coral have no timelock (null). */
+export function decodeMembers(owner: string, data: Buffer): { threshold: number; members: string[]; timelockS: number | null; version: 'v4' | 'v3' | 'coral' } | null {
   try {
-    if (owner === SQUADS_V4_PROGRAM_ID) { const m = parseSquadsV4Multisig(data); return { threshold: m.threshold, members: m.members.map((x) => x.key) }; }
-    if (owner === SQUADS_V3_PROGRAM_ID) { const m = parseSquadsV3Multisig(data); return { threshold: m.threshold, members: m.members }; }
-    if (owner === CORAL_MULTISIG_PROGRAM_ID) { const m = parseCoralMultisig(data); return { threshold: Number(m.threshold), members: m.owners }; }
+    if (owner === SQUADS_V4_PROGRAM_ID) { const m = parseSquadsV4Multisig(data); return { threshold: m.threshold, members: m.members.map((x) => x.key), timelockS: m.timeLock, version: 'v4' }; }
+    if (owner === SQUADS_V3_PROGRAM_ID) { const m = parseSquadsV3Multisig(data); return { threshold: m.threshold, members: m.members, timelockS: null, version: 'v3' }; }
+    if (owner === CORAL_MULTISIG_PROGRAM_ID) { const m = parseCoralMultisig(data); return { threshold: Number(m.threshold), members: m.owners, timelockS: null, version: 'coral' }; }
   } catch { /* not a layout we decode */ }
   return null;
 }
@@ -80,7 +81,7 @@ async function main(): Promise<void> {
       }
       const live = parseProgramData(info.data).upgradeAuthority;
       const step = plan(row, live);
-      let kind = row.authorityKind!; let multisig = row.multisig?.address ?? null; let threshold: number | null = null; let members: string[] | null = null;
+      let kind = row.authorityKind!; let multisig = row.multisig?.address ?? null; let threshold: number | null = null; let members: string[] | null = null; let timelock_s: number | null = null; let ms_version: string | null = null;
       if (step === 'immutable') kind = 'immutable';
       if (step === 'resolve') {
         changed.push(row.programId);
@@ -90,9 +91,9 @@ async function main(): Promise<void> {
       if (multisig && (step === 'reread-multisig' || step === 'resolve')) {
         const mi = await connection.getAccountInfo(new PublicKey(multisig));
         const d = mi ? decodeMembers(mi.owner.toBase58(), mi.data) : null;
-        if (d) { threshold = d.threshold; members = d.members; }
+        if (d) { threshold = d.threshold; members = d.members; timelock_s = d.timelockS; ms_version = d.version; }
       }
-      await db.insert(program_daily).values({ day, program_id: row.programId, slot, upgrade_authority: live, authority_kind: kind, multisig, threshold, members }).onConflictDoNothing();
+      await db.insert(program_daily).values({ day, program_id: row.programId, slot, upgrade_authority: live, authority_kind: kind, multisig, threshold, members, timelock_s, ms_version }).onConflictDoNothing();
       counts[kind] = (counts[kind] ?? 0) + 1;
     } catch (e) {
       counts.error = (counts.error ?? 0) + 1;

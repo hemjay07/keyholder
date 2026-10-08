@@ -11,28 +11,40 @@ export const MEMO_PROGRAM_ID = new PublicKey('Memo1UhkJRfHyvLMcVucJwxXeuD728EqVD
 export interface DailyRow {
   day: string; program_id: string; slot: number; upgrade_authority: string | null;
   authority_kind: string; multisig: string | null; threshold: number | null; members: string[] | null;
+  /** v2 fields (2026-10-08). Absent or null on rows written before. */
+  timelock_s?: number | null; ms_version?: string | null;
+}
+
+/** Canonical forms are versioned so a day anchored under one form always verifies under it.
+ *  v1: 2026-10-04 .. 2026-10-08. v2 adds timelock_s and ms_version. */
+export type CanonicalVersion = 'v1' | 'v2';
+export const CURRENT_CANONICAL: CanonicalVersion = 'v2';
+
+function fields(r: DailyRow, v: CanonicalVersion): unknown[] {
+  const base = [r.day, r.program_id, Number(r.slot), r.upgrade_authority, r.authority_kind, r.multisig, r.threshold, r.members ? [...r.members].sort() : null];
+  return v === 'v1' ? base : [...base, r.timelock_s ?? null, r.ms_version ?? null];
 }
 
 /** One line per program, sorted by program id, fixed field order; checked_at is excluded (not observed state). */
-export function canonical(rows: DailyRow[]): string {
+export function canonical(rows: DailyRow[], v: CanonicalVersion = CURRENT_CANONICAL): string {
   return [...rows]
     .sort((a, b) => (a.program_id < b.program_id ? -1 : a.program_id > b.program_id ? 1 : 0))
-    .map((r) => JSON.stringify([r.day, r.program_id, Number(r.slot), r.upgrade_authority, r.authority_kind, r.multisig, r.threshold, r.members ? [...r.members].sort() : null]))
+    .map((r) => JSON.stringify(fields(r, v)))
     .join('\n');
 }
 
-export function digest(rows: DailyRow[]): string {
-  return createHash('sha256').update(canonical(rows)).digest('hex');
+export function digest(rows: DailyRow[], v: CanonicalVersion = CURRENT_CANONICAL): string {
+  return createHash('sha256').update(canonical(rows, v)).digest('hex');
 }
 
-export function memoText(day: string, count: number, hash: string): string {
-  return `keyholder:program_daily:v1:${day}:${count}:${hash}`;
+export function memoText(day: string, count: number, hash: string, v: CanonicalVersion = CURRENT_CANONICAL): string {
+  return `keyholder:program_daily:${v}:${day}:${count}:${hash}`;
 }
 
-/** Parses a memo written by memoText; null for anything else. */
-export function parseMemo(text: string): { day: string; count: number; hash: string } | null {
-  const m = /keyholder:program_daily:v1:(\d{4}-\d{2}-\d{2}):(\d+):([0-9a-f]{64})/.exec(text);
-  return m ? { day: m[1]!, count: Number(m[2]), hash: m[3]! } : null;
+/** Parses a memo written by memoText (any version); null for anything else. */
+export function parseMemo(text: string): { version: CanonicalVersion; day: string; count: number; hash: string } | null {
+  const m = /keyholder:program_daily:(v1|v2):(\d{4}-\d{2}-\d{2}):(\d+):([0-9a-f]{64})/.exec(text);
+  return m ? { version: m[1] as CanonicalVersion, day: m[2]!, count: Number(m[3]), hash: m[4]! } : null;
 }
 
 export async function anchor(connection: Connection, payer: Keypair, text: string): Promise<{ signature: string; slot: number }> {

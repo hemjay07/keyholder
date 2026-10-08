@@ -23,13 +23,13 @@ async function main(): Promise<void> {
     const [a] = await db.select().from(daily_anchor).where(eq(daily_anchor.day, day));
     if (!a) throw new Error(`no anchor for ${day}`);
     const rows = (await db.select().from(program_daily).where(eq(program_daily.day, day))) as unknown as DailyRow[];
-    const recomputed = digest(rows);
     const tx = await new Connection(a.cluster, 'confirmed').getTransaction(a.signature, { maxSupportedTransactionVersion: 0 });
     const msg = tx?.transaction.message;
     const keys = msg ? msg.getAccountKeys().staticAccountKeys : [];
     const memo = (msg?.compiledInstructions ?? [])
       .filter((ix) => keys[ix.programIdIndex]?.equals(MEMO_PROGRAM_ID))
       .map((ix) => parseMemo(Buffer.from(ix.data).toString('utf8'))).find(Boolean) ?? null;
+    const recomputed = memo ? digest(rows, memo.version) : digest(rows);
     const ok = !!memo && memo.day === day && memo.hash === recomputed && memo.hash === a.sha256 && memo.count === rows.length;
     console.log(JSON.stringify({ day, rows: rows.length, recomputed, stored: a.sha256, memo, signature: a.signature, slot: tx?.slot, blockTime: tx?.blockTime, ok }));
     if (!ok) process.exitCode = 1;

@@ -71,6 +71,13 @@
       "when": 1791048165859,
       "tag": "20261003172245_daily_anchor",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1791441729340,
+      "tag": "20261008064209_record_v2_timelock",
+      "breakpoints": true
     }
   ]
 }
