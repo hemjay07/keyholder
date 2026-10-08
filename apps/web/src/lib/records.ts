@@ -25,7 +25,7 @@ export async function registry(day: string) {
     .from(control_record).where(eq(control_record.day, day));
   return rows.map(({ programId, stage, usdFloor, record }) => {
     const r = record as ProgramRecordJson;
-    return { programId, stage, usdFloor, repo: r.repo, binding: r.stage.bindingPath, reason: r.stage.paths.find((p) => p.path === r.stage.bindingPath)?.reason ?? r.stage.cap?.reason ?? null, modifiers: r.stage.modifiers, upgradeKind: r.upgrade.kind, threshold: r.upgrade.multisig?.threshold ?? null, members: r.upgrade.multisig?.members ?? null, timelockS: r.upgrade.multisig?.timelockS ?? null };
+    return { programId, stage, usdFloor, repo: r.repo, binding: r.stage.bindingPath, reason: r.stage.paths.find((p) => p.path === r.stage.bindingPath)?.reason ?? r.stage.cap?.reason ?? null, modifiers: r.stage.modifiers, upgradeKind: r.upgrade.kind, upgradeStage: r.stage.paths.find((p) => p.path === 'upgrade')?.stage ?? null, threshold: r.upgrade.multisig?.threshold ?? null, members: r.upgrade.multisig?.members ?? null, timelockS: r.upgrade.multisig?.timelockS ?? null };
   });
 }
 

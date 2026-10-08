@@ -1,0 +1,44 @@
+/* File: apps/web/src/app/policy/build.module.css */
+.wrap { max-width: 1280px; margin: 0 auto; padding: 40px 40px 96px; }
+.kicker { margin: 0 0 10px; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--signal-text); }
+.h1 { font: 500 56px/1.04 var(--font-display); letter-spacing: -0.025em; margin: 0; max-width: 18ch; }
+.lede { color: var(--ink-2); margin: 18px 0 0; max-width: 68ch; font-size: 16px; line-height: 1.55; }
+.lede code { color: var(--ink); }
+.sec { margin-top: 48px; }
+.h2 { font: 500 26px var(--font-display); margin: 0 0 16px; }
+.fine { font-size: 12px; color: var(--ink-2); margin: 12px 0 0; max-width: 90ch; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid var(--ink); }
+.steps li { padding: 20px; display: flex; flex-direction: column; gap: 8px; border-left: 1px solid var(--hair); position: relative; animation: rise var(--d-element) var(--ease-1) both; animation-delay: calc(var(--i) * 120ms); }
+.steps li:first-child { border-left: 0; }
+.steps li::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 4px; }
+.pass::before { background: var(--signal-verified-on); }
+.change::before { background: var(--ink); }
+.refused::before { background: var(--signal); }
+.steps b { font: 500 18px var(--font-display); }
+.steps p { margin: 0; font-size: 13px; color: var(--ink-2); line-height: 1.5; }
+.when, .facts { font-size: 11px; color: var(--ink-2); }
+.refused .facts { color: var(--signal-text); }
+.steps a { font-size: 11px; margin-top: auto; }
+@keyframes rise { from { transform: translateY(8px); } to { transform: none; } }
+.two { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 48px; align-items: start; }
+.body { margin: 0 0 18px; font-size: 15px; line-height: 1.55; max-width: 60ch; }
+.timeline { list-style: none; margin: 0; padding: 0; border-left: 2px solid var(--hair); }
+.timeline li { position: relative; padding: 0 0 18px 20px; display: flex; flex-direction: column; gap: 2px; font-size: 13px; }
+.timeline li::before { content: ''; position: absolute; left: -7px; top: 3px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--ink); background: var(--bg); }
+.timeline b { font: 500 15px var(--font-display); }
+.timeline span { color: var(--ink-2); font-size: 12px; }
+.timeline a { font-size: 11px; }
+.done::before { background: var(--signal-verified-on) !important; border-color: var(--signal-verified-on) !important; }
+.wait::before { background: var(--bg); border-color: var(--signal-verified-on) !important; animation: pulse 1.6s var(--ease-1) infinite; }
+@keyframes pulse { 50% { box-shadow: 0 0 0 6px rgba(31, 107, 74, 0.15); } }
+.next { opacity: 0.55; }
+.meta { margin: 0; border-top: 1px solid var(--ink); }
+.meta div { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--hair); font-size: 12px; }
+.meta dt { color: var(--ink-2); }
+.meta dd { margin: 0; text-align: right; }
+@media (prefers-reduced-motion: reduce) { .steps li, .wait::before { animation: none; } }
+@media (max-width: 900px) {
+  .wrap { padding: 24px 16px 72px; } .h1 { font-size: 34px; }
+  .steps { grid-template-columns: 1fr; } .steps li { border-left: 0; border-top: 1px solid var(--hair); }
+  .two { grid-template-columns: 1fr; gap: 24px; }
+}

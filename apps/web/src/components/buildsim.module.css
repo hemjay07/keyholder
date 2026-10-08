@@ -1,0 +1,30 @@
+/* File: apps/web/src/components/buildsim.module.css */
+.sim { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0; border: 1px solid var(--ink); background: var(--panel); }
+.controls { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 24px 40px; padding: 24px; border-bottom: 1px solid var(--hair); }
+.k { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-2); margin-bottom: 8px; }
+.seg { display: flex; flex-wrap: wrap; }
+.seg button { all: unset; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 72px; padding: 10px 12px; border: 1px solid var(--ink); margin-left: -1px; background: var(--bg); transition: background var(--d-tick) var(--ease-1), color var(--d-tick) var(--ease-1); }
+.seg button b { font: 500 18px var(--font-display); }
+.seg button small { font-size: 10px; color: var(--ink-2); }
+.seg button:hover { background: var(--panel); }
+.seg button:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; position: relative; z-index: 1; }
+.seg button.on { background: var(--ink); color: var(--bg); }
+.seg .on small { color: var(--bg); opacity: 0.7; }
+.result { padding: 24px; border-right: 1px solid var(--hair); display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.meter { height: 10px; background: var(--signal); }
+.meter i { display: block; height: 100%; background: var(--signal-verified-on); transform-origin: left; transition: transform 900ms var(--ease-1); }
+.nums { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.num { all: unset; cursor: pointer; display: flex; flex-direction: column; padding: 10px; border: 1px solid transparent; }
+.num b { font: 500 44px/1 var(--font-display); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.num span { font-size: 12px; color: var(--ink-2); margin-top: 4px; }
+.num:hover { border-color: var(--hair); }
+.sel { border-color: var(--ink) !important; background: var(--bg); }
+.weak { color: var(--signal-text); }
+.holds { color: var(--signal-verified-on); }
+.list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); font-size: 12px; }
+.list li { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 12px; padding: 7px 0; border-bottom: 1px solid var(--hair); }
+.list li a { font: 500 13px var(--font-display); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.list li span { color: var(--ink-2); }
+.code { margin: 0; padding: 24px; background: var(--ink); color: var(--bg); font: 12px/1.7 var(--font-body); overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; min-width: 0; }
+@media (prefers-reduced-motion: reduce) { .meter i, .seg button { transition: none; } }
+@media (max-width: 900px) { .sim { grid-template-columns: 1fr; } .result { border-right: 0; } .num b { font-size: 32px; } .seg button { min-width: 56px; padding: 8px; } }
