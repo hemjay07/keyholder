@@ -51,7 +51,9 @@ export default async function SignerPage({ params }: { params: Promise<{ key: st
       <h1 className={s.h1}>One key, {entry.multisigs.length} multisig{entry.multisigs.length === 1 ? '' : 's'}, <span className={s.weakText}>{usd ? formatUsd(usd) : 'no dollars traced'}</span> behind it</h1>
       <code className={s.addr}>{key}</code>
       {alone.length > 0 && <p className={s.alert}>This key can act alone on {alone.length === 1 ? 'one multisig' : `${alone.length} multisigs`}: {alone.map((m) => `${shortAddr(m.address)} (1 of ${m.members}, ${m.timelockS ? `${Math.round(m.timelockS / 3600)} h delay` : 'no delay'})`).join(' and ')} need{alone.length === 1 ? 's' : ''} only one signature.</p>}
+      <div className={s.layout}>
       <section className={s.sec}><Web keyAddr={key} multisigs={entry.multisigs} programs={programs} /></section>
+      <aside className={s.side}>
       <section className={s.sec}>
         <h2>Programs it can help change · {programs.length}</h2>
         <ul className={s.list}>{programs.map((p) => (
@@ -64,6 +66,8 @@ export default async function SignerPage({ params }: { params: Promise<{ key: st
           <li key={m.address}><code>{shortAddr(m.address)}</code><span>{m.threshold} of {m.members}</span><span className={!m.timelockS ? s.weakText : m.timelockS >= 86400 ? s.holdsText : ''}>{m.timelockS ? `${Math.round(m.timelockS / 3600)} h delay` : 'no delay'}</span></li>
         ))}</ul>
       </section>
+      </aside>
+      </div>
     </main>
   );
 }

@@ -52,3 +52,31 @@
   @keyframes drawV { from { transform: scaleY(0); } to { transform: scaleY(1); } }
   .list li { grid-template-columns: 1fr; gap: 2px; }
 }
+
+/* Layout pass (founder 2026-10-08: use the width): main column + sticky sidebar. */
+.wrap { max-width: 1360px; }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 48px; margin-top: 32px; align-items: start; }
+.main { min-width: 0; }
+.main .sec:first-child { margin-top: 0; }
+.side { position: sticky; top: 24px; display: flex; flex-direction: column; gap: 24px; }
+.card { background: var(--panel); border: 1px solid var(--ink); padding: 18px; display: grid; grid-template-columns: auto 1fr; gap: 4px 16px; }
+.card .k { grid-column: 1 / -1; }
+.big { font: 500 44px/0.9 var(--font-display); letter-spacing: -0.05em; grid-row: span 2; }
+.card .why { margin: 0; font-size: 13px; align-self: start; }
+.ladder { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px; font-size: 11px; color: var(--ink-2); }
+.ladder li { display: flex; align-items: center; gap: 6px; }
+.ladder i { width: 18px; height: 4px; background: var(--hair); }
+.ladder .here { color: var(--ink); font-weight: 500; }
+.ladder .here i { background: var(--ink); width: 28px; }
+.facts { margin: 0; border-top: 1px solid var(--ink); }
+.facts div { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--hair); font-size: 12px; }
+.facts dt { color: var(--ink-2); flex: none; }
+.facts dd { margin: 0; text-align: right; min-width: 0; overflow-wrap: anywhere; }
+.facts .addr { font-size: 10px; word-break: break-all; }
+.h3 { margin: 0 0 8px; font: 500 15px var(--font-display); }
+.shared { list-style: none; margin: 0; padding: 0; font-size: 12px; }
+.shared li { display: flex; justify-content: space-between; gap: 8px; padding: 5px 0; border-bottom: 1px solid var(--hair); }
+.shared span { color: var(--ink-2); }
+.side .pre { font-size: 11px; }
+.side .days li { min-width: 44px; padding: 6px 8px; }
+@media (max-width: 960px) { .layout { grid-template-columns: 1fr; gap: 32px; } .side { position: static; order: -1; } .big { font-size: 28px; } }

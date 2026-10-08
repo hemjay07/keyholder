@@ -1,5 +1,5 @@
 /* File: apps/web/src/app/signers/[key]/signer.module.css */
-.wrap { max-width: 1280px; margin: 0 auto; padding: 32px 40px 96px; }
+.wrap { max-width: 1360px; margin: 0 auto; padding: 32px 40px 96px; }
 .crumb { font-size: 11px; color: var(--ink-2); margin: 0 0 18px; }
 .crumb a { color: inherit; }
 .h1 { font: 500 46px/1.08 var(--font-display); letter-spacing: -0.02em; margin: 0 0 10px; max-width: 22ch; }
@@ -31,3 +31,9 @@
 .list code { font: 12px var(--font-body); }
 @media (prefers-reduced-motion: reduce) { .l1, .l2 { animation: none; stroke-dashoffset: 0; } .n1, .n2 { animation: none; } }
 @media (max-width: 900px) { .wrap { padding: 24px 16px 72px; } .h1 { font-size: 30px; } .list li { grid-template-columns: 1fr; gap: 2px; } }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 40px; align-items: start; margin-top: 8px; }
+.side { position: sticky; top: 24px; }
+.side .sec:first-child { margin-top: 48px; }
+.side .list li { grid-template-columns: 1fr auto; font-size: 12px; }
+.side .list li > span:nth-child(2) { display: none; }
+@media (max-width: 960px) { .layout { grid-template-columns: 1fr; } .side { position: static; } }
