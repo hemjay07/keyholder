@@ -21,15 +21,15 @@ export interface DayRow {
   timelock_s: number | null; ms_version: string | null;
 }
 export interface AdminKey { account: string; address: string; field: string; key: string; kind: string }
-export interface AdminScanProgram { programId: string; idl: string | null; keys?: (AdminKey | { account: string; skipped: string })[]; error?: string }
-export interface MultisigFacts { address: string; threshold: number; members: number; timelockS: number | null; version: 'v4' | 'v3' | 'coral' }
+export interface AdminScanProgram { programId: string; idl: string | null; keys?: (AdminKey | { account: string; skipped: string })[]; error?: string; partial?: { account: string; instances: number; failed: number }[] }
+export interface MultisigFacts { address: string; threshold: number; members: number; timelockS: number | null; version: 'v4' | 'v3' | 'coral'; memberKeys: string[] }
 
 export interface ProgramRecord {
   programId: string;
   repo: string | null;
   usdFloor: number | null;
   upgrade: { authority: string | null; kind: string; multisig: MultisigFacts | null; timelockCarried: boolean };
-  admin: { status: 'read' | 'unknown'; programWide: { account: string; field: string; key: string; resolvedAs: string; multisig: MultisigFacts | null }[]; perInstance: { account: string; instances: number; singleKeyOwners: number }[] };
+  admin: { status: 'read' | 'unknown'; undecoded: { account: string; instances: number; failed: number }[]; programWide: { account: string; field: string; key: string; resolvedAs: string; multisig: MultisigFacts | null }[]; perInstance: { account: string; instances: number; singleKeyOwners: number }[] };
   stage: StageResult;
 }
 
@@ -71,13 +71,13 @@ function latestAdminScans(): Map<string, AdminScanProgram> {
   return out;
 }
 
-export async function buildRecords(day: string, rows: DayRow[], conn: Connection, opts: { carry?: Map<string, DayRow> } = {}): Promise<ProgramRecord[]> {
+export async function buildRecords(day: string, rows: DayRow[], conn: Connection, opts: { carry?: Map<string, DayRow>; scans?: Map<string, AdminScanProgram> } = {}): Promise<ProgramRecord[]> {
   const cov = JSON.parse(readFileSync(join(DATA, 'coverage', 'coverage-2026-10-01.json'), 'utf8')) as { programs: { programId: string; repo?: string }[] };
   const repo = new Map(cov.programs.map((p) => [p.programId, p.repo || null]));
   const usd = new Map<string, number>();
   for (const f of readdirSync(join(DATA, 'coverage')).filter((f) => /^dollars-by-class-.*\.json$/.test(f)).sort())
     for (const p of (JSON.parse(readFileSync(join(DATA, 'coverage', f), 'utf8')) as { programs: { programId: string; usd_floor: number }[] }).programs) usd.set(p.programId, p.usd_floor);
-  const scans = latestAdminScans();
+  const scans = opts.scans ?? latestAdminScans();
 
   // Multisig facts from the day itself, with carried-back timelocks for v1 days.
   const msFacts = new Map<string, MultisigFacts & { carried: boolean }>();
@@ -88,7 +88,7 @@ export async function buildRecords(day: string, rows: DayRow[], conn: Connection
     if (version == null && later && later.multisig === r.multisig && later.threshold === r.threshold && later.ms_version) {
       timelockS = later.timelock_s; version = later.ms_version as MultisigFacts['version']; carried = true;
     }
-    msFacts.set(r.multisig, { address: r.multisig, threshold: r.threshold, members: (r.members ?? []).length, timelockS: timelockS ?? null, version: version ?? 'v4', carried });
+    msFacts.set(r.multisig, { address: r.multisig, threshold: r.threshold, members: (r.members ?? []).length, memberKeys: [...(r.members ?? [])].sort(), timelockS: timelockS ?? null, version: version ?? 'v4', carried });
   }
   const vaults = vaultIndex([...msFacts.values()].map((m) => ({ address: m.address, version: m.version })));
 
@@ -98,11 +98,11 @@ export async function buildRecords(day: string, rows: DayRow[], conn: Connection
     if (!match) match = await resolveFromHistory(conn, k.key).catch(() => null);
     if (!match) return null;
     const known = msFacts.get(match.multisig);
-    if (known) return { address: known.address, threshold: known.threshold, members: known.members, timelockS: known.timelockS, version: known.version };
+    if (known) return { address: known.address, threshold: known.threshold, members: known.members, memberKeys: known.memberKeys, timelockS: known.timelockS, version: known.version };
     const acc = await conn.getAccountInfo(new PublicKey(match.multisig));
     const d = acc ? decodeMembers(acc.owner.toBase58(), acc.data) : null;
     if (!d) return null;
-    const f: MultisigFacts = { address: match.multisig, threshold: d.threshold, members: d.members.length, timelockS: d.timelockS, version: d.version };
+    const f: MultisigFacts = { address: match.multisig, threshold: d.threshold, members: d.members.length, memberKeys: [...d.members].sort(), timelockS: d.timelockS, version: d.version };
     msFacts.set(match.multisig, { ...f, carried: false });
     return f;
   };
@@ -120,11 +120,13 @@ export async function buildRecords(day: string, rows: DayRow[], conn: Connection
       adminPaths.push(adminPath(k, ms));
     }
     const ms = r.multisig ? msFacts.get(r.multisig) ?? null : null;
-    const facts: ProgramFacts = { programId: r.program_id, upgrade: upgradePath(r, ms), admin: adminPaths, adminStatus: scan?.idl ? 'read' : 'unknown', closed: r.authority_kind === 'closed' };
+    // A program-wide config account (one instance) that failed to decode leaves admin unknown; per-instance failures do not.
+    const programWideFailed = (scan?.partial ?? []).filter((x) => x.instances === 1).map((x) => x.account);
+    const facts: ProgramFacts = { programId: r.program_id, upgrade: upgradePath(r, ms), admin: adminPaths, adminStatus: scan?.idl && !programWideFailed.length ? 'read' : 'unknown', closed: r.authority_kind === 'closed' };
     out.push({
       programId: r.program_id, repo: repo.get(r.program_id) ?? null, usdFloor: usd.get(r.program_id) ?? null,
-      upgrade: { authority: r.upgrade_authority, kind: r.authority_kind, multisig: ms ? { address: ms.address, threshold: ms.threshold, members: ms.members, timelockS: ms.timelockS, version: ms.version } : null, timelockCarried: ms?.carried ?? false },
-      admin: { status: facts.adminStatus, programWide: resolved, perInstance: [...perInstance].map(([account, ks]) => ({ account, instances: new Set(ks.map((k) => k.address)).size, singleKeyOwners: new Set(ks.filter((k) => k.kind === 'single_key').map((k) => k.address)).size })) },
+      upgrade: { authority: r.upgrade_authority, kind: r.authority_kind, multisig: ms ? { address: ms.address, threshold: ms.threshold, members: ms.members, memberKeys: ms.memberKeys, timelockS: ms.timelockS, version: ms.version } : null, timelockCarried: ms?.carried ?? false },
+      admin: { status: facts.adminStatus, undecoded: scan?.partial ?? [], programWide: resolved, perInstance: [...perInstance].map(([account, ks]) => ({ account, instances: new Set(ks.map((k) => k.address)).size, singleKeyOwners: new Set(ks.filter((k) => k.kind === 'single_key').map((k) => k.address)).size })) },
       stage: computeStage(facts),
     });
   }

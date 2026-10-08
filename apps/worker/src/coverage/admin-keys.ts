@@ -12,7 +12,7 @@ import { join } from 'node:path';
 import { Connection, PublicKey } from '@solana/web3.js';
 import bs58 from 'bs58';
 import { createHash } from 'node:crypto';
-import { discoverIdl, type AnchorIdl } from '@keyholder/decoder';
+import { discoverIdl, decodeAnchorAccount, anchorAccountDef, type AnchorIdl } from '@keyholder/decoder';
 
 const DATA = join(__dirname, '..', '..', '..', '..', 'data', 'coverage');
 const POWER_FIELD = /(^|_)(admin|authority|owner|guardian|manager|operator|pauser|emergency|council|withdraw_authority|super)/i;
@@ -26,47 +26,26 @@ const OWNERS: Record<string, string> = {
   GovER5Lthms3bLBqWub97yVrMmEogzX7xNjdXpPPCVZw: 'spl_gov',
 };
 
-type Ty = string | { array?: [Ty, number]; defined?: { name: string } | string; option?: Ty; vec?: Ty };
-const PRIM: Record<string, number> = { bool: 1, u8: 1, i8: 1, u16: 2, i16: 2, u32: 4, i32: 4, f32: 4, u64: 8, i64: 8, f64: 8, u128: 16, i128: 16, pubkey: 32, publicKey: 32 };
+const snake = (n: string) => n.replace(/([a-z0-9])([A-Z])/g, '$1_$2').toLowerCase();
+const isPower = (name: string) => POWER_FIELD.test(snake(name)) && !NOT_POWER.test(snake(name));
+const looksLikeKey = (v: unknown): v is string => typeof v === 'string' && /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(v);
 
-/** Fixed byte size of a type, or null if it varies (vec, string, option, enum with data). */
-export function fixedSize(t: Ty, types: Map<string, { kind: string; fields?: { type: Ty }[]; variants?: { fields?: unknown[] }[] }>): number | null {
-  if (typeof t === 'string') return PRIM[t] ?? null;
-  if (t.array) { const s = fixedSize(t.array[0], types); return s == null ? null : s * t.array[1]; }
-  if (t.defined) {
-    const def = types.get(typeof t.defined === 'string' ? t.defined : t.defined.name);
-    if (!def) return null;
-    if (def.kind === 'struct') { let n = 0; for (const f of def.fields ?? []) { const s = fixedSize(f.type, types); if (s == null) return null; n += s; } return n; }
-    if (def.kind === 'enum' && (def.variants ?? []).every((v) => !v.fields || v.fields.length === 0)) return 1;
-    return null;
-  }
-  return null;
+/** Config-like accounts with a struct definition, and their discriminator (computed for legacy IDLs). */
+export function candidateAccounts(idl: AnchorIdl): { account: string; discriminator: number[] }[] {
+  return (idl.accounts ?? [])
+    .filter((a: { name: string }) => CONFIG_ACCOUNT.test(a.name) && !PER_USER_ACCOUNT.test(a.name) && anchorAccountDef(idl, a.name))
+    .map((a: { name: string; discriminator?: number[] }) => ({ account: a.name, discriminator: Array.isArray(a.discriminator) ? a.discriminator : [...createHash('sha256').update(`account:${a.name}`).digest().subarray(0, 8)] }));
 }
 
-export interface PowerField { account: string; field: string; offset: number }
-
-/** Power fields at fixed offsets in config-like accounts (offset includes the 8-byte discriminator). */
-export function powerFields(idl: AnchorIdl): { account: string; discriminator: number[]; fields: PowerField[] }[] {
-  const types = new Map<string, { kind: string; fields?: { name: string; type: Ty }[] }>();
-  for (const t of idl.types ?? []) if (t.type) types.set(t.name, { kind: t.type.kind, fields: t.type.fields, ...(t.type.variants ? { variants: t.type.variants } : {}) } as never);
-  const out = [];
-  for (const acc of idl.accounts ?? []) {
-    if (!CONFIG_ACCOUNT.test(acc.name) || PER_USER_ACCOUNT.test(acc.name)) continue;
-    // legacy Anchor IDLs carry no discriminator: it is sha256("account:<Name>")[0..8]
-    const discriminator = Array.isArray(acc.discriminator) ? (acc.discriminator as number[]) : [...createHash('sha256').update(`account:${acc.name}`).digest().subarray(0, 8)];
-    const def = (acc.type ? { kind: acc.type.kind, fields: acc.type.fields } : types.get(acc.name)) as { kind: string; fields?: { name: string; type: Ty }[] } | undefined;
-    if (!def || def.kind !== 'struct') continue;
-    let off = 8; const fields: PowerField[] = [];
-    for (const f of def.fields ?? []) {
-      const s = fixedSize(f.type, types as never);
-      const snake = f.name.replace(/([a-z0-9])([A-Z])/g, '$1_$2').toLowerCase();
-      if ((f.type === 'pubkey' || f.type === 'publicKey') && POWER_FIELD.test(snake) && !NOT_POWER.test(snake)) fields.push({ account: acc.name, field: f.name, offset: off });
-      if (s == null) break;
-      off += s;
-    }
-    if (fields.length) out.push({ account: acc.name, discriminator, fields });
-  }
-  return out;
+/** Every pubkey in a decoded account whose field name says it holds power, at any depth (path joined with '.'). */
+export function powerKeysIn(v: unknown, path = ''): { field: string; key: string }[] {
+  if (Array.isArray(v)) return v.flatMap((x, i) => powerKeysIn(x, `${path}[${i}]`));
+  if (!v || typeof v !== 'object') return [];
+  return Object.entries(v as Record<string, unknown>).flatMap(([k, x]) => {
+    const p = path ? `${path}.${k}` : k;
+    if (looksLikeKey(x)) return isPower(k) ? [{ field: p, key: x }] : [];
+    return powerKeysIn(x, p);
+  });
 }
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -90,20 +69,28 @@ async function main(): Promise<void> {
       const idl = await discoverIdl(new PublicKey(p.programId), conn);
       await sleep(300);
       if (!idl) { results.push({ ...row, idl: null }); console.log(p.programId.slice(0, 8), 'no IDL'); continue; }
-      const specs = powerFields(idl.idl as AnchorIdl);
-      const keys = [];
-      for (const s of specs) {
-        const maxEnd = Math.max(...s.fields.map((f) => f.offset + 32));
-        const accts = await conn.getProgramAccounts(new PublicKey(p.programId), { dataSlice: { offset: 0, length: maxEnd }, filters: [{ memcmp: { offset: 0, bytes: bs58.encode(Buffer.from(s.discriminator)) } }] });
+      // Full decode (2026-10-08): fields after a vec/option/string are read too; a failed decode marks the program partial.
+      const keys: Record<string, unknown>[] = []; const partial: { account: string; instances: number; failed: number }[] = [];
+      for (const s of candidateAccounts(idl.idl as AnchorIdl)) {
+        const filters = [{ memcmp: { offset: 0, bytes: bs58.encode(Buffer.from(s.discriminator)) } }];
+        const count = (await conn.getProgramAccounts(new PublicKey(p.programId), { dataSlice: { offset: 0, length: 0 }, filters })).length;
+        await sleep(300);
+        if (count === 0) continue;
+        if (count > 1000) { keys.push({ account: s.account, skipped: `${count} accounts (per-user, not config)` }); continue; }
+        const accts = await conn.getProgramAccounts(new PublicKey(p.programId), { filters });
         await sleep(400);
-        if (accts.length > 1000) { keys.push({ account: s.account, skipped: `${accts.length} accounts (per-user, not config)` }); continue; }
-        for (const a of accts) for (const f of s.fields) {
-          if (a.account.data.length < f.offset + 32) continue;
-          const key = new PublicKey(a.account.data.subarray(f.offset, f.offset + 32)).toBase58();
-          keys.push({ account: s.account, address: a.pubkey.toBase58(), field: f.field, key, kind: await classify(key) });
+        for (const a of accts) {
+          let decoded: Record<string, unknown>;
+          try { decoded = decodeAnchorAccount(idl.idl as AnchorIdl, s.account, a.account.data); }
+          catch {
+            const e = partial.find((x) => x.account === s.account);
+            if (e) e.failed += 1; else partial.push({ account: s.account, instances: accts.length, failed: 1 });
+            continue;
+          }
+          for (const f of powerKeysIn(decoded)) keys.push({ account: s.account, address: a.pubkey.toBase58(), field: f.field, key: f.key, kind: await classify(f.key) });
         }
       }
-      results.push({ ...row, idl: idl.source, keys });
+      results.push({ ...row, idl: idl.source, keys, ...(partial.length ? { partial } : {}) });
       const singles = keys.filter((k) => (k as { kind?: string }).kind === 'single_key').length;
       console.log(p.programId.slice(0, 8), idl.source, 'power keys', keys.length, 'single_key', singles);
     } catch (e) {

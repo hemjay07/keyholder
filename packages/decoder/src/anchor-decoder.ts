@@ -320,3 +320,21 @@ export function decodeAnchorInstruction(programId: string, idl: AnchorIdl, data:
     };
   }
 }
+
+// ── Account decode entry point (record v2, 2026-10-08) ──────────────────────
+// Decodes a whole Anchor account by its IDL definition, so a field's position no longer matters:
+// fields after a vec/option/string are read too. Skips the 8-byte discriminator.
+
+export function anchorAccountDef(idl: AnchorIdl, name: string): Record<string, any>[] | null {
+  const acc = (idl.accounts ?? []).find((a: Record<string, any>) => a.name === name);
+  const def = acc?.type ?? (idl.types ?? []).find((t: Record<string, any>) => t.name === name)?.type;
+  return def?.kind === 'struct' ? (def.fields ?? []) : null;
+}
+
+export function decodeAnchorAccount(idl: AnchorIdl, name: string, data: Buffer): Record<string, unknown> {
+  const fields = anchorAccountDef(idl, name);
+  if (!fields) throw new IdlTypeError(`account "${name}" has no struct definition in the IDL`);
+  const c = new Cursor(data);
+  c.offset = 8;
+  return decodeFields(idl, fields, c);
+}

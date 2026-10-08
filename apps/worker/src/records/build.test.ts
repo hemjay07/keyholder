@@ -19,7 +19,7 @@ describe('path mapping', () => {
     expect(upgradePath(row({ authority_kind: 'immutable' }), null).kind).toBe('immutable');
     expect(upgradePath(row({ authority_kind: 'single_key' }), null).kind).toBe('single_key');
     expect(upgradePath(row({ authority_kind: 'squads_vault', multisig: 'M' }), null).kind).toBe('unresolved');
-    expect(upgradePath(row({ authority_kind: 'squads_vault', multisig: 'M' }), { address: 'M', threshold: 3, members: 4, timelockS: 0, version: 'v4' }).kind).toBe('multisig');
+    expect(upgradePath(row({ authority_kind: 'squads_vault', multisig: 'M' }), { address: 'M', threshold: 3, members: 4, memberKeys: [], timelockS: 0, version: 'v4' }).kind).toBe('multisig');
     expect(upgradePath(row({ authority_kind: 'spl_gov' }), null).kind).toBe('governance');
     expect(adminPath(key('GlobalConfig', 'g', 'pda_owned_by:x'), null).kind).toBe('unresolved');
   });
@@ -43,5 +43,22 @@ describe('buildRecords', () => {
   it('a closed program keeps a record and carries the closed modifier', async () => {
     const [r] = await buildRecords('2026-10-08', [row({ authority_kind: 'closed', upgrade_authority: null })], offline);
     expect(r!.stage.modifiers).toContain('closed');
+  });
+});
+
+describe('admin decode failures', () => {
+  const immut = row({ program_id: 'Q', authority_kind: 'immutable', upgrade_authority: null });
+  it('a program-wide config that failed to decode leaves admin unknown (capped at 1)', async () => {
+    const scans = new Map([['Q', { programId: 'Q', idl: 'legacy_anchor', keys: [], partial: [{ account: 'GlobalConfig', instances: 1, failed: 1 }] }]]);
+    const [r] = await buildRecords('2026-10-08', [immut], offline, { scans });
+    expect(r!.admin.status).toBe('unknown');
+    expect(r!.stage.stage).toBe(1);
+  });
+  it('failures only in per-instance accounts (markets) do not cap the program', async () => {
+    const scans = new Map([['Q', { programId: 'Q', idl: 'legacy_anchor', keys: [], partial: [{ account: 'LendingMarket', instances: 235, failed: 3 }] }]]);
+    const [r] = await buildRecords('2026-10-08', [immut], offline, { scans });
+    expect(r!.admin.status).toBe('read');
+    expect(r!.stage.stage).toBe(3);
+    expect(r!.admin.undecoded[0]!.failed).toBe(3);
   });
 });
