@@ -2,14 +2,15 @@
 // Root layout: fonts (design/TOKENS.css: Geist / Geist Mono) and the token stylesheet.
 
 import type { ReactNode } from 'react';
-import { Geist, Geist_Mono } from 'next/font/google';
+import localFont from 'next/font/local';
 import './globals.css';
 import SiteNav from '@/components/SiteNav';
 import CommandPalette from '@/components/CommandPalette';
 import SmoothScroll from '@/components/SmoothScroll';
 
-const geist = Geist({ subsets: ['latin'], variable: '--font-geist', weight: ['400'] });
-const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-geist-mono', weight: ['400'] });
+// Served from the repo (Geist-Latin.woff2.SOURCE.json): no build-time fetch from Google Fonts. Geist is variable.
+const geist = localFont({ src: './Geist-Latin.woff2', variable: '--font-geist', weight: '100 900', display: 'swap' });
+const geistMono = localFont({ src: './GeistMono-Regular.woff2', variable: '--font-geist-mono', weight: '400', display: 'swap' });
 
 export const metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),

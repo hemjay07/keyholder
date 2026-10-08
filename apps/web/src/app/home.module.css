@@ -1,0 +1,44 @@
+/* File: apps/web/src/app/home.module.css — from design/proto/A.html (survivor) on design/TOKENS.css. */
+.wrap { max-width: 1280px; margin: 0 auto; padding-left: 40px; padding-right: 40px; }
+.hero { display: grid; grid-template-columns: 1.25fr 1fr; gap: 48px; padding-top: 56px; padding-bottom: 32px; align-items: end; }
+.hero h1 { margin: 0; font-weight: 400; }
+.fig { display: block; font: 500 152px/0.86 var(--font-display); letter-spacing: -0.045em; color: var(--signal-text); font-variant-numeric: tabular-nums; animation: settle 480ms var(--ease-1) both; }
+.rest { display: block; font: 500 30px/1.15 var(--font-display); letter-spacing: -0.015em; margin-top: 18px; max-width: 22ch; }
+@keyframes settle { from { transform: translateY(16px); } to { transform: none; } }
+.lede { color: var(--ink-2); margin: 18px 0 0; max-width: 52ch; }
+.device { height: 66vh; min-height: 500px; border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); }
+.missing { display: grid; place-items: center; height: 100%; margin: 0; color: var(--ink-2); }
+.cap { display: flex; justify-content: space-between; gap: 16px; font-size: 11px; color: var(--ink-2); padding-top: 10px; padding-bottom: 10px; }
+.wrap h2 { font: 500 28px/1.15 var(--font-display); letter-spacing: -0.01em; margin: 72px 0 6px; }
+.sub { color: var(--ink-2); margin: 0 0 24px; }
+.recs { border-top: 1px solid var(--ink); }
+.rec { display: grid; grid-template-columns: 110px 1fr 200px; gap: 24px; padding: 18px 0; border-bottom: 1px solid var(--hair); align-items: baseline; }
+.rec time { font-size: 12px; color: var(--ink-2); }
+.rec p { margin: 0; font: 400 21px/1.35 var(--font-display); letter-spacing: -0.005em; }
+.rec b { font-weight: 500; }
+.w { color: var(--signal-text); }
+.h { color: var(--signal-verified-on); }
+.src { font-size: 11px; color: var(--ink-2); text-align: right; text-underline-offset: 3px; text-decoration-color: var(--hair); }
+.src:hover { color: var(--ink); }
+.build { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.card { background: var(--panel); border: 1px solid var(--hair); padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+.card h3 { font: 500 18px var(--font-display); margin: 0; }
+.card p { margin: 0; }
+.card pre { margin: 0; background: var(--ink); color: var(--bg); padding: 12px; font: 12px/1.5 var(--font-body); overflow: auto; }
+.go { margin-top: auto; font: 500 13px var(--font-display); }
+.foot { margin-top: 96px; border-top: 1px solid var(--ink); padding-top: 24px; padding-bottom: 48px; display: flex; justify-content: space-between; gap: 24px; font-size: 12px; color: var(--ink-2); flex-wrap: wrap; }
+.foot b { color: var(--ink); font-weight: 400; }
+@media (prefers-reduced-motion: reduce) { .fig { animation: none; } }
+@media (max-width: 900px) {
+  .wrap { padding-left: 16px; padding-right: 16px; }
+  .hero { grid-template-columns: 1fr; gap: 24px; padding-top: 32px; padding-bottom: 24px; }
+  .fig { font-size: 88px; }
+  .rest { font-size: 22px; }
+  .device { height: 70vh; min-height: 440px; }
+  .cap span:last-child { display: none; }
+  .wrap h2 { margin-top: 48px; }
+  .rec { grid-template-columns: 1fr; gap: 6px; }
+  .rec p { font-size: 17px; }
+  .src { text-align: left; }
+  .build { grid-template-columns: 1fr; }
+}

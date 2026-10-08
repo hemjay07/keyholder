@@ -1,0 +1,22 @@
+/* File: apps/web/src/components/askbox.module.css */
+.ask { background: var(--panel); border: 1px solid var(--hair); padding: 16px; }
+.ask label { font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); }
+.row { display: flex; gap: 8px; margin-top: 8px; }
+.row input { flex: 1; min-width: 0; font: 15px var(--font-body); padding: 12px; border: 1px solid var(--ink); background: var(--bg); color: var(--ink); }
+.row input:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.row button { font: 500 14px var(--font-display); padding: 0 18px; border: 0; background: var(--ink); color: var(--bg); cursor: pointer; }
+.row button:disabled { opacity: 0.6; cursor: progress; }
+.eg { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.eg button { all: unset; cursor: pointer; font-size: 11px; border: 1px solid var(--hair); padding: 3px 8px; }
+.eg button:hover, .eg button:focus-visible { border-color: var(--ink); }
+.busy { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--ink-2); margin: 12px 0 0; }
+.busy i { width: 8px; height: 8px; background: var(--ink); animation: blink 1.2s var(--ease-1) infinite; }
+@keyframes blink { 50% { opacity: 0.2; } }
+.err { margin: 12px 0 0; color: var(--signal-text); font-size: 12px; }
+.answer { margin-top: 12px; border-top: 1px solid var(--hair); padding-top: 10px; max-height: 320px; overflow: auto; }
+.answer p { margin: 0 0 8px; font: 15px/1.45 var(--font-display); }
+.reads { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 10px; color: var(--ink-2); margin-top: 6px; }
+.reads span { text-transform: uppercase; letter-spacing: 0.06em; margin-right: 4px; }
+.reads code { font: 11px var(--font-body); border: 1px solid var(--hair); padding: 1px 6px; color: var(--ink); }
+.note { font-size: 11px; color: var(--ink-2); margin: 10px 0 0; }
+@media (prefers-reduced-motion: reduce) { .busy i { animation: none; } }

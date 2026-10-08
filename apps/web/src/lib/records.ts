@@ -74,3 +74,25 @@ export async function pendingActions(opts: { relevantOnly?: boolean; programId?:
     .orderBy(desc(pending_action.status_at)).limit(Math.min(opts.limit ?? 100, 500));
   return rows;
 }
+
+/** Programs whose controlling multisig has an open, control-relevant proposal (records/pending-run.ts). */
+export async function pendingProgramIds(): Promise<string[]> {
+  const rows = await getDb().execute(sql`select distinct c->>'programId' as id from pending_action p, jsonb_array_elements(p.controls) c where p.control_relevant and p.resolved_at is null`);
+  return (rows as unknown as { id: string }[]).map((r) => r.id).filter(Boolean);
+}
+
+/** Per-program control facts for the Stage map's pick panel and shared-key links (loaded on first pick). */
+export interface ControlFacts {
+  auth: string | null; kind: string;
+  ms: { address: string; threshold: number; members: number; memberKeys: string[]; timelockS: number | null; version: string } | null;
+  reason: string | null;
+}
+export async function controlIndex(day: string): Promise<Record<string, ControlFacts>> {
+  const rows = await getDb().select({ programId: control_record.program_id, record: control_record.record }).from(control_record).where(eq(control_record.day, day));
+  const out: Record<string, ControlFacts> = {};
+  for (const { programId, record } of rows) {
+    const r = record as ProgramRecordJson;
+    out[programId] = { auth: r.upgrade.authority, kind: r.upgrade.kind, ms: r.upgrade.multisig, reason: r.stage.paths.find((x) => x.path === r.stage.bindingPath)?.reason ?? r.stage.cap?.reason ?? null };
+  }
+  return out;
+}

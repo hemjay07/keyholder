@@ -1,0 +1,29 @@
+/* File: apps/web/src/components/stagemap/stagemap.module.css — tokens from design/TOKENS.css (globals). */
+.map { position: relative; width: 100%; height: 100%; }
+.tip { position: absolute; z-index: 3; width: 230px; padding: 8px 10px; background: var(--panel); border: 1px solid var(--hair); font-size: 11px; pointer-events: none; box-shadow: 0 6px 18px rgba(27, 26, 23, 0.08); }
+.nm { font: 500 15px var(--font-display); padding-right: 28px; }
+.warn { color: var(--signal-text); margin-top: 2px; }
+.hint { color: var(--ink-2); margin-top: 4px; }
+.keytip { position: absolute; left: 50%; top: 16px; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 6px 10px; font-size: 11px; pointer-events: none; z-index: 3; }
+.keytip span { opacity: 0.6; margin-left: 10px; }
+.picked { position: absolute; top: 16px; right: 16px; width: 300px; max-height: calc(100% - 32px); overflow: auto; z-index: 2; background: var(--panel); border: 1px solid var(--hair); padding: 12px 14px; font-size: 12px; }
+.x { position: absolute; right: 8px; top: 4px; border: 0; background: none; font: 20px var(--font-display); cursor: pointer; color: var(--ink-2); }
+.why { margin: 8px 0; }
+.why span { color: var(--ink-2); }
+.picked dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; margin: 0 0 6px; font-size: 11px; }
+.picked dt { color: var(--ink-2); }
+.picked dd { margin: 0; }
+.h { grid-column: 1 / -1; text-transform: uppercase; letter-spacing: 0.06em; font-size: 10px; color: var(--ink-2); margin: 10px 0 4px; }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.chip { font: 11px var(--font-body); border: 1px solid var(--hair); background: var(--bg); padding: 2px 6px; cursor: pointer; color: var(--ink); }
+.chip:hover, .chip:focus-visible { border-color: var(--ink); }
+.shared { list-style: none; margin: 0; padding: 0; font-size: 11px; }
+.shared li { display: flex; justify-content: space-between; gap: 8px; padding: 2px 0; }
+.shared button { all: unset; cursor: pointer; text-decoration: underline; text-decoration-color: var(--hair); text-underline-offset: 3px; }
+.shared button:hover, .shared button:focus-visible { text-decoration-color: var(--ink); }
+.shared span { color: var(--ink-2); }
+.more { display: inline-block; margin-top: 10px; font: 500 13px var(--font-display); }
+.id { color: var(--ink-2); font-size: 10px; word-break: break-all; margin-top: 6px; }
+@media (max-width: 600px) {
+  .picked { position: fixed; left: 0; right: 0; bottom: 0; top: auto; width: auto; max-height: 55vh; border-width: 1px 0 0; }
+}
