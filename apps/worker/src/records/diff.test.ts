@@ -43,3 +43,10 @@ describe('diffRecords', () => {
     expect(ev.map((e) => `${e.programId}:${e.kind}`)).toEqual(['P:program_closed', 'P:admin_changed']); // spec change 2026-10-08: coverage changes are not feed events
   });
 });
+
+describe('closures missed by the old log', () => {
+  it('a program absent the day before and closed today is reported closed', () => {
+    const ev = diffRecords('2026-10-08', [], [base({ mods: ['closed'] })]);
+    expect(ev.map((e) => e.kind)).toEqual(['program_closed']);
+  });
+});

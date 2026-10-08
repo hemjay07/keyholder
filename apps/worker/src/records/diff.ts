@@ -28,8 +28,10 @@ export function diffRecords(day: string, before: ProgramRecord[], after: Program
 
   for (const [id, b] of next) {
     const a = prev.get(id);
-    // A program new to coverage is bookkeeping, not a control change: no event.
-    if (!a) continue;
+    // A program new to coverage is bookkeeping, not a control change: no event. Except a program that
+    // reappears closed: before 2026-10-08 the daily log dropped closed programs instead of recording them,
+    // so the closure is reported on the day it is first seen closed.
+    if (!a) { if (closed(b)) ev(id, 'program_closed', 'program', null, null); continue; }
     if (!closed(a) && closed(b)) ev(id, 'program_closed', 'program', a.upgrade.authority, null);
     if (closed(a) && !closed(b)) ev(id, 'program_reopened', 'program', null, b.upgrade.authority);
 
