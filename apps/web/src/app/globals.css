@@ -19,8 +19,8 @@
   --font-display: var(--font-geist), "Geist", sans-serif;
   --font-body: var(--font-geist-mono), "Geist Mono", monospace;
   --weight-body: 400;
-  --display-1280: 46.08px;
-  --display-390: 30px;
+  --display-1280: 152px;
+  --display-390: 88px;
   --ease-1: cubic-bezier(0.2, 0.7, 0.2, 1);
   --ease: var(--ease-1);
   --signal-control-is: #FF5A1F;

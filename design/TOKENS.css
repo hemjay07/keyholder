@@ -19,7 +19,7 @@
   --hairline: rgba(27, 26, 23, 0.14);
   --radius: 50px;   /* corrected 2026-10-08: pill controls on the shipped site; the survivor's boxes set 0 locally */
   --font-display: Geist;   /* the largest text, 152px/500 */
-  --font-body: Geist Mono;   /* most common */
+  --font-body: "GeistMono", "GeistMono Fallback", "Geist Mono", monospace;   /* most common; next/font local family name */
   --weight-body: 400;
   --display-1280: 152px;
   --display-390: 88px;
