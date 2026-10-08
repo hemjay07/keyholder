@@ -35,6 +35,8 @@ export interface ProgramRecord {
   upgrade: { authority: string | null; kind: string; multisig: MultisigFacts | null; timelockCarried: boolean };
   admin: { status: 'read' | 'unknown'; undecoded: { account: string; instances: number; failed: number }[]; programWide: { account: string; field: string; key: string; resolvedAs: string; multisig: MultisigFacts | null }[]; perInstance: { account: string; instances: number; singleKeyOwners: number }[] };
   stage: StageResult;
+  /** Programs whose controlling multisigs share 2+ signers with this one's (set after the signer index is built). */
+  contagion?: { programId: string; sharedSigners: number; via: [string, string] }[];
 }
 
 /** Program-wide admin accounts exist once per program; accounts with many instances (markets, pools) belong to their creators. */
@@ -142,35 +144,74 @@ export function summarize(records: ProgramRecord[]): Record<string, unknown> {
   return { programs: records.length, byStage, closed: records.filter((r) => r.stage.modifiers.includes('closed')).length, adminRead: records.filter((r) => r.admin.status === 'read').length };
 }
 
+/** Write a built day to the database (idempotent: a rebuilt day replaces its rows). */
+export async function writeDay(
+  sql: import('postgres').Sql,
+  doc: { day: string; rulesVersion: string; recordVersion: string; anchor: unknown; timelockCarriedFrom: string | null; summary: unknown; programs: ProgramRecord[] },
+  signers: ReturnType<typeof buildSignerIndex>,
+  changes: ReturnType<typeof diffRecords>,
+  claimChecks: ({ file: string } & ReturnType<typeof checkClaim>)[],
+): Promise<void> {
+  const day = doc.day;
+  await sql.begin(async (tx) => {
+    await tx`insert into record_day (day, rules_version, record_version, summary, anchor, "overlaps", timelock_carried_from)
+      values (${day}, ${doc.rulesVersion}, ${doc.recordVersion}, ${tx.json(doc.summary as never)}, ${doc.anchor ? tx.json(doc.anchor as never) : null}, ${tx.json(signers.overlaps as never)}, ${doc.timelockCarriedFrom})
+      on conflict (day) do update set rules_version = excluded.rules_version, record_version = excluded.record_version, summary = excluded.summary,
+        anchor = excluded.anchor, "overlaps" = excluded."overlaps", timelock_carried_from = excluded.timelock_carried_from, built_at = now()`;
+    await tx`delete from control_record where day = ${day}`;
+    await tx`delete from signer_entry where day = ${day}`;
+    await tx`delete from control_event where day = ${day}`;
+    await tx`delete from claim_check where day = ${day}`;
+    for (const r of doc.programs) {
+      await tx`insert into control_record (day, program_id, stage, usd_floor, record) values (${day}, ${r.programId}, ${r.stage.stage}, ${r.usdFloor}, ${tx.json(r as never)})`;
+    }
+    for (const e of signers.signers) {
+      await tx`insert into signer_entry (day, key, usd_behind, worst_stage, entry) values (${day}, ${e.key}, ${e.usdBehind}, ${e.worstStage}, ${tx.json(e as never)})`;
+    }
+    for (const e of changes) {
+      const { day: _d, programId, kind, path, from, to, ...extra } = e;
+      await tx`insert into control_event (day, program_id, kind, path, from_value, to_value, extra)
+        values (${day}, ${programId}, ${kind}, ${path}, ${tx.json((from ?? null) as never)}, ${tx.json((to ?? null) as never)}, ${tx.json(extra as never)}) on conflict do nothing`;
+    }
+    for (const c of claimChecks) await tx`insert into claim_check (day, file, protocol, status, "check") values (${day}, ${c.file}, ${c.protocol}, ${c.status}, ${tx.json(c as never)})`;
+  });
+}
+
 if (require.main === module) {
   void (async () => {
-    const day = process.argv[2]; const outDir = process.argv[3] ?? join(DATA, 'records');
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(day ?? '')) throw new Error('usage: build.ts YYYY-MM-DD [out-dir]');
+    const day = process.argv[2];
+    const outDir = process.argv[3] && !process.argv[3].startsWith('--') ? process.argv[3] : join(DATA, 'records');
+    const toDb = process.argv.includes('--db');
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(day ?? '')) throw new Error('usage: build.ts YYYY-MM-DD [out-dir] [--db]');
     const postgres = (await import('postgres')).default; const dotenv = await import('dotenv');
     dotenv.config({ path: join(__dirname, '..', '..', '..', '..', '.env') });
     const sql = postgres(process.env.DATABASE_URL!, { max: 1 });
-    const rows = (await sql`select program_id, slot, upgrade_authority, authority_kind, multisig, threshold, members, timelock_s, ms_version from program_daily where day = ${day!}`) as unknown as DayRow[];
-    const laterDay = (await sql`select min(day)::text as d from program_daily where day > ${day!} and ms_version is not null`)[0]?.d as string | null;
-    const carry = new Map<string, DayRow>();
-    if (laterDay) for (const r of (await sql`select program_id, slot, upgrade_authority, authority_kind, multisig, threshold, members, timelock_s, ms_version from program_daily where day = ${laterDay}`) as unknown as DayRow[]) carry.set(r.program_id, r);
-    const anchor = (await sql`select sha256, signature, slot, cluster from daily_anchor where day = ${day!}`)[0] ?? null;
-    await sql.end();
-    const records = await buildRecords(day!, rows, new Connection(process.env.DAILY_RPC_URL ?? 'https://api.mainnet-beta.solana.com', 'confirmed'), { carry });
-    mkdirSync(outDir, { recursive: true });
-    const doc = { day, rulesVersion: RULES_VERSION, recordVersion: 'record/v2', anchor, timelockCarriedFrom: laterDay, summary: summarize(records), programs: records };
-    writeFileSync(join(outDir, `${day}.json`), JSON.stringify(doc));
-    const signers = buildSignerIndex(records);
-    writeFileSync(join(outDir, `signers-${day}.json`), JSON.stringify({ day, ...signers }));
-    // the feed: changes since the latest earlier record in the same directory
-    const prior = readdirSync(outDir).filter((f) => /^\d{4}-\d{2}-\d{2}\.json$/.test(f) && f < `${day}.json`).sort().pop();
-    const changes: ReturnType<typeof diffRecords> = prior && existsSync(join(outDir, prior)) ? diffRecords(day!, (JSON.parse(readFileSync(join(outDir, prior), 'utf8')) as { programs: ProgramRecord[] }).programs, records) : [];
-    // Proof of Control: every signed claim in data/claims, checked against today's record; breaks join the feed.
-    const claimsDir = join(DATA, 'claims');
-    const byId = new Map(records.map((r) => [r.programId, r]));
-    const claimChecks = existsSync(claimsDir) ? readdirSync(claimsDir).filter((f) => f.endsWith('.json')).map((f) => ({ file: f, ...checkClaim(JSON.parse(readFileSync(join(claimsDir, f), 'utf8')) as SignedClaim, day!, byId) })) : [];
-    writeFileSync(join(outDir, `claims-${day}.json`), JSON.stringify({ day, checks: claimChecks }));
-    for (const c of claimChecks) for (const b of c.breaks) changes.push({ day: day!, programId: b.programId, kind: 'claim_broken', path: b.path, from: b.expected, to: b.actual });
-    writeFileSync(join(outDir, `changes-${day}.json`), JSON.stringify({ day, since: prior?.slice(0, 10) ?? null, events: changes }));
-    console.log(JSON.stringify({ day, ...doc.summary, signers: signers.signers.length, multisigs: signers.multisigs.length, overlaps: signers.overlaps.length, changes: changes.length }));
+    try {
+      const rows = (await sql`select program_id, slot, upgrade_authority, authority_kind, multisig, threshold, members, timelock_s, ms_version from program_daily where day = ${day!}`) as unknown as DayRow[];
+      if (!rows.length) throw new Error(`no program_daily rows for ${day}`);
+      const laterDay = (await sql`select min(day)::text as d from program_daily where day > ${day!} and ms_version is not null`)[0]?.d as string | null;
+      const carry = new Map<string, DayRow>();
+      if (laterDay) for (const r of (await sql`select program_id, slot, upgrade_authority, authority_kind, multisig, threshold, members, timelock_s, ms_version from program_daily where day = ${laterDay}`) as unknown as DayRow[]) carry.set(r.program_id, r);
+      const anchor = (await sql`select sha256, signature, slot, cluster from daily_anchor where day = ${day!}`)[0] ?? null;
+      const records = await buildRecords(day!, rows, new Connection(process.env.DAILY_RPC_URL ?? 'https://api.mainnet-beta.solana.com', 'confirmed'), { carry });
+      const signers = buildSignerIndex(records);
+      for (const r of records) r.contagion = signers.contagion[r.programId] ?? [];
+      mkdirSync(outDir, { recursive: true });
+      const doc = { day: day!, rulesVersion: RULES_VERSION, recordVersion: 'record/v2', anchor, timelockCarriedFrom: laterDay, summary: summarize(records), programs: records };
+      writeFileSync(join(outDir, `${day}.json`), JSON.stringify(doc));
+      writeFileSync(join(outDir, `signers-${day}.json`), JSON.stringify({ day, ...signers }));
+      // the feed: changes since the latest earlier record in the same directory
+      const prior = readdirSync(outDir).filter((f) => /^\d{4}-\d{2}-\d{2}\.json$/.test(f) && f < `${day}.json`).sort().pop();
+      const changes: ReturnType<typeof diffRecords> = prior ? diffRecords(day!, (JSON.parse(readFileSync(join(outDir, prior), 'utf8')) as { programs: ProgramRecord[] }).programs, records) : [];
+      // Proof of Control: every signed claim in data/claims, checked against today's record; breaks join the feed.
+      const claimsDir = join(DATA, 'claims');
+      const byId = new Map(records.map((r) => [r.programId, r]));
+      const claimChecks = existsSync(claimsDir) ? readdirSync(claimsDir).filter((f) => f.endsWith('.json')).map((f) => ({ file: f, ...checkClaim(JSON.parse(readFileSync(join(claimsDir, f), 'utf8')) as SignedClaim, day!, byId) })) : [];
+      writeFileSync(join(outDir, `claims-${day}.json`), JSON.stringify({ day, checks: claimChecks }));
+      for (const c of claimChecks) for (const b of c.breaks) changes.push({ day: day!, programId: b.programId, kind: 'claim_broken', path: b.path, from: b.expected, to: b.actual });
+      writeFileSync(join(outDir, `changes-${day}.json`), JSON.stringify({ day, since: prior?.slice(0, 10) ?? null, events: changes }));
+      if (toDb) await writeDay(sql, doc, signers, changes, claimChecks);
+      console.log(JSON.stringify({ day, ...doc.summary, signers: signers.signers.length, multisigs: signers.multisigs.length, overlaps: signers.overlaps.length, changes: changes.length, claims: claimChecks.length, db: toDb }));
+    } finally { await sql.end(); }
   })().catch((e) => { console.error(e); process.exit(1); });
 }

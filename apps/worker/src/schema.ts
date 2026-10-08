@@ -18,6 +18,8 @@ import {
   index,
   primaryKey,
   date,
+  doublePrecision,
+  uniqueIndex,
 } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 
@@ -464,3 +466,51 @@ export const daily_anchor = pgTable('daily_anchor', {
   slot: bigint('slot', { mode: 'number' }).notNull(),
   created_at: timestamp('created_at', { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
 });
+
+// ── Control Record v2 (design/REVAMP-3.md, D2–D7) ───────────────────────────
+// Written by src/records/build.ts (--db) after the daily log; read by the site and /api/v1.
+export const record_day = pgTable('record_day', {
+  day: date('day', { mode: 'string' }).primaryKey(),
+  rules_version: text('rules_version').notNull(),
+  record_version: text('record_version').notNull(),
+  summary: jsonb('summary').notNull(),
+  anchor: jsonb('anchor'),
+  overlaps: jsonb('overlaps').notNull(),
+  timelock_carried_from: date('timelock_carried_from', { mode: 'string' }),
+  built_at: timestamp('built_at', { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const control_record = pgTable('control_record', {
+  day: date('day', { mode: 'string' }).notNull(),
+  program_id: text('program_id').notNull(),
+  stage: integer('stage').notNull(),
+  usd_floor: doublePrecision('usd_floor'),
+  record: jsonb('record').notNull(),
+}, (t) => ({ pk: primaryKey({ columns: [t.day, t.program_id] }), byStage: index('control_record_day_stage').on(t.day, t.stage) }));
+
+export const signer_entry = pgTable('signer_entry', {
+  day: date('day', { mode: 'string' }).notNull(),
+  key: text('key').notNull(),
+  usd_behind: doublePrecision('usd_behind').notNull(),
+  worst_stage: integer('worst_stage'),
+  entry: jsonb('entry').notNull(),
+}, (t) => ({ pk: primaryKey({ columns: [t.day, t.key] }) }));
+
+export const control_event = pgTable('control_event', {
+  id: serial('id').primaryKey(),
+  day: date('day', { mode: 'string' }).notNull(),
+  program_id: text('program_id').notNull(),
+  kind: text('kind').notNull(),
+  path: text('path').notNull(),
+  from_value: jsonb('from_value'),
+  to_value: jsonb('to_value'),
+  extra: jsonb('extra'),
+}, (t) => ({ uniq: uniqueIndex('control_event_uniq').on(t.day, t.program_id, t.kind, t.path), byProgram: index('control_event_program').on(t.program_id, t.day) }));
+
+export const claim_check = pgTable('claim_check', {
+  day: date('day', { mode: 'string' }).notNull(),
+  file: text('file').notNull(),
+  protocol: text('protocol').notNull(),
+  status: text('status').notNull(),
+  check: jsonb('check').notNull(),
+}, (t) => ({ pk: primaryKey({ columns: [t.day, t.file] }) }));

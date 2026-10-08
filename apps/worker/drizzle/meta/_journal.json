@@ -78,6 +78,13 @@
       "when": 1791441729340,
       "tag": "20261008064209_record_v2_timelock",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1791443066845,
+      "tag": "20261008070426_record_v2_tables",
+      "breakpoints": true
     }
   ]
 }
