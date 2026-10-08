@@ -9,8 +9,10 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.132.1",
     "@keyholder/db": "workspace:*",
     "@keyholder/sdk": "workspace:*",
+    "@keyholder/stages": "workspace:*",
     "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.1",
     "@react-three/postprocessing": "^3.1.2",
@@ -29,8 +31,7 @@
     "react-dom": "19.3.0",
     "three": "^0.186.1",
     "tweetnacl": "^1.0.3",
-    "zod": "^3.25.76",
-    "@keyholder/stages": "workspace:*"
+    "zod": "3.25.76"
   },
   "devDependencies": {
     "@types/node": "^22.15.0",
