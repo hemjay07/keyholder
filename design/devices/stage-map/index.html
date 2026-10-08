@@ -9,13 +9,19 @@
 <style>
   @font-face{font-family:"Geist Mono";src:url(/fonts/GeistMono-Regular.woff2) format("woff2");font-display:swap}
   :root{--bg:#E6E2D9;--panel:#F4F1EA;--ink:#1B1A17;--ink-2:#5A564E;--signal:#FF5A1F;--signal-text:#A32F06;--hair:rgba(27,26,23,.14)}
-  html,body,#root{margin:0;height:100%;background:var(--bg);color:var(--ink)}
+  html,body,#root{margin:0;background:var(--bg);color:var(--ink)}
   body{font:13px/1.45 "Geist Mono",monospace}
-  .stage{position:relative;height:100%;display:grid;grid-template-rows:auto 1fr auto;padding:28px 40px 20px;box-sizing:border-box}
+  html,body{height:auto}
+  .stage{position:relative;padding:28px 40px 20px;box-sizing:border-box}
+  .scrolly{height:500vh;margin:0 -40px}
+  .scrolly .map{position:sticky;top:0;height:100vh}
+  .caption{position:absolute;left:40px;bottom:40px;max-width:420px;background:var(--panel);border:1px solid var(--hair);padding:14px 16px;pointer-events:none}
+  .caption b{display:block;font:500 20px/1.2 Geist,sans-serif;margin-bottom:6px}
+  .caption span{color:var(--ink-2)}
+  @media (prefers-reduced-motion:reduce){.scrolly{height:auto}.scrolly .map{position:relative;height:70vh}}
   header h1{font:500 46px/1.08 Geist,sans-serif;letter-spacing:-.02em;margin:0;max-width:22ch}
   header .num{color:var(--signal-text);font-variant-numeric:tabular-nums}
   header .sub{color:var(--ink-2);margin:12px 0 0}
-  .map{min-height:0;position:relative}
   .legend{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin:0;border-top:1px solid var(--hair);padding-top:12px}
   .legend dt{display:flex;align-items:center;gap:8px;text-transform:uppercase;letter-spacing:.06em;font-size:11px}
   .legend dt b{font-weight:400;margin-left:auto;font-variant-numeric:tabular-nums}
@@ -38,6 +44,8 @@
   .picked .keys{word-break:break-word}
   @media (max-width:600px){
     .stage{padding:20px 16px 16px}
+    .scrolly{margin:0 -16px}
+    .caption{left:16px;right:16px;bottom:16px}
     header h1{font-size:30px}
     .legend{grid-template-columns:1fr 1fr;gap:10px}
     .legend dd{display:none}

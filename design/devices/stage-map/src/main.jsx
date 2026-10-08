@@ -15,6 +15,8 @@ const STEP_H = 0.55, STEP_D = 1.6;
 const reduced = typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches;
 const usd = (v) => v >= 1e9 ? `$${(v / 1e9).toFixed(1)}B` : v >= 1e6 ? `$${Math.round(v / 1e6)}M` : `$${Math.round(v / 1e3)}K`;
 let NAMES = {}, CONTROL = {};
+// Scroll progress through the pinned map section, 0..1, written by App and read by the camera each frame.
+const SCROLL = { p: 0 };
 const keysOf = (id) => { const c = CONTROL[id]; return c?.ms?.memberKeys ?? (c?.auth && c.kind === "single_key" ? [c.auth] : []); };
 const short = (k) => k.slice(0, 4) + "…" + k.slice(-4);
 const PAPER = new THREE.Color("#D6D1C6");
@@ -162,14 +164,36 @@ function Scene({ data, onHover, picked, onPick }) {
     return new Set(Object.entries(CONTROL).filter(([, c]) => (c.ms?.memberKeys ?? (c.kind === "single_key" ? [c.auth] : [])).some((k) => keys.has(k))).map(([id]) => id).concat(picked.id));
   }, [picked]);
   const pickedMark = picked && marks.find((p) => p.id === picked.id);
-  useEffect(() => {
-    // Fit the whole width: distance from the horizontal half-angle, then lift for the terrace view.
+  // Camera shots along the scroll: the whole map, then each step close (Stage 0 up to 3), then the whole map again.
+  const shots = useMemo(() => {
     const half = Math.atan(Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * (size.width / size.height));
     const d = (width / 2 + (narrow ? 0.3 : 0.8)) / Math.tan(half);
-    camera.position.set(0, narrow ? d * 0.95 : 0.6 + d * 0.5, narrow ? d * 0.55 - 1.6 : d * 0.88 - 2.4);
-    camera.lookAt(0, 0.6, -2.4);
-    camera.updateProjectionMatrix();
-  }, [camera, narrow, size.width, size.height, width]);
+    const whole = { pos: new THREE.Vector3(0, narrow ? d * 0.95 : 0.6 + d * 0.5, narrow ? d * 0.55 - 1.6 : d * 0.88 - 2.4), look: new THREE.Vector3(0, 0.6, -2.4) };
+    const close = (s) => {
+      // Aim at the stage's biggest program, kept inside the frame's width.
+      const top = marks.filter((p) => p.stage === s).sort((a, b) => b.usd - a.usd)[0];
+      const x = THREE.MathUtils.clamp(top ? top.x + width * 0.12 : 0, -width * 0.3, width * 0.3);
+      const look = new THREE.Vector3(narrow ? 0 : x, s * STEP_H + 0.4, -s * STEP_D);
+      return { pos: look.clone().add(new THREE.Vector3(narrow ? 0 : 1.4, narrow ? 4.4 : 2.6, narrow ? 6.8 : 6.0)), look };
+    };
+    return [whole, close(0), close(1), close(2), close(3), whole];
+  }, [camera.fov, size.width, size.height, width, narrow, marks]);
+  const look = useMemo(() => new THREE.Vector3(), []);
+  const last = useRef(-1);
+  useFrame(({ invalidate }) => {
+    const p = reduced ? 0 : SCROLL.p;
+    if (Math.abs(p - last.current) < 1e-4) return;
+    // Ease toward the scroll position so a wheel step glides instead of jumping.
+    const q = last.current < 0 ? p : last.current + (p - last.current) * 0.18;
+    last.current = Math.abs(q - p) < 1e-3 ? p : q;
+    const f = last.current * (shots.length - 1), i = Math.min(shots.length - 2, Math.floor(f)), k = f - i;
+    const e = k * k * (3 - 2 * k);
+    camera.position.lerpVectors(shots[i].pos, shots[i + 1].pos, e);
+    look.lerpVectors(shots[i].look, shots[i + 1].look, e);
+    camera.lookAt(look);
+    invalidate();
+  });
+  useEffect(() => { last.current = -1; }, [shots]);
   return (
     <>
       <hemisphereLight args={["#ffffff", "#d9d3c6", 1.4]} />
@@ -187,6 +211,17 @@ function App() {
   const [data, setData] = useState(null);
   const [hover, setHover] = useState(null);
   const [picked, setPicked] = useState(null);
+  const [progress, setProgress] = useState(0);
+  const scrolly = useRef(null);
+  useEffect(() => {
+    const on = () => {
+      const el = scrolly.current; if (!el) return;
+      const r = el.getBoundingClientRect(), span = el.offsetHeight - innerHeight;
+      SCROLL.p = Math.min(1, Math.max(0, -r.top / span)); setProgress(SCROLL.p);
+    };
+    addEventListener("scroll", on, { passive: true }); on();
+    return () => removeEventListener("scroll", on);
+  }, [data]);
   useEffect(() => {
     Promise.all(["/map.json", "/names.json", "/control.json"].map((u) => fetch(u).then((r) => r.json()))).then(([m, n, c]) => { NAMES = n; CONTROL = c; setData(m);
       const h = location.hash.match(/pick=(\w+)/); const p = h && m.programs.find((x) => x.id === h[1]); if (p) setPicked(p); });
@@ -202,11 +237,14 @@ function App() {
         <h1><Odometer value={weak} /> on Solana sits in programs that can be changed with less than a day&rsquo;s notice.</h1>
         <p className="sub">{live.length} programs on four stages of who can move their money. Record of {data.day}, anchored on chain.</p>
       </header>
+      <section className="scrolly" ref={scrolly}>
       <div className="map">
         <Canvas onPointerMissed={() => setPicked(null)} frameloop="demand" shadows dpr={[1, 2]} camera={{ fov: 20, near: 0.1, far: 200 }} gl={{ antialias: true }}>
           <Scene data={data} onHover={setHover} picked={picked} onPick={setPicked} />
         </Canvas>
+        {!reduced && <Captions live={live} p={progress} />}
       </div>
+      </section>
       <dl className="legend">
         {[3, 2, 1, 0].map((s) => (
           <div key={s}><dt><i style={{ background: RUNG[s] }} />Stage {s}<b>{n[s]}</b></dt><dd>{top(s) || "\u00a0"}</dd></div>
@@ -239,6 +277,24 @@ function Picked({ p, onClose }) {
       <div className="id">{p.id}</div>
     </aside>
   );
+}
+
+// One caption per close shot, from the day's record (counts and dollars are computed, never typed).
+function Captions({ live, p }) {
+  const at = (s) => live.filter((x) => x.stage === s);
+  const sum = (a) => usd(a.reduce((t, x) => t + x.usd, 0));
+  const kamino = live.find((x) => x.id === "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD");
+  const lines = [
+    null,
+    [`Stage 0 · ${at(0).length} programs · ${sum(at(0))}`, "One key can replace the code today. No second signer, no waiting period."],
+    [`Stage 1 · ${at(1).length} programs · ${sum(at(1))}`, `Several signers, but less than a day of notice.${kamino ? ` Kamino Lend's ${usd(kamino.usd)} is here: its admin key is 4 of 10 with no timelock.` : ""}`],
+    [`Stage 2 · ${at(2).length} programs · ${sum(at(2))}`, "Every change waits 24 hours or more, long enough for users to see it coming and leave."],
+    [`Stage 3 · ${at(3).length} programs · ${sum(at(3))}`, "Cannot be changed at all, or only after a seven-day exit window."],
+    null,
+  ];
+  const f = p * (lines.length - 1), i = Math.round(f), near = 1 - Math.min(1, Math.abs(f - i) * 2.2);
+  const line = lines[i];
+  return line ? <div className="caption" style={{ opacity: near }}><b>{line[0]}</b><span>{line[1]}</span></div> : null;
 }
 
 function Odometer({ value }) {
