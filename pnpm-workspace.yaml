@@ -1,3 +1,11 @@
 packages:
   - 'apps/*'
   - 'packages/*'
+
+# Dependencies whose install scripts we do not run (native add-ons with JS fallbacks, and esbuild,
+# whose platform binary ships as an optional dependency). Listing them is a decision, not a warning.
+ignoredBuiltDependencies:
+  - bigint-buffer
+  - bufferutil
+  - esbuild
+  - utf-8-validate
