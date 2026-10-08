@@ -69,6 +69,25 @@
 | P61 | global | one route name for vaults (/policy), /program redirects | CHARTER, OVERHAUL §9 | open | |
 | P62 | data | "15 protocols" stated everywhere; no "30" | CREATIVE §3 | tested | grep 2026-09-27: no "30 protocols" in apps/web/src |
 | P63 | proof | own program 2-of-3 / 48 h on chain; real 24 h flip staged the day before recording | TEN 8, DEV-067 | built | multisig K3u623… 47a521b; the recording flip is P45's prep |
-| P64 | pipeline | public GitHub repo with LICENSE; contest-window work visible | brief §3–4 | open | |
+| P64 | pipeline | public GitHub repo with LICENSE; contest-window work visible | brief §3–4 | open | repo public 2026-10-07 (github.com/hemjay07/keyholder); LICENSE not chosen yet (founder decision) |
 | P65 | global | 404 page, loading skeletons, stale state on every route | OVERHAUL §11 | built | 404 page + loading state; /nope returns 404; /protocols/nope shows the 404 page but with status 200 (loading streams first) |
 | P66 | pipeline | weekly one-minute update videos | brief | open | founder-optional |
+
+## Revamp 3 (design/REVAMP-3.md, approved 2026-10-08)
+| id | surface | promise | source | state | evidence / reason |
+|---|---|---|---|---|---|
+| P67 | data | Control Stages v1 computed for every covered program, rules public and versioned | REVAMP-3 §1 | tested | packages/stages, 18 tests; 583 programs graded 2026-10-08 |
+| P68 | data | Control Record v2 per program per day, anchored, published as JSON + tables | REVAMP-3 §2 | tested | records/build.ts; local all-days build; box backfill pending |
+| P69 | data | signer index, overlaps, contagion sets | REVAMP-3 §5 | tested | records/signers.ts, 3 tests; 435 signers, 22 overlaps 2026-10-08 |
+| P70 | data | control feed from daily diffs (closures, member, threshold, timelock, admin, stage) | REVAMP-3 §6 | tested | records/diff.ts, 6 tests; 11 real events 10-03 to 10-08 |
+| P71 | data | Proof of Control claims: signed, checked daily, breaks join the feed | REVAMP-3 §4 | tested | records/claims.ts, 4 tests; no protocol claim filed yet |
+| P72 | data | public API v1: records, programs/:id, signers, changes, stages, claims | REVAMP-3 D7 | tested | scripts/api-contract.sh passes locally; prod pending deploy |
+| P73 | program | require_stage guard on devnet + SDK + refusal demo | REVAMP-3 §3 | built | 8 LiteSVM tests; devnet deploy blocked on devnet SOL |
+| P74 | home | the map: programs as points settling into stage bands; $ odometer; search | REVAMP-3 Part 2 | open | |
+| P75 | protocol | program page: chain draw node by node, console, stage history strip linked to anchors | REVAMP-3 Part 2 | open | |
+| P76 | global | stage climb animation shared by feed, program page, KeyBench | REVAMP-3 Part 2 | open | |
+| P77 | signer | signer page with contagion web | REVAMP-3 Part 2 | open | |
+| P78 | claims | claim seal and crack (Drift reconstructed demo, labelled unsigned) | REVAMP-3 Part 2 | open | |
+| P79 | global | view transitions list -> program -> signer keep the selected point | REVAMP-3 Part 2 | open | |
+| P80 | proof | verify a day's anchor in the browser (recompute hash from published rows) | REVAMP-3 Part 2 | open | |
+| P81 | global | every page measured at 390 and 1280 on a production build, headed run, renders read | REVAMP-3 Part 2 | open | |
