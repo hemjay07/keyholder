@@ -81,7 +81,7 @@ function Columns({ pal, marks, pending, related, onHover, onPick }: ColumnsProps
     const t = (performance.now() - t0.current) / 1000;
     let moving = false;
     marks.forEach((p, i) => {
-      const k = reduced ? 1 : Math.min(1, Math.max(0, (t - (p.stage * 0.18 + (i % 40) * 0.012)) / 0.8));
+      const k = reduced ? 1 : Math.min(1, Math.max(0, (t - (p.stage * 0.08 + (i % 40) * 0.006)) / 0.5));
       if (k < 1) moving = true;
       const isP = pending.has(p.id);
       if (isP && !reduced) moving = true;

@@ -128,7 +128,13 @@ function Companion({ data, reduced }: { data: ConsoleData | null; reduced: boole
   );
 }
 
-function Scene({ data, companion, reduced, mobile }: { data: ConsoleData; companion: ConsoleData | null | undefined; reduced: boolean; mobile: boolean }) {
+/** Rendered after everything that suspends: tells the page the 3D console has drawn, so the static one can fade. */
+function Ready({ onReady }: { onReady: () => void }) {
+  useEffect(() => { const id = requestAnimationFrame(() => onReady()); return () => cancelAnimationFrame(id); }, [onReady]);
+  return null;
+}
+
+function Scene({ data, companion, reduced, mobile, onReady }: { data: ConsoleData; companion: ConsoleData | null | undefined; reduced: boolean; mobile: boolean; onReady: () => void }) {
   const still = reduced || mobile;
   return (
     <Canvas
@@ -155,6 +161,7 @@ function Scene({ data, companion, reduced, mobile }: { data: ConsoleData; compan
         <EffectComposer multisampling={4}>
           <Bloom mipmapBlur intensity={0.9} luminanceThreshold={1.0} luminanceSmoothing={0.1} radius={0.6} />
         </EffectComposer>
+        <Ready onReady={onReady} />
       </Suspense>
     </Canvas>
   );
@@ -170,6 +177,8 @@ export default function ConsoleScene({ data, companion }: { data: ConsoleData; c
   const mobile = useMobile();
   const [mounted, setMounted] = useState(booted);
   const [webgl, setWebgl] = useState(webglOk ?? true);
+  // The static console stays on screen until the 3D one has loaded its lighting and textures and drawn once.
+  const [ready, setReady] = useState(booted);
 
   useEffect(() => {
     if (webglOk === null) webglOk = hasWebGL();
@@ -186,11 +195,10 @@ export default function ConsoleScene({ data, companion }: { data: ConsoleData; c
   // Phones get the flat, readable console: the 3D one is too small to read there
   // and the most expensive thing on the page (founder, 2026-09-27).
   if (!webgl || mobile) return <ConsoleFallback data={data} />;
-  if (!mounted) return <div className="console-canvas" aria-hidden="true" />;
-
   return (
-    <div data-device="console" className="console-canvas">
-      <Scene data={data} companion={companion} reduced={reduced} mobile={mobile} />
+    <div data-device="console" className="console-canvas" style={{ position: 'relative' }}>
+      {mounted && <Scene data={data} companion={companion} reduced={reduced} mobile={mobile} onReady={() => setReady(true)} />}
+      {!ready && <div style={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center' }}><div className="cf-standin"><ConsoleFallback data={data} /></div></div>}
     </div>
   );
 }
