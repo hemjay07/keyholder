@@ -10,7 +10,7 @@ import * as THREE from "three";
 // 24 h or more on every path (Stage 2-3), ink for everything else, on warm paper.
 const INK = "#1B1A17", SIGNAL = "#FF5A1F", HOLDS = "#1F6B4A";
 const RUNG = [SIGNAL, INK, HOLDS, HOLDS];
-const PENDING = new THREE.Color(SIGNAL);
+const PENDING = new THREE.Color("#A32F06");
 const STEP_H = 0.55, STEP_D = 1.6;
 const reduced = typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches;
 const usd = (v) => v >= 1e9 ? `$${(v / 1e9).toFixed(1)}B` : v >= 1e6 ? `$${Math.round(v / 1e6)}M` : `$${Math.round(v / 1e3)}K`;
@@ -87,6 +87,34 @@ function Columns({ marks, pending, onHover }) {
   );
 }
 
+// A beacon floats above every program whose controlling multisig has an open proposal, so a pending vote reads
+// on any rung (Stage 0 columns are already orange).
+function Beacons({ marks, pending }) {
+  const ref = useRef();
+  const { invalidate } = useThree();
+  const list = useMemo(() => marks.filter((p) => pending.has(p.id)), [marks, pending]);
+  const m = useMemo(() => new THREE.Object3D(), []);
+  useFrame(({ clock }) => {
+    if (!ref.current) return;
+    const t = clock.getElapsedTime();
+    list.forEach((p, i) => {
+      const bob = reduced ? 0 : 0.04 * Math.sin(t * 2.2 + i);
+      m.position.set(p.x, p.base + p.h + 0.12 + bob, p.z);
+      m.scale.setScalar(reduced ? 1 : 0.85 + 0.15 * Math.sin(t * 3 + i));
+      m.updateMatrix();
+      ref.current.setMatrixAt(i, m.matrix);
+    });
+    ref.current.instanceMatrix.needsUpdate = true;
+    if (!reduced) invalidate();
+  });
+  return (
+    <instancedMesh ref={ref} args={[null, null, list.length]}>
+      <octahedronGeometry args={[0.045, 0]} />
+      <meshBasicMaterial color={SIGNAL} />
+    </instancedMesh>
+  );
+}
+
 function Scene({ data, onHover }) {
   const { viewport, camera, size } = useThree();
   const narrow = size.width < 600;
@@ -96,8 +124,8 @@ function Scene({ data, onHover }) {
   useEffect(() => {
     // Fit the whole width: distance from the horizontal half-angle, then lift for the terrace view.
     const half = Math.atan(Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * (size.width / size.height));
-    const d = (width / 2 + 0.8) / Math.tan(half);
-    camera.position.set(0, 0.6 + d * 0.5, d * 0.88 - 2.4);
+    const d = (width / 2 + (narrow ? 0.3 : 0.8)) / Math.tan(half);
+    camera.position.set(0, narrow ? d * 0.95 : 0.6 + d * 0.5, narrow ? d * 0.55 - 1.6 : d * 0.88 - 2.4);
     camera.lookAt(0, 0.6, -2.4);
     camera.updateProjectionMatrix();
   }, [camera, narrow, size.width, size.height, width]);
@@ -108,6 +136,7 @@ function Scene({ data, onHover }) {
       
       <Steps width={width} />
       <Columns marks={marks} pending={pending} onHover={onHover} />
+      <Beacons marks={marks} pending={pending} />
     </>
   );
 }
