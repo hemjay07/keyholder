@@ -4,17 +4,37 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Keyholder Stage map</title>
+<link rel="icon" href="/mark.svg" />
+<link rel="stylesheet" href="/fonts/Geist.css" />
 <style>
-  html,body,#root{margin:0;height:100%;background:#0d0c0a;color:#e9e4d8;font:14px/1.4 ui-monospace,monospace}
-  #root{width:100%;height:100%}
-  .legend{position:absolute;left:16px;top:16px;font-size:12px;pointer-events:none}
-  .legend .row{margin:0 0 6px;letter-spacing:.04em}
-  .legend .row>span:first-child{text-transform:uppercase;display:inline-block;min-width:150px}
-  .legend .top{opacity:.8}
-  @media (max-width:600px){.legend .top{display:none}.legend .row>span:first-child{min-width:0}}
-  .card{position:absolute;right:16px;bottom:64px;background:#1a1814;border:1px solid #3a352c;padding:10px 12px;max-width:300px;font-size:12px}
-  .card .id{opacity:.5;font-size:10px;word-break:break-all;margin-top:4px}
-  h1{position:absolute;left:16px;right:16px;bottom:12px;margin:0;font-size:18px;font-weight:400}
+  @font-face{font-family:"Geist Mono";src:url(/fonts/GeistMono-Regular.woff2) format("woff2");font-display:swap}
+  :root{--bg:#E6E2D9;--panel:#F4F1EA;--ink:#1B1A17;--ink-2:#5A564E;--signal:#FF5A1F;--signal-text:#A32F06;--hair:rgba(27,26,23,.14)}
+  html,body,#root{margin:0;height:100%;background:var(--bg);color:var(--ink)}
+  body{font:13px/1.45 "Geist Mono",monospace}
+  .stage{position:relative;height:100%;display:grid;grid-template-rows:auto 1fr auto;padding:28px 40px 20px;box-sizing:border-box}
+  header h1{font:500 46px/1.08 Geist,sans-serif;letter-spacing:-.02em;margin:0;max-width:22ch}
+  header .num{color:var(--signal-text);font-variant-numeric:tabular-nums}
+  header .sub{color:var(--ink-2);margin:12px 0 0}
+  .map{min-height:0;position:relative}
+  .legend{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin:0;border-top:1px solid var(--hair);padding-top:12px}
+  .legend dt{display:flex;align-items:center;gap:8px;text-transform:uppercase;letter-spacing:.06em;font-size:11px}
+  .legend dt b{font-weight:400;margin-left:auto;font-variant-numeric:tabular-nums}
+  .legend dd{margin:4px 0 0 16px;color:var(--ink-2);font-size:11px}
+  .legend i{width:8px;height:8px;display:inline-block}
+  .legend i.pulse{background:var(--signal);animation:p 1.6s ease-in-out infinite}
+  @keyframes p{50%{opacity:.35}}
+  .card{position:absolute;right:40px;top:150px;background:var(--panel);border:1px solid var(--hair);padding:10px 12px;max-width:300px}
+  .card .nm{font:500 15px Geist,sans-serif}
+  .card .id{color:var(--ink-2);font-size:10px;word-break:break-all;margin-top:4px}
+  .card .warn{color:var(--signal-text);margin-top:4px}
+  @media (max-width:600px){
+    .stage{padding:20px 16px 16px}
+    header h1{font-size:30px}
+    .legend{grid-template-columns:1fr 1fr;gap:10px}
+    .legend dd{display:none}
+    .card{left:16px;right:16px;top:auto;bottom:16px}
+  }
+  @media (prefers-reduced-motion:reduce){.legend i.pulse{animation:none}}
 </style>
 </head>
 <body>
