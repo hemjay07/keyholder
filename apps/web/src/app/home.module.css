@@ -6,7 +6,7 @@
 .rest { display: block; font: 500 30px/1.15 var(--font-display); letter-spacing: -0.015em; margin-top: 18px; max-width: 22ch; }
 @keyframes settle { from { transform: translateY(16px); } to { transform: none; } }
 .lede { color: var(--ink-2); margin: 18px 0 0; max-width: 52ch; }
-.device { height: 66vh; min-height: 500px; border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); }
+.device { min-height: 100vh; border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); }
 .missing { display: grid; place-items: center; height: 100%; margin: 0; color: var(--ink-2); }
 .cap { display: flex; justify-content: space-between; gap: 16px; font-size: 11px; color: var(--ink-2); padding-top: 10px; padding-bottom: 10px; }
 .wrap h2 { font: 500 28px/1.15 var(--font-display); letter-spacing: -0.01em; margin: 72px 0 6px; }
@@ -34,7 +34,7 @@
   .hero { grid-template-columns: 1fr; gap: 24px; padding-top: 32px; padding-bottom: 24px; }
   .fig { font-size: 88px; }
   .rest { font-size: 22px; }
-  .device { height: 70vh; min-height: 440px; }
+  .device { min-height: 100vh; }
   .cap span:last-child { display: none; }
   .wrap h2 { margin-top: 48px; }
   .rec { grid-template-columns: 1fr; gap: 6px; }

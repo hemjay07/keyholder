@@ -44,7 +44,7 @@ export default async function HomePage() {
       </section>
 
       <section className={s.device} aria-label={`Stage map: ${live} programs on four stages of who can move their money`}>
-        {data.programs.length > 0 ? <StageMapLazy programs={data.programs} pending={data.pending} /> : <p className={s.missing}>{readError ? 'The record could not be read just now.' : 'No record day has been built yet.'}</p>}
+        {data.programs.length > 0 ? <StageMapLazy programs={data.programs} pending={data.pending} story /> : <p className={s.missing}>{readError ? 'The record could not be read just now.' : 'No record day has been built yet.'}</p>}
       </section>
       <div className={`${s.wrap} ${s.cap}`}>
         <span>Each column is one program on its stage; height is the dollars traced to it. Click one for its keys.{data.day ? ` Record of ${data.day}.` : ''}</span>

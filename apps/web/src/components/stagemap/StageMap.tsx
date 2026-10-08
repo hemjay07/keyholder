@@ -3,7 +3,7 @@
 // The home page's device: the Stage map canvas plus its DOM layer (hover card, pick panel, key tip).
 // Signer facts load on the first pick (/api/v1/records?view=control), not with the page. Esc closes a pick.
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Canvas } from '@react-three/fiber';
+import { Canvas, useThree } from '@react-three/fiber';
 import { Scene, keysOfFacts, PALETTES } from './scene';
 import type { ControlFacts, MapProgram, Mark } from './types';
 import { programName, shortAddr } from '@/lib/program-names';
@@ -17,9 +17,16 @@ const loadControl = () =>
     .then((j: { data: Record<string, ControlFacts> }) => j.data)
     .catch((e: unknown) => { controlLoad = null; throw e; }));
 
-export interface StageMapProps { programs: MapProgram[]; pending: string[] }
+export interface StageMapProps { programs: MapProgram[]; pending: string[]; story?: boolean }
 
-export default function StageMap({ programs, pending }: StageMapProps) {
+/** Inside the canvas: wakes the demand frame loop when the page scrolls. */
+function WakeOnScroll() {
+  const { invalidate } = useThree();
+  useEffect(() => { const on = () => invalidate(); addEventListener('scroll', on, { passive: true }); return () => removeEventListener('scroll', on); }, [invalidate]);
+  return null;
+}
+
+export default function StageMap({ programs, pending, story = false }: StageMapProps) {
   const [control, setControl] = useState<Record<string, ControlFacts>>({});
   const [picked, setPicked] = useState<MapProgram | null>(null);
   const [hover, setHover] = useState<Mark | null>(null);
@@ -48,12 +55,31 @@ export default function StageMap({ programs, pending }: StageMapProps) {
     return () => removeEventListener('keydown', k);
   }, []);
 
+  // Scroll story: progress through the tall pinned section; the camera reads the ref each frame.
+  const storyRef = useRef<HTMLDivElement>(null);
+  const scroll = useRef(0);
+  const [progress, setProgress] = useState(0);
+  const reduced = typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  useEffect(() => {
+    if (!story) return;
+    const on = () => {
+      const el = storyRef.current; if (!el) return;
+      const r = el.getBoundingClientRect(), span = el.offsetHeight - innerHeight;
+      scroll.current = span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 0;
+      setProgress(scroll.current);
+    };
+    on(); addEventListener('scroll', on, { passive: true }); addEventListener('resize', on);
+    return () => { removeEventListener('scroll', on); removeEventListener('resize', on); };
+  }, [story]);
+  const go = (i: number) => { const el = storyRef.current; if (el) scrollTo({ top: el.offsetTop + (el.offsetHeight - innerHeight) * (i / 5), behavior: reduced ? 'auto' : 'smooth' }); };
+
   const canHover = typeof matchMedia !== 'undefined' && matchMedia('(hover: hover)').matches;
-  return (
+  const map = (
     <div className={s.map} data-device="stage-map"
       onPointerMove={(e) => { const r = e.currentTarget.getBoundingClientRect(); setPtr({ x: e.clientX - r.left, y: e.clientY - r.top, w: r.width }); }}>
       <Canvas onPointerMissed={() => setPicked(null)} frameloop="demand" shadows="percentage" dpr={[1, 1.5]} camera={{ fov: 20, near: 0.1, far: 200 }} gl={{ antialias: true }}>
-        <Scene pal={PALETTES[theme]} programs={programs} pending={pendingSet} control={control} picked={picked} onHover={setHover} onPick={pick} onKey={setKeyTip} />
+        <Scene pal={PALETTES[theme]} programs={programs} pending={pendingSet} control={control} picked={picked} onHover={setHover} onPick={pick} onKey={setKeyTip} scroll={story ? scroll : undefined} />
+        {story && <WakeOnScroll />}
       </Canvas>
       {keyTip && <div className={s.keytip}>{keyTip}<span>click to copy</span></div>}
       {failed && <div className={s.keytip}>Could not load signer keys. Try again.</div>}
@@ -65,8 +91,42 @@ export default function StageMap({ programs, pending }: StageMapProps) {
           <div className={s.hint}>click for its keys</div>
         </div>
       )}
+      {story && !reduced && !picked && <Captions live={live} p={progress} />}
+      {story && !reduced && !picked && <Rail p={progress} onGo={go} />}
       {picked && <Picked p={picked} live={live} control={control} onPick={pick} onClose={() => setPicked(null)} />}
     </div>
+  );
+  if (!story || reduced) return map;
+  return <div ref={storyRef} className={s.story}><div className={s.pin}>{map}</div></div>;
+}
+
+/** One caption per close shot; counts and dollars computed from the record, never typed. */
+function Captions({ live, p }: { live: MapProgram[]; p: number }) {
+  const at = (n: number) => live.filter((x) => x.stage === n);
+  const sum = (a: MapProgram[]) => formatUsd(a.reduce((t, x) => t + x.usd, 0));
+  const kamino = live.find((x) => x.id === 'KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD');
+  const lines: ([string, string] | null)[] = [
+    null,
+    [`Stage 0 · ${at(0).length} programs · ${sum(at(0))}`, 'One key can replace the code today. No second signer, no waiting period.'],
+    [`Stage 1 · ${at(1).length} programs · ${sum(at(1))}`, `Several signers, but less than a day of notice.${kamino ? ` Kamino Lend's ${formatUsd(kamino.usd)} is here: its admin key is 4 of 10 with no timelock.` : ''}`],
+    [`Stage 2 · ${at(2).length} programs · ${sum(at(2))}`, 'Every change waits 24 hours or more, long enough for users to see it coming and leave.'],
+    [`Stage 3 · ${at(3).length} programs · ${sum(at(3))}`, 'Cannot be changed at all, or only after a seven-day exit window.'],
+    null,
+  ];
+  const f = p * (lines.length - 1), i = Math.round(f), near = 1 - Math.min(1, Math.abs(f - i) * 2.2);
+  const line = lines[i];
+  return line ? <div className={s.caption} style={{ opacity: near }}><b>{line[0]}</b><span>{line[1]}</span></div> : null;
+}
+
+/** Where the climb is; a tick scrolls to that shot. */
+function Rail({ p, onGo }: { p: number; onGo: (i: number) => void }) {
+  const at = Math.round(p * 5);
+  return (
+    <nav className={s.rail} aria-label="Stages">
+      {(['Map', '0', '1', '2', '3'] as const).map((l, i) => (
+        <button key={l} className={at === i || (i === 0 && at === 5) ? s.on : ''} onClick={() => onGo(i)} aria-label={i ? `Stage ${l}` : 'Whole map'}><i />{l}</button>
+      ))}
+    </nav>
   );
 }
 

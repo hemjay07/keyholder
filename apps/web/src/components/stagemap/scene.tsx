@@ -217,10 +217,12 @@ function SignerFan({ pal, fan, picked, onKey }: { pal: Palette; fan: Fan | null;
 export interface SceneProps {
   pal: Palette; programs: MapProgram[]; pending: Set<string>; control: Record<string, ControlFacts>; picked: MapProgram | null;
   onHover: (m: Mark | null) => void; onPick: (m: Mark | null) => void; onKey: (k: string | null) => void;
+  /** Scroll progress through the pinned story, 0..1, read every frame (no React re-render per scroll). */
+  scroll?: { current: number };
 }
 
 /** Whole-map shot fitted to width and depth; a pick eases the camera to frame the column, its keys and its links. */
-export function Scene({ pal, programs, pending, control, picked, onHover, onPick, onKey }: SceneProps) {
+export function Scene({ pal, programs, pending, control, picked, onHover, onPick, onKey, scroll }: SceneProps) {
   const { camera, size, invalidate } = useThree();
   const narrow = size.width < 600;
   const width = narrow ? 5 : 11, stepD = narrow ? 2.6 : 1.6;
@@ -242,20 +244,41 @@ export function Scene({ pal, programs, pending, control, picked, onHover, onPick
       if (narrow) look.y -= Math.tan(vf) * d * 0.55; else look.x += Math.tan(hf) * d * (1 - usable); // clear of panel / sheet
       return { look, pos: look.clone().add(new THREE.Vector3(0.12, narrow ? 0.38 : 0.32, 1).normalize().multiplyScalar(d)) };
     }
+    return null;
+  }, [fan, pickedMark, fov, size.width, size.height, narrow]);
+  // Scroll story: the whole map, a close shot of each step (Stage 0 up to 3, aimed at its biggest program), the
+  // whole map again. Without a scroll ref (or with reduced motion) the camera holds the whole-map shot.
+  const shots = useMemo(() => {
+    const vf = THREE.MathUtils.degToRad(fov / 2), hf = Math.atan(Math.tan(vf) * (size.width / size.height));
     const d = Math.max((width / 2 + (narrow ? 0.4 : 1.3)) / Math.tan(hf), ((stepD * 4 * 0.5 + 1.4) / Math.tan(vf)) * (narrow ? 0.85 : 0.5));
-    return { pos: new THREE.Vector3(0, narrow ? d * 0.95 : 0.6 + d * 0.5, narrow ? d * 0.55 - 1.6 : d * 0.88 - 2.4), look: new THREE.Vector3(0, 0.75, -1.75 * stepD) };
-  }, [fan, pickedMark, fov, size.width, size.height, narrow, width, stepD]);
+    const whole = { pos: new THREE.Vector3(0, narrow ? d * 0.95 : 0.6 + d * 0.5, narrow ? d * 0.55 - 1.6 : d * 0.88 - 2.4), look: new THREE.Vector3(0, 0.75, -1.75 * stepD) };
+    const close = (st: number) => {
+      const top = marks.filter((p) => p.stage === st).sort((a, b) => b.usd - a.usd)[0];
+      const x = THREE.MathUtils.clamp(top ? top.x + width * 0.12 : 0, -width * 0.3, width * 0.3);
+      const look = new THREE.Vector3(narrow ? 0 : x, st * 0.55 + 0.4, -st * stepD);
+      return { pos: look.clone().add(new THREE.Vector3(narrow ? 0 : 1.4, narrow ? 4.4 : 2.6, narrow ? 6.8 : 6.0)), look };
+    };
+    return [whole, close(0), close(1), close(2), close(3), whole];
+  }, [fov, size.width, size.height, width, narrow, stepD, marks]);
+  const goal = useMemo(() => ({ pos: new THREE.Vector3(), look: new THREE.Vector3() }), []);
   const look = useRef<THREE.Vector3 | null>(null);
   const reduced = prefersReduced();
-  useEffect(() => { invalidate(); }, [shot, invalidate]);
+  useEffect(() => { invalidate(); }, [shot, shots, invalidate]);
   useFrame(() => {
+    if (shot) { goal.pos.copy(shot.pos); goal.look.copy(shot.look); }
+    else {
+      const p = reduced ? 0 : Math.min(1, Math.max(0, scroll?.current ?? 0));
+      const f = p * (shots.length - 1), i = Math.min(shots.length - 2, Math.floor(f)), k = f - i, e = k * k * (3 - 2 * k);
+      goal.pos.lerpVectors(shots[i]!.pos, shots[i + 1]!.pos, e);
+      goal.look.lerpVectors(shots[i]!.look, shots[i + 1]!.look, e);
+    }
     const first = !look.current;
-    if (!look.current) look.current = shot.look.clone();
+    if (!look.current) look.current = goal.look.clone();
     const t = first || reduced ? 1 : 0.14;
-    camera.position.lerp(shot.pos, t);
-    look.current.lerp(shot.look, t);
+    camera.position.lerp(goal.pos, t);
+    look.current.lerp(goal.look, t);
     camera.lookAt(look.current);
-    if (camera.position.distanceToSquared(shot.pos) > 1e-6 || look.current.distanceToSquared(shot.look) > 1e-6) invalidate();
+    if (camera.position.distanceToSquared(goal.pos) > 1e-6 || look.current.distanceToSquared(goal.look) > 1e-6) invalidate();
   });
   return (
     <>
