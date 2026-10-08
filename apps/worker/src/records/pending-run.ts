@@ -40,7 +40,9 @@ export function controllingV4(records: ProgramRecord[]): MsInfo[] {
 async function main(): Promise<void> {
   const postgres = (await import('postgres')).default;
   const sql = postgres(process.env.DATABASE_URL!, { max: 1 });
-  const conn = new Connection(process.env.DAILY_RPC_URL ?? 'https://api.mainnet-beta.solana.com', 'confirmed');
+  // Own RPC setting: proposal scans are getProgramAccounts on the Squads program, which exceed the daily job's
+  // free-tier provider limits (Alchemy 429 on the box, 2026-10-08); the public endpoint serves them.
+  const conn = new Connection(process.env.PENDING_RPC_URL ?? 'https://api.mainnet-beta.solana.com', 'confirmed');
   const client = process.env.ANTHROPIC_API_KEY ? new Anthropic() : null;
   try {
     const [{ day } = { day: null }] = await sql`select max(day)::text as day from record_day`;
