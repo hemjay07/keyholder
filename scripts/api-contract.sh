@@ -13,4 +13,5 @@ K=$(j "signers?limit=1" | python3 -c "import json,sys; print(json.load(sys.stdin
 j "signers/$K" | check signer "d['signer']['key']=='$K' and len(d['signer']['multisigs'])>=1 and d['signer']['usdBehind']>=0"
 j "changes?limit=5" | check changes "isinstance(d['events'], list)"
 j claims | check claims "isinstance(d['checks'], list)"
+j "pending?limit=5" | check pending "isinstance(d['pending'], list) and all(p['control_relevant'] for p in d['pending'])"
 code=$(curl -s -o /dev/null -w "%{http_code}" "$B/programs/11111111111111111111111111111111"); [ "$code" = 404 ] && echo "ok  unknown program -> 404" || { echo "FAIL unknown program -> $code"; exit 1; }

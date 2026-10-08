@@ -91,3 +91,5 @@
 | P79 | global | view transitions list -> program -> signer keep the selected point | REVAMP-3 Part 2 | open | |
 | P80 | proof | verify a day's anchor in the browser (recompute hash from published rows) | REVAMP-3 Part 2 | open | |
 | P81 | global | every page measured at 390 and 1280 on a production build, headed run, renders read | REVAMP-3 Part 2 | open | |
+| P82 | data | Ask Keyholder: questions answered by Claude only from Control Record tools, cited | founder 2026-10-08 (Anthropic API) | tested | POST /api/v1/ask live; answers cite ids, decline ownership beyond "built from" |
+| P83 | data | pending control actions on controlling multisigs, decoded (Squads IDL), stale excluded, explained by Claude, in the feed | founder 2026-10-08 | tested | 6 tests on real proposals; box timer 30 min; prod: 50 relevant open, explanations filling at 20/run |
