@@ -17,7 +17,7 @@ tar czf - \
   | $SSH "cd $APP && tar xzf - && mkdir -p data/claims data/records && chown -R keyholder:keyholder $APP/packages $APP/apps/worker $APP/data $APP/pnpm-lock.yaml"
 $SSH "set -eo pipefail
 RUN='systemd-run --quiet --wait --pipe --collect -p User=keyholder -p EnvironmentFile=/etc/keyholder/env -p WorkingDirectory=$APP/apps/worker'
-cd $APP && sudo -u keyholder pnpm install --frozen-lockfile --silent --config.strict-dep-builds=false
+cd $APP && sudo -u keyholder env CI=true pnpm install --frozen-lockfile --reporter=append-only 2>&1 | tail -3
 cd $APP/packages/stages && sudo -u keyholder npx tsc
 cd $APP/packages/decoder && sudo -u keyholder npx tsc
 cd $APP/packages/risk && sudo -u keyholder npx tsc
