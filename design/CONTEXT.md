@@ -1,19 +1,110 @@
-# CONTEXT for Keyholder shows who can move the money in every Solana protocol (keys, threshold, timelock, verified code), rings when that control weakens, and lets any program refuse to deposit where it just did.
-Assembled 2026-09-26T11:33Z by context.mjs. Read this before writing any route. Cite it: every colour,
+# CONTEXT for Keyholder is the control standard for Solana: for any money on Solana it shows who can move it, how fast, whether that changed, and whether it matches what the team promised; any program can refuse money where control is weak.
+Assembled 2026-10-08T13:05Z by context.mjs. Read this before writing any route. Cite it: every colour,
 face, radius, duration and technique in the build comes from a line here or from design/TOKENS.css, never from memory.
 
 ## The one moment (charter.wonder)
-Drift's console with two of five keys turned and the timelock needle pinned at 0 h, under the line 'Drift needed two keys to lose $285M.'
-Hero technique: scroll-controls-3d · device: the launch console for one protocol: one key slot per signer (filled = required), the turn requirement (e.g. 4 of 7), a TIMELOCK dial whose needle rests at the live value, a VERIFIED lamp, and the last-change clock with its slot; a key slot empties and the orange lamp lights when control weakens (state)
+583 Solana programs fall onto a four-rung ladder of who can move their money; $769M settles on the rung that needs no waiting, and one orange mark pulses: a multisig with a pending vote to change who controls it.
+Hero technique: instanced-grid · device: the Stage map: every covered program (583) as one instanced mark on a four-rung ladder (Stage 0 one key, 1 no delay, 2 delayed, 3 exit window), sized by dollars traced; marks fall onto their rung as the day's record loads, a pending control action pulses its mark orange, and a stage change moves a mark one rung with the transaction that caused it (state)
 
 ## Tokens (design/TOKENS.css)
-(missing)
+```css
+/* design/TOKENS.css -- extracted by spec.mjs from design/proto/A.html on 2026-09-26.
+   Exact values. The shipped :root is diffed against this file (drift.mjs). Edit here first, then the code. */
+:root {
+  --bg: #E6E2D9;
+  --panel: #F4F1EA;
+  --ink: #1B1A17;
+  --ink-2: #5A564E;
+  --signal: #FF5A1F;
+  --signal-text: #A32F06;
+  --verified: #1F6B4A;
+  --hair: rgba(27,26,23,.14);
+
+  /* derived from computed styles; names the prototype already declares above are not repeated. The build declares all of these. */
+  --ground: rgb(230, 226, 217);
+  --ink-3: rgb(163, 47, 6);
+  --signal-control-weakened: #FF5A1F;   /* painted as rgb(255, 90, 31) */
+  --signal-verified-on: #1F6B4A;   /* declared in CHARTER; not painted on this prototype */
+  --hairline: rgba(27, 26, 23, 0.14);
+  --radius: 50px;   /* others seen: 50px */
+  --font-display: Geist;   /* the largest text, 46.08px/400 */
+  --font-body: Geist Mono;   /* most common */
+  --weight-body: 400;
+  --display-1280: 46.08px;
+  --display-390: 30px;
+  --ease-1: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --d-tick: 90ms;
+  --d-element: 240ms;
+  --d-data: 320ms;
+  --d-count: 1400ms;
+  --cap: 1600ms;
+}
+
+/* The dark theme (P38) lives in TOKENS-DARK.css; drift.mjs compares this :root only. */
+```
 
 ## Faces
 display: Geist · text: Geist · mono: Geist Mono
 Fetch: node ~/.claude/surface/bin/fetch-part.mjs font "<Family>@400,700" [--from fontshare]
 
 ## Parts to compose from (8)
+### instanced-grid
+# instanced-grid
+
+A 40x40 field of drei `Instances` in a single `InstancedMesh`. One `useFrame` in the parent walks the
+array and writes each tile's height from its distance to the pointer; the easing stops when it settles.
+
+- Source: https://github.com/pmndrs/examples/blob/main/examples/instances/src/App.tsx
+  — `examples/instances/src/App.tsx:54-75` (laying instances out in a loop and writing their matrices
+  in one pass). The `<Instances>` / `<Instance>` component form follows
+  `examples/monitors/src/Computers.tsx`.
+- Licence: MIT (pmndrs/examples).
+- When to use: hundreds of identical marks have to react individually without hundreds of draw calls.
+- Props on `<GridTiles>`: `reduced`. Internals worth moving: `GRID` (40), `GAP` (0.075), the box
+  geometry size, the falloff radius (0.75) and the height multiplier (`1 + v * 3.4`).
+- Shape of the solution worth keeping: no per-instance hook. 1600 `useFrame` subscriptions would cost
+  more than the render; one parent loop over an array of refs plus a `Float32Array` of eased values
+  is the whole thing, and it calls `invalidate()` only while a tile is still moving.
+- Measured (390 and 1280, dpr 1, headless software GL, --motion): no layout findings at either width.
+  390: `5 long tasks, longest 770ms, 1 after load`. 1280: `5 long tasks, longest 775ms`. First-frame
+  instance setup and shader compile; no frame-time finding, the canvas is idle until the pointer moves.
+- Phone (390): the caption stacks under the canvas and the camera lifts to [0, 8.4, 12.2] looking at
+  (0, 1.2, 0) so the whole 2.9-unit field fits the narrow viewport.
+- Reduced motion: every tile's target height is forced to 0, so the grid renders flat and the loop
+  settles immediately; combined with `frameloop="demand"` the page draws one static field.
+cost: 2090 KB, p95 33 ms on the floor
+```jsx
+function InstancedGrid() {
+  const reduced = useReduced();
+  const phone = usePhone();
+  return (
+    <Frame
+      kicker="Instanced grid"
+      title="Sixteen hundred tiles, one draw call"
+      lede="A 40 by 40 grid of drei Instances. One useFrame in the parent walks the array and writes position and scale; the pointer's distance to each tile is the only input, and the easing stops when it settles."
+      foot="Move the pointer across the field. Instances batches the whole grid into a single InstancedMesh, so the cost is the array walk, not the draw."
+    >
+      <Canvas
+        key={phone ? "phone" : "wide"}
+        data-device="instanced-grid"
+        style={S.fill}
+        dpr={[1, 1.5]}
+        frameloop="demand"
+        gl={{ preserveDrawingBuffer: true, antialias: true }}
+        camera={phone ? { position: [0, 8.4, 12.2], fov: 26 } : { position: [-1.5, 3.4, 5.6], fov: 26 }}
+        onCreated={({ camera }) => camera.lookAt(phone ? 0 : -0.95, phone ? 1.2 : -0.55, 0)}
+      >
+        <color attach="background" args={[T.ground]} />
+        <ambientLight intensity={0.5} />
+        <directionalLight position={[3, 6, 3]} intensity={2.3} />
+        <directionalLight position={[-4, 2, -3]} intensity={0.6} />
+        <GridTiles reduced={reduced} />
+      </Canvas>
+    </Frame>
+  );
+}
+```
+
 ### scroll-controls-3d
 # scroll-controls-3d
 
@@ -38,114 +129,6 @@ block between three fixed poses, and `<Scroll html>` carries the copy that scrol
   the offset is still changing, so an unscrolled page renders once in pose one and stops.
 cost: 2090 KB, p95 17 ms on the floor
 (component source not found in the lab)
-
-### hdri-environment
-# hdri-environment
-
-A real .hdr loaded once as the scene environment, with two metal spheres reflecting it at different
-`envMapIntensity` values so the knob's effect is visible side by side.
-
-- Source: https://github.com/pmndrs/examples/blob/main/examples/glass-flower/src/App.tsx
-  — `examples/glass-flower/src/App.tsx:94-97` (`<Environment files= resolution=>`).
-  Asset: `node ~/.claude/surface/bin/fetch-part.mjs hdri "dark studio softbox" --out public/hdri`
-  → Poly Haven `monochrome_studio_03_1k.hdr` (1.5 MB, CC0), then box-downsampled here to 512x256 and
-  re-encoded as flat RGBE (`public/hdri/studio_512.hdr`, 512 KB) to fit the 3000 KB page budget.
-  Provenance and the derivation are in `studio_512.hdr.SOURCE.json`.
-- Licence: MIT (pmndrs/examples code); HDRI CC0 (Poly Haven).
-- When to use: the reflections have to come from a real room and you can spend about half a megabyte.
-- Props: none. Internals worth moving: `HDRI_URL`, `Environment resolution` (256) and the two
-  `envMapIntensity` values (0.15 and 1.6).
-- Gotcha found while porting: in three r170 a scene-level environment is scaled by
-  `scene.environmentIntensity`, and `material.envMapIntensity` has no effect on it. To compare two
-  intensities in one frame the map has to be on the materials, so the part pulls the same texture with
-  drei's `useEnvironment({ files })` and sets `envMap` per material. Setting `envMapIntensity` on a
-  material that only sees `scene.environment` looks like a no-op and is easy to mistake for a bad file.
-- Measured (390 and 1280, dpr 1, headless software GL, --motion): no layout findings at either width.
-  390: `3 long tasks, longest 869ms, 0 after load`. 1280: clean, 2503 KB transferred against a 3000 KB
-  budget. No frame-time finding; the canvas is idle after the first frame.
-- Phone (390): the caption stacks under the canvas, the camera pulls back to 12.6 so both spheres fit the
-  width, and the two intensity labels become half-width columns under them (the wide layout's
-  `calc(50% + 140px)` label ran 185px past the right edge at 390).
-- Reduced motion: nothing animates in this part at all; the canvas is `frameloop="demand"` and renders
-  one frame, so the reduced and full-motion pages are the same image.
-cost: 2602 KB, p95 17 ms on the floor
-(component source not found in the lab)
-
-### contact-shadows-float
-# contact-shadows-float
-
-drei `ContactShadows` renders the object's depth into a blurred plane under it; drei `Float` moves the
-object on three slow sine waves, so the shadow tightens and loosens as the gap to the floor changes.
-
-- Source: https://github.com/pmndrs/examples/blob/main/examples/frosted-glass/src/App.tsx
-  — `examples/frosted-glass/src/App.tsx:32-39` (resolution / position / opacity / scale / blur / far).
-  `Float` wrapping a prop follows `examples/building-live-envmaps/src/App.tsx:182-190`.
-- Licence: MIT (pmndrs/examples).
-- When to use: a product shot needs to sit on a surface without paying for a real shadow map.
-- Props: none. Internals worth moving: `ContactShadows` `resolution` (256), `blur` (1.8), `far` (1.2),
-  `scale` (4), `opacity`; `Float` `speed`, `rotationIntensity`, `floatIntensity`, `floatingRange`.
-- Gotcha found while porting, worth keeping: **the ContactShadows group must stay on the world X/Z
-  origin.** drei blurs the shadow target by rendering a quad that sits at the world origin through the
-  shadow camera (`node_modules/@react-three/drei/core/ContactShadows.js:58-70`), so an off-axis
-  `position={[1.55, y, 0]}` blurs the shadow off the edge of the buffer and you get no shadow at all.
-  Offset the camera, not the shadow. A Y offset is safe because the shadow camera looks along +Y.
-- Measured (390 and 1280, dpr 1, headless software GL, --motion): no layout findings at either width.
-  390: `frame time p95 67ms (budget 34), 91 dropped`. 1280: `frame time p95 117ms, 97 dropped`,
-  `96 long tasks, longest 658ms`. Software-GL floor: the shadow target is re-rendered and blurred three
-  times per frame with no GPU behind it.
-- Phone (390): the caption stacks under the canvas, clear of the lab's fixed `.part-note` label, and the
-  camera gets its own narrow-viewport position with an explicit `lookAt` so the subject stays in frame.
-- Reduced motion: `Float` is not mounted at all (the product renders in its rest pose), `ContactShadows`
-  drops to `frames={1}`, and the canvas drops to `frameloop="demand"` — one static frame, no loop.
-cost: 2090 KB, p95 50 ms on the floor
-```jsx
-function ContactShadowsFloat() {
-  const reduced = useReduced();
-  const loop = useFrameloop(reduced);
-  const product = (
-    <group position={[0, 0.05, 0]} scale={0.8}>
-      <Canister />
-    </group>
-  );
-  return (
-    <Frame
-      kicker="Contact shadows + float"
-      title="The shadow is what sells the weight"
-      lede="ContactShadows renders the object's depth into a blurred plane below it. Float moves the object on three slow sine waves, and the shadow tightens and loosens as the gap changes."
-      foot="Shadow resolution 256, blur 1.8, far 1.2, scale 4. Keep the shadow group on the world origin and move the camera instead."
-    >
-      <Canvas
-        data-device="contact-shadows-float"
-        style={S.fill}
-        dpr={[1, 1.5]}
-        frameloop={loop}
-        shadows
-        gl={{ preserveDrawingBuffer: true, antialias: true }}
-        camera={{ position: [-2.1, 2.2, 6.2], fov: 38 }}
-        onCreated={({ camera }) => camera.lookAt(-0.55, -0.2, 0)}
-      >
-        <color attach="background" args={[T.ground]} />
-        <ambientLight intensity={0.55} />
-        <directionalLight position={[3, 7, 4]} intensity={2.4} />
-        <directionalLight position={[-5, 2, -3]} intensity={0.7} />
-        {reduced ? product : (
-          <Float speed={1.4} rotationIntensity={0.5} floatIntensity={1.1} floatingRange={[-0.08, 0.28]}>
-            {product}
-          </Float>
-        )}
-        {/* a floor to catch the shadow: a black blur on a black ground reads as nothing */}
-        <mesh rotation-x={-Math.PI / 2} position={[0, -0.64, 0]} receiveShadow>
-          <planeGeometry args={[40, 40]} />
-          <meshStandardMaterial color="#35353d" roughness={0.95} metalness={0} />
-        </mesh>
-        {/* the shadow group must sit on the world X/Z origin: drei blurs the target with a quad at the
-            origin, so an off-axis ContactShadows blurs its own content off the edge of the buffer */}
-        <ContactShadows position={[0, -0.58, 0]} resolution={256} scale={4} blur={1.8} far={1.2} opacity={0.95} color="#000000" frames={reduced ? 1 : Infinity} />
-      </Canvas>
-    </Frame>
-  );
-}
-```
 
 ### number-odometer
 # number-odometer
@@ -464,6 +447,28 @@ function LiveTicker({ interval = 1100, keep = 9, freshFor = 6000 }) {
 }
 ```
 
+### view-transition
+# view-transition
+
+A list and its detail as two states of the same document, swapped inside
+`document.startViewTransition`, with one element named across both states so the browser morphs its
+box instead of crossfading it.
+
+- Source: https://github.com/darkroomengineering/satus —
+  `lib/styles/css/global.css:141-181` (name the snapshots, animate opacity only, keep the overlay
+  out of hit-testing) and `:190-196` (kill every `::view-transition-*` animation under reduced
+  motion); `components/layout/README.md:70-88` (one named participant per shared subject).
+  React 18 needs the state write inside `flushSync` so the browser captures the finished DOM.
+- Licence: MIT.
+- When: reach for it when a list and its detail are the same page and the swap should read as one move.
+- Props: none; `ROWS` holds the four launches.
+- Measured (dpr 1, software GL, `--width 390,1280 --motion --budget-kb 3000`): no findings at either width. 1280: load 122 ms, frame p50 17 ms, p95 17 ms, longest task 61 ms. 390: load 124 ms, p50 17 ms, p95 17 ms, longest task 60 ms. 2087 KB transferred is the shared lab bundle, not this part's own cost. At 390 the rows go to two columns and the list owns the first screen.
+- Reduced motion: `startViewTransition` is not called at all and the state is set directly; the CSS
+  also zeroes every `::view-transition-*` animation, so a transition started elsewhere would be
+  instant too (124 words in both poses). Without the API the same direct set runs and the page says so.
+cost: 2090 KB, p95 17 ms on the floor
+(component source not found in the lab)
+
 ### dual-theme-tokens
 # dual-theme-tokens
 
@@ -625,7 +630,7 @@ one 4,425-line hand-authored UI package, 45 components, no kit | packages/ui/ | 
 `fill: var(--cordon-ink)` on chart marks | packages/ui/styles/chart.css:25 | charts drawn in ink, not chart-library defaults | charts take the page's tokens; no library palette leaks
 shots: /Users/mujeeb/.claude/surface/refs/cordon/1280.png, /Users/mujeeb/.claude/surface/refs/cordon/390.png
 
-### linear-changelog: take 0 accent hues and 1 easing across a dense dated list: the control changelog per protocol
+### linear-changelog: take 0 accent hues and 1 easing across a dense dated list: the control feed and the pending queue
 hues 0, signal C 0, ground L 0.139, ink L 0.874, radius 100px, shadows 3, easings 1, longest 250 ms, display 48px, above the fold 109, 288117 KB
 /* linear-changelog: values read from computed styles at 1280; :root vars copied where readable */
 /* measured */
@@ -643,7 +648,7 @@ one easing `cubic-bezier(0.25,0.46,0.45,0.94)` x54, durations 100/120/160/250 ms
 display 48 px "Now" at both widths; 8312 words on one page | TOKENS.css "display", "above the fold" | a long page reads because the type scale never changes | long is fine when the scale holds; the headline is still the biggest thing
 shots: /Users/mujeeb/.claude/surface/refs/linear-changelog/1280.png, /Users/mujeeb/.claude/surface/refs/linear-changelog/390.png
 
-### owid-grapher: take the chart with its sources on it: every figure carries its slot or transaction
+### owid-grapher: take the chart with its sources on it: every mark, figure and stage carries its transaction or anchored day
 hues 4, signal C 0.203, ground L 1, ink L 0.471, radius 100px, shadows 2, easings 2, longest 300 ms, display 25px, above the fold 978, 6118 KB
 /* owid-grapher: values read from computed styles at 1280; :root vars copied where readable */
 /* measured */
@@ -691,9 +696,10 @@ shots: /Users/mujeeb/.claude/surface/refs/megaeth/1280.png, /Users/mujeeb/.claud
 - too-many-hues (>3 buckets)
 - accent-everywhere (>9 moments)
 - one-default-face
-- CHARTER: a risk score or grade as the headline of any surface (facts first: keys, threshold, timelock, verified)
-- CHARTER: any orange that does not mean 'control got weaker'
-- CHARTER: a figure without its slot, transaction or 'reconstructed' label
+- CHARTER: an opinion score or grade as a headline (a stage is shown with the facts and rule that set it)
+- CHARTER: any orange that does not mean weak or weakening control
+- CHARTER: a figure without its transaction, anchored day or 'reconstructed' label
+- CHARTER: naming a protocol as owner of a program beyond what the chain proves (a repo is 'built from')
 
 ## Copy
 # VOICE.md (copy rules for the founder)
@@ -751,4 +757,4 @@ Read these before drafting any copy for a surface.
 - one hero technique, from the parts bin, named in the charter
 
 ## Missing before building
-- design/TOKENS.css (run spec.mjs on the surviving prototype, or write it from the charter's faces and signal colours)
+- nothing
