@@ -53,12 +53,24 @@
   .shared button{all:unset;cursor:pointer;color:var(--ink);text-decoration:underline;text-decoration-color:var(--hair);text-underline-offset:3px}
   .shared button:hover{text-decoration-color:var(--ink)}
   .shared span{color:var(--ink-2)}
+  .tip{position:fixed;z-index:3;background:var(--panel);border:1px solid var(--hair);padding:8px 10px;width:230px;pointer-events:none;font-size:11px;box-shadow:0 6px 18px rgba(27,26,23,.08)}
+  .tip .nm{font:500 14px Geist,sans-serif}
+  .tip .warn{color:var(--signal-text);margin-top:2px}
+  .tip .hint{color:var(--ink-2);margin-top:4px}
+  .rail{position:absolute;right:24px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px}
+  .rail button{all:unset;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:11px;color:var(--ink-2);letter-spacing:.06em;text-transform:uppercase;justify-content:flex-end;flex-direction:row-reverse}
+  .rail i{width:8px;height:8px;border:1px solid var(--ink);border-radius:50%;transition:background var(--d,240ms) cubic-bezier(.2,.7,.2,1),transform 240ms cubic-bezier(.2,.7,.2,1)}
+  .rail .on{color:var(--ink)}
+  .rail .on i{background:var(--ink);transform:scale(1.25)}
+  .rail button:focus-visible{outline:1px solid var(--ink);outline-offset:4px}
   .keytip{position:absolute;left:50%;top:24px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:6px 10px;font-size:11px;pointer-events:none}
   .keytip span{opacity:.6;margin-left:10px}
   @media (max-width:600px){
     .stage{padding:20px 16px 16px}
     .scrolly{margin:0 -16px}
-    .caption{left:16px;right:16px;bottom:16px}
+    .caption{left:16px;right:56px;bottom:16px}
+    .rail{right:12px}
+    .rail button{font-size:0;gap:0}
     header h1{font-size:30px}
     .legend{grid-template-columns:1fr 1fr;gap:10px}
     .legend dd{display:none}

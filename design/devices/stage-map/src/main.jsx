@@ -126,30 +126,81 @@ function Beacons({ marks, pending }) {
 
 // Signer keys of the picked program fan out above it; each key draws a line to the picked column and to every other
 // column whose controlling multisig it also signs for.
-function SignerFan({ picked, marks, width, onKey }) {
-  const geo = useMemo(() => {
-    if (!picked) return null;
-    const keys = keysOf(picked.id);
-    const byId = new Map(marks.map((p) => [p.id, p]));
-    const pts = [], nodes = [];
-    keys.forEach((k, i) => {
-      const a = keys.length === 1 ? 0 : (i / (keys.length - 1) - 0.5) * Math.min(width < 6 ? 1.9 : 3, keys.length * 0.3);
-      const cx = THREE.MathUtils.clamp(picked.x, -width / 2 + 1, width / 2 - 1);
-      const node = new THREE.Vector3(cx + a, picked.base + picked.h + 1.1, picked.z - 0.3);
-      nodes.push(node);
-      pts.push(node, new THREE.Vector3(picked.x, picked.base + picked.h, picked.z));
-      for (const [id, c] of Object.entries(CONTROL)) {
-        if (id === picked.id || !byId.has(id)) continue;
-        if ((c.ms?.memberKeys ?? (c.kind === "single_key" ? [c.auth] : [])).includes(k)) { const q = byId.get(id); pts.push(node, new THREE.Vector3(q.x, q.base + q.h, q.z)); }
-      }
+// The picked program's keys fan out just above it. Built once per pick: key nodes, and segments from each key to
+// the picked column ("own") and to every other column that key also signs for ("shared").
+function fanFor(picked, marks, width) {
+  if (!picked) return null;
+  const keys = keysOf(picked.id);
+  const byId = new Map(marks.map((p) => [p.id, p]));
+  const nodes = [], segs = [], related = [];
+  const spread = Math.min(width < 6 ? 1.9 : 3, keys.length * 0.3);
+  const cx = THREE.MathUtils.clamp(picked.x, -width / 2 + 1, width / 2 - 1);
+  const top = (q) => new THREE.Vector3(q.x, q.base + q.h, q.z);
+  keys.forEach((k, i) => {
+    const a = keys.length === 1 ? 0 : (i / (keys.length - 1) - 0.5) * spread;
+    const node = new THREE.Vector3(cx + a, picked.base + picked.h + 1.1, picked.z - 0.3);
+    nodes.push(node);
+    segs.push({ from: node, to: top(picked), shared: false, i });
+    for (const [id, c] of Object.entries(CONTROL)) {
+      if (id === picked.id || !byId.has(id) || !keysOfRec(c).includes(k)) continue;
+      const q = byId.get(id); related.push(q); segs.push({ from: node, to: top(q), shared: true, i });
+    }
+  });
+  return { keys, nodes, segs, related };
+}
+
+const easeOut = (k) => 1 - Math.pow(1 - Math.min(1, Math.max(0, k)), 3);
+
+// Keys drop in one after another, then each line draws from its key down to the columns it signs for; a ring settles
+// on the step around the picked column. Reduced motion shows the finished state.
+function SignerFan({ fan, picked, onKey }) {
+  const own = useRef(), shared = useRef(), nodes = useRef(), ring = useRef();
+  const t0 = useRef(0);
+  const { invalidate } = useThree();
+  const m = useMemo(() => new THREE.Object3D(), []);
+  const buf = useMemo(() => fan && {
+    own: new Float32Array(fan.segs.filter((x) => !x.shared).length * 6),
+    shared: new Float32Array(Math.max(1, fan.segs.filter((x) => x.shared).length) * 6),
+  }, [fan]);
+  useEffect(() => { t0.current = performance.now(); invalidate(); }, [fan, invalidate]);
+  useFrame(() => {
+    if (!fan) return;
+    const t = reduced ? 9 : (performance.now() - t0.current) / 1000;
+    const n = fan.nodes.length;
+    fan.nodes.forEach((v, i) => {
+      const k = easeOut((t - i * (0.32 / Math.max(1, n))) / 0.28);
+      m.position.set(v.x, v.y + (1 - k) * 0.35, v.z); m.scale.setScalar(Math.max(0.001, k)); m.updateMatrix();
+      nodes.current.setMatrixAt(i, m.matrix);
     });
-    return { lines: new THREE.BufferGeometry().setFromPoints(pts), nodes, keys };
-  }, [picked, marks]);
-  if (!geo) return null;
+    nodes.current.instanceMatrix.needsUpdate = true;
+    let o = 0, s = 0;
+    const tmp = new THREE.Vector3();
+    for (const g of fan.segs) {
+      const k = easeOut((t - 0.25 - g.i * (0.32 / Math.max(1, n)) - (g.shared ? 0.25 : 0)) / 0.45);
+      tmp.lerpVectors(g.from, g.to, Math.max(0.0001, k));
+      const arr = g.shared ? buf.shared : buf.own, j = (g.shared ? s++ : o++) * 6;
+      arr.set([g.from.x, g.from.y, g.from.z, tmp.x, tmp.y, tmp.z], j);
+    }
+    own.current.geometry.attributes.position.needsUpdate = true;
+    shared.current.geometry.attributes.position.needsUpdate = true;
+    const rk = easeOut((t - 0.1) / 0.5);
+    ring.current.scale.setScalar(0.6 + 0.4 * rk); ring.current.material.opacity = 0.85 * rk;
+    if (t < 2) invalidate();
+  });
+  if (!fan || !picked) return null;
   return (
     <group>
-      <lineSegments geometry={geo.lines}><lineBasicMaterial color={INK} transparent opacity={0.45} /></lineSegments>
-      {geo.nodes.map((v, i) => <mesh key={i} position={v} onPointerOver={(e) => { e.stopPropagation(); onKey(geo.keys[i]); document.body.style.cursor = "pointer"; }} onPointerOut={() => { onKey(null); document.body.style.cursor = ""; }} onClick={(e) => { e.stopPropagation(); navigator.clipboard?.writeText(geo.keys[i]); }}><sphereGeometry args={[0.06, 16, 16]} /><meshStandardMaterial color={INK} /></mesh>)}
+      <lineSegments ref={own}><bufferGeometry><bufferAttribute attach="attributes-position" args={[buf.own, 3]} /></bufferGeometry><lineBasicMaterial color={INK} transparent opacity={0.35} /></lineSegments>
+      <lineSegments ref={shared}><bufferGeometry><bufferAttribute attach="attributes-position" args={[buf.shared, 3]} /></bufferGeometry><lineBasicMaterial color={INK} transparent opacity={0.6} /></lineSegments>
+      <instancedMesh ref={nodes} args={[null, null, fan.nodes.length]}
+        onPointerOver={(e) => { e.stopPropagation(); onKey(fan.keys[e.instanceId]); document.body.style.cursor = "pointer"; }}
+        onPointerOut={() => { onKey(null); document.body.style.cursor = ""; }}
+        onClick={(e) => { e.stopPropagation(); navigator.clipboard?.writeText(fan.keys[e.instanceId]); onKey(fan.keys[e.instanceId] + " ✓"); }}>
+        <sphereGeometry args={[0.055, 20, 20]} /><meshStandardMaterial color={INK} roughness={0.35} />
+      </instancedMesh>
+      <mesh ref={ring} position={[picked.x, picked.base + 0.004, picked.z]} rotation={[-Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[picked.w * 1.1, picked.w * 1.1 + 0.025, 48]} /><meshBasicMaterial color={INK} transparent opacity={0} />
+      </mesh>
     </group>
   );
 }
@@ -169,6 +220,25 @@ function Scene({ data, onHover, picked, onPick, onKey }) {
   // Camera shots along the scroll: the whole map, then each step close (Stage 0 up to 3), then the whole map again.
   const pickedMark = picked && marks.find((p) => p.id === picked.id);
   useEffect(() => { invalidate(); }, [pickedMark, invalidate]);
+  const fan = useMemo(() => fanFor(pickedMark, marks, width), [pickedMark, marks, width]);
+  // Pick shot: frame the picked column, its keys and every column they link to. On desktop the panel covers the
+  // right side, so the subject is framed in the left two thirds.
+  const pickShot = useMemo(() => {
+    if (!fan) return null;
+    const box = new THREE.Box3();
+    box.expandByPoint(new THREE.Vector3(pickedMark.x, pickedMark.base, pickedMark.z));
+    fan.nodes.forEach((v) => box.expandByPoint(v));
+    fan.related.forEach((q) => { box.expandByPoint(new THREE.Vector3(q.x, q.base, q.z)); box.expandByPoint(new THREE.Vector3(q.x, q.base + q.h, q.z)); });
+    const c = box.getCenter(new THREE.Vector3()), sz = box.getSize(new THREE.Vector3());
+    const aspect = size.width / size.height, vf = THREE.MathUtils.degToRad(camera.fov / 2), hf = Math.atan(Math.tan(vf) * aspect);
+    const usable = narrow ? 0.92 : 0.62, usableV = narrow ? 0.4 : 0.9;
+    const d = Math.max((sz.x / 2 + 0.6) / (Math.tan(hf) * usable), (sz.y / 2 + 0.6) / (Math.tan(vf) * usableV), 4.5);
+    const dir = new THREE.Vector3(0.12, narrow ? 0.38 : 0.32, 1).normalize();
+    const look = c.clone();
+    if (!narrow) look.x += Math.tan(hf) * d * (1 - usable);       // subject sits left of the panel
+    else look.y -= Math.tan(vf) * d * 0.55;                         // subject sits above the bottom sheet
+    return { look, pos: look.clone().add(dir.multiplyScalar(d)) };
+  }, [fan, pickedMark, size.width, size.height, camera.fov, narrow]);
   const shots = useMemo(() => {
     const half = Math.atan(Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * (size.width / size.height));
     const d = (width / 2 + (narrow ? 0.3 : 0.8)) / Math.tan(half);
@@ -188,9 +258,8 @@ function Scene({ data, onHover, picked, onPick, onKey }) {
   // Every frame the camera eases toward one goal: the picked program (its column and the keys above it) when one is
   // picked, otherwise the shot for the current scroll position. Closing a pick glides back to the scroll shot.
   useFrame(({ invalidate }) => {
-    if (pickedMark) {
-      goal.look.set(THREE.MathUtils.clamp(pickedMark.x, -width / 2 + 1, width / 2 - 1), pickedMark.base + pickedMark.h + (narrow ? -0.6 : 0.6), pickedMark.z);
-      goal.pos.copy(goal.look).add(new THREE.Vector3(narrow ? 0 : 0.8, narrow ? 4.5 : 2.6, narrow ? 15 : 9));
+    if (pickShot) {
+      goal.look.copy(pickShot.look); goal.pos.copy(pickShot.pos);
     } else {
       const p = reduced ? 0 : SCROLL.p;
       const f = p * (shots.length - 1), i = Math.min(shots.length - 2, Math.floor(f)), k = f - i, e = k * k * (3 - 2 * k);
@@ -212,7 +281,7 @@ function Scene({ data, onHover, picked, onPick, onKey }) {
       
       <Steps width={width} />
       <Columns marks={marks} pending={pending} onHover={onHover} onPick={onPick} related={related} />
-      <SignerFan picked={pickedMark} marks={marks} width={width} onKey={onKey} />
+      <SignerFan fan={fan} picked={pickedMark} onKey={onKey} />
       <Beacons marks={marks} pending={pending} />
     </>
   );
@@ -224,6 +293,7 @@ function App() {
   const [picked, setPicked] = useState(null);
   const [progress, setProgress] = useState(0);
   const [keyHover, setKeyHover] = useState(null);
+  const [ptr, setPtr] = useState({ x: 0, y: 0 });
   useEffect(() => { const k = (e) => e.key === "Escape" && setPicked(null); addEventListener("keydown", k); return () => removeEventListener("keydown", k); }, []);
   // Signer facts (171 KB) load on the first pick, not with the page.
   const pick = (p) => { if (!p) return setPicked(null); (CONTROL_READY ??= fetch("/control.json").then((r) => r.json()).then((c) => { CONTROL = c; })).then(() => setPicked(p)); };
@@ -254,11 +324,12 @@ function App() {
         <p className="sub">{live.length} programs on four stages of who can move their money. Record of {data.day}, anchored on chain.</p>
       </header>
       <section className="scrolly" ref={scrolly}>
-      <div className="map">
+      <div className="map" onPointerMove={(e) => { const r = e.currentTarget.getBoundingClientRect(); setPtr({ x: e.clientX - r.left, y: e.clientY - r.top, w: r.width }); }}>
         <Canvas onPointerMissed={() => setPicked(null)} frameloop="demand" shadows dpr={[1, 2]} camera={{ fov: 20, near: 0.1, far: 200 }} gl={{ antialias: true }}>
           <Scene data={data} onHover={setHover} picked={picked} onPick={pick} onKey={setKeyHover} />
         </Canvas>
         {!reduced && !picked && <Captions live={live} p={progress} />}
+        {!reduced && !picked && <Rail p={progress} onGo={(i) => { const el = scrolly.current; scrollTo({ top: el.offsetTop + (el.offsetHeight - innerHeight) * (i / 5), behavior: "smooth" }); }} />}
         {keyHover && <div className="keytip">{keyHover}<span>click to copy</span></div>}
       </div>
       </section>
@@ -269,7 +340,13 @@ function App() {
         <div><dt><i className="pulse" />Open proposal<b>{(data.pending ?? []).length}</b></dt><dd>a pending vote on a multisig that controls the program</dd></div>
       </dl>
       {picked && <Picked p={picked} live={live} onPick={pick} onClose={() => setPicked(null)} />}
-      {!picked && hover && <div className="card"><div className="nm">{name(hover)}</div><div>Stage {hover.stage} · {hover.usd ? usd(hover.usd) + " traced" : "no dollars traced"}</div><div className="id">{hover.id}</div>{(data.pending ?? []).includes(hover.id) && <div className="warn">open proposal on its controlling multisig</div>}</div>}
+      {!picked && hover && matchMedia("(hover: hover)").matches && (
+        <div className="tip" style={{ left: Math.min(ptr.x + 16, (ptr.w ?? 9999) - 260), top: ptr.y + 16 }}>
+          <div className="nm">{name(hover)}</div>
+          <div>Stage {hover.stage} · {hover.usd ? usd(hover.usd) + " traced" : "no dollars traced"}</div>
+          {(data.pending ?? []).includes(hover.id) && <div className="warn">open proposal on its controlling multisig</div>}
+          <div className="hint">click for its keys</div>
+        </div>)}
     </div>
   );
 }
@@ -309,6 +386,17 @@ function Picked({ p, live, onPick, onClose }) {
       <ul className="shared">{shared.slice(0, 8).map((x) => <li key={x.id}><button onClick={() => onPick(x)}>{name(x)}</button><span>Stage {x.stage}{x.usd ? " · " + usd(x.usd) : ""}</span></li>)}{!shared.length && <li><span>no other covered program</span></li>}</ul>
       <div className="id">{p.id}</div>
     </aside>
+  );
+}
+
+// Where the climb is: one tick per shot (the whole map, Stage 0 to 3), the current one filled; a tick scrolls to it.
+function Rail({ p, onGo }) {
+  const at = Math.round(p * 5);
+  const ticks = [["Map", 0], ["0", 1], ["1", 2], ["2", 3], ["3", 4]];
+  return (
+    <nav className="rail" aria-label="Stages">
+      {ticks.map(([l, i]) => <button key={i} className={at === i || (i === 0 && at === 5) ? "on" : ""} onClick={() => onGo(i)} aria-label={i ? `Stage ${l}` : "Whole map"}><i />{l}</button>)}
+    </nav>
   );
 }
 
