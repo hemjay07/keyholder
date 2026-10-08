@@ -1,4 +1,4 @@
-/* design/TOKENS.css -- extracted by spec.mjs from design/proto/A.html on 2026-09-26.
+/* design/TOKENS.css -- extracted by spec.mjs from design/proto/A.html on 2026-10-08.
    Exact values. The shipped :root is diffed against this file (drift.mjs). Edit here first, then the code. */
 :root {
   --bg: #E6E2D9;
@@ -9,19 +9,20 @@
   --signal-text: #A32F06;
   --verified: #1F6B4A;
   --hair: rgba(27,26,23,.14);
+  --ease: cubic-bezier(.2,.7,.2,1);
 
   /* derived from computed styles; names the prototype already declares above are not repeated. The build declares all of these. */
   --ground: rgb(230, 226, 217);
-  --ink-3: rgb(163, 47, 6);
-  --signal-control-weakened: #FF5A1F;   /* painted as rgb(255, 90, 31) */
-  --signal-verified-on: #1F6B4A;   /* declared in CHARTER; not painted on this prototype */
+  --ink-3: rgb(230, 226, 217);
+  --signal-control-is: #FF5A1F;   /* painted as rgb(163, 47, 6) */
+  --signal-holds-a: #1F6B4A;   /* painted as rgb(31, 107, 74) */
   --hairline: rgba(27, 26, 23, 0.14);
-  --radius: 50px;   /* others seen: 50px */
-  --font-display: Geist;   /* the largest text, 46.08px/400 */
+  --radius: 0px;
+  --font-display: Geist;   /* the largest text, 152px/500 */
   --font-body: Geist Mono;   /* most common */
   --weight-body: 400;
-  --display-1280: 46.08px;
-  --display-390: 30px;
+  --display-1280: 152px;
+  --display-390: 88px;
   --ease-1: cubic-bezier(0.2, 0.7, 0.2, 1);
   --d-tick: 90ms;
   --d-element: 240ms;
@@ -29,5 +30,3 @@
   --d-count: 1400ms;
   --cap: 1600ms;
 }
-
-/* The dark theme (P38) lives in TOKENS-DARK.css; drift.mjs compares this :root only. */
