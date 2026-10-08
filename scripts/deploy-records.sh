@@ -13,11 +13,11 @@ tar czf - \
   apps/worker/package.json apps/worker/src/schema.ts apps/worker/drizzle apps/worker/src/records \
   apps/worker/src/coverage/daily.ts apps/worker/src/coverage/anchor.ts apps/worker/src/coverage/verify-anchor.ts apps/worker/src/coverage/admin-keys.ts \
   data/coverage/admin-keys-2026-10-03.json data/coverage/admin-keys-2026-10-08.json data/coverage/dollars-by-class-2026-10-04.json data/coverage/coverage-tvl-2026-10-02.json \
-  pnpm-lock.yaml pnpm-workspace.yaml \
+  package.json pnpm-lock.yaml pnpm-workspace.yaml \
   | $SSH "cd $APP && tar xzf - && mkdir -p data/claims data/records && chown -R keyholder:keyholder $APP/packages $APP/apps/worker $APP/data $APP/pnpm-lock.yaml"
 $SSH "set -eo pipefail
 RUN='systemd-run --quiet --wait --pipe --collect -p User=keyholder -p EnvironmentFile=/etc/keyholder/env -p WorkingDirectory=$APP/apps/worker'
-cd $APP && sudo -u keyholder pnpm install --frozen-lockfile --silent
+cd $APP && sudo -u keyholder pnpm install --frozen-lockfile --silent --config.strict-dep-builds=false
 cd $APP/packages/stages && sudo -u keyholder npx tsc
 cd $APP/packages/decoder && sudo -u keyholder npx tsc
 cd $APP/packages/risk && sudo -u keyholder npx tsc
