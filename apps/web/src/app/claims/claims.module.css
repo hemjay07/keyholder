@@ -1,0 +1,6 @@
+.sec { margin-bottom: 40px; }
+.h2 { font: 500 24px var(--font-display); margin: 0 0 14px; }
+.empty { margin: 0; padding: 20px; border: 1px dashed var(--hair); color: var(--ink-2); }
+.list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); }
+.list li { display: grid; grid-template-columns: 1fr auto auto; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--hair); }
+.holds { color: var(--signal-verified-on); } .weak { color: var(--signal-text); }

@@ -35,7 +35,7 @@
 .meta div { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--hair); font-size: 12px; }
 .meta dt { color: var(--ink-2); }
 .meta dd { margin: 0; text-align: right; }
-.pre { margin: 0; background: var(--ink); color: var(--bg); padding: 14px; font: 12px/1.6 var(--font-body); overflow: auto; }
+.pre { margin: 0; background: var(--code-bg); color: var(--code-ink); padding: 14px; font: 12px/1.6 var(--font-body); overflow: auto; }
 @media (prefers-reduced-motion: reduce) { .rung, .bar { animation: none; } }
 @media (max-width: 960px) {
   .wrap { padding: 24px 16px 72px; } .h1 { font-size: 40px; }

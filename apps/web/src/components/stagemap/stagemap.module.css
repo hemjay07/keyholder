@@ -38,6 +38,6 @@
 .rail button { all: unset; cursor: pointer; display: flex; flex-direction: row-reverse; align-items: center; gap: 8px; font-size: 11px; color: var(--ink-2); letter-spacing: 0.06em; text-transform: uppercase; }
 .rail i { width: 8px; height: 8px; border: 1px solid var(--ink); border-radius: 50%; transition: background var(--d-element) var(--ease-1), transform var(--d-element) var(--ease-1); }
 .rail .on { color: var(--ink); }
-.rail .on i { background: var(--ink); transform: scale(1.25); }
+.rail .on i { background: var(--sel-bg); transform: scale(1.25); }
 .rail button:focus-visible { outline: 1px solid var(--ink); outline-offset: 4px; }
 @media (max-width: 600px) { .caption { left: 16px; right: 48px; bottom: 16px; } .rail { right: 12px; } .rail button { font-size: 0; gap: 0; } }

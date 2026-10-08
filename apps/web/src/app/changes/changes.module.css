@@ -9,8 +9,8 @@
 .tabs a b { font: 500 26px var(--font-display); font-variant-numeric: tabular-nums; }
 .tabs a small { font: 11px var(--font-body); color: var(--ink-2); }
 .tabs a:hover, .tabs a:focus-visible { border-color: var(--ink); }
-.tabs .on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
-.tabs .on small { color: var(--bg); opacity: 0.7; }
+.tabs .on { background: var(--sel-bg); color: var(--sel-ink); border-color: var(--sel-edge); }
+.tabs .on small { color: var(--sel-ink); opacity: 0.7; }
 .kinds { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); }
 .kinds a { display: flex; align-items: center; gap: 10px; padding: 9px 8px; border-bottom: 1px solid var(--hair); text-decoration: none; font-size: 13px; }
 .kinds a span { margin-left: auto; font-variant-numeric: tabular-nums; color: var(--ink-2); }

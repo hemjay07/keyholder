@@ -85,7 +85,7 @@ export default async function HomePage() {
         <div className={s.build}>
           <div className={s.card}><h3>Refuse weak control on chain</h3><p>Any program can refuse money where control is weak, with one line: require_stage.</p><pre>keyholder::require_stage(ctx, 2, 86_400)?;</pre><Link className={s.go} href="/policy">Build with it →</Link></div>
           <div className={s.card}><h3>Ask the record</h3><p>Ask in plain words; every answer cites the program, key or transaction it came from.</p><pre>GET /api/v1/programs/KLend2g3…</pre><Link className={s.go} href="/api/v1/stages">Read the API →</Link></div>
-          <div className={s.card}><h3>Hold teams to their word</h3><p>A team states its control; the chain checks it every day; a broken promise is news the same day.</p><pre>claim: stage ≥ 2 · checked daily</pre><Link className={s.go} href="/api/v1/claims">See the claims →</Link></div>
+          <div className={s.card}><h3>Hold teams to their word</h3><p>A team states its control; the chain checks it every day; a broken promise is news the same day.</p><pre>claim: stage ≥ 2 · checked daily</pre><Link className={s.go} href="/claims">See the claims →</Link></div>
         </div>
       </section>
 

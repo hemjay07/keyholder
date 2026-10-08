@@ -1,0 +1,13 @@
+.box { border: 1px solid var(--ink); background: var(--panel); padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+.box label { font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); }
+.box textarea { font: 12px/1.5 var(--font-body); padding: 12px; border: 1px solid var(--hair); background: var(--bg); color: var(--ink); resize: vertical; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; }
+.row button { font: 500 14px var(--font-display); padding: 10px 16px; border: 0; background: var(--ink); color: var(--bg); cursor: pointer; }
+.row button:disabled { opacity: 0.5; cursor: default; }
+.row .ghost { background: none; color: var(--ink); border: 1px solid var(--hair); }
+.err { margin: 0; color: var(--signal-text); font-size: 13px; }
+.res { border-left: 4px solid var(--ink); padding: 10px 14px; background: var(--bg); display: flex; flex-direction: column; gap: 4px; }
+.res b { font: 500 20px var(--font-display); }
+.res span, .res p { font-size: 13px; margin: 0; color: var(--ink-2); }
+.holds { border-color: var(--signal-verified-on); } .holds b { color: var(--signal-verified-on); }
+.broken, .invalid { border-color: var(--signal); } .broken b, .invalid b { color: var(--signal-text); }

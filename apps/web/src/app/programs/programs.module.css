@@ -18,7 +18,7 @@
 .toggles { display: flex; flex-direction: column; gap: 4px; }
 .toggles a { font-size: 12px; padding: 7px 10px; border: 1px solid var(--hair); text-decoration: none; }
 .toggles a:hover, .toggles a:focus-visible { border-color: var(--ink); }
-.toggles .on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.toggles .on { background: var(--sel-bg); color: var(--sel-ink); border-color: var(--sel-edge); }
 .main { min-width: 0; }
 .search { display: flex; gap: 8px; }
 .search input { flex: 1; min-width: 0; font: 14px var(--font-body); padding: 10px 12px; border: 1px solid var(--ink); background: var(--panel); color: var(--ink); }
@@ -40,7 +40,7 @@
 .glyph i { width: 6px; height: 14px; border: 1px solid var(--hair); }
 .glyph i:nth-child(1) { height: 6px; } .glyph i:nth-child(2) { height: 9px; } .glyph i:nth-child(3) { height: 12px; }
 .g0 { background: var(--signal); border-color: var(--signal) !important; }
-.g1 { background: var(--ink); border-color: var(--ink) !important; }
+.g1 { background: var(--stage1); border-color: var(--stage1) !important; }
 .g2 { background: var(--signal-verified-on); border-color: var(--signal-verified-on) !important; }
 .empty { padding: 24px 0; color: var(--ink-2); }
 @keyframes rise { from { transform: translateY(6px); } to { transform: none; } }

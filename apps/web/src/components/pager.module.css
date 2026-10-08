@@ -7,7 +7,7 @@
 .pages a, .cur, .off, .gap { min-width: 30px; height: 30px; padding: 0 8px; display: inline-grid; place-items: center; text-decoration: none; font-variant-numeric: tabular-nums; }
 .pages a { border: 1px solid transparent; transition: border-color var(--d-tick) var(--ease-1); }
 .pages a:hover, .pages a:focus-visible { border-color: var(--ink); }
-.cur { background: var(--ink); color: var(--bg); }
+.cur { background: var(--sel-bg); color: var(--sel-ink); }
 .off { color: var(--ink-2); opacity: 0.45; }
 .gap { color: var(--ink-2); min-width: 18px; padding: 0; }
 .per { color: var(--ink-2); display: flex; gap: 8px; align-items: center; }

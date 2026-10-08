@@ -10,12 +10,12 @@ import type { ControlFacts, MapProgram, Mark } from './types';
 
 export const SIGNAL = '#FF5A1F';
 /** Scene colours per page theme (globals.css light/dark tokens); marks keep their meaning in both. */
-export interface Palette { ink: string; holds: string; step: string; dim: THREE.Color; pending: THREE.Color; sky: [string, string, number] }
+export interface Palette { stage1: string; ink: string; holds: string; step: string; dim: THREE.Color; pending: THREE.Color; sky: [string, string, number] }
 export const PALETTES: Record<'light' | 'dark', Palette> = {
-  light: { ink: '#1B1A17', holds: '#1F6B4A', step: '#F4F1EA', dim: new THREE.Color('#D6D1C6'), pending: new THREE.Color('#A32F06'), sky: ['#ffffff', '#d9d3c6', 1.4] },
-  dark: { ink: '#ECE8DF', holds: '#3FA372', step: '#1F1D1A', dim: new THREE.Color('#2A2723'), pending: new THREE.Color('#C2410C'), sky: ['#ffffff', '#2a2723', 1.1] },
+  light: { stage1: '#1B1A17', ink: '#1B1A17', holds: '#1F6B4A', step: '#F4F1EA', dim: new THREE.Color('#D6D1C6'), pending: new THREE.Color('#A32F06'), sky: ['#ffffff', '#d9d3c6', 1.4] },
+  dark: { stage1: '#9A938A', ink: '#E6E0D4', holds: '#4CC08E', step: '#2A2825', dim: new THREE.Color('#34312C'), pending: new THREE.Color('#E0531F'), sky: ['#fff4e6', '#1a1917', 1.6] },
 };
-const rungColor = (pal: Palette, stage: number): string => [SIGNAL, pal.ink, pal.holds, pal.holds][stage] ?? pal.ink;
+const rungColor = (pal: Palette, stage: number): string => [SIGNAL, pal.stage1, pal.holds, pal.holds][stage] ?? pal.ink;
 const STEP_H = 0.55;
 
 export const prefersReduced = () => typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -56,7 +56,7 @@ function Steps({ width, stepD, pal }: { width: number; stepD: number; pal: Palet
       {[0, 1, 2, 3].map((s) => (
         <mesh key={`e${s}`} position={[0, s * STEP_H + 0.003, -s * stepD + stepD / 2 - 0.02]}>
           <boxGeometry args={[width + 0.6, 0.006, 0.012]} />
-          <meshBasicMaterial color={pal.ink} transparent opacity={0.35} />
+          <meshBasicMaterial color={pal.ink} transparent opacity={0.5} />
         </mesh>
       ))}
     </>

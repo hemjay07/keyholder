@@ -30,38 +30,64 @@
   --d-data: 320ms;
   --d-count: 1400ms;
   --cap: 1600ms;
+  --sel-bg: var(--ink);
+  --stage1: var(--ink);
+  --sel-ink: var(--bg);
+  --sel-edge: var(--ink);
+  --code-bg: var(--ink);
+  --code-ink: var(--bg);
+  --raise: 0 1px 0 rgba(27,26,23,.04);
 }
 
 /* P38 dark theme: the same tokens, night values. Follows the system setting;
    data-theme="light"|"dark" on <html> overrides it. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #141311;
-    --panel: #1F1D1A;
-    --ink: #ECE8DF;
-    --ink-2: #A39D91;
+    --bg: #0F0E0D;
+    --panel: #1A1917;
+    --panel-2: #232220;
+    --ink: #EFEAE0;
+    --ink-2: #A8A196;
     --signal: #FF5A1F;
-    --signal-text: #FF7A45;
-    --verified: #46B084;
-    --hair: rgba(236,232,223,.14);
-    --ground: rgb(20, 19, 17);
-    --ink-3: rgb(255, 122, 69);
-    --hairline: rgba(236, 232, 223, 0.14);
+    --signal-text: #FF8A5C;
+    --verified: #4CC08E;
+    --signal-verified-on: #4CC08E;
+    --hair: rgba(239,234,224,.10);
+    --ground: rgb(15, 14, 13);
+    --ink-3: rgb(255, 138, 92);
+    --hairline: rgba(239, 234, 224, 0.10);
+    --sel-bg: #2A2824;
+  --stage1: #8F897E;
+    --stage1: #8F897E;
+    --sel-ink: #FFFFFF;
+    --sel-edge: rgba(239,234,224,.35);
+    --code-bg: #080807;
+    --code-ink: #E6E0D4;
+    --raise: 0 0 0 1px rgba(239,234,224,.04), 0 12px 32px -18px rgba(0,0,0,.8);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #141311;
-  --panel: #1F1D1A;
-  --ink: #ECE8DF;
-  --ink-2: #A39D91;
+  --bg: #0F0E0D;
+  --panel: #1A1917;
+  --panel-2: #232220;
+  --ink: #EFEAE0;
+  --ink-2: #A8A196;
   --signal: #FF5A1F;
-  --signal-text: #FF7A45;
-  --verified: #46B084;
-  --hair: rgba(236,232,223,.14);
-  --ground: rgb(20, 19, 17);
-  --ink-3: rgb(255, 122, 69);
-  --hairline: rgba(236, 232, 223, 0.14);
+  --signal-text: #FF8A5C;
+  --verified: #4CC08E;
+  --signal-verified-on: #4CC08E;
+  --hair: rgba(239,234,224,.10);
+  --ground: rgb(15, 14, 13);
+  --ink-3: rgb(255, 138, 92);
+  --hairline: rgba(239, 234, 224, 0.10);
+  --sel-bg: #2A2824;
+  --stage1: #8F897E;
+  --sel-ink: #FFFFFF;
+  --sel-edge: rgba(239,234,224,.35);
+  --code-bg: #080807;
+  --code-ink: #E6E0D4;
+  --raise: 0 0 0 1px rgba(239,234,224,.04), 0 12px 32px -18px rgba(0,0,0,.8);
   color-scheme: dark;
 }
 
