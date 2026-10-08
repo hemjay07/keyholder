@@ -7,6 +7,10 @@ const nextConfig = {
   reactStrictMode: true,
   turbopack: { root },
   outputFileTracingRoot: root,
+  // Revamp 3 routes: /feed became /changes (2026-10-08).
+  async redirects() {
+    return [{ source: '/feed', destination: '/changes', permanent: true }];
+  },
   async headers() {
     return [
       {

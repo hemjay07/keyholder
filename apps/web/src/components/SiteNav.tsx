@@ -5,12 +5,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const ITEMS = [
-  { href: "/feed", label: "Changes" },
-  { href: "/wallet", label: "Your wallet" },
+  { href: "/programs", label: "Programs" },
+  { href: "/pending", label: "Open votes" },
+  { href: "/changes", label: "Changes" },
   { href: "/replay/drift", label: "Drift replay" },
   { href: "/keybench", label: "KeyBench" },
-  { href: "/alerts", label: "Alerts" },
-  { href: "/policy", label: "For vaults" },
+  { href: "/policy", label: "Build" },
 ];
 
 export default function SiteNav() {

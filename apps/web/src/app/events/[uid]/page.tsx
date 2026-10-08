@@ -40,7 +40,7 @@ export default async function EventPage({ params }: { params: Promise<{ uid: str
     const protocol = await fetchProtocol(alert.protocolId).catch(() => null);
     return (
       <main>
-        <Link className="back-link" href="/feed">&larr; Feed</Link>
+        <Link className="back-link" href="/changes">&larr; Feed</Link>
         <section className="feed-head">
           <p className="kicker">Alert · {alert.severity}</p>
           <h1>{protocol?.name ?? alert.protocolId}: {alert.explanation}</h1>
@@ -76,7 +76,7 @@ export default async function EventPage({ params }: { params: Promise<{ uid: str
 
   return (
     <main>
-      <Link className="back-link" href="/feed">&larr; Feed</Link>
+      <Link className="back-link" href="/changes">&larr; Feed</Link>
       <section className="protocol-hero event-hero">
         <div className="hero-copy">
           <p className="kicker">Control change</p>

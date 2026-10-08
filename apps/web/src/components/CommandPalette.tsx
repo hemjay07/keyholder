@@ -10,7 +10,9 @@ interface Proto { id: string; name: string }
 interface Prog { programId: string; protocolId: string | null; label: string | null }
 
 const PAGES: Item[] = [
-  { label: "Changes", hint: "every control change", href: "/feed" },
+  { label: "Programs", hint: "every program by stage", href: "/programs" },
+  { label: "Open votes", hint: "pending control changes", href: "/pending" },
+  { label: "Changes", hint: "every control change", href: "/changes" },
   { label: "Your wallet", hint: "who can move your money", href: "/wallet" },
   { label: "Drift replay", hint: "5.6 days of warning", href: "/replay/drift" },
   { label: "Alerts", hint: "get told when control weakens", href: "/alerts" },
