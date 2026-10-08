@@ -3,136 +3,126 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Keyholder — Count the keys</title>
-<link rel="stylesheet" href="../parts/Geist.css" />
-<link rel="stylesheet" href="../parts/GeistMono.css" />
+<title>Keyholder</title>
+<meta name="description" content="Who can move it, how fast, and did that change? The control record for Solana." />
+<link rel="icon" href="stage-map/mark.svg" />
+<meta property="og:image" content="stage-map/og.png" />
+<link rel="stylesheet" href="stage-map/fonts/Geist.css" />
 <style>
-  :root{
-    --bg:#121210; --panel:#1C1B18; --ink:#ECE8DF; --ink-2:#9C978C;
-    --signal:#FF6B33; --verified:#4FC28E; --hair:rgba(236,232,223,.14);
-  }
+  @font-face{font-family:"Geist Mono";src:url(stage-map/fonts/GeistMono-Regular.woff2) format("woff2");font-display:swap}
+  :root{--bg:#141311;--panel:#1F1D1A;--ink:#ECE8DF;--ink-2:#A39D91;--signal:#FF5A1F;--signal-text:#FF8A5C;--verified:#3FA372;--hair:rgba(236,232,223,.14);--ease:cubic-bezier(.2,.7,.2,1)}
   *{box-sizing:border-box}
-  html,body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 'Geist',sans-serif}
-  .mono{font-family:'Geist Mono',monospace}
+  html,body{margin:0;background:var(--bg);color:var(--ink)}
+  body{font:14px/1.55 "Geist Mono",monospace}
   a{color:inherit}
-  .strip{display:flex;gap:22px;flex-wrap:wrap;padding:12px 40px;border-bottom:1px solid var(--hair);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
-  .strip b{color:var(--ink)}
-  .hero{position:relative;min-height:86vh;overflow:hidden}
-  .device-frame{position:absolute;inset:0;background:#0d0c0a}
-  .device-frame iframe{width:100%;height:100%;border:0;display:block}
-  .scrim{position:absolute;left:0;right:0;bottom:0;height:66%;background:linear-gradient(to top, rgba(8,7,6,.97) 30%, rgba(8,7,6,.78) 62%, rgba(8,7,6,0) 100%);pointer-events:none}
-  .hero-copy{position:absolute;left:0;right:0;bottom:0;padding:0 40px 44px;max-width:980px;text-shadow:0 2px 18px rgba(0,0,0,.5)}
-  .kicker{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--signal);margin:0 0 16px}
-  .hero-copy h1{font:400 clamp(38px,6.4vw,84px)/1.02 'Geist',sans-serif;margin:0 0 16px;letter-spacing:-.015em}
-  .tag{font-size:15px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink);margin:0 0 16px}
-  .lede{font-size:16px;line-height:1.6;color:var(--ink-2);max-width:56ch;margin:0 0 28px}
-  .cta{display:flex;gap:12px;flex-wrap:wrap}
-  .cta a{display:inline-block;padding:13px 22px;border:1px solid var(--ink);font-size:13px;letter-spacing:.04em;text-decoration:none;background:transparent;color:var(--ink)}
-  .cta a.primary{background:var(--ink);color:var(--bg)}
-  .rails{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:3px solid var(--ink);border-bottom:1px solid var(--hair)}
-  .rail{padding:26px 40px;border-right:1px solid var(--hair)}
-  .rail:last-child{border-right:0}
-  .rail h2{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2);margin:0 0 16px}
-  .row{display:flex;justify-content:space-between;gap:16px;padding:11px 0;border-bottom:1px solid var(--hair);font-size:14px}
-  .row:last-child{border-bottom:0}
-  .row .meta{color:var(--ink-2);font-size:12px}
-  .row.weak .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--signal);margin-right:8px}
-  .ten{padding:64px 40px 80px;max-width:900px}
-  .ten h2{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2);margin:0 0 22px}
-  .ten ol{margin:0;padding:0 0 0 22px}
-  .ten li{margin-bottom:13px;font-size:15px;line-height:1.65}
-  .ten .catch{margin-top:28px;color:var(--ink-2);font-size:13px}
-  footer{padding:22px 40px 44px;font-size:11px;color:var(--ink-2);border-top:1px solid var(--hair)}
-  @media (max-width:720px){
-    .hero{min-height:78vh}
-    .strip{padding:10px 18px;gap:10px 16px}
-    .hero-copy{padding:0 18px 30px}
-    .rails{grid-template-columns:1fr}
-    .rail{padding:20px 18px;border-right:0;border-bottom:1px solid var(--hair)}
-    .ten{padding:44px 18px 56px}
-    footer{padding:18px 18px 30px}
+  /* The convention B breaks: no top navigation bar. The page opens on the prompt; the index lives at the foot. */
+  .stage{position:relative;height:100vh;min-height:600px}
+  .stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .stage::after{content:"";position:absolute;left:0;right:0;bottom:0;height:62%;background:linear-gradient(to top,var(--bg) 38%,rgba(20,19,17,.85) 62%,rgba(20,19,17,0));pointer-events:none}
+  .claim,.over{z-index:1}
+  .over{position:absolute;left:40px;right:40px;top:32px;display:flex;justify-content:space-between;align-items:flex-start;gap:24px;pointer-events:none}
+  .mark{display:flex;align-items:center;gap:10px;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+  .mark img{width:18px;height:18px;filter:invert(1)}
+  .day{font-size:12px;color:var(--ink-2)}
+  .claim{position:absolute;left:40px;bottom:40px;max-width:640px;pointer-events:none}
+  .big{font:400 112px/0.9 "Geist Mono",monospace;letter-spacing:-.04em;color:var(--signal-text);font-variant-numeric:tabular-nums}
+  .claim h1{margin:0;font-weight:400;animation:settle 480ms cubic-bezier(.2,.7,.2,1) both}
+  .big{display:block}
+  .rest{display:block;font:500 26px/1.2 Geist,sans-serif;margin:16px 0 0;max-width:24ch}
+  @keyframes settle{from{transform:translateY(18px)}to{transform:none}}
+  @media (prefers-reduced-motion:reduce){.claim h1{animation:none}}
+  .prompt{pointer-events:auto;margin-top:28px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--ink);padding:10px 0;max-width:560px}
+  .prompt span{color:var(--signal-text)}
+  .prompt input{flex:1;background:none;border:0;color:var(--ink);font:16px "Geist Mono",monospace;outline:none;min-width:0}
+  .prompt input::placeholder{color:var(--ink-2)}
+  .hint{font-size:11px;color:var(--ink-2);margin-top:8px}
+  .log{max-width:1280px;margin:0 auto;padding:96px 40px 0}
+  .log h2{font:400 12px "Geist Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);margin:0 0 16px}
+  .line{display:grid;grid-template-columns:110px 1fr 220px;gap:24px;padding:18px 0;border-top:1px solid var(--hair);align-items:baseline}
+  .line time{color:var(--ink-2);font-size:12px}
+  .line p{margin:0;font:400 20px/1.35 Geist,sans-serif}
+  .line p b{font-weight:500}
+  .line .w{color:var(--signal-text)}
+  .line .h{color:var(--verified)}
+  .line .src{font-size:11px;color:var(--ink-2);text-align:right}
+  .line .src a{text-decoration-color:var(--hair);text-underline-offset:3px}
+  .line.on{opacity:1;transform:none}
+  .line.r{transform:translateX(-10px);transition:transform 320ms var(--ease)}
+  .use{max-width:1280px;margin:0 auto;padding:96px 40px 0;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+  .use h3{font:500 32px/1.1 Geist,sans-serif;margin:0 0 12px;letter-spacing:-.01em}
+  pre{margin:16px 0 0;border:1px solid var(--hair);padding:16px;font:13px/1.6 "Geist Mono",monospace;overflow:auto}
+  pre .k{color:var(--signal-text)}
+  .index{max-width:1280px;margin:120px auto 0;padding:24px 40px 48px;border-top:1px solid var(--ink);display:grid;grid-template-columns:repeat(4,1fr);gap:24px;font-size:12px}
+  .index a{display:block;text-decoration:none;color:var(--ink-2);padding:3px 0}
+  .index a:hover{color:var(--ink)}
+  .index b{display:block;font-weight:400;margin-bottom:6px}
+  @media (prefers-reduced-motion:reduce){.line.r{transform:none;transition:none}}
+  @media (max-width:900px){
+    .over{left:16px;right:16px;top:16px}
+    .claim{left:16px;right:16px;bottom:24px}
+    .big{font-size:64px}
+    .rest{font-size:20px}
+    .log,.use{padding:64px 16px 0}
+    .line{grid-template-columns:1fr;gap:6px}
+    .line .src{text-align:left}
+    .line p{font-size:17px}
+    .use{grid-template-columns:1fr}
+    .index{grid-template-columns:1fr 1fr;padding:24px 16px 40px}
   }
-
-@keyframes kh-rise{from{transform:translateY(10px)}to{transform:none}}
-@keyframes kh-lamp{from{filter:brightness(.55)}to{filter:none}}
-h1{animation:kh-rise 240ms cubic-bezier(.2,.7,.2,1) both}
-.lamp,[data-lamp]{animation:kh-lamp 90ms linear 320ms both}
-@media (prefers-reduced-motion: reduce){h1,.lamp,[data-lamp]{animation:none}}
 </style>
 </head>
 <body>
-
-<header class="strip mono">
-  <span>SLOT <b data-odo="450660594">450,660,594</b></span>
-  <span>READ <b>2026-09-26</b></span>
-  <span><b>15</b> PROGRAMS TRACKED</span>
-  <span style="color:var(--signal)"><b>1</b> WEAKENED (RECONSTRUCTED)</span>
-</header>
-
-<section class="hero">
-  <div class="device-frame">
-    <iframe data-device="console" src="http://localhost:5199/?state=hero" title="Drift admin council console, reconstructed 1 April 2026"></iframe>
+<section class="stage" data-device="stage-map">
+  <iframe src="stage-map/index.html?bare&theme=dark" title="Stage map: 577 programs on four stages of who can move their money"></iframe>
+  <div class="over">
+    <span class="mark"><img src="stage-map/mark.svg" alt="" />Keyholder</span>
+    <span class="day">record 2026-10-08 · anchored on chain</span>
   </div>
-  <div class="scrim"></div>
-  <div class="hero-copy">
-    <p class="kicker">Keyholder</p>
-    <h1>Drift needed two keys to lose $285M.</h1>
-    <p class="tag mono">Count the keys.</p>
-    <p class="lede">Keyholder shows who can move the money in every Solana protocol (keys, threshold, timelock, verified code), rings when that control weakens, and lets any program refuse to deposit where it just did.</p>
-    <div class="cta">
-      <a class="primary" href="#wallet">Find your wallet</a>
-      <a href="#replay">Watch the Drift replay</a>
-    </div>
+  <div class="claim">
+    <h1><span class="big" id="odo">$769M</span> <span class="rest">on Solana sits behind programs that can be upgraded with no waiting period.</span></h1>
+    <form class="prompt" onsubmit="event.preventDefault()"><span>›</span><input placeholder="Ask: a program id, a key, or a question" aria-label="Ask Keyholder" autocomplete="off" /></form>
+    <div class="hint">Ask in plain words; every answer cites the program, key or transaction it came from.</div>
   </div>
 </section>
 
-<div class="rails">
-  <div class="rail">
-    <h2>Weakened in 24h</h2>
-    <div class="row weak">
-      <span class="who"><span class="dot"></span>Drift admin council · 3 of 5 → 2 of 5</span>
-      <span class="meta mono">timelock 0 · 1 Apr 2026 · reconstructed</span>
-    </div>
-  </div>
-  <div class="rail">
-    <h2>Latest changes</h2>
-    <div class="row">
-      <span class="who">Drift upgrade key · 4 of 7</span>
-      <span class="meta mono">timelock 3,600s · read 2026-09-26 · slot 450,660,594</span>
-    </div>
-    <div class="row">
-      <span class="who">Drift admin council · nonces staged</span>
-      <span class="meta mono">23 Mar 2026 · reconstructed</span>
-    </div>
-    <div class="row">
-      <span class="who">15 major Solana programs · 3 verified, 6 drifted, 6 unregistered</span>
-      <span class="meta mono">verify.osec.io · 26 Sep 2026</span>
-    </div>
-  </div>
-</div>
-
-<section class="ten">
-  <h2>What ships</h2>
-  <ol class="mono">
-    <li>Drift needed two keys to lose $285M.</li>
-    <li>Count the keys.</li>
-    <li>Drift's upgrade key today: 4 of 7 keys, 3,600-second timelock, read at a named slot.</li>
-    <li>Solscan says "MULTISIG" and stops; Keyholder follows the key to the multisig behind it.</li>
-    <li>On 23 March 2026 durable nonces were staged; then the council went from 3 of 5 to 2 of 5 with no timelock; on 1 April 18 vaults drained in 128 seconds.</li>
-    <li>Of 15 major Solana programs, 3 are verified today, 6 drifted from their registered source, 6 were never registered (verify.osec.io, 26 Sep 2026).</li>
-    <li>Any program can ask Keyholder before it moves money, and be refused on-chain with the reason.</li>
-    <li>Our own program is controlled by 2 of 3 keys with a 48-hour public timelock.</li>
-    <li>Find your wallet: see who holds the keys to every protocol your money is in.</li>
-    <li>Every number here carries the slot or transaction it was read from; rebuilt history is labelled reconstructed.</li>
-  </ol>
-  <p class="catch">"Count the keys." · "Who can move your money, and did that just change?"</p>
+<section class="log" aria-label="Today's record">
+  <h2>Who can move it, how fast, and did that change?</h2>
+  <div class="line r"><time>every day</time><p>Keyholder reads 583 Solana programs to their signer keys, every day, and anchors the record on chain.</p><span class="src"><a href="#">anchor memo · 2026-10-08</a></span></div>
+  <div class="line r"><time>2026-10-04</time><p>Of $2.66B traced vault by vault, <b class="h">$1.89B</b> waits 24 hours or more before it can move; <b class="w">$769M</b> waits for nothing.</p><span class="src"><a href="#">dollars by class</a></span></div>
+  <div class="line r"><time>2026-10-08</time><p><b class="w">360</b> programs sit at Stage 0: one key can change them.</p><span class="src"><a href="#">/api/v1/stages</a></span></div>
+  <div class="line r"><time>2026-10-08</time><p>The program built from Kamino's klend repo waits 24 hours to upgrade; its global admin, a <b class="w">4-of-10</b> multisig, waits for nothing.</p><span class="src"><a href="#">KLend2g3…YavgmjD</a></span></div>
+  <div class="line r"><time>now</time><p><b class="w">50</b> open votes right now would change who controls a program or move its funds.</p><span class="src"><a href="#">/api/v1/pending · 30 min</a></span></div>
+  <div class="line r"><time>now</time><p>Two upgrades were approved <b class="w">630 days</b> ago and can still run at any moment.</p><span class="src"><a href="#">oldest approved vote</a></span></div>
+  <div class="line r"><time>replay</time><p>Drift's first change landed <b>5.6 days</b> before the first drain; Keyholder's rules flag it the moment it lands.</p><span class="src"><a href="#">KeyBench · Drift</a></span></div>
+  <div class="line r"><time>every day</time><p>A team states its control; the chain checks it every day; a broken promise is news the same day.</p><span class="src"><a href="#">/api/v1/claims</a></span></div>
 </section>
 
-<footer class="mono">KEYHOLDER · every figure carries its slot, transaction or reconstructed label</footer>
+<section class="use">
+  <div>
+    <h3>Count the keys.</h3>
+    <p>Any program can refuse money where control is weak, with one line: require_stage.</p>
+    <pre><span class="k">keyholder</span>::require_stage(ctx, 2, 86_400)?;</pre>
+  </div>
+  <div>
+    <h3>Four rungs, public rules.</h3>
+    <p>Stage 0: one key. Stage 1: several signers, under a day of notice. Stage 2: every change waits 24 hours or more. Stage 3: cannot change, or a seven-day exit window.</p>
+    <pre>GET /api/v1/programs/<span class="k">KLend2g3…</span></pre>
+  </div>
+</section>
+
+<nav class="index" aria-label="Index">
+  <div><b>Record</b><a href="#">Programs</a><a href="#">Signers</a><a href="#">Stages</a></div>
+  <div><b>Live</b><a href="#">Changes</a><a href="#">Open votes</a><a href="#">Claims</a></div>
+  <div><b>Proof</b><a href="#">KeyBench</a><a href="#">Anchors</a></div>
+  <div><b>Build</b><a href="#">require_stage</a><a href="#">API</a></div>
+</nav>
 
 <script>
-/* number-odometer (charter part): status-strip figures roll once to their read value, 1400 ms (charter count), then stop; reduced motion shows the value at once */
-(()=>{const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;document.querySelectorAll('[data-odo]').forEach(el=>{const target=+el.dataset.odo;if(reduce){return}const t0=performance.now();const f=t=>{const p=Math.min(1,(t-t0)/1400);const e=1-Math.pow(1-p,3);el.textContent=Math.round(target*e).toLocaleString('en-US');if(p<1)requestAnimationFrame(f)};el.textContent='0';requestAnimationFrame(f)})})();
+  // The headline figure counts up once (1400 ms, one easing); reduced motion shows the figure at rest.
+  const odo = document.getElementById("odo"), still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!still) { const t0 = performance.now(); const f = () => { const k = Math.min(1, (performance.now() - t0) / 1400), e = 1 - Math.pow(1 - k, 3); odo.textContent = "$" + Math.round(769 * e) + "M"; if (k < 1) requestAnimationFrame(f); }; requestAnimationFrame(f); }
+  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("on"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" });
+  document.querySelectorAll(".line.r").forEach((el) => io.observe(el));
 </script>
 </body>
 </html>

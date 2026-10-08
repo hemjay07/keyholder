@@ -8,7 +8,13 @@ import * as THREE from "three";
 
 // Brand (design/CHARTER.md): orange only for weak control (Stage 0, open proposals), green only for a delay of
 // 24 h or more on every path (Stage 2-3), ink for everything else, on warm paper.
-const INK = "#1B1A17", SIGNAL = "#FF5A1F", HOLDS = "#1F6B4A";
+// Embed options for host pages: ?bare drops the device's own header, legend and scroll story; ?theme=dark swaps
+// paper for the dark tokens (ink marks become bone so Stage 1 stays visible).
+const Q = new URLSearchParams(typeof location !== "undefined" ? location.search : "");
+const BARE = Q.has("bare"), DARK = Q.get("theme") === "dark";
+const INK = DARK ? "#ECE8DF" : "#1B1A17", SIGNAL = "#FF5A1F", HOLDS = DARK ? "#3FA372" : "#1F6B4A";
+const STEP = DARK ? "#1F1D1A" : "#F4F1EA";
+if (DARK && typeof document !== "undefined") document.documentElement.dataset.theme = "dark";
 const RUNG = [SIGNAL, INK, HOLDS, HOLDS];
 const PENDING = new THREE.Color("#A32F06");
 const STEP_H = 0.55, STEP_D = 1.6;
@@ -45,7 +51,7 @@ function Steps({ width }) {
   return [0, 1, 2, 3].map((s) => (
     <mesh key={s} position={[0, s * STEP_H - STEP_H / 2, -s * STEP_D]} receiveShadow>
       <boxGeometry args={[width + 0.6, STEP_H, STEP_D]} />
-      <meshStandardMaterial color="#F4F1EA" roughness={0.95} metalness={0} />
+      <meshStandardMaterial color={STEP} roughness={0.95} metalness={0} />
     </mesh>
   )).concat([0, 1, 2, 3].map((s) => (
     <mesh key={"e" + s} position={[0, s * STEP_H + 0.003, -s * STEP_D + STEP_D / 2 - 0.02]}>
@@ -261,7 +267,7 @@ function Scene({ data, onHover, picked, onPick, onKey }) {
     if (pickShot) {
       goal.look.copy(pickShot.look); goal.pos.copy(pickShot.pos);
     } else {
-      const p = reduced ? 0 : SCROLL.p;
+      const p = reduced || BARE ? 0 : SCROLL.p;
       const f = p * (shots.length - 1), i = Math.min(shots.length - 2, Math.floor(f)), k = f - i, e = k * k * (3 - 2 * k);
       goal.pos.lerpVectors(shots[i].pos, shots[i + 1].pos, e);
       goal.look.lerpVectors(shots[i].look, shots[i + 1].look, e);
@@ -276,7 +282,7 @@ function Scene({ data, onHover, picked, onPick, onKey }) {
   useEffect(() => { first.current = true; }, [shots]);
   return (
     <>
-      <hemisphereLight args={["#ffffff", "#d9d3c6", 1.4]} />
+      <hemisphereLight args={DARK ? ["#ffffff", "#2a2723", 1.1] : ["#ffffff", "#d9d3c6", 1.4]} />
       <directionalLight position={[-5, 9, 6]} intensity={1.6} color="#fffaf0" castShadow shadow-mapSize={[1024, 1024]} shadow-camera-left={-8} shadow-camera-right={8} shadow-camera-top={8} shadow-camera-bottom={-8} />
       
       <Steps width={width} />
@@ -296,7 +302,7 @@ function App() {
   const [ptr, setPtr] = useState({ x: 0, y: 0 });
   useEffect(() => { const k = (e) => e.key === "Escape" && setPicked(null); addEventListener("keydown", k); return () => removeEventListener("keydown", k); }, []);
   // Signer facts (171 KB) load on the first pick, not with the page.
-  const pick = (p) => { if (!p) return setPicked(null); (CONTROL_READY ??= fetch("/control.json").then((r) => r.json()).then((c) => { CONTROL = c; })).then(() => setPicked(p)); };
+  const pick = (p) => { if (!p) return setPicked(null); (CONTROL_READY ??= fetch(new URL("./control.json", location.href)).then((r) => r.json()).then((c) => { CONTROL = c; })).then(() => setPicked(p)); };
   const scrolly = useRef(null);
   useEffect(() => {
     const on = () => {
@@ -308,7 +314,7 @@ function App() {
     return () => removeEventListener("scroll", on);
   }, [data]);
   useEffect(() => {
-    Promise.all(["/map.json", "/names.json"].map((u) => fetch(u).then((r) => r.json()))).then(([m, n]) => { NAMES = n; setData(m);
+    Promise.all(["/map.json", "/names.json"].map((u) => fetch(new URL("." + u, location.href)).then((r) => r.json()))).then(([m, n]) => { NAMES = n; setData(m);
       const h = location.hash.match(/pick=(\w+)/); const p = h && m.programs.find((x) => x.id === h[1]); if (p) pick(p);
       addEventListener("hashchange", () => { const h2 = location.hash.match(/pick=(\w+)/); const q = h2 && m.programs.find((x) => x.id === h2[1]); if (q) pick(q); }); });
   }, []);
@@ -318,27 +324,27 @@ function App() {
   const top = (s) => live.filter((p) => p.stage === s && p.usd > 0).sort((x, y) => y.usd - x.usd).slice(0, 3).map((p) => `${name(p)} ${usd(p.usd)}`).join("  ·  ");
   const weak = live.filter((p) => p.stage <= 1).reduce((t, p) => t + p.usd, 0);
   return (
-    <div className="stage" data-device="stage-map">
-      <header>
+    <div className={"stage" + (BARE ? " bare" : "")} data-device="stage-map">
+      {!BARE && <header>
         <h1><Odometer value={weak} /> on Solana sits in programs that can be changed with less than a day&rsquo;s notice.</h1>
         <p className="sub">{live.length} programs on four stages of who can move their money. Record of {data.day}, anchored on chain.</p>
-      </header>
+      </header>}
       <section className="scrolly" ref={scrolly}>
       <div className="map" onPointerMove={(e) => { const r = e.currentTarget.getBoundingClientRect(); setPtr({ x: e.clientX - r.left, y: e.clientY - r.top, w: r.width }); }}>
-        <Canvas onPointerMissed={() => setPicked(null)} frameloop="demand" shadows dpr={[1, 2]} camera={{ fov: 20, near: 0.1, far: 200 }} gl={{ antialias: true }}>
+        <Canvas onPointerMissed={() => setPicked(null)} frameloop="demand" shadows dpr={BARE ? [1, 1.5] : [1, 2]} camera={{ fov: 20, near: 0.1, far: 200 }} gl={{ antialias: true }}>
           <Scene data={data} onHover={setHover} picked={picked} onPick={pick} onKey={setKeyHover} />
         </Canvas>
-        {!reduced && !picked && <Captions live={live} p={progress} />}
-        {!reduced && !picked && <Rail p={progress} onGo={(i) => { const el = scrolly.current; scrollTo({ top: el.offsetTop + (el.offsetHeight - innerHeight) * (i / 5), behavior: "smooth" }); }} />}
+        {!reduced && !BARE && !picked && <Captions live={live} p={progress} />}
+        {!reduced && !BARE && !picked && <Rail p={progress} onGo={(i) => { const el = scrolly.current; scrollTo({ top: el.offsetTop + (el.offsetHeight - innerHeight) * (i / 5), behavior: "smooth" }); }} />}
         {keyHover && <div className="keytip">{keyHover}<span>click to copy</span></div>}
       </div>
       </section>
-      <dl className="legend">
+      {!BARE && <dl className="legend">
         {[3, 2, 1, 0].map((s) => (
           <div key={s}><dt><i style={{ background: RUNG[s] }} />Stage {s}<b>{n[s]}</b></dt><dd>{top(s) || "\u00a0"}</dd></div>
         ))}
         <div><dt><i className="pulse" />Open proposal<b>{(data.pending ?? []).length}</b></dt><dd>a pending vote on a multisig that controls the program</dd></div>
-      </dl>
+      </dl>}
       {picked && <Picked p={picked} live={live} onPick={pick} onClose={() => setPicked(null)} />}
       {!picked && hover && matchMedia("(hover: hover)").matches && (
         <div className="tip" style={{ left: Math.min(ptr.x + 16, (ptr.w ?? 9999) - 260), top: ptr.y + 16 }}>

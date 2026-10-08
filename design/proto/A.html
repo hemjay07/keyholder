@@ -3,132 +3,144 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Keyholder — Count the keys</title>
-<link rel="stylesheet" href="../parts/Geist.css" />
-<link rel="stylesheet" href="../parts/GeistMono.css" />
+<title>Keyholder</title>
+<meta name="description" content="Who can move it, how fast, and did that change? The control record for Solana." />
+<link rel="icon" href="stage-map/mark.svg" />
+<meta property="og:image" content="stage-map/og.png" />
+<link rel="stylesheet" href="stage-map/fonts/Geist.css" />
 <style>
-  :root{
-    --bg:#E6E2D9; --panel:#F4F1EA; --ink:#1B1A17; --ink-2:#5A564E;
-    --signal:#FF5A1F; --signal-text:#A32F06; --verified:#1F6B4A; --hair:rgba(27,26,23,.14);
-  }
+  @font-face{font-family:"Geist Mono";src:url(stage-map/fonts/GeistMono-Regular.woff2) format("woff2");font-display:swap}
+  :root{--bg:#E6E2D9;--panel:#F4F1EA;--ink:#1B1A17;--ink-2:#5A564E;--signal:#FF5A1F;--signal-text:#A32F06;--verified:#1F6B4A;--hair:rgba(27,26,23,.14);--ease:cubic-bezier(.2,.7,.2,1)}
   *{box-sizing:border-box}
-  html,body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 'Geist',sans-serif}
-  .mono{font-family:'Geist Mono',monospace}
+  html,body{margin:0;background:var(--bg);color:var(--ink)}
+  body{font:14px/1.5 "Geist Mono",monospace}
   a{color:inherit}
-  .strip{display:flex;gap:22px;flex-wrap:wrap;padding:12px 40px;border-bottom:1px solid var(--hair);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
-  .strip b{color:var(--ink)}
-  .hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);gap:36px;padding:48px 40px 40px;align-items:center}
-  .hero-copy h1{font:400 clamp(30px,3.6vw,52px)/1.08 'Geist',sans-serif;margin:0 0 14px;letter-spacing:-.01em}
-  .kicker{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--signal-text);margin:0 0 14px}
-  .lede{font-size:16px;line-height:1.6;color:var(--ink-2);max-width:46ch;margin:0 0 26px}
-  .cta{display:flex;gap:12px;flex-wrap:wrap}
-  .cta a{display:inline-block;padding:12px 20px;border:1px solid var(--ink);font-size:13px;letter-spacing:.04em;text-decoration:none;background:transparent}
-  .cta a.primary{background:var(--ink);color:var(--panel)}
-  .device-frame{position:relative;background:#0d0c0a;border-radius:6px;overflow:hidden;aspect-ratio:16/11;box-shadow:0 30px 60px -30px rgba(27,26,23,.35)}
-  .device-frame iframe{width:100%;height:100%;border:0;display:block}
-  .rails{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:3px solid var(--ink);border-bottom:1px solid var(--hair);margin:0 40px}
-  .rail{padding:22px 24px;border-right:1px solid var(--hair)}
-  .rail:last-child{border-right:0}
-  .rail h2{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2);margin:0 0 14px}
-  .row{display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px solid var(--hair);font-size:13.5px}
-  .row:last-child{border-bottom:0}
-  .row .who{color:var(--ink)}
-  .row .meta{color:var(--ink-2);font-size:12px}
-  .row.weak .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--signal);margin-right:8px}
-  .ten{padding:56px 40px 70px;max-width:840px}
-  .ten h2{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2);margin:0 0 20px}
-  .ten ol{margin:0;padding:0 0 0 22px}
-  .ten li{margin-bottom:12px;font-size:14.5px;line-height:1.6}
-  .ten .catch{margin-top:26px;color:var(--ink-2);font-size:13px}
-  footer{padding:20px 40px 40px;font-size:11px;color:var(--ink-2);border-top:1px solid var(--hair)}
-  @media (max-width:720px){
-    .hero{grid-template-columns:1fr;padding:28px 18px}
-    .strip{padding:10px 18px;gap:10px 16px}
-    .rails{grid-template-columns:1fr;margin:0 18px}
-    .rail{border-right:0;border-bottom:1px solid var(--hair)}
-    .ten{padding:40px 18px 56px}
-    footer{padding:16px 18px 28px}
+  .wrap{max-width:1280px;margin:0 auto;padding:0 40px}
+  .top{display:flex;align-items:center;gap:28px;height:64px;border-bottom:1px solid var(--hair)}
+  .top .brand{display:flex;align-items:center;gap:10px;font:500 16px Geist,sans-serif;text-decoration:none}
+  .top .brand img{width:22px;height:22px}
+  .top nav{display:flex;gap:20px;font-size:12px;color:var(--ink-2)}
+  .top nav a{text-decoration:none}
+  .top nav a:hover{color:var(--ink)}
+  .top .day{margin-left:auto;font-size:12px;color:var(--ink-2)}
+  .hero{display:grid;grid-template-columns:1.25fr 1fr;gap:48px;padding-top:56px;padding-bottom:32px;align-items:end}
+  h1{font:500 58px/1.04 Geist,sans-serif;letter-spacing:-.025em;margin:0}
+  h1 em{font-style:normal;color:var(--signal-text)}
+  .lede{color:var(--ink-2);margin:18px 0 0;max-width:52ch}
+  .ask{background:var(--panel);border:1px solid var(--hair);padding:16px}
+  .ask label{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+  .ask .row{display:flex;gap:8px;margin-top:8px}
+  .ask input{flex:1;font:15px "Geist Mono",monospace;padding:12px;border:1px solid var(--ink);background:var(--bg);color:var(--ink);min-width:0}
+  .ask button{font:500 14px Geist,sans-serif;padding:0 18px;border:0;background:var(--ink);color:var(--bg);cursor:pointer}
+  .ask .eg{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .ask .eg button{all:unset;cursor:pointer;font-size:11px;border:1px solid var(--hair);padding:3px 8px}
+  .ask .eg button:hover{border-color:var(--ink)}
+  .ask p{font-size:11px;color:var(--ink-2);margin:10px 0 0}
+  .device{height:78vh;min-height:520px;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair)}
+  .device iframe{width:100%;height:100%;border:0;display:block}
+  .cap{display:flex;justify-content:space-between;gap:16px;font-size:11px;color:var(--ink-2);padding-top:10px;padding-bottom:10px}
+  h2{font:500 28px/1.15 Geist,sans-serif;letter-spacing:-.01em;margin:72px 0 6px}
+  .sub{color:var(--ink-2);margin:0 0 24px}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--ink)}
+  .cell{padding:20px 20px 24px 0;border-bottom:1px solid var(--hair)}
+  .cell:not(:nth-child(3n+1)){padding-left:20px;border-left:1px solid var(--hair)}
+  .cell .n{font:500 40px/1 Geist,sans-serif;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .cell .n.weak{color:var(--signal-text)}
+  .cell .n.holds{color:var(--verified)}
+  .cell p{margin:12px 0 10px}
+  .src{font-size:11px;color:var(--ink-2)}
+  .src a{text-decoration-color:var(--hair);text-underline-offset:3px}
+  .build{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .card{background:var(--panel);border:1px solid var(--hair);padding:20px;display:flex;flex-direction:column;gap:12px}
+  .card h3{font:500 18px Geist,sans-serif;margin:0}
+  .card p{margin:0}
+  pre{margin:0;background:var(--ink);color:var(--bg);padding:12px;font:12px/1.5 "Geist Mono",monospace;overflow:auto}
+  .card a.go{margin-top:auto;font:500 13px Geist,sans-serif}
+  footer{margin-top:96px;border-top:1px solid var(--ink);padding-top:24px;padding-bottom:48px;display:flex;justify-content:space-between;gap:24px;font-size:12px;color:var(--ink-2);flex-wrap:wrap}
+  footer b{color:var(--ink);font-weight:400}
+  .reveal{transform:translateY(14px);transition:transform 320ms var(--ease)}
+  .reveal.in{transform:none}
+  @media (prefers-reduced-motion:reduce){.reveal{transform:none;transition:none}}
+  @media (max-width:900px){
+    .wrap{padding:0 16px}
+    .top nav{display:none}
+    .hero{grid-template-columns:1fr;gap:24px;padding-top:32px;padding-bottom:24px}
+    h1{font-size:34px}
+    .cell .n{font-size:28px}
+    .grid,.build{grid-template-columns:1fr}
+    .cell,.cell:not(:nth-child(3n+1)){padding:18px 0;border-left:0}
+    .device{height:70vh;min-height:440px}
+    .cap span:last-child{display:none}
+    h2{margin-top:48px}
   }
-
-@keyframes kh-rise{from{transform:translateY(10px)}to{transform:none}}
-@keyframes kh-lamp{from{filter:brightness(.55)}to{filter:none}}
-h1{animation:kh-rise 240ms cubic-bezier(.2,.7,.2,1) both}
-.lamp,[data-lamp]{animation:kh-lamp 90ms linear 320ms both}
-@media (prefers-reduced-motion: reduce){h1,.lamp,[data-lamp]{animation:none}}
 </style>
 </head>
 <body>
-
-<header class="strip mono">
-  <span>SLOT <b data-odo="450660594">450,660,594</b></span>
-  <span>READ <b>2026-09-26</b></span>
-  <span><b>15</b> PROGRAMS TRACKED</span>
-  <span style="color:var(--signal-text)"><b>1</b> WEAKENED (RECONSTRUCTED)</span>
+<header class="wrap top">
+  <a class="brand" href="#"><img src="stage-map/mark.svg" alt="" />Keyholder</a>
+  <nav aria-label="Main">
+    <a href="#">Programs</a><a href="#">Signers</a><a href="#">Changes</a><a href="#">Open votes</a><a href="#">Stages</a><a href="#">KeyBench</a><a href="#">Build</a>
+  </nav>
+  <span class="day">Record of 2026-10-08 · anchored</span>
 </header>
 
-<section class="hero">
-  <div class="hero-copy">
-    <p class="kicker">Keyholder</p>
-    <h1>Drift needed two keys to lose $285M.</h1>
-    <p class="lede mono" style="font-size:14px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink)">Count the keys.</p>
-    <p class="lede">Keyholder shows who can move the money in every Solana protocol (keys, threshold, timelock, verified code), rings when that control weakens, and lets any program refuse to deposit where it just did.</p>
-    <div class="cta">
-      <a class="primary" href="#wallet">Find your wallet</a>
-      <a href="#replay">Watch the Drift replay</a>
+<main>
+  <section class="wrap hero">
+    <div>
+      <h1><em>$769M</em> on Solana sits behind programs that can be upgraded with no waiting period.</h1>
+      <p class="lede">Keyholder reads 583 Solana programs to their signer keys, every day, and anchors the record on chain.</p>
     </div>
-  </div>
-  <div class="device-frame">
-    <iframe data-device="console" src="http://localhost:5199/?state=hero" title="Drift admin council console, reconstructed 1 April 2026"></iframe>
-  </div>
-</section>
+    <form class="ask" onsubmit="event.preventDefault()">
+      <label for="q">Ask Keyholder</label>
+      <div class="row"><input id="q" placeholder="A program id, a key, or a question" autocomplete="off" /><button>Ask</button></div>
+      <div class="eg">
+        <button type="button">Who can upgrade Kamino Lend?</button>
+        <button type="button">Open votes on Jupiter Perps</button>
+        <button type="button">6hhBGCtm…CnfQbM</button>
+      </div>
+      <p>Ask in plain words; every answer cites the program, key or transaction it came from.</p>
+    </form>
+  </section>
 
-<div class="rails">
-  <div class="rail">
-    <h2>Weakened in 24h</h2>
-    <div class="row weak">
-      <span class="who"><span class="dot"></span>Drift admin council · 2 of 5 · no timelock</span>
-      <span class="meta mono">timelock 0 · 1 Apr 2026 · reconstructed</span>
-    </div>
-  </div>
-  <div class="rail">
-    <h2>Latest changes</h2>
-    <div class="row">
-      <span class="who">Drift upgrade key · 4 of 7</span>
-      <span class="meta mono">timelock 3,600s · read 2026-09-26 · slot 450,660,594</span>
-    </div>
-    <div class="row">
-      <span class="who">Drift admin council · nonces staged</span>
-      <span class="meta mono">23 Mar 2026 · reconstructed</span>
-    </div>
-    <div class="row">
-      <span class="who">15 major Solana programs · 3 verified, 6 drifted, 6 unregistered</span>
-      <span class="meta mono">verify.osec.io · 26 Sep 2026</span>
-    </div>
-  </div>
-</div>
+  <section class="device" data-device="stage-map">
+    <iframe src="stage-map/index.html?bare" title="Stage map: 577 programs on four stages of who can move their money"></iframe>
+  </section>
+  <div class="wrap cap"><span>Each column is one program on its stage; height is the dollars traced to it. Click one for its keys.</span><span>Four rungs, public rules.</span></div>
 
-<section class="ten">
-  <h2>What ships</h2>
-  <ol class="mono">
-    <li>Drift needed two keys to lose $285M.</li>
-    <li>Count the keys.</li>
-    <li>Drift's upgrade key today: 4 of 7 keys, 3,600-second timelock, read at a named slot.</li>
-    <li>Solscan says "MULTISIG" and stops; Keyholder follows the key to the multisig behind it.</li>
-    <li>Drift's admin council was 2 of 5 keys with no timelock (read on-chain); on 25 March 2026 the attackers created a new multisig, on 26 March they took the admin key through it, and on 31 March the first drain landed: 5.6 days after the first change Keyholder would have flagged.</li>
-    <li>Of 15 major Solana programs, 3 are verified today, 6 drifted from their registered source, 6 were never registered (verify.osec.io, 26 Sep 2026).</li>
-    <li>Any program can ask Keyholder before it moves money, and be refused on-chain with the reason.</li>
-    <li>Our own program is controlled by 2 of 3 keys with a 48-hour public timelock (on devnet today).</li>
-    <li>Find your wallet: see who holds the keys to every protocol your money is in.</li>
-    <li>Every number here carries the slot or transaction it was read from; rebuilt history is labelled reconstructed.</li>
-  </ol>
-  <p class="catch">"Count the keys." · "Who can move your money, and did that just change?"</p>
-</section>
+  <section class="wrap">
+    <h2 class="reveal">Who can move it, how fast, and did that change?</h2>
+    <p class="sub reveal">Today's record, read from chain. Every figure links to the record it came from.</p>
+    <div class="grid">
+      <div class="cell reveal"><div class="n">$2.66B</div><p>Of $2.66B traced vault by vault, $1.89B waits 24 hours or more before it can move; $769M waits for nothing.</p><div class="src"><a href="#">dollars by class · 2026-10-04</a></div></div>
+      <div class="cell reveal"><div class="n weak">360</div><p>360 programs sit at Stage 0: one key can change them.</p><div class="src"><a href="#">/api/v1/stages · 2026-10-08</a></div></div>
+      <div class="cell reveal"><div class="n">4 of 10</div><p>The program built from Kamino's klend repo waits 24 hours to upgrade; its global admin, a 4-of-10 multisig, waits for nothing.</p><div class="src"><a href="#">KLend2g3…YavgmjD · GlobalConfig</a></div></div>
+      <div class="cell reveal"><div class="n weak">50</div><p>50 open votes right now would change who controls a program or move its funds.</p><div class="src"><a href="#">/api/v1/pending · every 30 min</a></div></div>
+      <div class="cell reveal"><div class="n weak">630 days</div><p>Two upgrades were approved 630 days ago and can still run at any moment.</p><div class="src"><a href="#">open votes · oldest approved</a></div></div>
+      <div class="cell reveal"><div class="n">5.6 days</div><p>Drift's first change landed 5.6 days before the first drain; Keyholder's rules flag it the moment it lands.</p><div class="src"><a href="#">KeyBench · Drift replay</a></div></div>
+    </div>
+  </section>
 
-<footer class="mono">KEYHOLDER · every figure carries its slot, transaction or reconstructed label</footer>
+  <section class="wrap">
+    <h2 class="reveal">Count the keys.</h2>
+    <p class="sub reveal">Three ways to use the record.</p>
+    <div class="build">
+      <div class="card reveal"><h3>Refuse weak control on chain</h3><p>Any program can refuse money where control is weak, with one line: require_stage.</p><pre>keyholder::require_stage(ctx, 2, 86_400)?;</pre><a class="go" href="#">Build with it →</a></div>
+      <div class="card reveal"><h3>Ask the record</h3><p>Ask in plain words; every answer cites the program, key or transaction it came from.</p><pre>GET /api/v1/programs/KLend2g3…</pre><a class="go" href="#">Read the API →</a></div>
+      <div class="card reveal"><h3>Hold teams to their word</h3><p>A team states its control; the chain checks it every day; a broken promise is news the same day.</p><pre>claim: stage ≥ 2 · checked daily</pre><a class="go" href="#">See the claims →</a></div>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <span><b>Keyholder</b> · the control record for Solana</span>
+  <span>Who can move it, how fast, and did that change? · Four rungs, public rules. · Count the keys.</span>
+</footer>
 
 <script>
-/* number-odometer (charter part): status-strip figures roll once to their read value, 1400 ms (charter count), then stop; reduced motion shows the value at once */
-(()=>{const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;document.querySelectorAll('[data-odo]').forEach(el=>{const target=+el.dataset.odo;if(reduce){return}const t0=performance.now();const f=t=>{const p=Math.min(1,(t-t0)/1400);const e=1-Math.pow(1-p,3);el.textContent=Math.round(target*e).toLocaleString('en-US');if(p<1)requestAnimationFrame(f)};el.textContent='0';requestAnimationFrame(f)})})();
+  // Sections settle in once as they enter the viewport (one easing, 320 ms; reduced motion shows them at rest).
+  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" });
+  document.querySelectorAll(".reveal").forEach((el, i) => { el.style.transitionDelay = (i % 3) * 60 + "ms"; io.observe(el); });
+  document.querySelectorAll(".eg button").forEach((b) => b.addEventListener("click", () => { const q = document.getElementById("q"); q.value = b.textContent; q.focus(); }));
 </script>
 </body>
 </html>
