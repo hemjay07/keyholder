@@ -1,0 +1,16 @@
+/* File: apps/web/src/components/pager.module.css */
+.pager { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; padding: 12px 0; font-size: 12px; }
+.range { color: var(--ink-2); }
+.range b { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
+.pages { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 2px; }
+.pages > * { flex-shrink: 0; }
+.pages a, .cur, .off, .gap { min-width: 30px; height: 30px; padding: 0 8px; display: inline-grid; place-items: center; text-decoration: none; font-variant-numeric: tabular-nums; }
+.pages a { border: 1px solid transparent; transition: border-color var(--d-tick) var(--ease-1); }
+.pages a:hover, .pages a:focus-visible { border-color: var(--ink); }
+.cur { background: var(--ink); color: var(--bg); }
+.off { color: var(--ink-2); opacity: 0.45; }
+.gap { color: var(--ink-2); min-width: 18px; padding: 0; }
+.per { color: var(--ink-2); display: flex; gap: 8px; align-items: center; }
+.per b { color: var(--ink); font-weight: 500; }
+.per a { text-underline-offset: 3px; text-decoration-color: var(--hair); }
+@media (max-width: 600px) { .pager { justify-content: center; } .range { flex-basis: 100%; text-align: center; } }
