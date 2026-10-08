@@ -1,6 +1,10 @@
-# GENRE GATE (strike 3) — 2026-09-26
-Measured: proto-A and proto-B at 390 and 1280, `measure.mjs --motion --floor --budget-kb 3000`: both pass, findings [] (after marking the iframe [data-device], adding the charter's number-odometer on the slot figure, a 240 ms h1 rise and a 90 ms lamp-on; nothing loops).
-Read by the coordinator: all four PNGs.
-Render-judge (images + FOUNDER.jsonl + OP-1 reference only): Genre A "bone-and-ink ledger with a boxed dark console"; B "dark hero with the console full-bleed behind the text". Only-here: the toggle row, two thrown of five. Winner: A. B's headline collides with the device at both widths (founder 2026-09-18 rules).
-Founder: pre-approved the coordinator's recommendation A on condition it is verified ("go with your recommendation but be sure"); verified by measurement + judge. A survives; B crossed out.
-Carried defect (both): the device fails the founder's 2026-09-19 rule (primitive slab, dark-on-dark illegible labels, tiny dial, dev caption, thumbnail at 390). Console pass 2 is required before spec/build; below-the-fold is a placeholder TEN list, not a design.
+# Genre gate (2026-10-08, render-judge, zero context, read only the four shots and cordon/1280)
+
+- A: bone-and-ink ledger with a 3D stage diorama; data-journalism report crossed with an operator console.
+  Only this product: the four-rung stage diorama with one program lifted out of its row.
+- B: dark crypto dashboard, one orange accent; developer-terminal changelog below.
+  Only this product: the same diorama, but behind the headline it reads as scenery, not a figure.
+
+Judge verdict: A. B is the genre the founder has called "a random website" (2026-09-19).
+What B does better: one giant number as the hero; dated rows (date, sentence, source) read faster than A's prose cells.
+Recommended survivor: A, taking B's giant-number hero and dated row list. Fix in A: 390 diorama legibility, clipped Ask placeholder, footer overlap.
