@@ -37,7 +37,7 @@ export default function ControlChain({ record }: { record: ProgramRecordJson }) 
           <i className={s.link} style={{ ['--i' as string]: 2 }} />
           <div className={s.node} style={{ ['--i' as string]: 2 }}>
             <span className={s.k}>{p.ms ? `Squads ${p.ms.version} multisig` : p.kind.replace(/_/g, ' ')}</span>
-            {p.ms ? <b>{p.ms.threshold} of {p.ms.members} · <span className={p.ms.timelockS ? s.holdsText : s.weakText}>{delay(p.ms.timelockS)}</span></b> : <code>{p.controller ? shortAddr(p.controller) : 'none'}</code>}
+            {p.ms ? <b>{p.ms.threshold} of {p.ms.members} · <span className={!p.ms.timelockS ? s.weakText : p.ms.timelockS >= 86400 ? s.holdsText : ''}>{delay(p.ms.timelockS)}</span></b> : <code>{p.controller ? shortAddr(p.controller) : 'none'}</code>}
           </div>
           {p.ms?.memberKeys?.length ? (
             <>
