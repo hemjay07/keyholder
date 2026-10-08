@@ -4,6 +4,7 @@
 // and transaction in an answer must come from a tool result, and the answer cites them.
 
 import Anthropic from '@anthropic-ai/sdk';
+import { PROGRAM_NAMES } from './program-names';
 import { betaZodTool } from '@anthropic-ai/sdk/helpers/beta/zod';
 import { z } from 'zod/v4';
 import { STAGE_RULES, RULES_VERSION } from '@keyholder/stages';
@@ -31,8 +32,9 @@ const day = async () => {
 const tools = [
   betaZodTool({
     name: 'search_programs',
-    description: 'Find covered programs by stage, timelock and dollars traced, from the latest Control Record day. Returns at most `limit` rows, largest dollars first.',
+    description: 'Find covered programs by name, stage, timelock and dollars traced, from the latest Control Record day. Names come from a short confirmed list (e.g. Kamino Lend, Jupiter Perps, Raydium AMM v4); most programs have no name, only an id. Returns at most `limit` rows, largest dollars first.',
     inputSchema: z.object({
+      name: z.string().optional().describe('match a confirmed program name, case-insensitive substring'),
       maxStage: z.number().int().min(0).max(3).optional().describe('only programs at this stage or below'),
       minStage: z.number().int().min(0).max(3).optional(),
       noTimelock: z.boolean().optional().describe('only multisig upgrade paths with no timelock'),
@@ -42,7 +44,10 @@ const tools = [
     }),
     run: async (q) => {
       const d = await day();
+      const want = q.name?.toLowerCase();
       const rows = (await registry(d))
+        .map((r) => ({ ...r, name: PROGRAM_NAMES[r.programId] ?? null }))
+        .filter((r) => !want || (r.name?.toLowerCase().includes(want) ?? false))
         .filter((r) => (q.maxStage == null || r.stage <= q.maxStage) && (q.minStage == null || r.stage >= q.minStage))
         .filter((r) => !q.noTimelock || (r.threshold != null && !r.timelockS))
         .filter((r) => q.minUsd == null || (r.usdFloor ?? 0) >= q.minUsd)
