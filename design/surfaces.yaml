@@ -5,7 +5,7 @@
 surfaces:
   - route: /
     name: home
-    headline: "Drift needed two keys to lose $285M."
+    headline: "$769M"
   - route: /protocols/drift
     name: protocol-drift
     headline: "Drift Protocol: 4 of 7 keys, 1 h timelock"

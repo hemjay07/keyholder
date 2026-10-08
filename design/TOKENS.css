@@ -13,11 +13,11 @@
 
   /* derived from computed styles; names the prototype already declares above are not repeated. The build declares all of these. */
   --ground: rgb(230, 226, 217);
-  --ink-3: rgb(230, 226, 217);
+  --ink-3: #A32F06;   /* corrected 2026-10-08: spec.mjs read the ground; the site uses ink-3 as signal text */
   --signal-control-is: #FF5A1F;   /* painted as rgb(163, 47, 6) */
   --signal-holds-a: #1F6B4A;   /* painted as rgb(31, 107, 74) */
   --hairline: rgba(27, 26, 23, 0.14);
-  --radius: 0px;
+  --radius: 50px;   /* corrected 2026-10-08: pill controls on the shipped site; the survivor's boxes set 0 locally */
   --font-display: Geist;   /* the largest text, 152px/500 */
   --font-body: Geist Mono;   /* most common */
   --weight-body: 400;
