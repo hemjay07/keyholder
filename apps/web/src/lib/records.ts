@@ -2,7 +2,7 @@
 // Reads the Control Record v2 tables (written by apps/worker/src/records/build.ts --db) for the site
 // and /api/v1. Every function returns plain JSON-safe data; null when the thing does not exist.
 
-import { and, desc, eq, gte, lte, sql } from 'drizzle-orm';
+import { and, desc, eq, gte, inArray, lte, sql } from 'drizzle-orm';
 import { getDb, schema } from './db';
 
 const { record_day, control_record, signer_entry, control_event, claim_check } = schema;
@@ -95,4 +95,30 @@ export async function controlIndex(day: string): Promise<Record<string, ControlF
     out[programId] = { auth: r.upgrade.authority, kind: r.upgrade.kind, ms: r.upgrade.multisig, reason: r.stage.paths.find((x) => x.path === r.stage.bindingPath)?.reason ?? r.stage.cap?.reason ?? null };
   }
   return out;
+}
+
+/** Paged on-chain control changes (upgrades, authority moves, multisig config) from the event log, newest first. */
+export async function chainChangesPage(opts: { offset: number; limit: number; kind?: string }) {
+  const { events } = schema;
+  const kinds = opts.kind ? [opts.kind] : ['upgrade', 'set_authority', 'config_transaction_execute'];
+  const where = and(inArray(events.kind, kinds), sql`${events.protocol_id} is not null`, sql`coalesce(${events.tombstoned}, false) = false`);
+  const [rows, [{ n } = { n: 0 }], byKind] = await Promise.all([
+    getDb().select({ uid: events.event_uid, blockTime: events.block_time, signature: events.signature, protocolId: events.protocol_id, programId: events.program_id, kind: events.kind, payload: events.payload })
+      .from(events).where(where).orderBy(desc(events.block_time)).limit(opts.limit).offset(opts.offset),
+    getDb().select({ n: sql<number>`count(*)::int` }).from(events).where(where),
+    getDb().select({ kind: events.kind, n: sql<number>`count(*)::int` }).from(events)
+      .where(and(inArray(events.kind, ['upgrade', 'set_authority', 'config_transaction_execute']), sql`${events.protocol_id} is not null`, sql`coalesce(${events.tombstoned}, false) = false`)).groupBy(events.kind),
+  ]);
+  return { rows, total: n, byKind };
+}
+
+/** Paged Control Record diffs (control_event), newest first. */
+export async function recordChangesPage(opts: { offset: number; limit: number; kind?: string }) {
+  const where = opts.kind ? eq(control_event.kind, opts.kind) : sql`true`;
+  const [rows, [{ n } = { n: 0 }], byKind] = await Promise.all([
+    getDb().select().from(control_event).where(where).orderBy(desc(control_event.day), desc(control_event.id)).limit(opts.limit).offset(opts.offset),
+    getDb().select({ n: sql<number>`count(*)::int` }).from(control_event).where(where),
+    getDb().select({ kind: control_event.kind, n: sql<number>`count(*)::int` }).from(control_event).groupBy(control_event.kind),
+  ]);
+  return { rows, total: n, byKind };
 }
