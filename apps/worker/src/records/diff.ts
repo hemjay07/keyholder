@@ -28,7 +28,8 @@ export function diffRecords(day: string, before: ProgramRecord[], after: Program
 
   for (const [id, b] of next) {
     const a = prev.get(id);
-    if (!a) { ev(id, 'program_added', 'program', null, b.stage.stage); continue; }
+    // A program new to coverage is bookkeeping, not a control change: no event.
+    if (!a) continue;
     if (!closed(a) && closed(b)) ev(id, 'program_closed', 'program', a.upgrade.authority, null);
     if (closed(a) && !closed(b)) ev(id, 'program_reopened', 'program', null, b.upgrade.authority);
 
@@ -55,7 +56,6 @@ export function diffRecords(day: string, before: ProgramRecord[], after: Program
       ev(id, 'stage_changed', moved, a.stage.stage, b.stage.stage);
     }
   }
-  for (const id of prev.keys()) if (!next.has(id)) ev(id, 'program_dropped', 'program', prev.get(id)!.stage.stage, null);
 
   return out.sort((x, y) => (x.programId < y.programId ? -1 : x.programId > y.programId ? 1 : ORDER.indexOf(x.kind) - ORDER.indexOf(y.kind)));
 }

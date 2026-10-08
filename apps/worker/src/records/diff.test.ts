@@ -37,9 +37,9 @@ describe('diffRecords', () => {
     const before = base({ upgrade: { ...ms({ timelockS: 86400 }).upgrade, timelockCarried: true } });
     expect(diffRecords('d', [before], [base()]).some((e) => e.kind === 'timelock_changed')).toBe(false);
   });
-  it('closure, admin key change, program added and dropped', () => {
+  it('closure and admin key change are events; programs entering or leaving coverage are not (bookkeeping)', () => {
     const adm = (key: string) => ({ admin: { ...base().admin, programWide: [{ account: 'GlobalConfig', field: 'admin', key, resolvedAs: 'single_key', multisig: null }] } });
     const ev = diffRecords('d', [base(adm('K1')), base({ programId: 'GONE' })], [base({ ...adm('K2'), mods: ['closed'] }), base({ programId: 'NEW' })]);
-    expect(ev.map((e) => `${e.programId}:${e.kind}`)).toEqual(['GONE:program_dropped', 'NEW:program_added', 'P:program_closed', 'P:admin_changed']);
+    expect(ev.map((e) => `${e.programId}:${e.kind}`)).toEqual(['P:program_closed', 'P:admin_changed']); // spec change 2026-10-08: coverage changes are not feed events
   });
 });
