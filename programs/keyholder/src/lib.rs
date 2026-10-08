@@ -286,6 +286,19 @@ pub mod keyholder {
         Ok(())
     }
 
+    /// Stateless stage gate (design/REVAMP-3.md, D8): reads the target's upgrade path live in this
+    /// transaction and refuses unless its Control Stage (upgrade path only; admin fields cannot be read
+    /// generically on chain) is at least `min_stage` and its timelock at least `min_timelock_s`.
+    /// No registration, no stored state, nothing to go stale. Always writes `StageResult` as return data.
+    pub fn require_stage<'info>(ctx: Context<'info, RequireStage<'info>>, min_stage: u8, min_timelock_s: u32) -> Result<()> {
+        let live = upgrade_path_stage(&ctx.accounts.target_program, &ctx.accounts.programdata, ctx.accounts.multisig.as_ref())?;
+        let ok = live.stage >= min_stage && live.timelock_s >= min_timelock_s;
+        anchor_lang::solana_program::program::set_return_data(&borsh::to_vec(&live).map_err(|_| GuardError::AccountMismatch)?);
+        require!(live.stage >= min_stage, GuardError::StageBelowPolicy);
+        require!(ok, GuardError::TimelockBelowPolicy);
+        Ok(())
+    }
+
     /// Read-only policy gate. Always writes `CheckResult` via
     /// `set_return_data`; in `Enforce` mode also returns the first
     /// `GuardError` hit so the CPI caller's transaction reverts.
@@ -840,6 +853,8 @@ pub enum GuardError {
     AccountMismatch,
     #[msg("ControlState has not been refreshed recently enough")]
     RefreshTooOld,
+    #[msg("control stage below policy minimum")]
+    StageBelowPolicy,
 }
 
 // ---------------------------------------------------------------- contexts
@@ -977,6 +992,67 @@ pub struct Check<'info> {
     pub programdata: UncheckedAccount<'info>,
     /// CHECK: optional; required iff live authority is a Squads vault. owner checked in handler.
     pub multisig: Option<UncheckedAccount<'info>>,
+}
+
+#[derive(Accounts)]
+pub struct RequireStage<'info> {
+    /// CHECK: must be executable and owned by the upgradeable loader; its programdata link is checked in the handler.
+    pub target_program: UncheckedAccount<'info>,
+    /// CHECK: must equal the programdata address stored in target_program, owned by the loader.
+    pub programdata: UncheckedAccount<'info>,
+    /// CHECK: optional. When passed it must be owned by Squads v4, Squads v3 or coral and the upgrade
+    /// authority must derive from it; when absent a non-null authority is treated as a single key (Stage 0).
+    pub multisig: Option<UncheckedAccount<'info>>,
+}
+
+/// Return data of `require_stage`. Same stage bands as packages/stages (stages/v1), upgrade path only.
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug, PartialEq)]
+pub struct StageResult {
+    pub stage: u8,
+    pub key_type: u8,
+    pub threshold: u16,
+    pub timelock_s: u32,
+}
+
+pub const STAGE_2_MIN_DELAY_S: u32 = 86_400;
+pub const STAGE_3_MIN_DELAY_S: u32 = 7 * 86_400;
+
+/// Stage of a multisig path: under 2 signers is 0; then by timelock (24 h -> 2, 7 d -> 3).
+pub fn multisig_stage(threshold: u16, timelock_s: u32) -> u8 {
+    if threshold < 2 { 0 } else if timelock_s >= STAGE_3_MIN_DELAY_S { 3 } else if timelock_s >= STAGE_2_MIN_DELAY_S { 2 } else { 1 }
+}
+
+/// The live upgrade path of `target_program`. Every multisig claim is re-derived: a caller can only make
+/// the answer stricter (by omitting the multisig), never weaker.
+pub fn upgrade_path_stage(target_program: &AccountInfo, programdata: &AccountInfo, multisig: Option<&UncheckedAccount>) -> Result<StageResult> {
+    require!(target_program.executable && *target_program.owner == anchor_lang::solana_program::bpf_loader_upgradeable::ID, GuardError::AccountMismatch);
+    require!(*programdata.owner == anchor_lang::solana_program::bpf_loader_upgradeable::ID, GuardError::AccountMismatch);
+    let linked = parse_program_account(&target_program.try_borrow_data()?).map_err(|_| GuardError::AccountMismatch)?;
+    require_keys_eq!(linked, programdata.key(), GuardError::AccountMismatch);
+    let pd = parse_programdata(&programdata.try_borrow_data()?).map_err(|_| GuardError::UnknownAuthority)?;
+    let Some(authority) = pd.upgrade_authority else {
+        return Ok(StageResult { stage: 3, key_type: KeyType::Immutable as u8, threshold: u16::MAX, timelock_s: u32::MAX });
+    };
+    let Some(ms) = multisig else {
+        return Ok(StageResult { stage: 0, key_type: KeyType::SingleKey as u8, threshold: 1, timelock_s: 0 });
+    };
+    let data = ms.try_borrow_data()?;
+    let (key_type, threshold, timelock_s) = if *ms.owner == squads_v4_program_id() {
+        let info = parse_squads_multisig_checked(ms.owner, &data).map_err(|_| GuardError::UnknownAuthority)?;
+        require!(find_squads_vault_index(&authority, &ms.key()).is_some(), GuardError::UnknownAuthority);
+        (KeyType::SquadsV4, info.threshold, info.time_lock)
+    } else if *ms.owner == squads_v3_program_id() {
+        let info = parse_squads_v3_ms_checked(ms.owner, &data).map_err(|_| GuardError::UnknownAuthority)?;
+        require!(find_squads_v3_authority_index(&authority, &ms.key()).is_some(), GuardError::UnknownAuthority);
+        (KeyType::SquadsV3, info.threshold, 0)
+    } else if *ms.owner == coral_multisig_program_id() {
+        let info = parse_coral_multisig_checked(ms.owner, &data).map_err(|_| GuardError::UnknownAuthority)?;
+        require!(coral_signer(&ms.key(), info.nonce) == Some(authority), GuardError::UnknownAuthority);
+        (KeyType::CoralMultisig, info.threshold.min(u16::MAX as u64) as u16, 0)
+    } else {
+        return err!(GuardError::UnknownAuthority);
+    };
+    Ok(StageResult { stage: multisig_stage(threshold, timelock_s), key_type: key_type as u8, threshold, timelock_s })
 }
 
 #[cfg(test)]
