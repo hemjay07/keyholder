@@ -12,6 +12,7 @@ import { Connection, PublicKey } from '@solana/web3.js';
 import { computeStage, RULES_VERSION, type ControlPath, type ProgramFacts, type StageResult } from '@keyholder/stages';
 import { vaultIndex, resolveFromHistory, type VaultMatch } from './admin-resolve';
 import { decodeMembers } from '../coverage/daily';
+import { buildSignerIndex } from './signers';
 
 const DATA = join(__dirname, '..', '..', '..', '..', 'data');
 
@@ -155,6 +156,8 @@ if (require.main === module) {
     mkdirSync(outDir, { recursive: true });
     const doc = { day, rulesVersion: RULES_VERSION, recordVersion: 'record/v2', anchor, timelockCarriedFrom: laterDay, summary: summarize(records), programs: records };
     writeFileSync(join(outDir, `${day}.json`), JSON.stringify(doc));
-    console.log(JSON.stringify({ day, ...doc.summary }));
+    const signers = buildSignerIndex(records);
+    writeFileSync(join(outDir, `signers-${day}.json`), JSON.stringify({ day, ...signers }));
+    console.log(JSON.stringify({ day, ...doc.summary, signers: signers.signers.length, multisigs: signers.multisigs.length, overlaps: signers.overlaps.length }));
   })().catch((e) => { console.error(e); process.exit(1); });
 }
