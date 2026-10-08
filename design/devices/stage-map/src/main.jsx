@@ -17,6 +17,7 @@ const usd = (v) => v >= 1e9 ? `$${(v / 1e9).toFixed(1)}B` : v >= 1e6 ? `$${Math.
 let NAMES = {}, CONTROL = {};
 // Scroll progress through the pinned map section, 0..1, written by App and read by the camera each frame.
 const SCROLL = { p: 0 };
+let CONTROL_READY = null;
 const keysOf = (id) => { const c = CONTROL[id]; return c?.ms?.memberKeys ?? (c?.auth && c.kind === "single_key" ? [c.auth] : []); };
 const short = (k) => k.slice(0, 4) + "…" + k.slice(-4);
 const PAPER = new THREE.Color("#D6D1C6");
@@ -124,15 +125,15 @@ function Beacons({ marks, pending }) {
 
 // Signer keys of the picked program fan out above it; each key draws a line to the picked column and to every other
 // column whose controlling multisig it also signs for.
-function SignerFan({ picked, marks }) {
+function SignerFan({ picked, marks, width }) {
   const geo = useMemo(() => {
     if (!picked) return null;
     const keys = keysOf(picked.id);
     const byId = new Map(marks.map((p) => [p.id, p]));
     const pts = [], nodes = [];
     keys.forEach((k, i) => {
-      const a = keys.length === 1 ? 0 : (i / (keys.length - 1) - 0.5) * Math.min(4, keys.length * 0.5);
-      const cx = THREE.MathUtils.clamp(picked.x, -3.5, 3.5);
+      const a = keys.length === 1 ? 0 : (i / (keys.length - 1) - 0.5) * Math.min(width * 0.7, keys.length * 0.5);
+      const cx = THREE.MathUtils.clamp(picked.x, -width * 0.15, width * 0.15);
       const node = new THREE.Vector3(cx + a, 3.2, picked.z - 0.6);
       nodes.push(node);
       pts.push(node, new THREE.Vector3(picked.x, picked.base + picked.h, picked.z));
@@ -201,7 +202,7 @@ function Scene({ data, onHover, picked, onPick }) {
       
       <Steps width={width} />
       <Columns marks={marks} pending={pending} onHover={onHover} onPick={onPick} related={related} />
-      <SignerFan picked={pickedMark} marks={marks} />
+      <SignerFan picked={pickedMark} marks={marks} width={width} />
       <Beacons marks={marks} pending={pending} />
     </>
   );
@@ -212,6 +213,8 @@ function App() {
   const [hover, setHover] = useState(null);
   const [picked, setPicked] = useState(null);
   const [progress, setProgress] = useState(0);
+  // Signer facts (171 KB) load on the first pick, not with the page.
+  const pick = (p) => { if (!p) return setPicked(null); (CONTROL_READY ??= fetch("/control.json").then((r) => r.json()).then((c) => { CONTROL = c; })).then(() => setPicked(p)); };
   const scrolly = useRef(null);
   useEffect(() => {
     const on = () => {
@@ -223,8 +226,8 @@ function App() {
     return () => removeEventListener("scroll", on);
   }, [data]);
   useEffect(() => {
-    Promise.all(["/map.json", "/names.json", "/control.json"].map((u) => fetch(u).then((r) => r.json()))).then(([m, n, c]) => { NAMES = n; CONTROL = c; setData(m);
-      const h = location.hash.match(/pick=(\w+)/); const p = h && m.programs.find((x) => x.id === h[1]); if (p) setPicked(p); });
+    Promise.all(["/map.json", "/names.json"].map((u) => fetch(u).then((r) => r.json()))).then(([m, n]) => { NAMES = n; setData(m);
+      const h = location.hash.match(/pick=(\w+)/); const p = h && m.programs.find((x) => x.id === h[1]); if (p) pick(p); });
   }, []);
   if (!data) return null;
   const live = data.programs.filter((p) => !p.closed);
@@ -240,7 +243,7 @@ function App() {
       <section className="scrolly" ref={scrolly}>
       <div className="map">
         <Canvas onPointerMissed={() => setPicked(null)} frameloop="demand" shadows dpr={[1, 2]} camera={{ fov: 20, near: 0.1, far: 200 }} gl={{ antialias: true }}>
-          <Scene data={data} onHover={setHover} picked={picked} onPick={setPicked} />
+          <Scene data={data} onHover={setHover} picked={picked} onPick={pick} />
         </Canvas>
         {!reduced && <Captions live={live} p={progress} />}
       </div>
