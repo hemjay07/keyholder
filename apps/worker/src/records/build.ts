@@ -14,6 +14,7 @@ import { vaultIndex, resolveFromHistory, type VaultMatch } from './admin-resolve
 import { decodeMembers } from '../coverage/daily';
 import { buildSignerIndex } from './signers';
 import { diffRecords } from './diff';
+import { checkClaim, type SignedClaim } from './claims';
 import { existsSync } from 'node:fs';
 
 const DATA = join(__dirname, '..', '..', '..', '..', 'data');
@@ -162,7 +163,13 @@ if (require.main === module) {
     writeFileSync(join(outDir, `signers-${day}.json`), JSON.stringify({ day, ...signers }));
     // the feed: changes since the latest earlier record in the same directory
     const prior = readdirSync(outDir).filter((f) => /^\d{4}-\d{2}-\d{2}\.json$/.test(f) && f < `${day}.json`).sort().pop();
-    const changes = prior && existsSync(join(outDir, prior)) ? diffRecords(day!, (JSON.parse(readFileSync(join(outDir, prior), 'utf8')) as { programs: ProgramRecord[] }).programs, records) : [];
+    const changes: ReturnType<typeof diffRecords> = prior && existsSync(join(outDir, prior)) ? diffRecords(day!, (JSON.parse(readFileSync(join(outDir, prior), 'utf8')) as { programs: ProgramRecord[] }).programs, records) : [];
+    // Proof of Control: every signed claim in data/claims, checked against today's record; breaks join the feed.
+    const claimsDir = join(DATA, 'claims');
+    const byId = new Map(records.map((r) => [r.programId, r]));
+    const claimChecks = existsSync(claimsDir) ? readdirSync(claimsDir).filter((f) => f.endsWith('.json')).map((f) => ({ file: f, ...checkClaim(JSON.parse(readFileSync(join(claimsDir, f), 'utf8')) as SignedClaim, day!, byId) })) : [];
+    writeFileSync(join(outDir, `claims-${day}.json`), JSON.stringify({ day, checks: claimChecks }));
+    for (const c of claimChecks) for (const b of c.breaks) changes.push({ day: day!, programId: b.programId, kind: 'claim_broken', path: b.path, from: b.expected, to: b.actual });
     writeFileSync(join(outDir, `changes-${day}.json`), JSON.stringify({ day, since: prior?.slice(0, 10) ?? null, events: changes }));
     console.log(JSON.stringify({ day, ...doc.summary, signers: signers.signers.length, multisigs: signers.multisigs.length, overlaps: signers.overlaps.length, changes: changes.length }));
   })().catch((e) => { console.error(e); process.exit(1); });

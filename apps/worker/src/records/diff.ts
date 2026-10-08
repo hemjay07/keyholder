@@ -8,7 +8,7 @@ import type { ProgramRecord } from './build';
 export type EventKind =
   | 'program_added' | 'program_dropped' | 'program_closed' | 'program_reopened'
   | 'authority_changed' | 'multisig_replaced' | 'threshold_changed' | 'timelock_changed' | 'members_changed'
-  | 'admin_changed' | 'stage_changed';
+  | 'admin_changed' | 'stage_changed' | 'claim_broken';
 
 export interface ControlEvent {
   day: string; programId: string; kind: EventKind; path: string;
@@ -17,7 +17,7 @@ export interface ControlEvent {
   added?: string[]; removed?: string[];
 }
 
-const ORDER: EventKind[] = ['program_added', 'program_dropped', 'program_closed', 'program_reopened', 'authority_changed', 'multisig_replaced', 'threshold_changed', 'timelock_changed', 'members_changed', 'admin_changed', 'stage_changed'];
+const ORDER: EventKind[] = ['program_added', 'program_dropped', 'program_closed', 'program_reopened', 'authority_changed', 'multisig_replaced', 'threshold_changed', 'timelock_changed', 'members_changed', 'admin_changed', 'stage_changed', 'claim_broken'];
 const closed = (r: ProgramRecord) => r.stage.modifiers.includes('closed');
 
 export function diffRecords(day: string, before: ProgramRecord[], after: ProgramRecord[]): ControlEvent[] {
