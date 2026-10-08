@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { pendingActions, latestDay, registry } from '@/lib/records';
 import { programName, shortAddr } from '@/lib/program-names';
 import { formatUsd } from '@/components/stagemap/format';
+import Pager, { paginate } from '@/components/Pager';
 import s from './pending.module.css';
 
 export const dynamic = 'force-dynamic';
@@ -48,27 +49,46 @@ function Row({ v, i, usd }: { v: Vote; i: number; usd: Map<string, { stage: numb
   );
 }
 
-export default async function PendingPage() {
+type Q = { tab?: string; page?: string; per?: string };
+
+export default async function PendingPage({ searchParams }: { searchParams: Promise<Q> }) {
+  const q = await searchParams;
   const [votes, day] = await Promise.all([pendingActions({ relevantOnly: true, limit: 500 }), latestDay()]);
   const reg = day ? await registry(day) : [];
   const usd = new Map(reg.map((r) => [r.programId, { stage: r.stage, usd: r.usdFloor ?? 0 }]));
   const byAge = (a: Vote, b: Vote) => (a.status_at?.getTime() ?? 0) - (b.status_at?.getTime() ?? 0);
   const approved = votes.filter((v) => v.status === 'Approved').sort((a, b) => Number(isUpgrade(b)) - Number(isUpgrade(a)) || byAge(a, b));
   const active = votes.filter((v) => v.status !== 'Approved').sort(byAge);
+  const control = votes.filter(isUpgrade).length;
   const oldest = days([...approved].sort(byAge)[0]?.status_at ?? null);
+  const tab = q.tab === 'active' ? 'active' : 'approved';
+  const list = tab === 'active' ? active : approved;
+  const pg = paginate(list.length, q.page, q.per, 25);
+  const programs = new Set(votes.flatMap((v) => (Array.isArray(v.controls) ? (v.controls as { programId: string }[]).map((c) => c.programId) : [])));
   return (
-    <main className={s.wrap} data-device="vote-bars">
+    <main className={s.wrap}>
       <h1 className={s.h1}><span className={s.n}>{votes.length}</span> open votes right now would change who controls a program or move its funds.</h1>
-      <p className={s.lede}>Read from every Squads v4 multisig that controls a covered program, every 30 minutes.{oldest != null ? ` The oldest approved vote has waited ${oldest} days and can still run.` : ''}</p>
-      <section className={s.sec}>
-        <h2>Approved, can run · {approved.length}</h2>
-        <ol className={s.list}>{approved.map((v, i) => <Row key={v.address} v={v} i={i} usd={usd} />)}</ol>
-      </section>
-      <section className={s.sec}>
-        <h2>Collecting signatures · {active.length}</h2>
-        <ol className={s.list}>{active.map((v, i) => <Row key={v.address} v={v} i={i} usd={usd} />)}</ol>
-      </section>
-      <p className={s.muted}>Same data: <Link href="/api/v1/pending">/api/v1/pending</Link>. Explanations are written by Claude from the decoded transaction only.</p>
+      <div className={s.layout}>
+        <aside className={s.side}>
+          <dl className={s.stats}>
+            <div><dt>Approved, can run</dt><dd className={s.n}>{approved.length}</dd></div>
+            <div><dt>Collecting signatures</dt><dd>{active.length}</dd></div>
+            <div><dt>Change code or control</dt><dd>{control}</dd></div>
+            <div><dt>Programs affected</dt><dd>{programs.size}</dd></div>
+            {oldest != null && <div><dt>Oldest approved</dt><dd>{oldest} days</dd></div>}
+          </dl>
+          <p className={s.note}>Read from every Squads v4 multisig that controls a covered program, every 30 minutes. Explanations are written by Claude from the decoded transaction only. Same data: <Link href="/api/v1/pending">/api/v1/pending</Link>.</p>
+        </aside>
+        <section className={s.main} data-device="vote-bars">
+          <nav className={s.tabs} aria-label="Vote status">
+            <Link className={tab === 'approved' ? s.on : ''} href="/pending">Approved, can run · {approved.length}</Link>
+            <Link className={tab === 'active' ? s.on : ''} href="/pending?tab=active">Collecting signatures · {active.length}</Link>
+          </nav>
+          <Pager base="/pending" query={{ tab: tab === 'active' ? 'active' : undefined, per: q.per }} noun="votes" defPer={25} {...pg} />
+          <ol className={s.list}>{list.slice(pg.from, pg.to).map((v, i) => <Row key={v.address} v={v} i={i} usd={usd} />)}</ol>
+          <Pager base="/pending" query={{ tab: tab === 'active' ? 'active' : undefined, per: q.per }} noun="votes" defPer={25} {...pg} />
+        </section>
+      </div>
     </main>
   );
 }
