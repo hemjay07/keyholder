@@ -380,17 +380,26 @@ export async function resolveWalletPositions(wallet: string): Promise<
   Array<{ protocolId: string; kind: string; valueUsd: string | null; detail: Record<string, unknown> }>
 > {
   const endpoints = resolveRpcEndpoints();
-  const connection = new Connection(endpoints.httpUrl, 'confirmed');
+  // No silent client retries on the primary: a 429 should hand over to the fallback at once.
+  const primary = new Connection(endpoints.httpUrl, { commitment: 'confirmed', disableRetryOnRateLimit: true });
+  // getProgramAccounts scans burst past free-tier limits when fired together (429 on the wallet page, 2026-10-09):
+  // any scan the primary refuses with 429 is re-run on the public endpoint.
+  const fallback = new Connection(process.env.POSITIONS_FALLBACK_RPC_URL ?? 'https://api.mainnet-beta.solana.com', 'confirmed');
+  const is429 = (e: unknown) => /429|Too Many Requests/i.test(String(e));
+  async function scan<T>(fn: (c: Connection) => Promise<T>): Promise<T> {
+    try { return await fn(primary); } catch (e) { if (!is429(e)) throw e; }
+    return fn(fallback);
+  }
 
   const [tokenAccounts, obligations, marginfiAccounts, driftUsers, raydiumPositions, orcaPositions] =
     await withRedaction(() =>
       Promise.all([
-        resolveTokenAccounts(connection, wallet),
-        resolveKaminoObligations(connection, wallet),
-        resolveMarginfiAccounts(connection, wallet),
-        resolveDriftUsers(connection, wallet),
-        resolveRaydiumClmmPositions(connection, wallet),
-        resolveOrcaWhirlpoolPositions(connection, wallet),
+        scan((c) => resolveTokenAccounts(c, wallet)),
+        scan((c) => resolveKaminoObligations(c, wallet)),
+        scan((c) => resolveMarginfiAccounts(c, wallet)),
+        scan((c) => resolveDriftUsers(c, wallet)),
+        scan((c) => resolveRaydiumClmmPositions(c, wallet)),
+        scan((c) => resolveOrcaWhirlpoolPositions(c, wallet)),
       ])
     );
 
