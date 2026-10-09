@@ -40,7 +40,7 @@ const RECORD: { when: string; text: React.ReactNode; src: string; href: string }
   { when: '2026-10-08', text: <><b className={s.w}>360</b> programs sit at Stage 0: one key can change them.</>, src: '/api/v1/stages', href: '/api/v1/stages' },
   { when: '2026-10-08', text: <>The program built from Kamino&rsquo;s klend repo waits 24 hours to upgrade; its global admin, a <b className={s.w}>4-of-10</b> multisig, waits for nothing.</>, src: 'KLend2g3…YavgmjD', href: '/api/v1/programs/KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD' },
   { when: 'now', text: <><b className={s.w}>50</b> open votes right now would change who controls a program or move its funds.</>, src: '/api/v1/pending · 30 min', href: '/api/v1/pending' },
-  { when: 'now', text: <>Two upgrades were approved <b className={s.w}>630 days</b> ago and can still run at any moment.</>, src: 'oldest approved vote', href: '/api/v1/pending' },
+  { when: 'now', text: <>Two upgrades were approved <b className={s.w}>630 days</b> ago and can still run at any moment.</>, src: 'the 712-day story', href: '/stories/open-votes' },
   { when: 'replay', text: <>Drift&rsquo;s first change landed <b>5.6 days</b> before the first drain; Keyholder&rsquo;s rules flag it the moment it lands.</>, src: 'KeyBench · Drift', href: '/keybench' },
 ];
 
