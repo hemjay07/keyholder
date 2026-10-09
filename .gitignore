@@ -32,3 +32,8 @@ design/video/film/*.png
 data/coverage/dollars-2026-10-04.json
 apps/web/.next/
 programs/keyholder/target/
+design/video/demo/raw/
+design/video/demo/seg/
+design/video/demo/frames/
+design/video/demo/check/
+design/video/demo/silent.mp4
