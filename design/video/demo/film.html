@@ -1,0 +1,194 @@
+<!doctype html>
+<!-- design/video/demo/film.html — Keyholder product film (seek(t) engine, 1920x1080). Brand intro and outro built from the
+     mark itself (lock frame + five key slots + signal dot), chapters with exposition on the left and the real product on
+     the right (frame sequences recorded from the site, design/video/demo/plates). Every figure is on screen in the product. -->
+<html><head><meta charset="utf-8">
+<style>
+@font-face { font-family: G; src: url("../film/Geist-Regular.ttf"); }
+@font-face { font-family: GM; src: url("../film/GeistMono-Regular.ttf"); }
+:root { --bg:#E6E2D9; --panel:#F4F1EA; --ink:#1B1A17; --ink2:#5A564E; --sig:#FF5A1F; --sigt:#A32F06; --ok:#1F6B4A; }
+* { box-sizing: border-box; }
+html,body { margin:0; width:1920px; height:1080px; overflow:hidden; background:var(--bg); font-family:G; color:var(--ink); }
+.abs { position:absolute; will-change:transform,opacity; }
+#grain { position:absolute; inset:0; pointer-events:none; opacity:.05; background-image:radial-gradient(#000 1px, transparent 1px); background-size:3px 3px; mix-blend-mode:multiply; }
+/* brand */
+#mark { left:0; top:0; width:1920px; height:1080px; }
+#word { left:0; width:1920px; top:760px; height:120px; text-align:center; font-size:96px; letter-spacing:.18em; }
+#word span { display:inline-block; }
+#tag { left:0; width:1920px; top:880px; text-align:center; font-family:GM; font-size:28px; color:var(--ink2); letter-spacing:.06em; }
+/* chapter exposition */
+#copy { left:110px; top:0; width:560px; height:1080px; }
+#num { font-family:GM; font-size:22px; color:var(--sigt); letter-spacing:.1em; }
+#head { font-size:62px; line-height:1.04; letter-spacing:-.025em; margin-top:22px; }
+#body { font-size:27px; line-height:1.42; color:var(--ink2); margin-top:28px; }
+#fact { margin-top:34px; font-family:GM; font-size:21px; padding:14px 18px; border-left:4px solid var(--sig); background:var(--panel); }
+.line { display:block; overflow:hidden; }
+.line > span { display:block; }
+/* product window */
+#win { left:720px; top:205px; width:1110px; height:662px; border-radius:18px; overflow:hidden; background:#fff; box-shadow:0 40px 90px -40px rgba(27,26,23,.55), 0 0 0 1px rgba(27,26,23,.12); }
+#bar { position:absolute; left:0; right:0; top:0; height:38px; background:var(--panel); border-bottom:1px solid rgba(27,26,23,.1); font-family:GM; font-size:15px; color:var(--ink2); display:flex; align-items:center; padding-left:84px; z-index:2; }
+#bar i { position:absolute; top:13px; width:12px; height:12px; border-radius:6px; background:#d6d1c6; }
+#view { position:absolute; left:0; right:0; top:38px; bottom:0; overflow:hidden; }
+#plate { position:absolute; left:0; top:0; width:1920px; height:1080px; transform-origin:0 0; }
+#ring { position:absolute; border:4px solid var(--sig); border-radius:14px; box-shadow:0 0 0 9999px rgba(27,26,23,.28); z-index:3; }
+#tip { position:absolute; z-index:4; background:var(--ink); color:var(--panel); font-family:GM; font-size:18px; padding:8px 12px; white-space:nowrap; }
+/* big type */
+#big { left:0; top:0; width:1920px; height:1080px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+#big .k { font-size:132px; letter-spacing:-.04em; line-height:1; }
+#big .k b { font-weight:400; color:var(--sigt); }
+#big .s { font-size:40px; color:var(--ink2); margin-top:30px; max-width:1300px; line-height:1.3; }
+#prog { left:120px; right:120px; bottom:70px; height:2px; background:rgba(27,26,23,.1); }
+#prog i { position:absolute; left:0; top:0; bottom:0; background:var(--ink); transform-origin:0 50%; }
+#chap { left:120px; bottom:86px; font-family:GM; font-size:15px; color:var(--ink2); letter-spacing:.08em; }
+</style></head><body>
+<svg id="mark" class="abs" viewBox="0 0 1920 1080"></svg>
+<div id="word" class="abs"></div><div id="tag" class="abs">the control record for Solana</div>
+<div id="big" class="abs"></div>
+<div id="copy" class="abs"><div style="position:absolute;top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;width:560px">
+  <div id="num"></div><div id="head"></div><div id="body"></div><div id="fact"></div></div></div>
+<div id="win" class="abs"><div id="bar"><i style="left:18px"></i><i style="left:38px"></i><i style="left:58px"></i><span id="url"></span></div>
+  <div id="view"><img id="plate"><div id="ring"></div><div id="tip"></div></div></div>
+<div id="prog" class="abs"><i></i></div><div id="chap" class="abs"></div>
+<div id="grain"></div>
+<script>
+const $ = (id) => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const ease = (k) => { k = clamp(k); return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+const out = (k) => 1 - Math.pow(1 - clamp(k), 3);
+const back = (k) => { k = clamp(k); const c = 1.6; return 1 + (c + 1) * Math.pow(k - 1, 3) + c * Math.pow(k - 1, 2); };
+const lerp = (a, b, k) => a + (b - a) * k;
+const prog = (t, a, d) => clamp((t - a) / d);
+
+// ---------- the mark, at 30x scale, centred ----------
+const S = 30, MX = (1920 - 50 * S) / 2, MY = 230;
+const NS = 'http://www.w3.org/2000/svg';
+const mk = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); $('mark').appendChild(e); return e; };
+const frame = mk('rect', { x: MX + .75 * S, y: MY + .75 * S, width: 48.5 * S, height: 18.5 * S, rx: 3.6 * S, fill: 'none', stroke: '#1B1A17', 'stroke-width': 1.5 * S });
+const per = 2 * (48.5 + 18.5) * S; frame.style.strokeDasharray = per;
+const CX = [7.5, 16, 24, 31, 38];             // key centres in mark units
+const keys = CX.map((cx) => { const g = mk('g', {}); const r = document.createElementNS(NS, 'rect'); r.setAttribute('x', -1.75 * S); r.setAttribute('y', -5.5 * S); r.setAttribute('width', 3.5 * S); r.setAttribute('height', 11 * S); r.setAttribute('rx', 1.75 * S); r.setAttribute('fill', '#1B1A17'); g.appendChild(r); const h = document.createElementNS(NS, 'circle'); h.setAttribute('r', .8 * S); h.setAttribute('fill', '#E6E2D9'); g.appendChild(h); return { g, r, cx }; });
+const glow = mk('circle', { cx: MX + 44.6 * S, cy: MY + 10 * S, r: 2.3 * S, fill: '#FF5A1F', opacity: 0 });
+const dot = mk('circle', { cx: MX + 44.6 * S, cy: MY + 10 * S, r: 2.3 * S, fill: '#FF5A1F' });
+const WORD = 'KEYHOLDER'; $('word').innerHTML = [...WORD].map((c) => `<span>${c}</span>`).join('');
+
+/** state: draw 0..1 frame stroke; rise[i] 0..1; turn[i] 0..1 (vertical -> horizontal); dot 0..1; word 0..1; place: {scale,x,y,op} */
+function drawMark(st) {
+  const svg = $('mark');
+  svg.style.opacity = st.op;
+  svg.style.transform = `translate(${st.x}px, ${st.y}px) scale(${st.scale})`;
+  svg.style.transformOrigin = '960px 530px';
+  frame.style.strokeDashoffset = per * (1 - st.draw);
+  keys.forEach((k, i) => {
+    const rise = st.rise[i], turn = st.turn[i];
+    const w = lerp(3.5, 7, turn) * S;  // a turned key lies flat (7 x 3.5 in the mark)
+    const sx = lerp(1, 1, turn);
+    k.g.setAttribute('transform', `translate(${MX + k.cx * S}, ${MY + 10 * S + (1 - rise) * 6 * S}) rotate(${-90 * turn}) scale(1, ${lerp(1, 7 / 11, turn) * sx})`);
+    k.g.style.opacity = rise;
+  });
+  dot.setAttribute('r', 2.3 * S * st.dot); dot.style.opacity = st.dot > 0 ? 1 : 0;
+  glow.setAttribute('r', 2.3 * S * (1 + 1.6 * st.glow)); glow.setAttribute('opacity', .45 * (1 - st.glow) * (st.glow > 0 ? 1 : 0));
+  [...$('word').children].forEach((s, i) => { const k = out(prog(st.word * (WORD.length + 4), i, 4)); s.style.opacity = k; s.style.transform = `translateY(${(1 - k) * 34}px)`; });
+  $('word').style.opacity = st.wop; $('tag').style.opacity = st.tag; $('tag').style.transform = `translateY(${(1 - st.tag) * 16}px)`;
+}
+
+// ---------- chapters ----------
+const CH = [
+  { plate: 'stages', from: 1.0, dur: 15, url: 'keyholder-ashy.vercel.app', num: '01 · THE STAGES', head: 'Four ways a program can change.', body: 'Who must agree, and how long you get to leave. Keyholder places every Solana program on one of four rungs.', fact: '360 programs at Stage 0: one key can replace the code today.', zoom: [[0, 1, .0, .0], [1, 1.08, .04, .05]] },
+  { plate: 'map', from: 2.4, dur: 7.5, url: 'keyholder-ashy.vercel.app/#map', num: '02 · THE MAP', head: '577 live programs, on their stage.', body: 'Each column is a program; its height is the money traced to it. Pick one and its signer keys fan out.', fact: 'Orange: weak control. Green: a 24 h+ delay on every path.', zoom: [[0, 1, 0, 0], [1, 1.12, .05, .08]] },
+  { plate: 'program', from: .5, dur: 8, url: 'keyholder-ashy.vercel.app/programs/KLend…', num: '03 · ONE PROGRAM', head: 'The weakest path sets the stage.', body: 'Kamino Lend’s upgrades wait 24 hours. Its admin key, a 4-of-10 multisig, waits for nothing.', fact: 'Kamino Lend · Stage 1 · $1.5B traced', zoom: [[0, 1.0, 0, .02], [1, 1.22, .02, .2]], ring: { at: 3.4, x: 80, y: 540, w: 1160, h: 190, tip: 'admin path: 4 of 10 · no delay' } },
+  { plate: 'signer', from: .7, dur: 7, url: 'keyholder-ashy.vercel.app/signers/5ggs…', num: '04 · ONE KEY', head: 'One key, six multisigs, $1.5B.', body: 'Keys are reused across multisigs. This one can act alone on two of them: they need a single signature.', fact: 'acts alone on 2 multisigs', zoom: [[0, 1, 0, 0], [1, 1.1, .02, .12]] },
+  { plate: 'votes', from: .5, dur: 8.5, url: 'keyholder-ashy.vercel.app/stories/open-votes', num: '05 · OPEN VOTES', head: 'Approved 713 days ago, and it can still run.', body: '53 open multisig votes would change who controls a program or move its funds. Approved votes wait for any signer to send them.', fact: '33 approved · 29 change code or control', zoom: [[0, 1, 0, 0], [1, 1.04, 0, .02]] },
+  { plate: 'ask', from: 1.0, dur: 7.5, url: 'keyholder-ashy.vercel.app', num: '06 · ASK', head: 'Ask in plain words.', body: 'Name a program or paste an address: the answer comes straight from the record, with the path that sets its stage.', fact: 'answered from the record in 0.1 s', zoom: [[0, 1, 0, 0], [1, 1.06, 0, .05]] },
+  { plate: 'drift', from: 3.0, dur: 17, url: 'keyholder-ashy.vercel.app/replay/drift', num: '07 · THE PROOF', head: '5.6 days of warning.', body: 'Drift lost $285M in April 2026. Replayed from chain, Keyholder’s rules flag the first control change 5.6 days before the money moved.', fact: 'first alert 25 Mar 16:58 UTC · first withdrawal 31 Mar 07:16 UTC', zoom: [[0, 1, 0, 0], [1, 1.05, .02, .03]] },
+  { plate: 'build', from: 1.0, dur: 12, url: 'keyholder-ashy.vercel.app/policy', num: '08 · ENFORCE', head: 'Refuse money where control is weak.', body: 'One line, require_stage, lets any program refuse a deposit when the target’s control is below its policy.', fact: 'devnet: same deposit refused 23 s after the multisig was weakened', zoom: [[0, 1, 0, 0], [1, 1.04, 0, .02]] },
+  { plate: 'self', from: .7, dur: 6, url: 'keyholder-ashy.vercel.app/policy', num: '09 · OUR OWN RULE', head: 'Keyholder waits too.', body: 'Its own program can only change through a 2-of-3 multisig, and every change waits 48 hours in public first.', fact: 'executable after 2026-10-10 17:27 UTC', zoom: [[0, 1, 0, 0], [1, 1.1, .02, .1]] },
+];
+// timeline
+const T_INTRO = 9.5, T_HOOK = 8.5, T_GAP = 1.1, T_OUTRO = 9;
+let t0 = T_INTRO + T_HOOK; for (const c of CH) { c.t = t0; t0 += c.dur + T_GAP; }
+const T_END = t0 + T_OUTRO; window.DURATION = T_END;
+
+function setText(el, html) { if (el.dataset.v !== html) { el.innerHTML = html; el.dataset.v = html; } }
+function lines(s) { return s.split('\n').map((l) => `<span class="line"><span>${l}</span></span>`).join(''); }
+const plateCache = {};
+async function setPlate(name, idx) {
+  const src = `plates/${name}/${String(idx).padStart(5, '0')}.jpg`;
+  const img = $('plate'); if (img.dataset.src === src) return;
+  img.dataset.src = src; img.src = src; try { await img.decode(); } catch {}
+}
+const fmt = (v) => `$${Math.round(v)}M`;
+
+window.seek = async function (t) {
+  // ---- intro: the mark builds, two keys turn, the dot lights, the word arrives ----
+  const show = (a, b) => t >= a && t < b;
+  const introOn = t < T_INTRO + .6, outroOn = t >= T_END - T_OUTRO;
+  if (introOn || outroOn) {
+    let st;
+    if (introOn) {
+      const rise = CX.map((_, i) => back(prog(t, 1.3 + i * .16, .55)));
+      const turn = [0, 1].map((i) => back(prog(t, 2.9 + i * .45, .5))).concat([0, 0, 0]);
+      const leave = ease(prog(t, T_INTRO - .4, .9));
+      st = { op: 1 - leave, scale: lerp(1, .62, ease(prog(t, 4.6, 1.6))) * lerp(1, .9, leave), x: 0, y: lerp(0, -150, ease(prog(t, 4.6, 1.6))), draw: ease(prog(t, .2, 1.3)), rise, turn,
+        dot: back(prog(t, 3.95, .45)), glow: prog(t, 4.0, 1.1) < 1 && t > 4.0 ? prog(t, 4.0, 1.1) : 0, word: prog(t, 5.0, 1.6), wop: 1 - leave, tag: out(prog(t, 6.4, .8)) * (1 - leave) };
+    } else {
+      const u = t - (T_END - T_OUTRO);
+      // outro: the mark returns with every key upright, then turns them one at a time while the line counts the keys
+      // outro: the lock redraws, the keys rise, two turn, the dot lights: the film ends on the logo it began with
+      const rise = CX.map((_, i) => back(prog(u, .5 + i * .12, .5)));
+      const turn = [0, 1].map((i) => back(prog(u, 1.6 + i * .4, .45))).concat([0, 0, 0]);
+      st = { op: out(prog(u, 0, .5)), scale: .62, x: 0, y: -150, draw: ease(prog(u, 0, 1.0)), rise, turn, dot: back(prog(u, 2.6, .45)), glow: u > 2.65 && u < 3.8 ? prog(u, 2.65, 1.1) : 0,
+        word: prog(u, 3.0, 1.4), wop: 1, tag: out(prog(u, 4.4, .8)) };
+    }
+    drawMark(st);
+    $('tag').textContent = outroOn ? 'Who can move it, how fast, and did that change?  ·  keyholder-ashy.vercel.app' : 'the control record for Solana';
+    $('mark').style.display = $('word').style.display = $('tag').style.display = 'block';
+  } else { $('mark').style.display = $('word').style.display = $('tag').style.display = 'none'; }
+
+  // ---- hook: the number ----
+  const h0 = T_INTRO;
+  if (show(h0, h0 + T_HOOK)) {
+    const u = t - h0; $('big').style.display = 'flex';
+    const a = out(prog(u, .2, .6)), b = out(prog(u, 2.6, .6)), c = out(prog(u, 4.6, .7)), leave = ease(prog(u, T_HOOK - .6, .6));
+    const n = 769 * ease(prog(u, 4.7, 1.4));
+    setText($('big'), `<div class="s" id="h1">Every Solana program can be changed by someone.</div><div class="s" id="h2" style="color:var(--ink)">The question is who, and how fast.</div><div class="k" id="h3" style="margin-top:46px"><b id="hn"></b></div><div class="s" id="h4">sits behind programs that can be upgraded with no waiting period.</div>`);
+    $('hn').textContent = fmt(n);
+    $('h1').style.opacity = a * (1 - b * .55); $('h1').style.transform = `translateY(${(1 - a) * 20}px)`;
+    $('h2').style.opacity = b; $('h2').style.transform = `translateY(${(1 - b) * 20}px)`;
+    $('h3').style.opacity = c; $('h3').style.transform = `scale(${lerp(.92, 1, c)})`;
+    $('h4').style.opacity = out(prog(u, 5.4, .6));
+    $('big').style.opacity = 1 - leave;
+  } else $('big').style.display = 'none';
+
+  // ---- chapters ----
+  const c = CH.find((x) => t >= x.t - .2 && t < x.t + x.dur + T_GAP);
+  const chOn = Boolean(c) && !outroOn;
+  for (const id of ['copy', 'win', 'prog', 'chap']) $(id).style.display = chOn ? 'block' : 'none';
+  if (chOn) {
+    const u = t - c.t, inK = out(prog(u, 0, .7)), outK = ease(prog(u, c.dur + .1, .8));
+    setText($('num'), c.num); setText($('head'), c.head); setText($('body'), c.body); setText($('fact'), c.fact); setText($('url'), c.url);
+    $('num').style.opacity = inK * (1 - outK);
+    $('head').style.opacity = out(prog(u, .1, .7)) * (1 - outK); $('head').style.transform = `translateY(${(1 - out(prog(u, .1, .7))) * 28 - outK * 18}px)`;
+    $('body').style.opacity = out(prog(u, .4, .7)) * (1 - outK); $('body').style.transform = `translateY(${(1 - out(prog(u, .4, .7))) * 22}px)`;
+    $('fact').style.opacity = out(prog(u, 1.2, .6)) * (1 - outK); $('fact').style.transform = `translateX(${(1 - out(prog(u, 1.2, .6))) * -24}px)`;
+    const wIn = out(prog(u, .15, .9));
+    $('win').style.opacity = wIn * (1 - outK);
+    $('win').style.transform = `translateY(${(1 - wIn) * 60 - outK * 30}px) scale(${lerp(.96, 1, wIn)})`;
+    // plate frame and the slow camera push
+    const fi = Math.min(Math.floor((c.from + clamp(u, 0, c.dur)) * 30) + 1, 9999);
+    const [z0, z1] = c.zoom, k = ease(clamp(u / c.dur));
+    const sc = lerp(z0[1], z1[1], k) * (1110 / 1920), fx = lerp(z0[2], z1[2], k), fy = lerp(z0[3], z1[3], k);
+    $('plate').style.transform = `translate(${-fx * 1920 * sc}px, ${-fy * 1080 * sc}px) scale(${sc})`;
+    await setPlate(c.plate, fi);
+    if (c.ring && u > c.ring.at) {
+      const r = c.ring, rk = out(prog(u, r.at, .5)), s2 = sc;
+      Object.assign($('ring').style, { display: 'block', left: `${(r.x - fx * 1920) * s2}px`, top: `${(r.y - fy * 1080) * s2}px`, width: `${r.w * s2}px`, height: `${r.h * s2}px`, opacity: rk * (1 - outK) });
+      Object.assign($('tip').style, { display: 'block', left: `${(r.x - fx * 1920) * s2}px`, top: `${(r.y - fy * 1080) * s2 + r.h * s2 + 10}px`, opacity: out(prog(u, r.at + .25, .4)) * (1 - outK) });
+      $('tip').textContent = r.tip;
+    } else { $('ring').style.display = $('tip').style.display = 'none'; }
+    const i = CH.indexOf(c);
+    $('prog').querySelector('i').style.transform = `scaleX(${(i + clamp(u / c.dur)) / CH.length})`;
+    setText($('chap'), `KEYHOLDER · ${String(i + 1).padStart(2, '0')} / ${String(CH.length).padStart(2, '0')}`);
+  }
+};
+window.ready = document.fonts.ready.then(() => window.seek(0));
+</script></body></html>
