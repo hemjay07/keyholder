@@ -36,7 +36,7 @@ export default async function BuildPage() {
         <h2 className={s.h2}>It already refused a deposit, on devnet</h2>
         <ol className={s.steps}>
           {STEPS.map((st, i) => (
-            <li key={st.signature} className={st.outcome === 'pass' ? s.pass : st.outcome === 'refused' ? s.refused : s.change} style={{ ['--i' as string]: i }}>
+            <li key={st.signature} data-film={st.outcome === 'refused' ? 'refusal' : undefined} className={st.outcome === 'pass' ? s.pass : st.outcome === 'refused' ? s.refused : s.change} style={{ ['--i' as string]: i }}>
               <span className={s.when}>{st.time.slice(11, 19)} UTC · slot {st.slot.toLocaleString('en-US')}</span>
               <b>{st.title}</b>
               <p>{st.detail}</p>
@@ -51,7 +51,7 @@ export default async function BuildPage() {
         <div>
           <h2 className={s.h2}>Keyholder follows its own rule</h2>
           <p className={s.body}>Keyholder&rsquo;s program can only change through a {OWN_CONTROL.threshold}-of-{OWN_CONTROL.members} Squads multisig, and every change waits {OWN_CONTROL.timeLockHours} hours in public first: Stage 2. Its first upgrade is in that window now.</p>
-          <ol className={s.timeline}>
+          <ol className={s.timeline} data-film="selfline">
             <li className={s.done}><b>Proposed and approved, 2 of 3</b><span>{utc(up.approvedAt)}</span><a href={explorerTx(up.proposed)} target="_blank" rel="noreferrer">{short(up.proposed)} ↗</a></li>
             <li className={ready ? s.done : s.wait}><b>{ready ? 'Delay passed' : 'Waiting out the 48 h delay'}</b><span>executable after {utc(up.executableAfter)}</span></li>
             <li className={s.next}><b>Executed, upgrade lands</b><span>{ready ? 'ready to execute' : 'not before the delay ends'}</span></li>

@@ -45,7 +45,7 @@ export default async function OpenVotesStory() {
         <div className={s.axis}>{ticks.map((d) => <span key={d} style={{ left: `${(d / max) * 100}%` }}>{d === 0 ? 'today' : `${d} days`}</span>)}</div>
         <ol className={s.bars}>
           {[...approved, ...active.sort((a, b) => age(b) - age(a))].map((v, i) => (
-            <li key={v.address} style={{ ['--w' as string]: Math.max(0.006, age(v) / max), ['--i' as string]: i }} className={v.status === 'Approved' ? s.ok : s.wait}>
+            <li key={v.address} data-film={i === 0 ? 'oldest' : undefined} style={{ ['--w' as string]: Math.max(0.006, age(v) / max), ['--i' as string]: i }} className={v.status === 'Approved' ? s.ok : s.wait}>
               <span className={s.label}>{ids(v).slice(0, 2).map(programName).join(', ')} · {what(v)} · {age(v)} d</span>
               <span className={s.track}><i /></span>
             </li>

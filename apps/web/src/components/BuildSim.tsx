@@ -48,7 +48,7 @@ export default function BuildSim({ rows }: { rows: SimRow[] }) {
       </div>
       <div className={s.result}>
         <div className={s.meter} aria-hidden="true"><i style={{ transform: `scaleX(${shown ? share : 0})` }} /></div>
-        <div className={s.nums}>
+        <div className={s.nums} data-film="refused">
           <button className={`${s.num} ${show === 'pass' ? s.sel : ''}`} onClick={() => setShow('pass')}><b className={s.holds}>{res.pass.length}</b><span>programs accepted · {formatUsd(res.passUsd)}</span></button>
           <button className={`${s.num} ${show === 'refuse' ? s.sel : ''}`} onClick={() => setShow('refuse')}><b className={s.weak}>{res.refuse.length}</b><span>refused on chain · {formatUsd(res.refuseUsd)}</span></button>
         </div>

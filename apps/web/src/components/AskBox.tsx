@@ -183,7 +183,7 @@ export default function AskBox() {
               {!t.done && !t.answer && !t.resolved && (
                 <ol className={s.steps}>{(t.steps.length ? t.steps : ['Reading the record']).map((st, j, a) => <li key={j} className={j === a.length - 1 ? s.live : ''}>{st}</li>)}</ol>
               )}
-              {t.resolved && (<div className={s.grid}><div className={s.lead}><p className={s.verdict}>{verdictFor(t.resolved)}</p><dl className={s.facts}>{factsFor(t.resolved).map((f) => <div key={f.label}><dt>{f.label}</dt><dd className={f.tone === 'weak' ? s.weak : f.tone === 'holds' ? s.holds : ''}>{f.value}</dd></div>)}</dl></div><div className={s.cards}>{t.resolved.program && <Card c={t.resolved.program} />}{t.resolved.signer && <SignerResult k={t.resolved.signer} />}</div></div>)}
+              {t.resolved && (<div className={s.grid} data-film="answer"><div className={s.lead}><p className={s.verdict}>{verdictFor(t.resolved)}</p><dl className={s.facts}>{factsFor(t.resolved).map((f) => <div key={f.label}><dt>{f.label}</dt><dd className={f.tone === 'weak' ? s.weak : f.tone === 'holds' ? s.holds : ''}>{f.value}</dd></div>)}</dl></div><div className={s.cards}>{t.resolved.program && <Card c={t.resolved.program} />}{t.resolved.signer && <SignerResult k={t.resolved.signer} />}</div></div>)}
               {t.answer && (
                 <div className={s.grid}>
                   <div className={s.lead}>

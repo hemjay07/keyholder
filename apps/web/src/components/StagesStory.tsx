@@ -62,11 +62,11 @@ function Scene({ sc, t }: { sc: StageScene; t: number }) {
         </p>
       </div>
       <div className={s.instrument}>
-        <div className={s.row}>
+        <div className={s.row} data-film="who">
           <span className={s.label}>Who must agree</span>
           {sc.stage === 3 ? <div className={s.lock} style={{ ['--k' as string]: keysT }}><svg viewBox="0 0 40 48" aria-hidden="true"><path d="M10 22v-8a10 10 0 0 1 20 0v8" /><rect x="5" y="22" width="30" height="22" /></svg><span>No key can change it</span></div> : <><Keys n={members} need={need} turned={keysT} /><span className={s.value}>{need} of {members}</span></>}
         </div>
-        <div className={s.row}>
+        <div className={s.row} data-film="clock">
           <span className={s.label}>From approval to effect</span>
           {sc.stage <= 1 ? (
             <div className={s.track}>
@@ -84,7 +84,7 @@ function Scene({ sc, t }: { sc: StageScene; t: number }) {
           )}
           <span className={s.value}>{sc.stage === 3 ? '7 d +' : `${delayH} h`}</span>
         </div>
-        <p className={`${s.verdict} ${tone}`} style={{ opacity: 0.2 + 0.8 * outT }}>{c.exit}</p>
+        <p data-film="verdict" className={`${s.verdict} ${tone}`} style={{ opacity: 0.2 + 0.8 * outT }}>{c.exit}</p>
       </div>
     </div>
   );

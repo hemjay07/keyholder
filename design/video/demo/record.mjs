@@ -66,11 +66,29 @@ for (const [name, run] of Object.entries(SCENES)) {
   if (only.length && !only.includes(name)) continue;
   const ctx = await b.newContext({ viewport: { width: W, height: H }, deviceScaleFactor: 1.5, recordVideo: { dir: OUT, size: { width: 1920, height: 1080 } }, colorScheme: 'light' });
   const p = await ctx.newPage();
+  // Track every [data-film] element's box on screen, so the film can follow and circle exactly what it points at.
+  const T0 = Date.now(); const samples = [];
+  await p.exposeBinding('khTrack', (_src, batch) => { for (const x of batch) samples.push({ ...x, t: (x.t - T0) / 1000 }); });
+  await p.addInitScript(() => {
+    const tick = () => {
+      const by = {};
+      for (const el of document.querySelectorAll('[data-film]')) {
+        const r = el.getBoundingClientRect(); if (r.width < 2 || r.height < 2) continue;
+        const k = el.getAttribute('data-film'), u = by[k];
+        by[k] = u ? { x0: Math.min(u.x0, r.left), y0: Math.min(u.y0, r.top), x1: Math.max(u.x1, r.right), y1: Math.max(u.y1, r.bottom) } : { x0: r.left, y0: r.top, x1: r.right, y1: r.bottom };
+      }
+      const out = Object.entries(by).map(([k, b]) => ({ k, t: Date.now(), x: b.x0 * 1.5, y: b.y0 * 1.5, w: (b.x1 - b.x0) * 1.5, h: (b.y1 - b.y0) * 1.5 }));
+      if (out.length && window.khTrack) window.khTrack(out);
+    };
+    setInterval(tick, 50);
+  });
   await p.addInitScript(() => { const s = document.createElement('style'); s.textContent = 'nextjs-portal{display:none!important}'; document.addEventListener('DOMContentLoaded', () => document.head.appendChild(s)); });
   const t = Date.now();
   await run(p);
   const v = p.video(); await ctx.close();
-  const { renameSync } = await import('node:fs'); renameSync(await v.path(), OUT + name + '.webm');
+  const { renameSync, writeFileSync, mkdirSync } = await import('node:fs'); renameSync(await v.path(), OUT + name + '.webm');
+  mkdirSync(new URL('./tracks/', import.meta.url).pathname, { recursive: true });
+  writeFileSync(new URL(`./tracks/${name}.json`, import.meta.url).pathname, JSON.stringify(samples));
   console.log(name, Date.now() - t, 'ms');
 }
 await b.close();

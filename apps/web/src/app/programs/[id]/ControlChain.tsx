@@ -27,7 +27,7 @@ export default function ControlChain({ record }: { record: ProgramRecordJson }) 
   return (
     <div className={s.chains} data-device="control-chain">
       {paths.map((p, row) => (
-        <div key={p.label} className={`${s.chain} ${p.binding ? s.binding : ''}`} style={{ ['--row' as string]: row }}>
+        <div key={p.label} data-film={p.binding ? 'binding' : undefined} className={`${s.chain} ${p.binding ? s.binding : ''}`} style={{ ['--row' as string]: row }}>
           <div className={s.node} style={{ ['--i' as string]: 0 }}><span className={s.k}>Program</span><code>{shortAddr(record.programId)}</code></div>
           <i className={s.link} style={{ ['--i' as string]: 1 }} />
           <div className={s.node} style={{ ['--i' as string]: 1 }}>

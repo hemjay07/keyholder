@@ -31,7 +31,7 @@ export default function Web({ keyAddr, multisigs, programs }: { keyAddr: string;
       {multisigs.map((m, i) => {
         const [x, y] = msPos.get(m.address)!;
         return (
-          <g key={m.address} className={s.n1} style={{ ['--i' as string]: i }}>
+          <g key={m.address} data-film={m.threshold === 1 ? 'alone' : undefined} className={s.n1} style={{ ['--i' as string]: i }}>
             <rect x={x - 62} y={y - 22} width={124} height={44} className={m.threshold === 1 ? s.alone : s.msBox} />
             <text x={x} y={y - 3} className={s.t1}>{m.threshold} of {m.members}</text>
             <text x={x} y={y + 13} className={s.t2}>{m.timelockS ? `${Math.round(m.timelockS / 3600)} h delay` : 'no delay'}</text>

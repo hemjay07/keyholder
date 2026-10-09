@@ -163,7 +163,7 @@ function Picked({ p, live, control, onPick, onClose }: PickedProps) {
   const copy = (k: string) => { void navigator.clipboard?.writeText(k); setCopied(k); setTimeout(() => setCopied(null), 1200); };
   const capped = p.binding === 'cap:admin_unknown';
   return (
-    <aside className={s.picked} aria-label={`${programName(p.id)} control`}>
+    <aside data-film="pick" className={s.picked} aria-label={`${programName(p.id)} control`}>
       <button className={s.x} onClick={onClose} aria-label="Close (Esc)">×</button>
       <div className={s.nm}>{programName(p.id)}</div>
       <div>Stage {p.stage} · {p.usd ? `${formatUsd(p.usd)} traced` : 'no dollars traced'}</div>
