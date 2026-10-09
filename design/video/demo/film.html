@@ -37,6 +37,10 @@ html,body { margin:0; width:1920px; height:1080px; overflow:hidden; background:v
 #big .k { font-size:132px; letter-spacing:-.04em; line-height:1; }
 #big .k b { font-weight:400; color:var(--sigt); }
 #big .s { font-size:40px; color:var(--ink2); margin-top:30px; max-width:1300px; line-height:1.3; }
+#q { left:0; top:0; width:1920px; height:1080px; display:none; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+#qn { font-family:GM; font-size:22px; letter-spacing:.12em; color:var(--sigt); }
+#qt { font-size:96px; letter-spacing:-.035em; line-height:1.05; max-width:1500px; margin-top:26px; }
+#qs { font-size:34px; color:var(--ink2); max-width:1200px; margin-top:28px; line-height:1.35; }
 #prog { left:120px; right:120px; bottom:70px; height:2px; background:rgba(27,26,23,.1); }
 #prog i { position:absolute; left:0; top:0; bottom:0; background:var(--ink); transform-origin:0 50%; }
 #chap { left:120px; bottom:86px; font-family:GM; font-size:15px; color:var(--ink2); letter-spacing:.08em; }
@@ -44,6 +48,7 @@ html,body { margin:0; width:1920px; height:1080px; overflow:hidden; background:v
 <svg id="mark" class="abs" viewBox="0 0 1920 1080"></svg>
 <div id="word" class="abs"></div><div id="tag" class="abs">the control record for Solana</div>
 <div id="big" class="abs"></div>
+<div id="q" class="abs"><div id="qn"></div><div id="qt"></div><div id="qs"></div></div>
 <div id="copy" class="abs"><div style="position:absolute;top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;width:560px">
   <div id="num"></div><div id="head"></div><div id="body"></div><div id="fact"></div></div></div>
 <div id="win" class="abs"><div id="bar"><i style="left:18px"></i><i style="left:38px"></i><i style="left:58px"></i><span id="url"></span></div>
@@ -93,19 +98,19 @@ function drawMark(st) {
 
 // ---------- chapters ----------
 const CH = [
-  { plate: 'stages', from: 1.0, dur: 15, url: 'keyholder-ashy.vercel.app', num: '01 · THE STAGES', head: 'Four ways a program can change.', body: 'Who must agree, and how long you get to leave. Keyholder places every Solana program on one of four rungs.', fact: '360 programs at Stage 0: one key can replace the code today.', zoom: [[0, 1, .0, .0], [1, 1.08, .04, .05]] },
-  { plate: 'map', from: 2.4, dur: 7.5, url: 'keyholder-ashy.vercel.app/#map', num: '02 · THE MAP', head: '577 live programs, on their stage.', body: 'Each column is a program; its height is the money traced to it. Pick one and its signer keys fan out.', fact: 'Orange: weak control. Green: a 24 h+ delay on every path.', zoom: [[0, 1, 0, 0], [1, 1.12, .05, .08]] },
-  { plate: 'program', from: .5, dur: 8, url: 'keyholder-ashy.vercel.app/programs/KLend…', num: '03 · ONE PROGRAM', head: 'The weakest path sets the stage.', body: 'Kamino Lend’s upgrades wait 24 hours. Its admin key, a 4-of-10 multisig, waits for nothing.', fact: 'Kamino Lend · Stage 1 · $1.5B traced', zoom: [[0, 1.0, 0, .02], [1, 1.22, .02, .2]], ring: { at: 3.4, x: 80, y: 540, w: 1160, h: 190, tip: 'admin path: 4 of 10 · no delay' } },
-  { plate: 'signer', from: .7, dur: 7, url: 'keyholder-ashy.vercel.app/signers/5ggs…', num: '04 · ONE KEY', head: 'One key, six multisigs, $1.5B.', body: 'Keys are reused across multisigs. This one can act alone on two of them: they need a single signature.', fact: 'acts alone on 2 multisigs', zoom: [[0, 1, 0, 0], [1, 1.1, .02, .12]] },
-  { plate: 'votes', from: .5, dur: 8.5, url: 'keyholder-ashy.vercel.app/stories/open-votes', num: '05 · OPEN VOTES', head: 'Approved 713 days ago, and it can still run.', body: '53 open multisig votes would change who controls a program or move its funds. Approved votes wait for any signer to send them.', fact: '33 approved · 29 change code or control', zoom: [[0, 1, 0, 0], [1, 1.04, 0, .02]] },
-  { plate: 'ask', from: 1.0, dur: 7.5, url: 'keyholder-ashy.vercel.app', num: '06 · ASK', head: 'Ask in plain words.', body: 'Name a program or paste an address: the answer comes straight from the record, with the path that sets its stage.', fact: 'answered from the record in 0.1 s', zoom: [[0, 1, 0, 0], [1, 1.06, 0, .05]] },
-  { plate: 'drift', from: 3.0, dur: 17, url: 'keyholder-ashy.vercel.app/replay/drift', num: '07 · THE PROOF', head: '5.6 days of warning.', body: 'Drift lost $285M in April 2026. Replayed from chain, Keyholder’s rules flag the first control change 5.6 days before the money moved.', fact: 'first alert 25 Mar 16:58 UTC · first withdrawal 31 Mar 07:16 UTC', zoom: [[0, 1, 0, 0], [1, 1.05, .02, .03]] },
-  { plate: 'build', from: 1.0, dur: 12, url: 'keyholder-ashy.vercel.app/policy', num: '08 · ENFORCE', head: 'Refuse money where control is weak.', body: 'One line, require_stage, lets any program refuse a deposit when the target’s control is below its policy.', fact: 'devnet: same deposit refused 23 s after the multisig was weakened', zoom: [[0, 1, 0, 0], [1, 1.04, 0, .02]] },
-  { plate: 'self', from: .7, dur: 6, url: 'keyholder-ashy.vercel.app/policy', num: '09 · OUR OWN RULE', head: 'Keyholder waits too.', body: 'Its own program can only change through a 2-of-3 multisig, and every change waits 48 hours in public first.', fact: 'executable after 2026-10-10 17:27 UTC', zoom: [[0, 1, 0, 0], [1, 1.1, .02, .1]] },
+  { plate: 'stages', from: 1.0, dur: 15, url: 'keyholder-ashy.vercel.app', num: '01 · THE STAGES', head: 'Four ways a program can change.', body: 'Who must agree, and how long you get to leave. Keyholder places every Solana program on one of four rungs.', fact: '360 programs at Stage 0: one key can replace the code today.', zoom: [[0, 1, .0, .0], [1, 1.08, .04, .05]] , q: 'How safe is money in a Solana program?', qs: 'It depends on two things: who must agree to change it, and how long you get to leave.', ring: { a: 0.45, b: 0.85, x: 960, y: 360, w: 860, h: 90, tip: 'who must agree, and how long you get' }},
+  { plate: 'map', from: 2.4, dur: 7.5, url: 'keyholder-ashy.vercel.app/#map', num: '02 · THE MAP', head: '577 live programs, on their stage.', body: 'Each column is a program; its height is the money traced to it. Pick one and its signer keys fan out.', fact: 'Orange: weak control. Green: a 24 h+ delay on every path.', zoom: [[0, 1, 0, 0], [1, 1.12, .05, .08]] , q: 'So where does every program stand?', qs: '', ring: null},
+  { plate: 'program', from: .5, dur: 8, url: 'keyholder-ashy.vercel.app/programs/KLend…', num: '03 · ONE PROGRAM', head: 'The weakest path sets the stage.', body: 'Kamino Lend’s upgrades wait 24 hours. Its admin key, a 4-of-10 multisig, waits for nothing.', fact: 'Kamino Lend · Stage 1 · $1.5B traced', zoom: [[0, 1.0, 0, .02], [1, 1.22, .02, .2]] , q: 'Why is Kamino Lend only Stage 1?', qs: '', ring: { a: 0.4, b: 0.9, x: 880, y: 225, w: 300, h: 95, tip: 'admin key: 4 of 10, no delay' }},
+  { plate: 'signer', from: .7, dur: 7, url: 'keyholder-ashy.vercel.app/signers/5ggs…', num: '04 · ONE KEY', head: 'One key, six multisigs, $1.5B.', body: 'Keys are reused across multisigs. This one can act alone on two of them: they need a single signature.', fact: 'acts alone on 2 multisigs', zoom: [[0, 1, 0, 0], [1, 1.1, .02, .12]] , q: 'Who holds those keys?', qs: '', ring: { a: 0.4, b: 0.9, x: 370, y: 360, w: 190, h: 280, tip: '1 of 10: a single signature is enough' }},
+  { plate: 'votes', from: .5, dur: 8.5, url: 'keyholder-ashy.vercel.app/stories/open-votes', num: '05 · OPEN VOTES', head: 'Approved 713 days ago, and it can still run.', body: '53 open multisig votes would change who controls a program or move its funds. Approved votes wait for any signer to send them.', fact: '33 approved · 29 change code or control', zoom: [[0, 1, 0, 0], [1, 1.04, 0, .02]] , q: 'Is anything waiting to happen right now?', qs: '', ring: { a: 0.35, b: 0.9, x: 400, y: 370, w: 1310, h: 40, tip: 'approved 713 days ago, still executable' }},
+  { plate: 'ask', from: 1.0, dur: 7.5, url: 'keyholder-ashy.vercel.app', num: '06 · ASK', head: 'Ask in plain words.', body: 'Name a program or paste an address: the answer comes straight from the record, with the path that sets its stage.', fact: 'answered from the record in 0.1 s', zoom: [[0, 1, 0, 0], [1, 1.06, 0, .05]] , q: 'Can anyone check this, without reading code?', qs: '', ring: { a: 0.45, b: 0.95, x: 50, y: 320, w: 820, h: 160, tip: 'answered from the record, with its reason' }},
+  { plate: 'drift', from: 3.0, dur: 17, url: 'keyholder-ashy.vercel.app/replay/drift', num: '07 · THE PROOF', head: '5.6 days of warning.', body: 'Drift lost $285M in April 2026. Replayed from chain, Keyholder’s rules flag the first control change 5.6 days before the money moved.', fact: 'first alert 25 Mar 16:58 UTC · first withdrawal 31 Mar 07:16 UTC', zoom: [[0, 1, 0, 0], [1, 1.05, .02, .03]] , q: 'Would Keyholder have seen Drift coming?', qs: '', ring: { a: 0.45, b: 0.92, x: 1420, y: 270, w: 420, h: 140, tip: '5.6 days between the first alert and the drain' }},
+  { plate: 'build', from: 1.0, dur: 12, url: 'keyholder-ashy.vercel.app/policy', num: '08 · ENFORCE', head: 'Refuse money where control is weak.', body: 'One line, require_stage, lets any program refuse a deposit when the target’s control is below its policy.', fact: 'devnet: same deposit refused 23 s after the multisig was weakened', zoom: [[0, 1, 0, 0], [1, 1.04, 0, .02]] , q: 'Can a program protect itself?', qs: '', ring: { a: 0.37, b: 0.46, x: 500, y: 316, w: 280, h: 116, tip: 'programs below the policy are refused on chain' }},
+  { plate: 'self', from: .7, dur: 6, url: 'keyholder-ashy.vercel.app/policy', num: '09 · OUR OWN RULE', head: 'Keyholder waits too.', body: 'Its own program can only change through a 2-of-3 multisig, and every change waits 48 hours in public first.', fact: 'executable after 2026-10-10 17:27 UTC', zoom: [[0, 1, 0, 0], [1, 1.1, .02, .1]] , q: 'Does Keyholder follow its own rule?', qs: '', ring: { a: 0.35, b: 0.95, x: 30, y: 630, w: 520, h: 200, tip: 'approved 2 of 3, now waiting 48 h in public' }},
 ];
 // timeline
-const T_INTRO = 9.5, T_HOOK = 8.5, T_GAP = 1.1, T_OUTRO = 9;
-let t0 = T_INTRO + T_HOOK; for (const c of CH) { c.t = t0; t0 += c.dur + T_GAP; }
+const T_INTRO = 9.5, T_HOOK = 8.5, T_GAP = .5, T_Q = 2.4, T_OUTRO = 9;
+let t0 = T_INTRO + T_HOOK; for (const c of CH) { c.qt = t0; t0 += T_Q; c.t = t0; t0 += c.dur + T_GAP; }
 const T_END = t0 + T_OUTRO; window.DURATION = T_END;
 
 function setText(el, html) { if (el.dataset.v !== html) { el.innerHTML = html; el.dataset.v = html; } }
@@ -159,8 +164,18 @@ window.seek = async function (t) {
     $('big').style.opacity = 1 - leave;
   } else $('big').style.display = 'none';
 
+  // ---- question cards: each chapter is the answer to the question before it ----
+  const qc = !outroOn && CH.find((x) => t >= x.qt && t < x.t);
+  if (qc) {
+    const u = t - qc.qt, i = CH.indexOf(qc), k = out(prog(u, 0, .6)), lv = ease(prog(u, T_Q - .45, .45));
+    $('q').style.display = 'flex'; setText($('qn'), String(i + 1).padStart(2, '0') + ' / ' + String(CH.length).padStart(2, '0'));
+    setText($('qt'), qc.q); setText($('qs'), qc.qs || '');
+    $('qn').style.opacity = k * (1 - lv); $('qt').style.opacity = k * (1 - lv); $('qt').style.transform = `translateY(${(1 - k) * 40 - lv * 30}px)`;
+    $('qs').style.opacity = out(prog(u, .5, .6)) * (1 - lv);
+  } else $('q').style.display = 'none';
+
   // ---- chapters ----
-  const c = CH.find((x) => t >= x.t - .2 && t < x.t + x.dur + T_GAP);
+  const c = CH.find((x) => t >= x.t && t < x.t + x.dur + T_GAP);
   const chOn = Boolean(c) && !outroOn;
   for (const id of ['copy', 'win', 'prog', 'chap']) $(id).style.display = chOn ? 'block' : 'none';
   if (chOn) {
@@ -179,10 +194,11 @@ window.seek = async function (t) {
     const sc = lerp(z0[1], z1[1], k) * (1110 / 1920), fx = lerp(z0[2], z1[2], k), fy = lerp(z0[3], z1[3], k);
     $('plate').style.transform = `translate(${-fx * 1920 * sc}px, ${-fy * 1080 * sc}px) scale(${sc})`;
     await setPlate(c.plate, fi);
-    if (c.ring && u > c.ring.at) {
-      const r = c.ring, rk = out(prog(u, r.at, .5)), s2 = sc;
+    const ra = c.ring ? c.ring.a * c.dur : 0, rb = c.ring ? c.ring.b * c.dur : 0;
+    if (c.ring && u > ra && u < rb + .5) {
+      const r = c.ring, rk = out(prog(u, ra, .5)) * (1 - ease(prog(u, rb, .5))), s2 = sc;
       Object.assign($('ring').style, { display: 'block', left: `${(r.x - fx * 1920) * s2}px`, top: `${(r.y - fy * 1080) * s2}px`, width: `${r.w * s2}px`, height: `${r.h * s2}px`, opacity: rk * (1 - outK) });
-      Object.assign($('tip').style, { display: 'block', left: `${(r.x - fx * 1920) * s2}px`, top: `${(r.y - fy * 1080) * s2 + r.h * s2 + 10}px`, opacity: out(prog(u, r.at + .25, .4)) * (1 - outK) });
+      Object.assign($('tip').style, { display: 'block', left: `${(r.x - fx * 1920) * s2}px`, top: `${(r.y - fy * 1080) * s2 + r.h * s2 + 10}px`, opacity: rk * (1 - outK) });
       $('tip').textContent = r.tip;
     } else { $('ring').style.display = $('tip').style.display = 'none'; }
     const i = CH.indexOf(c);
