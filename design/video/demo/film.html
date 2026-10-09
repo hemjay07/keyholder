@@ -21,7 +21,8 @@ html,body { margin:0; width:1920px; height:1080px; overflow:hidden; background:v
 #num { font-family:GM; font-size:22px; color:var(--sigt); letter-spacing:.1em; }
 #head { font-size:62px; line-height:1.04; letter-spacing:-.025em; margin-top:22px; }
 #body { font-size:27px; line-height:1.42; color:var(--ink2); margin-top:28px; }
-#fact { margin-top:34px; font-family:GM; font-size:21px; padding:14px 18px; border-left:4px solid var(--sig); background:var(--panel); }
+#fact.lit { background:#FFFDF8; box-shadow:0 10px 30px -14px rgba(0,0,0,.35); }
+#fact { transition:none; margin-top:34px; font-family:GM; font-size:21px; padding:14px 18px; border-left:4px solid var(--sig); background:var(--panel); }
 .line { display:block; overflow:hidden; }
 .line > span { display:block; }
 /* product window */
@@ -57,6 +58,7 @@ html,body { margin:0; width:1920px; height:1080px; overflow:hidden; background:v
 <div id="win" class="abs"><div id="bar"><i style="left:18px"></i><i style="left:38px"></i><i style="left:58px"></i><span id="url"></span></div>
   <div id="view"><div id="cam" style="position:absolute;left:0;top:0;transform-origin:0 0"><img id="pa" style="position:absolute;left:0;top:0"><img id="pb" style="position:absolute;left:0;top:0"></div><div class="dim" id="d1"></div><div class="dim" id="d2"></div><div class="dim" id="d3"></div><div class="dim" id="d4"></div><div id="ring"></div><div id="tip"></div></div></div>
 <div id="prog" class="abs"><i></i></div><div id="chap" class="abs"></div>
+<div id="baton" class="abs" style="width:14px;height:14px;border-radius:7px;background:var(--sig);box-shadow:0 0 0 6px rgba(255,90,31,.18);display:none;z-index:9"></div>
 <div id="grain"></div>
 <script>
 const $ = (id) => document.getElementById(id);
@@ -125,6 +127,15 @@ const CH = [
 ];
 // timeline
 const T_INTRO = 4.2, T_HOOK = 8.0, T_GAP = .5, T_Q = 2.3, T_OUTRO = 7;
+// Read first, then look: each chapter opens with its words alone (the product waits, soft and back), sized to the
+// time it takes to read them; only then does the product come forward and the camera move.
+for (const c of CH) {
+  const words = (c.head + ' ' + c.body).split(/\s+/).length;
+  c.R = clamp(words / 4, 2.4, 3.6);
+  for (let j = 1; j < c.st.length; j += 2) c.st[j] += c.R;
+  for (const f of c.focus) { f.a += c.R; f.b += c.R; }
+  c.dur += c.R;
+}
 let t0 = T_INTRO + T_HOOK; for (const c of CH) { c.qt = t0; t0 += T_Q; c.t = t0; t0 += c.dur + T_GAP; }
 const T_END = t0 + T_OUTRO; window.DURATION = T_END;
 
@@ -220,10 +231,16 @@ window.seek = async function (t) {
     $('num').style.opacity = inK * (1 - outK);
     $('head').style.opacity = out(prog(u, .1, .7)) * (1 - outK); $('head').style.transform = `translateY(${(1 - out(prog(u, .1, .7))) * 28 - outK * 18}px)`;
     $('body').style.opacity = out(prog(u, .4, .7)) * (1 - outK); $('body').style.transform = `translateY(${(1 - out(prog(u, .4, .7))) * 22}px)`;
-    $('fact').style.opacity = out(prog(u, 1.2, .6)) * (1 - outK); $('fact').style.transform = `translateX(${(1 - out(prog(u, 1.2, .6))) * -24}px)`;
+    // look phase: the words step back, the product steps forward
+    const look = ease(prog(u, c.R, .8));
+    $('num').style.opacity = inK * (1 - outK) * lerp(1, .45, look);
+    $('body').style.opacity = out(prog(u, .4, .7)) * (1 - outK) * lerp(1, .38, look);
+    $('head').style.opacity = out(prog(u, .1, .7)) * (1 - outK) * lerp(1, .8, look);
+    $('fact').style.opacity = out(prog(u, c.R + .2, .6)) * (1 - outK); $('fact').style.transform = `translateX(${(1 - out(prog(u, c.R + .2, .6))) * -24}px)`;
     const wIn = out(prog(u, .15, .9));
-    $('win').style.opacity = wIn * (1 - outK);
-    $('win').style.transform = `translateY(${(1 - wIn) * 60 - outK * 30}px) scale(${lerp(.96, 1, wIn)})`;
+    $('win').style.opacity = wIn * (1 - outK) * lerp(.5, 1, look);
+    $('win').style.filter = `blur(${lerp(3, 0, look)}px) saturate(${lerp(.6, 1, look)})`;
+    $('win').style.transform = `translateY(${(1 - wIn) * 60 - outK * 30}px) translateX(${lerp(24, 0, look)}px) scale(${lerp(.95, 1, look)})`;
     // States are stills of the live site; all motion happens here, frame-exact. Crossfade between states,
     // camera wide -> push into the focus box (measured from the DOM at capture) -> back out.
     const VW = 1110, VH = 624, s0 = VW / 1920;
@@ -260,7 +277,13 @@ window.seek = async function (t) {
       const below = T + Ht + 16, above = T - 62, slide = (1 - out(prog(rk, .35, .65))) * 14;
       Object.assign($('tip').style, { display: 'block', left: `${clamp(L, 12, VW - 560)}px`, top: `${(below + 50 < VH ? below : Math.max(12, above)) + slide}px`, opacity: out(prog(rk, .35, .65)) * (1 - outK) });
       $('tip').textContent = tip;
-    } else { $('ring').style.display = $('tip').style.display = 'none'; for (const d of ['d1','d2','d3','d4']) $(d).style.display = 'none'; }
+      // the baton: an orange dot runs from the fact line on the left to the label on the right, linking the two
+      const fr = $('fact').getBoundingClientRect(), wr = $('win').getBoundingClientRect(), tr = $('tip').getBoundingClientRect();
+      const x0 = fr.left + 2, y0 = fr.top + fr.height / 2, x1 = tr.left + 19, y1 = tr.top + tr.height / 2;
+      const bk = ease(prog(rk, 0, .55)), bx = lerp(x0, x1, bk), by = lerp(y0, y1, bk) - Math.sin(Math.PI * bk) * 60;
+      Object.assign($('baton').style, { display: rk < .98 || bk < 1 ? 'block' : 'none', left: `${bx - 7}px`, top: `${by - 7}px`, opacity: (1 - outK) * (bk < 1 ? 1 : 0) });
+      $('fact').classList.toggle('lit', rk > .5);
+    } else { $('baton').style.display = 'none'; $('fact').classList.remove('lit'); $('ring').style.display = $('tip').style.display = 'none'; for (const d of ['d1','d2','d3','d4']) $(d).style.display = 'none'; }
     const i = CH.indexOf(c);
     $('prog').querySelector('i').style.transform = `scaleX(${(i + clamp(u / c.dur)) / CH.length})`;
     setText($('chap'), `KEYHOLDER · ${String(i + 1).padStart(2, '0')} / ${String(CH.length).padStart(2, '0')}`);
