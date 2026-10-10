@@ -55,5 +55,8 @@
    "t": 154.6,
    "text": "Who can move it, how fast, and did that change? That's Keyholder."
   }
- ]
+ ],
+ "film_url": "film.html",
+ "voice_out": "keyholder-film-voice.mp4",
+ "vocabulary": "Keyholder, Solana, multisigs, Kamino Lend, Drift, require stage, devnet."
 }

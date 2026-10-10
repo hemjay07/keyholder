@@ -1,0 +1,282 @@
+[
+ {
+  "say": "Every",
+  "after": 3,
+  "edge": "start",
+  "offset": 0.0,
+  "film": 4.3
+ },
+ {
+  "say": "The",
+  "after": 7,
+  "edge": "start",
+  "offset": 0.0,
+  "film": 6.2
+ },
+ {
+  "say": "Right",
+  "after": 9,
+  "edge": "start",
+  "offset": 0.0,
+  "film": 8.0
+ },
+ {
+  "say": "period",
+  "after": 14,
+  "edge": "end",
+  "offset": 0.2,
+  "film": 11.6
+ },
+ {
+  "say": "How",
+  "after": 15,
+  "edge": "start",
+  "offset": 0.0,
+  "film": 12.6
+ },
+ {
+  "say": "Keyholders",
+  "after": 22.5,
+  "edge": "start",
+  "offset": -0.5,
+  "film": 14.5
+ },
+ {
+  "say": "One",
+  "after": 26,
+  "edge": "start",
+  "offset": 0.0,
+  "film": 18.1
+ },
+ {
+  "say": "can't",
+  "after": 31,
+  "edge": "start",
+  "offset": 0.0,
+  "film": 30.1
+ },
+ {
+  "say": "all",
+  "after": 32,
+  "edge": "end",
+  "offset": 0.6,
+  "film": 34.1
+ },
+ {
+  "say": "Here",
+  "after": 35,
+  "edge": "start",
+  "offset": -0.4,
+  "film": 36.9
+ },
+ {
+  "say": "Pick",
+  "after": 40,
+  "edge": "start",
+  "offset": 0.0,
+  "film": 43.5
+ },
+ {
+  "say": "out",
+  "after": 41.9,
+  "edge": "end",
+  "offset": 1.5,
+  "film": 48.5
+ },
+ {
+  "say": "Kamino",
+  "after": 49.5,
+  "edge": "start",
+  "offset": -0.4,
+  "film": 51.3
+ },
+ {
+  "say": "admin",
+  "after": 53,
+  "edge": "start",
+  "offset": 0.0,
+  "film": 56.5
+ },
+ {
+  "say": "stage",
+  "after": 57.9,
+  "edge": "end",
+  "offset": 1.5,
+  "film": 62.9
+ },
+ {
+  "say": "And",
+  "after": 63.5,
+  "edge": "start",
+  "offset": -0.4,
+  "film": 65.7
+ },
+ {
+  "say": "two",
+  "after": 69.5,
+  "edge": "start",
+  "offset": 0.0,
+  "film": 70.9
+ },
+ {
+  "say": "signature",
+  "after": 71,
+  "edge": "end",
+  "offset": 1.5,
+  "film": 76.3
+ },
+ {
+  "say": "Some",
+  "after": 76.5,
+  "edge": "start",
+  "offset": -0.4,
+  "film": 79.1
+ },
+ {
+  "say": "One",
+  "after": 82,
+  "edge": "start",
+  "offset": 0.0,
+  "film": 84.7
+ },
+ {
+  "say": "run",
+  "after": 85,
+  "edge": "end",
+  "offset": 1.5,
+  "film": 90.7
+ },
+ {
+  "say": "You",
+  "after": 91,
+  "edge": "start",
+  "offset": -0.4,
+  "film": 93.5
+ },
+ {
+  "say": "Ask",
+  "after": 94.5,
+  "edge": "start",
+  "offset": 0.0,
+  "film": 98.7
+ },
+ {
+  "say": "answer",
+  "after": 96,
+  "edge": "start",
+  "offset": 0.0,
+  "film": 99.7
+ },
+ {
+  "say": "record",
+  "after": 97.5,
+  "edge": "end",
+  "offset": 1.5,
+  "film": 104.6
+ },
+ {
+  "say": "Would",
+  "after": 104.5,
+  "edge": "start",
+  "offset": 0.0,
+  "film": 105.4
+ },
+ {
+  "say": "We",
+  "after": 106.5,
+  "edge": "start",
+  "offset": -0.2,
+  "film": 107.4
+ },
+ {
+  "say": "five",
+  "after": 111.5,
+  "edge": "start",
+  "offset": 0.0,
+  "film": 120.6
+ },
+ {
+  "say": "285",
+  "after": 112.5,
+  "edge": "start",
+  "offset": 0.0,
+  "film": 121.4
+ },
+ {
+  "say": "moved",
+  "after": 114.4,
+  "edge": "end",
+  "offset": 2.0,
+  "film": 125.0
+ },
+ {
+  "say": "And",
+  "after": 125.5,
+  "edge": "start",
+  "offset": -0.4,
+  "film": 127.8
+ },
+ {
+  "say": "refuses",
+  "after": 128.5,
+  "edge": "start",
+  "offset": 0.0,
+  "film": 132.8
+ },
+ {
+  "say": "On",
+  "after": 132,
+  "edge": "start",
+  "offset": 0.0,
+  "film": 136.6
+ },
+ {
+  "say": "refused",
+  "after": 132.9,
+  "edge": "start",
+  "offset": 0.0,
+  "film": 137.6
+ },
+ {
+  "say": "weakened",
+  "after": 136.4,
+  "edge": "end",
+  "offset": 1.5,
+  "film": 141.4
+ },
+ {
+  "say": "We",
+  "after": 142,
+  "edge": "start",
+  "offset": -0.4,
+  "film": 144.2
+ },
+ {
+  "say": "two",
+  "after": 146,
+  "edge": "start",
+  "offset": 0.0,
+  "film": 149.0
+ },
+ {
+  "say": "public",
+  "after": 148.7,
+  "edge": "end",
+  "offset": 1.5,
+  "film": 153.8
+ },
+ {
+  "say": "Who",
+  "after": 154,
+  "edge": "start",
+  "offset": -0.3,
+  "film": 154.5
+ },
+ {
+  "say": "That",
+  "after": 157,
+  "edge": "end",
+  "offset": 4.2,
+  "film": 161.3
+ }
+]

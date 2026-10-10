@@ -289,5 +289,18 @@ window.seek = async function (t) {
     setText($('chap'), `KEYHOLDER · ${String(i + 1).padStart(2, '0')} / ${String(CH.length).padStart(2, '0')}`);
   }
 };
-window.ready = Promise.all([document.fonts.ready, loadStates()]).then(() => window.seek(0));
+// ?warp=<file>: retime the film to a recorded narration. The file holds [[outT, filmT], …] anchors (word times in the
+// voice against the film moments they describe); between anchors the film's clock runs linearly.
+window.CH = CH; window.TL = { T_INTRO, T_HOOK, T_Q, T_GAP, T_OUTRO, T_END };
+const WARP = new URLSearchParams(location.search).get('warp');
+let warpPts = null;
+if (WARP) {
+  const seekFilm = window.seek;
+  window.seek = (t) => {
+    const P = warpPts; let j = 0; while (j < P.length - 2 && t > P[j + 1][0]) j++;
+    const [a0, b0] = P[j], [a1, b1] = P[j + 1];
+    return seekFilm(b0 + (b1 - b0) * clamp((t - a0) / (a1 - a0)));
+  };
+}
+window.ready = Promise.all([document.fonts.ready, loadStates(), WARP ? fetch(WARP).then((r) => r.json()).then((p) => { warpPts = p; window.DURATION = p[p.length - 1][0]; }) : 0]).then(() => window.seek(0));
 </script></body></html>
