@@ -1,0 +1,79 @@
+<!doctype html>
+<!-- design/video/demo/record-voice.html — teleprompter + recorder for the founder's narration. Plays the film muted,
+     shows each line at its cue, records the microphone in one take aligned to the film's clock, and downloads
+     narration.webm. Wear headphones. mix-voice.sh then cleans the voice and mixes it under the music. -->
+<html><head><meta charset="utf-8"><title>Keyholder narration</title>
+<style>
+body { margin:0; background:#141311; color:#ECE8DF; font-family: Geist, -apple-system, sans-serif; }
+.wrap { display:grid; grid-template-columns: 1fr 560px; gap:24px; padding:24px; height:100vh; box-sizing:border-box; }
+video { width:100%; border-radius:10px; background:#000; }
+.prompt { display:flex; flex-direction:column; gap:18px; }
+#now { font-size:34px; line-height:1.35; min-height:280px; }
+#next { font-size:18px; color:#8F897D; min-height:90px; }
+#bar { height:6px; background:#2a2824; border-radius:3px; overflow:hidden; } #bar i { display:block; height:100%; background:#FF5A1F; width:0; }
+button { font:600 16px inherit; padding:12px 18px; border:0; border-radius:8px; cursor:pointer; background:#ECE8DF; color:#141311; }
+button.rec { background:#FF5A1F; color:#fff; }
+#state { font-family: ui-monospace, monospace; font-size:14px; color:#A39D91; }
+.tips { font-size:14px; color:#A39D91; line-height:1.5; }
+#lvl { height:10px; background:#2a2824; border-radius:5px; overflow:hidden; } #lvl i { display:block; height:100%; background:#4CC08E; width:0; }
+</style></head><body>
+<div class="wrap">
+  <div><video id="v" src="keyholder-film.mp4" muted playsinline></video>
+    <p class="tips">Headphones on. Speak a little slower than feels natural, as if explaining to one person across a table. A line can finish late; the next one waits for you. If you stumble, keep going: re-record only that line with "Redo line" later.</p></div>
+  <div class="prompt">
+    <div id="state">mic not started</div>
+    <div id="lvl"><i></i></div>
+    <div id="bar"><i></i></div>
+    <div id="now">Press <b>Start</b>. A 3-second count, then the film plays and the lines appear.</div>
+    <div id="next"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button id="go" class="rec">Start recording</button>
+      <button id="stop">Stop</button>
+      <button id="dl" disabled>Download narration</button>
+    </div>
+  </div>
+</div>
+<script>
+// Cues are seconds on the film's clock (from film.html); each line should finish before the next cue.
+const L = [
+  [4.4,  "Every Solana program can be changed by someone. The question is who, and how fast."],
+  [8.6,  "Right now, seven hundred sixty-nine million dollars sits behind programs that can be upgraded with no waiting period."],
+  [12.4, "How safe is your money? It comes down to two things: who must agree to a change, and how long you get to leave."],
+  [22.5, "Keyholder puts every program on one of four stages. One key. A few keys, but no wait. Keys and a waiting period. Or it can't be changed at all."],
+  [34.8, "Here are all five hundred seventy-seven. The taller the column, the more money it holds. Pick one, and its signer keys fan out."],
+  [49.2, "Kamino Lend waits a day before an upgrade. But its admin key, four of ten signers, can act at once. The weakest path sets the stage."],
+  [63.6, "And keys are shared. This one sits on six multisigs, behind one and a half billion dollars, and two of them need only its signature."],
+  [77.0, "Some changes are already waiting. Fifty-three open votes could change who controls a program. One was approved seven hundred days ago, and it can still run."],
+  [91.4, "You don't need to read code to check any of this. Ask in plain words, and the answer comes straight from the record."],
+  [105.3, "Would it have mattered? We replayed the Drift hack from the chain. Keyholder's rules flag the first control change five and a half days before two hundred eighty-five million dollars moved."],
+  [125.7, "And programs can act on it. One line, require stage, refuses a deposit when the target's control is too weak. On devnet, it refused a real one, twenty-three seconds after a multisig was weakened."],
+  [142.1, "We hold ourselves to the same rule. Keyholder's own program only changes through two of three keys, after forty-eight hours in public."],
+  [154.6, "Who can move it, how fast, and did that change? That's Keyholder."],
+];
+const v = document.getElementById('v'), now = document.getElementById('now'), next = document.getElementById('next'), st = document.getElementById('state');
+let rec, chunks = [], stream, raf;
+async function mic() {
+  stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false, channelCount: 1, sampleRate: 48000 } });
+  const ac = new AudioContext(), an = ac.createAnalyser(); ac.createMediaStreamSource(stream).connect(an); const buf = new Uint8Array(an.fftSize);
+  const meter = () => { an.getByteTimeDomainData(buf); let m = 0; for (const x of buf) m = Math.max(m, Math.abs(x - 128)); document.querySelector('#lvl i').style.width = Math.min(100, m / 1.28) + '%'; requestAnimationFrame(meter); };
+  meter(); st.textContent = 'mic ready: speak to check the green level reaches about half';
+}
+function tick() {
+  const t = v.currentTime; let i = -1; L.forEach((l, j) => { if (t >= l[0]) i = j; });
+  now.textContent = i >= 0 ? L[i][1] : 'Get ready…';
+  next.textContent = L[i + 1] ? 'next: ' + L[i + 1][1] : '';
+  document.querySelector('#bar i').style.width = (t / v.duration * 100) + '%';
+  raf = requestAnimationFrame(tick);
+}
+document.getElementById('go').onclick = async () => {
+  if (!stream) await mic();
+  chunks = []; rec = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus', audioBitsPerSecond: 256000 });
+  rec.ondataavailable = (e) => chunks.push(e.data);
+  rec.onstop = () => { document.getElementById('dl').disabled = false; st.textContent = 'take recorded: press Download narration'; };
+  for (let n = 3; n > 0; n--) { now.textContent = n + '…'; await new Promise((r) => setTimeout(r, 1000)); }
+  v.currentTime = 0; rec.start(); await v.play(); st.textContent = 'recording'; tick();
+  v.onended = () => { rec.state === 'recording' && rec.stop(); cancelAnimationFrame(raf); };
+};
+document.getElementById('stop').onclick = () => { v.pause(); rec && rec.state === 'recording' && rec.stop(); cancelAnimationFrame(raf); };
+document.getElementById('dl').onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(chunks, { type: 'audio/webm' })); a.download = 'narration.webm'; a.click(); };
+</script></body></html>
