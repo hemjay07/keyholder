@@ -1,0 +1,59 @@
+{
+ "video": "keyholder-film.mp4",
+ "music": "../cuts/115.mp3",
+ "end": 161.3,
+ "lines": [
+  {
+   "t": 4.4,
+   "text": "Every Solana program can be changed by someone. The question is who, and how fast."
+  },
+  {
+   "t": 8.6,
+   "text": "Right now, seven hundred sixty-nine million dollars sits behind programs that can be upgraded with no waiting period."
+  },
+  {
+   "t": 12.4,
+   "text": "How safe is your money? It comes down to two things: who must agree to a change, and how long you get to leave."
+  },
+  {
+   "t": 22.5,
+   "text": "Keyholder puts every program on one of four stages. One key. A few keys, but no wait. Keys and a waiting period. Or it can't be changed at all."
+  },
+  {
+   "t": 34.8,
+   "text": "Here are all five hundred seventy-seven. The taller the column, the more money it holds. Pick one, and its signer keys fan out."
+  },
+  {
+   "t": 49.2,
+   "text": "Kamino Lend waits a day before an upgrade. But its admin key, four of ten signers, can act at once. The weakest path sets the stage."
+  },
+  {
+   "t": 63.6,
+   "text": "And keys are shared. This one sits on six multisigs, behind one and a half billion dollars, and two of them need only its signature."
+  },
+  {
+   "t": 77.0,
+   "text": "Some changes are already waiting. Fifty-three open votes could change who controls a program. One was approved seven hundred days ago, and it can still run."
+  },
+  {
+   "t": 91.4,
+   "text": "You don't need to read code to check any of this. Ask in plain words, and the answer comes straight from the record."
+  },
+  {
+   "t": 105.3,
+   "text": "Would it have mattered? We replayed the Drift hack from the chain. Keyholder's rules flag the first control change five and a half days before two hundred eighty-five million dollars moved."
+  },
+  {
+   "t": 125.7,
+   "text": "And programs can act on it. One line, require stage, refuses a deposit when the target's control is too weak. On devnet, it refused a real one, twenty-three seconds after a multisig was weakened."
+  },
+  {
+   "t": 142.1,
+   "text": "We hold ourselves to the same rule. Keyholder's own program only changes through two of three keys, after forty-eight hours in public."
+  },
+  {
+   "t": 154.6,
+   "text": "Who can move it, how fast, and did that change? That's Keyholder."
+  }
+ ]
+}
