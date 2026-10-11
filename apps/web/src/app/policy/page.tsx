@@ -23,6 +23,7 @@ export default async function BuildPage() {
     : [];
   const up = own.upgrade;
   const ready = Date.now() >= Date.parse(up.executableAfter);
+  const done = 'executed' in up ? (up as typeof up & { executed: string; executedAt: string; programDataSlot: number }) : null;
   return (
     <main className={s.wrap}>
       <p className={s.kicker}>Build</p>
@@ -50,11 +51,13 @@ export default async function BuildPage() {
       <section className={`${s.sec} ${s.two}`}>
         <div>
           <h2 className={s.h2}>Keyholder follows its own rule</h2>
-          <p className={s.body}>Keyholder&rsquo;s program can only change through a {OWN_CONTROL.threshold}-of-{OWN_CONTROL.members} Squads multisig, and every change waits {OWN_CONTROL.timeLockHours} hours in public first: Stage 2. Its first upgrade is in that window now.</p>
+          <p className={s.body}>Keyholder&rsquo;s program can only change through a {OWN_CONTROL.threshold}-of-{OWN_CONTROL.members} Squads multisig, and every change waits {OWN_CONTROL.timeLockHours} hours in public first: Stage 2. {done ? `Its first upgrade went through that way on ${utc(done.executedAt)}.` : 'Its first upgrade is in that window now.'}</p>
           <ol className={s.timeline} data-film="selfline">
             <li className={s.done}><b>Proposed and approved, 2 of 3</b><span>{utc(up.approvedAt)}</span><a href={explorerTx(up.proposed)} target="_blank" rel="noreferrer">{short(up.proposed)} ↗</a></li>
-            <li className={ready ? s.done : s.wait}><b>{ready ? 'Delay passed' : 'Waiting out the 48 h delay'}</b><span>executable after {utc(up.executableAfter)}</span></li>
-            <li className={s.next}><b>Executed, upgrade lands</b><span>{ready ? 'ready to execute' : 'not before the delay ends'}</span></li>
+            <li className={ready ? s.done : s.wait}><b>{ready ? 'Waited 48 h in public' : 'Waiting out the 48 h delay'}</b><span>executable after {utc(up.executableAfter)}</span></li>
+            {done
+              ? <li className={s.done}><b>Executed, upgrade landed</b><span>{utc(done.executedAt)} · slot {done.programDataSlot.toLocaleString('en-US')}</span><a href={explorerTx(done.executed)} target="_blank" rel="noreferrer">{short(done.executed)} ↗</a></li>
+              : <li className={s.next}><b>Executed, upgrade lands</b><span>{ready ? 'ready to execute' : 'not before the delay ends'}</span></li>}
           </ol>
         </div>
         <dl className={s.meta}>
