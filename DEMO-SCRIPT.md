@@ -1,30 +1,20 @@
-# Keyholder demo: 2 min 30 s, recorded on the live site
+# Keyholder demo
 
-Browser at 1440 wide, one tab per scene opened in advance. Say the bold lines; the rest is what to do.
+**The demo is the narrated film:** `design/video/demo/keyholder-film-aligned.mp4` (2:42, the founder's voice, pictures retimed to his words). Source: `design/video/demo/film.html` (a seek(t) page rendered frame by frame), narration in `voice/`, word anchors in `voice/anchors.json`. Rebuild with the voicebooth "Build the film" button, or `assemble.py` then `align.py`.
 
-## 1. The number (0:00–0:25) · https://keyholder-ashy.vercel.app/keybench
-Scroll to "Today: $769M can move with no delay".
-- **"Solana programs hold billions, and someone can upgrade every one of them. We traced $2.66 billion to the vaults of the largest programs. $769 million of it sits behind multisigs that can change the code with no waiting period."**
-- Hover the first row (675kPX9M…, 3 of 4, $573M). **"This is Raydium's main AMM: three of four keys, no timelock, half a billion dollars."**
+| chapter | what the viewer sees | the line |
+|---|---|---|
+| intro | the Keyholder mark draws itself | |
+| hook | $769M counts up | "Every Solana program can be changed by someone…" |
+| 01 stages | the four stages, one at a time | "Keyholder puts every program on one of four stages…" |
+| 02 map | 577 columns; Kamino Lend's keys fan out | "Here are all five hundred seventy-seven…" |
+| 03 one program | Kamino Lend: the 4-of-10 admin path is ringed | "The weakest path sets the stage." |
+| 04 one key | one key on six multisigs | "…two of them need only its signature." |
+| 05 open votes | the vote approved 713 days ago | "One was approved seven hundred days ago…" |
+| 06 ask | a question answered from the record | "Ask in plain words…" |
+| 07 proof | Drift replay: the warning 5.6 days early | "…five and a half days before…" |
+| 08 enforce | require_stage and the devnet refusal | "On devnet, it refused a real one…" |
+| 09 own rule | Keyholder's own upgrade: approved, 48 h, executed | "We hold ourselves to the same rule…" |
+| outro | the mark and the closing line | "Who can move it, how fast, and did that change? That's Keyholder." |
 
-## 2. Drift, replayed (0:25–1:10) · https://keyholder-ashy.vercel.app/replay/drift
-Press play, or step through.
-- **"In April, Drift lost $285 million. The attacker didn't break the code; they took over the keys."**
-- At the new-multisig step: **"Five and a half days before the first drain, a second multisig appeared, set up by the same controller. Keyholder's rules flag that the moment it lands on chain."**
-- At the drain: **"Every step here is a real transaction. Click any of them and you're on the explorer."**
-
-## 3. KeyBench (1:10–1:45) · back to /keybench, scroll the incidents
-- **"We didn't stop at Drift. KeyBench replays every Solana loss that came through a control key and asks: would Keyholder have warned, and how early?"**
-- Point at Synthetify and BonkDAO: **"These two were governance attacks: a proposal sat on chain for six to eight days before the money moved. The rule that catches them was written after we studied them, and the page says so."**
-- Point at Raydium: **"And where we would have missed, the miss stays on the page."**
-
-## 4. The check (1:45–2:15) · https://keyholder-ashy.vercel.app/policy
-- **"Alerts are for people. The check is for programs: a vault calls Keyholder on chain before it moves money."**
-- Show the refused deposit, then set a policy in the simulator (for example, at least 3 signers and a 24 h timelock): **"Set your policy, and deposits into a protocol below it are refused."**
-
-## 5. Close (2:15–2:30) · stay on /policy or return to /keybench
-- **"Every day, Keyholder records who controls every program it covers, and posts a hash of that record on chain, so no one can rewrite what control looked like on any given day. Keyholder: know who can move the money."**
-
-## Before recording
-- Each URL above returns 200 (checked 2026-10-07).
-- Numbers on the pages come from data files; if they are regenerated before recording, re-read scene 1's figures off the page.
+**Live walkthrough, if asked:** home → /stages → /programs/KLend… → /signers/5ggs… → /stories/open-votes → Ask "is Kamino safe?" → /replay/drift → /policy. Every page loads from the record; no setup.

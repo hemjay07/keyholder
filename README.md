@@ -1,18 +1,21 @@
 # Keyholder
 
-**$769M on Solana can be moved today by multisigs that need no waiting period.** Keyholder reads who controls every program, rings when that control weakens, and lets a vault refuse deposits into a protocol whose control just changed.
+**Who can change a Solana program, how fast, and did that just change?** Keyholder puts 577 live programs on one of four Control Stages, from "one key can replace the code today" to "cannot change", and lets any program refuse money where control is weak.
 
-[![KeyBench: would Keyholder have warned before the money moved?](docs/keybench-fold.png)](https://keyholder-ashy.vercel.app/keybench)
+[![Keyholder: the control record for Solana](docs/keybench-fold.png)](https://keyholder-ashy.vercel.app)
 
-**Live:** [keyholder-ashy.vercel.app](https://keyholder-ashy.vercel.app) · [KeyBench](https://keyholder-ashy.vercel.app/keybench) · [Drift replay](https://keyholder-ashy.vercel.app/replay/drift) · [For vaults](https://keyholder-ashy.vercel.app/policy)
+**Live:** [keyholder-ashy.vercel.app](https://keyholder-ashy.vercel.app) · [Stages](https://keyholder-ashy.vercel.app/stages) · [Open votes](https://keyholder-ashy.vercel.app/stories/open-votes) · [Drift replay](https://keyholder-ashy.vercel.app/replay/drift) · [Build](https://keyholder-ashy.vercel.app/policy) · Film: `design/video/demo/keyholder-film-aligned.mp4`
 
 ## What it does
 
-- **Control graph.** For 557 OtterSec-verified programs: upgrade authority → multisig → each signer key, and for the 18 money-layer programs with an IDL, the admin keys stored inside program config.
-- **Alerts.** A worker decodes every control-relevant transaction (loader upgrades and authority changes, Squads v3/v4 and coral multisig changes, durable nonces, spl-governance proposals) and runs it through a versioned rule engine (`packages/risk`).
-- **The check.** An Anchor program (devnet) that a vault calls before it moves money: it refuses when the target's control is below the vault's policy or changed recently.
-- **Dollar coverage.** $2.66B traced vault by vault to the program that controls it: $1.89B behind multisigs with a timelock, $769M behind multisigs with none, $0.5M behind a single key (floors: liquid tokens only).
-- **A provable log.** Every day the control state of all covered programs is written to `program_daily`, hashed, and the hash is posted on chain as a memo. `verify-anchor` recomputes it from the rows; changing any row breaks it.
+- **Control Stages.** Each program gets Stage 0 (one key), 1 (several keys, no delay), 2 (keys plus a 24 h+ delay) or 3 (cannot change). Every control path counts, not just the upgrade key: Kamino Lend waits 24 h to upgrade, but its admin key is a 4-of-10 multisig with no delay, so it is Stage 1. $769M sits behind programs that can be upgraded with no waiting period.
+- **Signer keys.** Keys are reused across multisigs. One key sits on six multisigs behind $1.5B and can act alone on two of them.
+- **Open votes.** 53 open multisig votes would change who controls a program or move its funds; one was approved 713 days ago and can still be sent by any signer.
+- **Ask Keyholder.** Plain-language questions, answered from the record with the path that sets the stage.
+- **require_stage.** An Anchor check (devnet) a program calls before it moves user funds. It refused a real deposit 23 seconds after the target's multisig was weakened.
+- **Keyholder's own rule.** Its program changes only through a 2-of-3 Squads multisig with a 48 h timelock. The first upgrade was approved on 2026-10-08, waited 48 h in public and executed on 2026-10-11 ([tx](https://explorer.solana.com/tx/4MRJQhAVatnGeFCLcyf1AGZHAzGz4ciXaJSyG92cfLacXHQ6vUARMNnDxTGCtsiTY7py9xZPNdKVDjDNwZoRCbri?cluster=devnet)).
+- **Proof of Control claims.** Teams sign a claim about their controls; Keyholder checks it against the chain.
+- **A log no one can rewrite.** Each day's control state is hashed and the hash posted on chain; `verify-anchor` recomputes it.
 
 ## KeyBench
 

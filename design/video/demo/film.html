@@ -122,8 +122,8 @@ const CH = [
     focus: [{ s: 'drift-3', k: 'warning', a: 10.4, b: 13.4, tip: 'the warning Keyholder would have given' }] },
   { st: ['build-0', 0, 'build-1', 5.2], dur: 10, url: 'keyholder-ashy.vercel.app/policy', num: '08 · ENFORCE', head: 'Refuse money where control is weak.', body: 'One line, require_stage, lets any program refuse a deposit when the target\u2019s control is below its policy.', fact: 'devnet: same deposit refused 23 s after the multisig was weakened', q: 'Can a program protect itself?', qs: '',
     focus: [{ s: 'build-0', k: 'refused', a: 1.4, b: 4.6, tip: 'your policy, applied to every program' }, { s: 'build-1', k: 'refusal', a: 6.2, b: 9.2, tip: 'a real devnet deposit, refused' }] },
-  { st: ['self-0', 0], dur: 6, url: 'keyholder-ashy.vercel.app/policy', num: '09 · OUR OWN RULE', head: 'Keyholder waits too.', body: 'Its own program can only change through a 2-of-3 multisig, and every change waits 48 hours in public first.', fact: 'executable after 2026-10-10 17:27 UTC', q: 'Does Keyholder follow its own rule?', qs: '',
-    focus: [{ s: 'self-0', k: 'selfline', a: 1.2, b: 5, tip: '2 of 3 approved, waiting 48 h in public' }] },
+  { st: ['self-0', 0], dur: 6, url: 'keyholder-ashy.vercel.app/policy', num: '09 · OUR OWN RULE', head: 'Keyholder waits too.', body: 'Its own program can only change through a 2-of-3 multisig, and every change waits 48 hours in public first. Its first upgrade just went through that way.', fact: 'executed 2026-10-11 16:06 UTC, after 48 h in public', q: 'Does Keyholder follow its own rule?', qs: '',
+    focus: [{ s: 'self-0', k: 'selfline', a: 1.2, b: 5, tip: '2 of 3 approved, 48 h in public, then executed' }] },
 ];
 // timeline
 const T_INTRO = 4.2, T_HOOK = 8.0, T_GAP = .5, T_Q = 2.3, T_OUTRO = 7;
